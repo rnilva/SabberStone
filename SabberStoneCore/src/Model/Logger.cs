@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SabberStoneCore.Enums;
 
 namespace SabberStoneCore.Model
@@ -17,4 +18,35 @@ namespace SabberStoneCore.Model
 		public string Text { get; set; }
 
 	}
+
+
+	//public static class Analyser
+	//{
+	//	public static List<int> Dump = new List<int>(1000000);
+
+	//	private static readonly List<List<int>> Dumps = new List<List<int>>();
+
+	//	public static void Add(int i)
+	//	{
+	//		Dump.Add(i);
+	//		if (Dump.Count != 1000000) return;
+	//		Dumps.Add(Dump);
+	//		Dump = new List<int>(1000000);
+
+	//	}
+
+	//	public static double GetAverage()
+	//	{
+	//		long sum = 0;
+	//		long count = 0;
+	//		foreach (var dump in Dumps)
+	//		{
+	//			for (int i = 0; i < dump.Count; i++)
+	//				sum += dump[i];
+	//			count += dump.Count;
+	//		}
+
+	//		return sum / (double)count;
+	//	}
+	//}
 }
