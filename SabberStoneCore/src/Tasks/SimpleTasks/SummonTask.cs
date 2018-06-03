@@ -63,7 +63,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					if (Card == null && Playables.Count > 0)
 					{
 						var m = Playables[0] as Minion;
-						if (m.Zone == null && m.GetNativeGameTag(GameTag.ZONE) != 0)
+						if (m.Zone == null && m._data.GetEntityTag(GameTag.ZONE) != 0)
 							Playables[0].Controller.GraveyardZone.Add(Playables[0]);
 					}
 					return TaskState.STOP;
@@ -72,8 +72,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				Minion summonEntity = null;
 				if (Card != null)
 				{
-					summonEntity = Entity.FromCard(Controller, Card,
-						new EntityData.Data
+					summonEntity = Entity.FromCard(Controller,
+						new EntityData(Card)
 						{
 							{GameTag.ZONE, (int)Zone.PLAY},
 							{GameTag.DISPLAYED_CREATOR, Source.Id}

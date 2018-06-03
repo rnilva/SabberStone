@@ -91,12 +91,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 					Minion target = (Minion)entities[i];
 
-					var tags = new EntityData.Data((EntityData.Data) target.NativeTags);
+					//var tags = new EntityData.Data((EntityData.Data) target.NativeTags);
+					var copiedData = new EntityData(target._data);
 
-					if (target.Controller != Controller)
-						tags[GameTag.CONTROLLER] = Controller.PlayerId;
+					//if (target.Controller != Controller)
+					//	copiedData[GameTag.CONTROLLER] = Controller.PlayerId;
 
-					IPlayable copy = Entity.FromCard(Controller, target.Card, tags, Controller.BoardZone);
+					IPlayable copy = Entity.FromCard(Controller, copiedData, Controller.BoardZone);
 
 					target.AppliedEnchantments?.ForEach(e =>
 					{

@@ -72,11 +72,11 @@ namespace SabberStoneCore.Actions
 
 				if (source.HasEcho)
 				{
-					var echoTags = new EntityData.Data
+					var data = new EntityData(source.Card)
 					{
 						{GameTag.GHOSTLY, 1}
 					};
-					IPlayable echoPlayable = Entity.FromCard(c, source.Card, echoTags, c.HandZone);
+					IPlayable echoPlayable = Entity.FromCard(c, data, c.HandZone);
 					echoPlayable[GameTag.DISPLAYED_CREATOR] = source.Id;
 
 					c.Game.AuraUpdate();

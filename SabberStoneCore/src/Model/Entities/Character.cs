@@ -503,7 +503,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get
 			{
-				NativeTags.TryGetValue(GameTag.ARMOR, out int value);
+				_data.TryGetValue(GameTag.ARMOR, out int value);
 				return value;
 			}
 			set { this[GameTag.ARMOR] = value; }
@@ -529,7 +529,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public int Damage
 		{
-			get => NativeTags.TryGetValue(GameTag.DAMAGE, out int value) ? value : 0;
+			get => _data.TryGetValue(GameTag.DAMAGE, out int value) ? value : 0;
 			set
 			{
 				if (this[GameTag.HEALTH] <= value)
@@ -591,7 +591,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get
 			{
-				NativeTags.TryGetValue(GameTag.FROZEN, out int value);
+				_data.TryGetValue(GameTag.FROZEN, out int value);
 				return value == 1;
 			}
 			set
@@ -599,19 +599,19 @@ namespace SabberStoneCore.Model.Entities
 				if (value)
 				{
 					Game.TriggerManager.OnFreezeTrigger(this);
-					NativeTags[GameTag.FROZEN] = 1;
+					_data[GameTag.FROZEN] = 1;
 				}
 				else
 				{
-					NativeTags[GameTag.FROZEN] = 0;
+					_data[GameTag.FROZEN] = 0;
 				}
 			}
 		}
 
 		public bool IsSilenced
 		{
-			get { return GetNativeGameTag(GameTag.SILENCED) == 1; }
-			set { this[GameTag.SILENCED] = value ? 1 : 0; }
+			get => _data.Contains(GameTag.SILENCE, 1);
+			set => this[GameTag.SILENCED] = value ? 1 : 0;
 		}
 
 		public bool HasTaunt
@@ -622,8 +622,8 @@ namespace SabberStoneCore.Model.Entities
 
 		public virtual bool HasWindfury
 		{
-			get { return this[GameTag.WINDFURY] >= 1; }
-			set { this[GameTag.WINDFURY] = value ? 1 : 0; }
+			get => this[GameTag.WINDFURY] >= 1;
+			set => this[GameTag.WINDFURY] = value ? 1 : 0;
 		}
 
 		public bool HasStealth
@@ -636,7 +636,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get
 			{
-				NativeTags.TryGetValue(GameTag.NUM_ATTACKS_THIS_TURN, out int value);
+				_data.TryGetValue(GameTag.NUM_ATTACKS_THIS_TURN, out int value);
 				return value;
 			}
 			set => this[GameTag.NUM_ATTACKS_THIS_TURN] = value;

@@ -12,24 +12,24 @@ namespace SabberStoneCore.Model.Entities
 {
 	public partial class Enchantment : IPlayable
 	{
-		private readonly IDictionary<GameTag, int> _tags;
+		private readonly EntityData _data;
 		private int _creatorId;
 		private IPlayable _creator;
 
-		private Enchantment(Controller controller, Card card, IDictionary<GameTag, int> tags)
+		private Enchantment(Controller controller, EntityData data)
 		{
 			Game = controller.Game;
 			Controller = controller;
-			Card = card;
-			_tags = tags;
-			Id = tags[GameTag.ENTITY_ID];
+			_data = data;
+			Id = data.GetEntityTag(GameTag.ENTITY_ID);
 		}
 
 		private Enchantment(Controller c, Enchantment e)
 		{
 			Game = c.Game;
 			Controller = c;
-			Card = e.Card;
+			//Card = e.Card;
+			_data = e._data;
 			Id = e.Id;
 			Target = e.Target is IPlayable ? (IEntity) Game.IdEntityDic[e.Target.Id] : c;
 			_creatorId = e._creatorId;
@@ -42,7 +42,6 @@ namespace SabberStoneCore.Model.Entities
 			//if (c.Game.History)
 			//{
 				Zone = c.BoardZone;
-				_tags = new EntityData.Data((EntityData.Data) e._tags);
 			//}
 
 			if (Power.Enchant?.RemoveWhenPlayed ?? false)
@@ -51,10 +50,16 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
+		public Card Card
+		{
+			get => _data.Card;
+			set => _data.Card = value;
+		}
+
 		public int this[GameTag t]
 		{
-			get => _tags.TryGetValue(t, out int value) ? value : 0;
-			set => _tags[t] = value;
+			get => _data.TryGetValue(t, out int value) ? value : 0;
+			set => _data[t] = value;
 		}
 
 		public IEntity Target { get; private set; }
@@ -85,14 +90,14 @@ namespace SabberStoneCore.Model.Entities
 		/// <returns>The resulting enchantment entity.</returns>
 		public static Enchantment GetInstance(Controller controller, IPlayable creator, IEntity target, Card card)
 		{
-			var tags = new EntityData.Data(5)
+			var data = new EntityData(card, 5)
 			{
 				{GameTag.ZONE, (int) Enums.Zone.SETASIDE},
 				{GameTag.CONTROLLER, controller.PlayerId},
 				{GameTag.ENTITY_ID, controller.Game.NextId}
 			};
 
-			var instance = new Enchantment(controller, card, tags)
+			var instance = new Enchantment(controller, data)
 			{
 				Creator = creator,
 				Target = target,
@@ -112,7 +117,7 @@ namespace SabberStoneCore.Model.Entities
 					Entity = new PowerHistoryEntity
 					{
 						Id = instance.Id,
-						Tags = tags.ToDictionary(k => k.Key, k => k.Value)
+						Tags = new Dictionary<GameTag, int>(data)
 					}
 				});
 
@@ -222,7 +227,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public void Reset()
 		{
-			_tags.Clear();
+			_data.Clear();
 		}
 
 		public override string ToString()
@@ -236,7 +241,6 @@ namespace SabberStoneCore.Model.Entities
 		public int Id { get; }
 		public int OrderOfPlay { get; set; }
 		public Game Game { get; set; }
-		public Card Card { get; set; }
 		public Controller Controller { get; set; }
 		public IZone Zone { get; set; }
 		public IAura OngoingEffect { get; set; }

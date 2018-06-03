@@ -149,12 +149,12 @@ namespace SabberStoneCore.Actions
 					if (card != null)
 					{
 						info.Add(card.Id);
-						card.NativeTags[GameTag.REVEALED] = 1;
+						card[GameTag.REVEALED] = 1;
 					}
 					if (cardOp != null)
 					{
 						info.Add(cardOp.Id);
-						cardOp.NativeTags[GameTag.REVEALED] = 1;
+						cardOp[GameTag.REVEALED] = 1;
 					}
 					if (card != null)
 						c.Game.PowerHistory.Add(PowerHistoryBuilder.FullEntity(card));
@@ -346,18 +346,18 @@ namespace SabberStoneCore.Actions
 					if (p.ChooseOnePlayables == null)
 						p.ChooseOnePlayables = new IPlayable[2];
 
-					EntityData.Data tags = null;
+					EntityData data1 = new EntityData(Cards.FromId(newCard.Id + "a"));
+					EntityData data2 = new EntityData(Cards.FromId(newCard.Id + "b"));
 					if (c.Game.History)
 					{
-						tags = new EntityData.Data
-						{
-							{GameTag.CREATOR, p.Id},
-							{GameTag.PARENT_CARD, p.Id}
-						};
+						data1.Add(GameTag.CREATOR, p.Id);
+						data1.Add(GameTag.PARENT_CARD, p.Id);
+						data2.Add(GameTag.CREATOR, p.Id);
+						data2.Add(GameTag.PARENT_CARD, p.Id);
 					}
 
-					p.ChooseOnePlayables[0] = Entity.FromCard(c, Cards.FromId(newCard.Id + "a"), tags, c.SetasideZone);
-					p.ChooseOnePlayables[1] = Entity.FromCard(c, Cards.FromId(newCard.Id + "b"), tags, c.SetasideZone);
+					p.ChooseOnePlayables[0] = Entity.FromCard(c, data1, c.SetasideZone);
+					p.ChooseOnePlayables[1] = Entity.FromCard(c, data2, c.SetasideZone);
 				}
 
 				p.Power?.Trigger?.Activate(p, TriggerActivation.HAND);

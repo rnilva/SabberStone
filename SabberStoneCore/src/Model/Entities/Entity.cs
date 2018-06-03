@@ -50,10 +50,6 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>Resets all tags (properties) to default values derived from the orginal card object.</summary>
 		void Reset();
 
-		/// <summary>Copy details from the other entity into into this object.</summary>
-		/// <param name="entity">The entity.</param>
-		void Stamp(Entity entity);
-
 		/// <summary>Get a string which uniquely defines this entity object.</summary>
 		/// <param name="ignore">All tags to ignore when generating the hash.</param>
 		/// <returns></returns>
@@ -145,7 +141,19 @@ namespace SabberStoneCore.Model.Entities
 		{
 			Game = game;
 			_data = new EntityData(card, tags);
-			Id = _data.Tags[GameTag.ENTITY_ID];
+			Id = _data.GetEntityTag(GameTag.ENTITY_ID);
+			AuraEffects = new AuraEffects(this);
+
+			if (game == null) return;
+			_history = game.History;
+			_logging = game.Logging;
+		}
+
+		internal Entity(Game game, EntityData data)
+		{
+			Game = game;
+			_data = data;
+			Id = data[GameTag.ENTITY_ID];
 			AuraEffects = new AuraEffects(this);
 
 			if (game == null) return;
@@ -170,12 +178,6 @@ namespace SabberStoneCore.Model.Entities
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-		public virtual void Stamp(Entity entity)
-		{
-			OrderOfPlay = entity.OrderOfPlay;
-			_data.Stamp(entity._data);
-		}
-
 		public virtual string Hash(params GameTag[] ignore)
 		{
 			var str = new StringBuilder();
@@ -194,29 +196,6 @@ namespace SabberStoneCore.Model.Entities
 		}
 
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-
-		/// <summary>
-		/// Gets the native value with out any enchanment or aura applied.
-		/// </summary>
-		/// <param name="t"></param>
-		/// <returns></returns>
-		public int GetNativeGameTag(GameTag t)
-		{
-			return _data[t];
-		}
-
-		/// <summary>
-		/// Sets the native value without any trigger activated.
-		/// </summary>
-		/// <param name="tag"></param>
-		/// <param name="value"></param>
-		//public void SetNativeGameTag(GameTag tag, int value)
-		//{
-		//	_data[tag] = value;
-
-		//	if (Game.History && (int)tag < 1000)
-		//		Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, tag, value));
-		//}
 
 		/// <summary>
 		/// This is the call for a gametag value.
@@ -241,7 +220,7 @@ namespace SabberStoneCore.Model.Entities
 					if (value + AuraEffects[t] != this[t])
 						Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, t, value));
 
-				_data.Tags[t] = value;
+				_data[t] = value;
 			}
 		}
 
@@ -267,7 +246,7 @@ namespace SabberStoneCore.Model.Entities
 		public static IPlayable FromCard(Controller controller, Card card, IDictionary<GameTag, int> tags = null, IZone zone = null, int id = -1, int zonePos = -1)
 		{
 			//tags = tags ?? new Dictionary<GameTag, int>();
-			tags = tags ?? new EntityData.Data();
+			tags = tags ?? new EntityData(card);
 			tags[GameTag.ENTITY_ID] = id > 0 ? id : controller.Game.NextId;
 			tags[GameTag.CONTROLLER] = controller.PlayerId;
 			tags[GameTag.ZONE] = zone != null ? (int)zone.Type : 0;
@@ -356,8 +335,7 @@ namespace SabberStoneCore.Model.Entities
 				result.ChooseOnePlayables = new IPlayable[2];
 				result.ChooseOnePlayables[0] =
 					id < 0 ? FromCard(controller,
-						Cards.FromId(result.Card.Id + "a"),
-						new EntityData.Data
+						new EntityData(Cards.FromId(result.Card.Id + "a"))
 						{
 							[GameTag.CREATOR] = result.Id,
 							[GameTag.PARENT_CARD] = result.Id
@@ -367,8 +345,7 @@ namespace SabberStoneCore.Model.Entities
 
 				result.ChooseOnePlayables[1] =
 					id < 0 ? FromCard(controller,
-						Cards.FromId(result.Card.Id + "b"),
-						new EntityData.Data
+						new EntityData(Cards.FromId(result.Card.Id + "b"))
 						{
 							[GameTag.CREATOR] = result.Id,
 							[GameTag.PARENT_CARD] = result.Id
@@ -378,6 +355,12 @@ namespace SabberStoneCore.Model.Entities
 			}
 
 			return result;
+		}
+
+		internal static IPlayable FromCard(Controller controller, EntityData data, IZone zone = null, int id = -1,
+			int zonePos = -1)
+		{
+			return FromCard(controller, data.Card, data, zone, id, zonePos);
 		}
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -476,6 +459,11 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public List<Enchantment> AppliedEnchantments { get; set; }
 
-		public IDictionary<GameTag, int> NativeTags => _data.Tags;
+		public IDictionary<GameTag, int> NativeTags => _data;
+
+		public int GetNativeGameTag(GameTag tag)
+		{
+			return _data.GetEntityTag(tag);
+		}
 	}
 }

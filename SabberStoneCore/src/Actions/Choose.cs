@@ -210,7 +210,7 @@ namespace SabberStoneCore.Actions
 							firstCard.Text = secondCard.Text + "\n" + firstCard.Text;
 
 							IPlayable zombeast = Entity.FromCard(c, firstCard);
-							zombeast[GameTag.DISPLAYED_CREATOR] = playable.NativeTags[GameTag.DISPLAYED_CREATOR];
+							zombeast[GameTag.DISPLAYED_CREATOR] = playable[GameTag.DISPLAYED_CREATOR];
 
 							AddHandPhase.Invoke(c, zombeast);
 							break;
@@ -355,8 +355,8 @@ namespace SabberStoneCore.Actions
 				var choicesIds = new List<int>();
 				foreach (Card p in choices)
 				{
-					IPlayable choiceEntity = Entity.FromCard(c, p,
-						new EntityData.Data
+					IPlayable choiceEntity = Entity.FromCard(c,
+						new EntityData(p)
 						{
 							{GameTag.CREATOR, source.Id},
 							{GameTag.DISPLAYED_CREATOR, source.Id }

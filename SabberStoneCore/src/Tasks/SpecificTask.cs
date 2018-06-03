@@ -284,10 +284,7 @@ namespace SabberStoneCore.Tasks
 
 					for (int i = 0; i < space; ++i)
 					{
-						var tags = new EntityData.Data
-						{
-							{GameTag.CREATOR, p[0].Id}
-						};
+						//var tags = 
 						Rarity rarity;
 						double rnd = Util.Random.NextDouble();
 
@@ -303,7 +300,7 @@ namespace SabberStoneCore.Tasks
 
 						Card[] cards = _ungoroPackMemory[rarity];
 						Card pick = cards[Util.Random.Next(cards.Length)];
-						IPlayable entity = Entity.FromCard(controller, pick, tags, controller.HandZone);
+						IPlayable entity = Entity.FromCard(controller, new EntityData(pick) { {GameTag.CREATOR, p[0].Id} }, controller.HandZone);
 						entity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, p[0].Id);
 						//pack.Add(entity);
 					}
@@ -431,8 +428,8 @@ namespace SabberStoneCore.Tasks
 					IPlayable p = list[0];
 					if (p.Controller.HandZone.IsFull)
 						return new List<IPlayable>(0);
-					IPlayable entity = Entity.FromCard(p.Controller, Cards.FromId("ICC_827t"),
-						new EntityData.Data
+					IPlayable entity = Entity.FromCard(p.Controller,
+						new EntityData(Cards.FromId("ICC_827t"))
 						{
 							{GameTag.CREATOR, p.Id}
 						}, p.Controller.HandZone);
@@ -507,13 +504,13 @@ namespace SabberStoneCore.Tasks
 			=> ComplexTask.Create(
 				new FuncNumberTask(p =>
 				{
-					var tags = new EntityData.Data
+					var tags = new EntityData(p.Card)
 					{
 						{GameTag.ATK, p[GameTag.ATK]},
 						{GameTag.POISONOUS, p[GameTag.POISONOUS]},
 						{GameTag.LIFESTEAL, p[GameTag.LIFESTEAL]}
 					};
-					IPlayable newWeapon = Entity.FromCard(p.Controller, p.Card, tags);
+					IPlayable newWeapon = Entity.FromCard(p.Controller, tags);
 					p.AppliedEnchantments?.ForEach(e =>
 					{
 						Enchantment instance = Enchantment.GetInstance(p.Controller, newWeapon, newWeapon, e.Card);
@@ -821,7 +818,7 @@ namespace SabberStoneCore.Tasks
 						break;
 				}
 				HeroPower heroPower =
-					(HeroPower) Entity.FromCard(Controller, heroPowerCard, new EntityData.Data
+					(HeroPower) Entity.FromCard(Controller, new EntityData(heroPowerCard)
 					{
 						{GameTag.CREATOR, Source.Id},
 						{GameTag.ZONE, (int)Zone.PLAY}
@@ -838,13 +835,13 @@ namespace SabberStoneCore.Tasks
 					if (entity.Card.Class != CardClass.WARLOCK) continue;
 					Controller.HandZone.Remove(entity);
 					Controller.SetasideZone.Add(entity);
-					var tags = new EntityData.Data
+					var data = new EntityData(Util.Choose(cards))
 					{
 						{GameTag.ZONE_POSITION, i + 1},
 					};
 					if (Game.History)
-						tags.Add(GameTag.CREATOR, Source.Id);
-					IPlayable newEntity = Entity.FromCard(Controller, Util.Choose(cards), tags, Controller.HandZone, -1, i);
+						data.Add(GameTag.CREATOR, Source.Id);
+					IPlayable newEntity = Entity.FromCard(Controller, data, Controller.HandZone, -1, i);
 					newEntity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, Source.Id);
 					CostReduceEffect.Apply(newEntity.AuraEffects);
 				}

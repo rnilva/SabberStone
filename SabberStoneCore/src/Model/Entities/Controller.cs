@@ -145,7 +145,7 @@ namespace SabberStoneCore.Model.Entities
 					if (value + ControllerAuraEffects[t] != this[t])
 						Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, t, value));
 
-				_data.Tags[t] = value;
+				_data[t] = value;
 			}
 		}
 
@@ -157,8 +157,8 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="playerId">The player index; The first player will get assigned 1.</param>
 		/// <param name="id">Entity ID of this controller.</param>
 		public Controller(Game game, string name, int playerId, int id)
-			: base(game, Card.CardPlayer,
-			new EntityData.Data(71)
+			: base(game,
+			new EntityData(Card.CardPlayer, 71)
 			{
 				//[GameTag.HERO_ENTITY] = heroId,
 				[GameTag.MAXHANDSIZE] = 10,
@@ -291,8 +291,8 @@ namespace SabberStoneCore.Model.Entities
 			Hero = FromCard(this, heroCard, tags, null, id) as Hero;
 			Hero[GameTag.ZONE] = (int) Enums.Zone.PLAY;
 			HeroId = Hero.Id;
-			Hero.HeroPower = FromCard(this, powerCard ?? Cards.FromAssetId(Hero[GameTag.HERO_POWER]),
-				new EntityData.Data { [GameTag.CREATOR] = Hero.Id }) as HeroPower;
+			Hero.HeroPower = FromCard(this,
+				new EntityData(powerCard ?? Cards.FromAssetId(Hero[GameTag.HERO_POWER])) { [GameTag.CREATOR] = Hero.Id }) as HeroPower;
 			Hero.Weapon = weapon;
 		}
 
@@ -539,10 +539,8 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int BaseMana
 		{
-			//get { return this[GameTag.RESOURCES]; }
-			//set { this[GameTag.RESOURCES] = value; }
-			get { return GetNativeGameTag(GameTag.RESOURCES); }
-			set { this[GameTag.RESOURCES] = value; }
+			get => _data.GetEntityTag(GameTag.RESOURCES);
+			set => this[GameTag.RESOURCES] = value;
 		}
 
 		/// <summary>
@@ -552,10 +550,8 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int UsedMana
 		{
-			//get { return this[GameTag.RESOURCES_USED]; }
-			//set { this[GameTag.RESOURCES_USED] = value; }
-			get { return GetNativeGameTag(GameTag.RESOURCES_USED); }
-			set { this[GameTag.RESOURCES_USED] = value; }
+			get => _data.GetEntityTag(GameTag.RESOURCES_USED);
+			set => this[GameTag.RESOURCES_USED] = value;
 		}
 
 		/// <summary>
@@ -563,10 +559,8 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int TemporaryMana
 		{
-			//get { return this[GameTag.TEMP_RESOURCES]; }
-			//set { this[GameTag.TEMP_RESOURCES] = value; }
-			get { return GetNativeGameTag(GameTag.TEMP_RESOURCES); }
-			set { this[GameTag.TEMP_RESOURCES] = value; }
+			get => _data.GetEntityTag(GameTag.TEMP_RESOURCES);
+			set => this[GameTag.TEMP_RESOURCES] = value;
 		}
 
 		/// <summary>
@@ -578,7 +572,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			//get { return this[GameTag.COMBO_ACTIVE] == 1; }
 			//set { this[GameTag.COMBO_ACTIVE] = value ? 1 : 0; }
-			get { return GetNativeGameTag(GameTag.COMBO_ACTIVE) == 1; }
+			get { return _data.GetEntityTag(GameTag.COMBO_ACTIVE) == 1; }
 			set { this[GameTag.COMBO_ACTIVE] =  value ? 1 : 0; }
 		}
 
@@ -738,10 +732,8 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int OverloadLocked
 		{
-			//get { return this[GameTag.OVERLOAD_LOCKED]; }
-			//set { this[GameTag.OVERLOAD_LOCKED] = value; }
-			get { return GetNativeGameTag(GameTag.OVERLOAD_LOCKED); }
-			set { this[GameTag.OVERLOAD_LOCKED] = value; }
+			get => _data.GetEntityTag(GameTag.OVERLOAD_LOCKED);
+			set => this[GameTag.OVERLOAD_LOCKED] = value;
 		}
 
 		/// <summary>

@@ -24,14 +24,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (source.Zone?.Type != Zone.PLAY)
 				return TaskState.STOP;
 
-		    var tags = new EntityData.Data
+		    var data = new EntityData(target.Card)
 		    {
 			    {GameTag.CREATOR, Source.Id},
 		    };
 		    if (Game.History)
-			    tags.Add(GameTag.PREMIUM, target[GameTag.PREMIUM]);
+			    data.Add(GameTag.PREMIUM, target[GameTag.PREMIUM]);
 
-		    Minion copy = (Minion) Entity.FromCard(Controller, target.Card, tags);
+		    Minion copy = (Minion) Entity.FromCard(Controller, data);
 
 		    Trigger trigger = target.ActivatedTrigger;
 		    IAura aura = target.OngoingEffect;
@@ -56,7 +56,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				}
 		    }
 
-			foreach (KeyValuePair<GameTag, int> kvp in target._data.Tags)
+			foreach (KeyValuePair<GameTag, int> kvp in target._data)
 			{
 				switch (kvp.Key)
 				{
@@ -69,7 +69,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					case GameTag.EXHAUSTED:
 						continue;
 					default:
-						copy._data.Tags.Add(kvp.Key, kvp.Value);
+						copy._data.Add(kvp.Key, kvp.Value);
 						break;
 				}
 			}

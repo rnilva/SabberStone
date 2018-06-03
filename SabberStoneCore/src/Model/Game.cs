@@ -253,7 +253,7 @@ namespace SabberStoneCore.Model
 		/// <param name="gameConfig">The game configuration.</param>
 		/// <param name="setupHeroes"></param>
 		public Game(GameConfig gameConfig, bool setupHeroes = true)
-			: base(null, Card.CardGame, new EntityData.Data
+			: base(null, new EntityData(Card.CardGame)
 			{
 				[GameTag.ENTITY_ID] = GAME_ENTITYID,
 				[GameTag.ZONE] = (int)Enums.Zone.PLAY,
@@ -563,7 +563,7 @@ namespace SabberStoneCore.Model
 					// 4th card for second player
 					Generic.Draw(p);
 
-					IPlayable coin = FromCard(FirstPlayer.Opponent, Cards.FromId("GAME_005"), new EntityData.Data
+					IPlayable coin = FromCard(FirstPlayer.Opponent, new EntityData(Cards.FromId("GAME_005"))
 					{
 						[GameTag.ZONE] = (int)Enums.Zone.HAND,
 						[GameTag.CARDTYPE] = (int)CardType.SPELL,
@@ -1221,10 +1221,8 @@ namespace SabberStoneCore.Model
 		/// <value><see cref="Step"/></value>
 		public Step Step
 		{
-			//get { return (Step)this[GameTag.STEP]; }
-			//set { this[GameTag.STEP] = (int)value; }
-			get { return (Step)GetNativeGameTag(GameTag.STEP); }
-			set { this[GameTag.STEP] = (int)value; }
+			get => (Step)_data.GetEntityTag(GameTag.STEP);
+			set => this[GameTag.STEP] = (int)value;
 		}
 
 		/// <summary>
@@ -1233,7 +1231,7 @@ namespace SabberStoneCore.Model
 		/// <value><see cref="Step"/></value>
 		public Step NextStep
 		{
-			get { return (Step)GetNativeGameTag(GameTag.NEXT_STEP); }
+			get => (Step)_data.GetEntityTag(GameTag.NEXT_STEP);
 			//set { this[GameTag.NEXT_STEP] = (int)value; }
 			set
 			{
