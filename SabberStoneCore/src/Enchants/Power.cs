@@ -1,4 +1,5 @@
 ﻿using SabberStoneCore.Tasks;
+using SabberStoneCore.Tasks.SabberTasks;
 
 namespace SabberStoneCore.Enchants
 {
@@ -19,5 +20,7 @@ namespace SabberStoneCore.Enchants
 		public ISimpleTask ComboTask { get; set; }
 
 		public ISimpleTask TopdeckTask { get; set; }
+
+		public SabberTask PowerTaskSabber { get; set; }
 	}
 }

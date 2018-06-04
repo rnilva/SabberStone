@@ -2,6 +2,7 @@
 using System.Text;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Kettle;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -43,6 +44,35 @@ namespace SabberStoneCore.Model.Entities
 		{
 			Auras = new List<Aura>(hero.Auras.Count);
 			IsDamagedThisTurn = hero.IsDamagedThisTurn;
+		}
+
+		public override int TakeDamage(IPlayable source, int damage)
+		{
+			if (this == source)
+				Fatigue = damage;
+
+			int armor = Armor;
+			int amount = armor < damage ? damage - armor : 0;
+
+			// added pre damage
+			PreDamage = amount;
+
+			// Predamage triggers (Ice Block)
+			OnPreDamageTrigger(ref amount);
+
+			if (IsImmune)
+			{
+				Game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !Game.Logging ? "" : $"{this} is immune.");
+				PreDamage = 0;
+				return 0;
+			}
+
+			// remove armor first from hero ....
+			Armor = amount == 0 ? armor - damage : 0;
+
+			IsDamagedThisTurn = true;
+
+			return base.TakeDamage(source, amount);
 		}
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member

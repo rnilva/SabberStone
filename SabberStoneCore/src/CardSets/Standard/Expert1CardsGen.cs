@@ -5,7 +5,20 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
+using SabberStoneCore.Tasks.SabberTasks;
 using SabberStoneCore.Tasks.SimpleTasks;
+using AddEnchantmentTask = SabberStoneCore.Tasks.SimpleTasks.AddEnchantmentTask;
+using ConditionTask = SabberStoneCore.Tasks.SimpleTasks.ConditionTask;
+using DamageTask = SabberStoneCore.Tasks.SimpleTasks.DamageTask;
+using DestroyTask = SabberStoneCore.Tasks.SimpleTasks.DestroyTask;
+using DrawTask = SabberStoneCore.Tasks.SimpleTasks.DrawTask;
+using EnqueueTask = SabberStoneCore.Tasks.SimpleTasks.EnqueueTask;
+using FilterStackTask = SabberStoneCore.Tasks.SimpleTasks.FilterStackTask;
+using FlagTask = SabberStoneCore.Tasks.SimpleTasks.FlagTask;
+using RandomTask = SabberStoneCore.Tasks.SimpleTasks.RandomTask;
+using SetGameTagTask = SabberStoneCore.Tasks.SimpleTasks.SetGameTagTask;
+using SummonCopyTask = SabberStoneCore.Tasks.SimpleTasks.SummonCopyTask;
+using TransformTask = SabberStoneCore.Tasks.SimpleTasks.TransformTask;
 
 namespace SabberStoneCore.CardSets.Standard
 { 
@@ -1111,7 +1124,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_612", new Power {
-				PowerTask = new AddEnchantmentTask("EX1_612o", EntityType.CONTROLLER)
+				PowerTask = new AddEnchantmentTask("EX1_612o", EntityType.CONTROLLER),
+				PowerTaskSabber = new Tasks.SabberTasks.AddEnchantmentTask("EX1_612o", EntityType.CONTROLLER)
 			});
 
 			// ------------------------------------------ MINION - MAGE
@@ -1124,7 +1138,8 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.CAST_SPELL)
 				{
 					TriggerSource = TriggerSource.FRIENDLY,
-					SingleTask = new AddEnchantmentTask("NEW1_012o", EntityType.SOURCE)
+					SingleTask = new AddEnchantmentTask("NEW1_012o", EntityType.SOURCE),
+					SabberTask = new Tasks.SabberTasks.AddEnchantmentTask("NEW1_012o", EntityType.SOURCE)
 				}
 			});
 
@@ -1196,6 +1211,10 @@ namespace SabberStoneCore.CardSets.Standard
 				{
 					SingleTask = ComplexTask.Secret(new SetGameTagTask(GameTag.CANT_PLAY, 1, EntityType.TARGET)),
 					FastExecution = true,
+					SabberTask = SabberTask.Create(
+						new Tasks.SabberTasks.SetGameTagTask(GameTag.CANT_PLAY, 1, EntityType.TARGET),
+						new Tasks.SabberTasks.SetGameTagTask(GameTag.REVEALED, 1, EntityType.SOURCE),
+						new Tasks.SabberTasks.MoveToGraveyard(EntityType.SOURCE))
 				}
 			});
 
@@ -1233,7 +1252,14 @@ namespace SabberStoneCore.CardSets.Standard
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.EVENT_SOURCE, SelfCondition.IsNotDead, SelfCondition.IsNotUntouchable),
 						new FlagTask(true, ComplexTask.Secret(
-							new SummonCopyTask(EntityType.EVENT_SOURCE))))
+							new SummonCopyTask(EntityType.EVENT_SOURCE)))),
+					SabberTask = SabberTask.Create(
+						SabberTask.Create(
+							new Tasks.SabberTasks.ConditionTask(EntityType.EVENT_SOURCE, SelfCondition.IsNotDead, SelfCondition.IsNotUntouchable),
+							new Tasks.SabberTasks.FlagTask(true, SabberTask.Create(
+								new Tasks.SabberTasks.SummonCopyTask(EntityType.EVENT_SOURCE),
+								new Tasks.SabberTasks.SetGameTagTask(GameTag.REVEALED, 1, EntityType.SOURCE),
+								new Tasks.SabberTasks.MoveToGraveyard(EntityType.SOURCE)))))
 				}
 			});
 
@@ -1252,7 +1278,11 @@ namespace SabberStoneCore.CardSets.Standard
 					TriggerSource = TriggerSource.OP_MINIONS,
 					Condition = SelfCondition.IsProposedDefender(CardType.HERO),
 					FastExecution = true,
-					SingleTask = ComplexTask.Secret(new DestroyTask(EntityType.TARGET))
+					SingleTask = ComplexTask.Secret(new DestroyTask(EntityType.TARGET)),
+					SabberTask = SabberTask.Create(
+						new Tasks.SabberTasks.DestroyTask(EntityType.TARGET),
+						new Tasks.SabberTasks.SetGameTagTask(GameTag.REVEALED, 1, EntityType.SOURCE),
+						new Tasks.SabberTasks.MoveToGraveyard(EntityType.SOURCE))
 				}
 			});
 
@@ -3885,7 +3915,8 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.CAST_SPELL)
 				{
 					TriggerSource = TriggerSource.FRIENDLY,
-					SingleTask = new AddEnchantmentTask("EX1_055o", EntityType.SOURCE)
+					SingleTask = new AddEnchantmentTask("EX1_055o", EntityType.SOURCE),
+					SabberTask = new Tasks.SabberTasks.AddEnchantmentTask("EX1_055o", EntityType.SOURCE)
 				}
 			});
 
@@ -4264,7 +4295,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - REQ_TARGET_IF_AVAILABLE = 0
 			// --------------------------------------------------------
 			cards.Add("EX1_283", new Power {
-				PowerTask = ComplexTask.Freeze(EntityType.TARGET)
+				PowerTask = ComplexTask.Freeze(EntityType.TARGET),
+				PowerTaskSabber = new Tasks.SabberTasks.SetGameTagTask(GameTag.FROZEN, 1, EntityType.TARGET)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

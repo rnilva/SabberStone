@@ -224,6 +224,10 @@ namespace SabberStoneCore.Model.Entities
 
 		public Power Power => Card.Power;
 		public Trigger ActivatedTrigger { get; set; }
+		public void ActivateSabberTask(PowerActivation activation, IPlayable target, int chooseOne = 0, IPlayable source = null)
+		{
+			throw new NotImplementedException();
+		}
 
 		public void Reset()
 		{

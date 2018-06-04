@@ -233,7 +233,8 @@ namespace SabberStoneCore.CardSets
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_284", new Power {
-				PowerTask = new DrawTask()
+				PowerTask = new DrawTask(),
+				PowerTaskSabber = new Tasks.SabberTasks.DrawTask()
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

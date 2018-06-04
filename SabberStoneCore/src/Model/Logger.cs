@@ -23,6 +23,7 @@ namespace SabberStoneCore.Model
 	//public static class Analyser
 	//{
 	//	public static List<int> Dump = new List<int>(1000000);
+	//	public static readonly HashSet<string> Tasks = new HashSet<string>();
 
 	//	private static readonly List<List<int>> Dumps = new List<List<int>>();
 
@@ -47,6 +48,14 @@ namespace SabberStoneCore.Model
 	//		}
 
 	//		return sum / (double)count;
+	//	}
+
+	//	public static void PrintNames()
+	//	{
+	//		foreach (var name in Tasks)
+	//		{
+	//			Console.WriteLine(name);
+	//		}
 	//	}
 	//}
 }

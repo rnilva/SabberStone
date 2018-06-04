@@ -196,6 +196,33 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
+		public override int TakeDamage(IPlayable source, int damage)
+		{
+			if (Zone.Type != Enums.Zone.PLAY)
+				return 0;
+
+			if (HasDivineShield)
+			{
+				Game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !Game.Logging ? "" : $"{this} divine shield absorbed incoming damage.");
+				HasDivineShield = false;
+				return 0;
+			}
+
+			// added pre damage
+			PreDamage = damage;
+
+			// Predamage triggers (Ice Block)
+			OnPreDamageTrigger(ref damage);
+			if (IsImmune)
+			{
+				Game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !Game.Logging ? "" : $"{this} is immune.");
+				PreDamage = 0;
+				return 0;
+			};
+
+			return base.TakeDamage(source, damage);
+		}
+
 		public override IPlayable Clone(Controller controller)
 		{
 			return new Minion(controller, this);

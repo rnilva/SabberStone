@@ -276,6 +276,16 @@ namespace SabberStoneCore.Actions
 				game.ProcessTasks();
 				game.TaskQueue.EndEvent();
 
+
+				//game.SabberTaskQueue.StartEvent();
+				//if (minion.Combo && c.IsComboActive)
+				//	minion.ActivateSabberTask(PowerActivation.COMBO, target, chooseOne);
+				//else
+				//	minion.ActivateSabberTask(PowerActivation.POWER, target, chooseOne);
+				//if (c.ExtraBattlecry && minion.HasBattleCry)
+				//	minion.ActivateSabberTask(PowerActivation.POWER, target, chooseOne);
+				//game.SabberTaskQueue.EndEvent();
+
 				game.DeathProcessingAndAuraUpdate();
 
 				minion = (Minion)game.CurrentEventData.EventSource;

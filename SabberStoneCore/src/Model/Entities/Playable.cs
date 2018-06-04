@@ -5,6 +5,7 @@ using System.Text;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Tasks;
+using SabberStoneCore.Tasks.SabberTasks;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -168,6 +169,8 @@ namespace SabberStoneCore.Model.Entities
 		Trigger ActivatedTrigger { get; set; }
 
 		List<int> Memory { get; set; }
+
+		void ActivateSabberTask(PowerActivation activation, IPlayable target, int chooseOne = 0, IPlayable source = null);
 	}
 
 	/// <summary>
@@ -290,6 +293,45 @@ namespace SabberStoneCore.Model.Entities
 			clone.Target = target;
 
 			clone.Game.TaskQueue.Enqueue(clone);
+		}
+
+		public void ActivateSabberTask(PowerActivation activation, IPlayable target, int chooseOne = 0, IPlayable source = null)
+		{
+			if (ChooseOne)
+			{
+				if (Controller.ChooseBoth
+				    && !Card.Id.Equals("EX1_165")   // OG_044a, using choose one 0 option
+				    && !Card.Id.Equals("BRM_010")   // OG_044b, using choose one 0 option
+				    && !Card.Id.Equals("AT_042")    // OG_044c, using choose one 0 option
+				    && !Card.Id.Equals("UNG_101")   // UNG_101t3
+				    && !Card.Id.Equals("ICC_051")   // ICC_051t3
+				    && !Card.Id.Equals("ICC_047"))  // using choose one 0 option
+				{
+					ChooseOnePlayables[0].ActivateSabberTask(activation, target, chooseOne, this);
+					ChooseOnePlayables[1].ActivateSabberTask(activation, target, chooseOne, this);
+					return;
+				}
+
+				if (!Controller.ChooseBoth && chooseOne > 0)
+				{
+					ChooseOnePlayables[chooseOne - 1].ActivateSabberTask(activation, target, chooseOne, this);
+					return;
+				}
+			}
+
+			SabberTask task = null;
+			switch (activation)
+			{
+				case PowerActivation.POWER:
+					task = Power?.PowerTaskSabber;
+					break;
+				case PowerActivation.DEATHRATTLE:
+				case PowerActivation.COMBO:
+					break;
+			}
+			if (task == null) return;
+
+			Game.SabberTaskQueue.ProcessTasks(task, Controller, source, target);
 		}
 
 		/// <summary>

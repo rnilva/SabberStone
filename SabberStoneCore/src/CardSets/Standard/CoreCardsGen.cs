@@ -6,8 +6,19 @@ using SabberStoneCore.Model;
 using SabberStoneCore.Model.Zones;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
+using SabberStoneCore.Tasks.SabberTasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 using static SabberStoneCore.Enchants.Enchants;
+using AddEnchantmentTask = SabberStoneCore.Tasks.SimpleTasks.AddEnchantmentTask;
+using ConditionTask = SabberStoneCore.Tasks.SimpleTasks.ConditionTask;
+using DamageTask = SabberStoneCore.Tasks.SimpleTasks.DamageTask;
+using DestroyTask = SabberStoneCore.Tasks.SimpleTasks.DestroyTask;
+using DrawTask = SabberStoneCore.Tasks.SimpleTasks.DrawTask;
+using EnqueueTask = SabberStoneCore.Tasks.SimpleTasks.EnqueueTask;
+using FilterStackTask = SabberStoneCore.Tasks.SimpleTasks.FilterStackTask;
+using SetGameTagTask = SabberStoneCore.Tasks.SimpleTasks.SetGameTagTask;
+using TempManaTask = SabberStoneCore.Tasks.SimpleTasks.TempManaTask;
+using TransformTask = SabberStoneCore.Tasks.SimpleTasks.TransformTask;
 
 
 namespace SabberStoneCore.CardSets.Standard
@@ -142,7 +153,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - REQ_TARGET_TO_PLAY = 0
 			// --------------------------------------------------------
 			cards.Add("CS2_034", new Power {
-				PowerTask = new DamageTask(1, EntityType.TARGET, false)
+				PowerTask = new DamageTask(1, EntityType.TARGET, false),
+				PowerTaskSabber = new Tasks.SabberTasks.DamageTask(1, EntityType.TARGET)
 			});
 
 			// ------------------------------------ HERO_POWER - SHAMAN
@@ -714,7 +726,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - REQ_MINION_TARGET = 0
 			// --------------------------------------------------------
 			cards.Add("CS2_022", new Power {
-				PowerTask = new TransformTask("CS2_tk1", EntityType.TARGET)
+				PowerTask = new TransformTask("CS2_tk1", EntityType.TARGET),
+				PowerTaskSabber = new Tasks.SabberTasks.TransformTask("CS2_tk1", EntityType.TARGET)
 			});
 
 			// ------------------------------------------- SPELL - MAGE
@@ -752,7 +765,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Deal $1 damage to all enemy minions. @spelldmg
 			// --------------------------------------------------------
 			cards.Add("CS2_025", new Power {
-				PowerTask = new DamageTask(1, EntityType.OP_MINIONS, true)
+				PowerTask = new DamageTask(1, EntityType.OP_MINIONS, true),
+				PowerTaskSabber = new Tasks.SabberTasks.DamageTask(1, EntityType.OP_MINIONS, true)
 			});
 
 			// ------------------------------------------- SPELL - MAGE
@@ -794,7 +808,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - REQ_TARGET_TO_PLAY = 0
 			// --------------------------------------------------------
 			cards.Add("CS2_029", new Power {
-				PowerTask = new DamageTask(6, EntityType.TARGET, true)
+				PowerTask = new DamageTask(6, EntityType.TARGET, true),
+				PowerTaskSabber = new Tasks.SabberTasks.DamageTask(6, EntityType.TARGET, true)
 			});
 
 			// ------------------------------------------- SPELL - MAGE
@@ -817,7 +832,14 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ImmuneToSpellpower = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_277", new Power {
-				PowerTask = new EnqueueTask(3, ComplexTask.DamageRandomTargets(1, EntityType.ENEMIES, 1), true)
+				PowerTask = new EnqueueTask(3, ComplexTask.DamageRandomTargets(1, EntityType.ENEMIES, 1), true),
+				PowerTaskSabber = new Tasks.SabberTasks.EnqueueTask(3,
+					SabberTask.Create(
+						new Tasks.SabberTasks.SplitTask(1, EntityType.ENEMIES),
+						new Tasks.SabberTasks.FilterStackTask(SelfCondition.IsNotDead),
+						new Tasks.SabberTasks.RandomTask(1, EntityType.STACK),
+						new Tasks.SabberTasks.DamageTask(1, EntityType.STACK, true))
+						, true)
 			});
 
 		}

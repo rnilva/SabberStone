@@ -64,6 +64,13 @@ namespace SabberStoneCore.Model
 		    DamageTrigger?.Invoke(sender);
 	    }
 
+	    internal void OnDamageTriggers(IEntity source, ICharacter target)
+	    {
+		    target.OnTakeDamageTrigger();
+		    DamageTrigger?.Invoke(target);
+		    DealDamageTrigger?.Invoke(source);
+	    }
+
 	    internal void OnHealTrigger(IEntity sender)
 	    {
 			HealTrigger?.Invoke(sender);

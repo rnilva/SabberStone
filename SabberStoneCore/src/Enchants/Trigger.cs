@@ -4,6 +4,7 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
+using SabberStoneCore.Tasks.SabberTasks;
 
 namespace SabberStoneCore.Enchants
 {
@@ -29,6 +30,8 @@ namespace SabberStoneCore.Enchants
 		/// Task to do when this effect is triggered.
 		/// </summary>
 		public ISimpleTask SingleTask;
+
+		public SabberTask SabberTask;
 
 	    /// <summary> Additional condition for trigger sources </summary>
 	    public SelfCondition Condition;
@@ -272,7 +275,7 @@ namespace SabberStoneCore.Enchants
 
 			if (FastExecution)
 			    Game.TaskQueue.Execute(SingleTask, _owner.Controller, _owner,
-				    source is IPlayable ? (IPlayable)source
+				    source is IPlayable playable ? playable
 										: _owner is Enchantment ew && ew.Target is IPlayable p ? p
 										: null);
 		    else
@@ -289,6 +292,20 @@ namespace SabberStoneCore.Enchants
 
 		    Validated = false;
 		}
+
+	 //   private void ProcessInternalSabberTask(IEntity source)
+	 //   {
+		//	Validated = false;
+
+		//    Game.Log(LogLevel.INFO, BlockType.TRIGGER, "Trigger",
+		//	    !Game.Logging ? "" : $"{_owner}'s {_triggerType} Trigger is triggered by {source}.");
+
+		//    if (RemoveAfterTriggered)
+		//	    Remove();
+
+		//	if (FastExecution)
+		//		Game.SabberTaskQueue.Execute(SabberTask, _owner.Controller, )
+		//}
 
 		/// <summary>
 		/// Remove this object from the Game and unsubscribe from the related event.

@@ -143,6 +143,14 @@ namespace SabberStoneCore.Model
 			CurrentQueue.Clear();
 		}
 
+		public void CreateDamageEvent(IPlayable source, ICharacter target)
+		{
+			StartEvent();
+			_game.TriggerManager.OnDamageTriggers(source, target);
+			_game.ProcessTasks();
+			EndEvent();
+		}
+
 		public void Clone()
 		{
 			//return new TaskQueue();

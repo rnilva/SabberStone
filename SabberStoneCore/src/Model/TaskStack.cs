@@ -9,8 +9,8 @@ namespace SabberStoneCore.Model
 		public Game Game { get; set; }
 
 		public Controller Controller { get; set; }
-		public IEntity Source;
-		public IEntity Target;
+		public IEntity Source { get; set; }
+		public IEntity Target { get; set; }
 
 		public List<IPlayable> Playables { get; set; } = new List<IPlayable>();
 		//public List<string> CardIds { get; set; }
@@ -20,6 +20,27 @@ namespace SabberStoneCore.Model
 		public TaskStack(Game game)
 		{
 			Game = game;
+		}
+
+		public TaskStack(Game game, Controller controller, IEntity source, IEntity target, int number = 0)
+		{
+			Game = game;
+			Controller = controller;
+			Source = source;
+			Target = target;
+			Numbers[0] = number;
+		}
+
+		public int Number
+		{
+			get => Numbers[0];
+			set => Numbers[0] = value;
+		}
+
+		public int Number1
+		{
+			get => Numbers[1];
+			set => Numbers[1] = value;
 		}
 
 		//public void SetDamageMetaData(IPlayable source, IPlayable target)
@@ -33,6 +54,13 @@ namespace SabberStoneCore.Model
 		//	_damageSource = null;
 		//	_damageTarget = null;
 		//}
+
+		public void Renew(Controller controller, IEntity src, IEntity tgt)
+		{
+			Controller = controller;
+			Source = src;
+			Target = tgt;
+		}
 
 		public void Reset()
 		{

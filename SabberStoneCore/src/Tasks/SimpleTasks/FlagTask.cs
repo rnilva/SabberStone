@@ -1,4 +1,6 @@
-﻿namespace SabberStoneCore.Tasks.SimpleTasks
+﻿using SabberStoneCore.Model;
+
+namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class FlagTask : SimpleTask
 	{
