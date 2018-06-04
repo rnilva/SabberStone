@@ -86,7 +86,8 @@ namespace SabberStoneCore.Model.Entities
 				7199369
 			};
 
-		private const int _initSize = 23;
+		//private const int _initSize = 23;
+	    private const int _initSize = 32;
 
 		private int[] _buckets;
 		private int _size = _initSize;
@@ -199,7 +200,6 @@ namespace SabberStoneCore.Model.Entities
 			if (Count == _size)
 				Resize();
 			Insert(key, value);
-			//InsertOrOverwrite(key, value);
 		}
 
 		public void Add(KeyValuePair<GameTag, int> item)
@@ -245,6 +245,20 @@ namespace SabberStoneCore.Model.Entities
 		private void Initialise(int capacity)
 		{
 			//int prime = GetPrime(capacity);
+
+			int n = 3;
+			while (true)
+			{
+				int pow = 2 << n;
+				if (pow > capacity)
+				{
+					capacity = pow;
+					break;
+				}
+
+				++n;
+			}
+
 			_buckets = new int[capacity << 1];
 			for (int i = 0; i < _buckets.Length; i++)
 				_buckets[i] = -1;
@@ -255,22 +269,24 @@ namespace SabberStoneCore.Model.Entities
 		private void Insert(GameTag t, int value)
 		{
 			int k = (int)t;
-			int slotIndex = (k % _size) << 1;
-			//int[] buckets = _buckets;
-			for (int i = slotIndex; i < _buckets.Length; i += 2)
+			//int slotIndex = (k % _size) << 1;
+			int slotIndex = (k & (_size - 1)) << 1;
+
+			int[] buckets = _buckets;
+			for (int i = slotIndex; i < buckets.Length; i += 2)
 			{
-				if (_buckets[i] > 0) continue;
-				_buckets[i] = k;
-				_buckets[i + 1] = value;
+				if (buckets[i] > 0) continue;
+				buckets[i] = k;
+				buckets[i + 1] = value;
 				++Count;
 				return;
 			}
 
 			for (int i = 0; i < slotIndex; i += 2)
 			{
-				if (_buckets[i] > 0) continue;
-				_buckets[i] = k;
-				_buckets[i + 1] = value;
+				if (buckets[i] > 0) continue;
+				buckets[i] = k;
+				buckets[i + 1] = value;
 				++Count;
 				return;
 			}
@@ -303,19 +319,21 @@ namespace SabberStoneCore.Model.Entities
 		private int SearchIndex(GameTag t)
 		{
 			int k = (int)t;
-			int slotIndex = (k % _size) << 1;
-			for (int i = slotIndex; i < _buckets.Length; i += 2)
+			//int slotIndex = (k % _size) << 1;
+			int slotIndex = (k & (_size - 1)) << 1;
+			int[] buckets = _buckets;
+			for (int i = slotIndex; i < buckets.Length; i += 2)
 			{
-				if (_buckets[i] == k)
+				if (buckets[i] == k)
 					return i;
-				if (_buckets[i] < 0)
+				if (buckets[i] < 0)
 					return -1;
 			}
 			for (int i = 0; i < slotIndex; i += 2)
 			{
-				if (_buckets[i] < 0)
+				if (buckets[i] < 0)
 					return -1;
-				if (_buckets[i] == k)
+				if (buckets[i] == k)
 					return i;
 			}
 
@@ -327,7 +345,9 @@ namespace SabberStoneCore.Model.Entities
 		{
 			int[] buckets = _buckets;
 
-			int h = (k % _size) << 1;
+			//int h = (k % _size) << 1;
+			int h = (k & (_size - 1)) << 1;
+
 			int i = h;
 			if (buckets[i] == k)
 			{
@@ -401,7 +421,8 @@ namespace SabberStoneCore.Model.Entities
 
 		private void Resize()
 		{
-			int newSize = GetPrime(_size << 1);
+			//int newSize = GetPrime(_size << 1);
+			int newSize = _size << 1;
 			_size = newSize;
 			int[] newbuckets = new int[newSize << 1];
 			for (int i = 0; i < newbuckets.Length; ++i)
