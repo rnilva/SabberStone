@@ -200,7 +200,7 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="game">The target <see cref="Game"/> instance.</param>
 		/// <param name="controller">The source <see cref="Controller"/></param>
-		private Controller(Game game, Controller controller) : base(game, controller)
+		private Controller(in Game game, in Controller controller) : base(game, controller)
 		{
 			Name = controller.Name;
 
@@ -236,13 +236,20 @@ namespace SabberStoneCore.Model.Entities
 			PlayHistory = new List<PlayHistoryEntry>(controller.PlayHistory);
 			DiscardedEntities = new List<int>(controller.DiscardedEntities);
 			CardsPlayedThisTurn = new List<Card>(controller.CardsPlayedThisTurn);
-			controller.AppliedEnchantments?.ForEach(p =>
-			{
-				if (AppliedEnchantments == null)
-					AppliedEnchantments = new List<Enchantment>(controller.AppliedEnchantments.Count);
+			//controller.AppliedEnchantments?.ForEach(p =>
+			//{
+			//	if (AppliedEnchantments == null)
+			//		AppliedEnchantments = new List<Enchantment>(controller.AppliedEnchantments.Count);
 
-				AppliedEnchantments.Add((Enchantment) p.Clone(this));
-			});
+			//	AppliedEnchantments.Add((Enchantment) p.Clone(this));
+			//});
+			if (controller.AppliedEnchantments != null)
+			{
+				List<Enchantment> e = controller.AppliedEnchantments;
+				AppliedEnchantments = new List<Enchantment>(e.Count);
+				for (int i = 0; i < e.Count; i++)
+					AppliedEnchantments.Add((Enchantment)e[i].Clone(this));
+			}
 
 			// non-tag attributes
 			_playerId = controller._playerId;

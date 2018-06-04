@@ -108,7 +108,7 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="controller">The target <see cref="T:SabberStoneCore.Model.Entities.Controller" /> instance.</param>
 		/// <param name="character">The source <see cref="T:SabberStoneCore.Model.Entities.Character`1" />.</param>
-		protected Character(Controller controller, Character<T> character) : base(controller, character) { }
+		protected Character(in Controller controller, in Entity character) : base(in controller, in character) { }
 
 		/// <summary>
 		/// Character is dead or destroyed.

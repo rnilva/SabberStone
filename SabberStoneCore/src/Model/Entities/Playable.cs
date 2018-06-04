@@ -162,7 +162,7 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="controller">The target <see cref="Controller"/> instance.</param>
 		/// <returns></returns>
-		IPlayable Clone(Controller controller);
+		IPlayable Clone(in Controller controller);
 
 		IAura OngoingEffect { get; set; }
 
@@ -197,19 +197,28 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="controller">The target <see cref="T:SabberStoneCore.Model.Entities.Controller" /> instance.</param>
 		/// <param name="playable">The source <see cref="T:SabberStoneCore.Model.Entities.Playable`1" /></param>
-		protected Playable(Controller controller, Playable<T> playable) : base(controller, playable)
+		protected Playable(in Controller controller, in Entity entity) : base(in controller, in entity)
 		{
+			var playable = entity as Playable<T>;
+
 			controller.Game.IdEntityDic.Add(playable.Id, this);
 
 			playable.OngoingEffect?.Clone(this);
 			playable.ActivatedTrigger?.Activate(this, cloning: true);
-			playable.AppliedEnchantments?.ForEach(p =>
+			//playable.AppliedEnchantments?.ForEach(p =>
+			//{
+			//	if (AppliedEnchantments == null)
+			//		AppliedEnchantments = new List<Enchantment>(playable.AppliedEnchantments.Count);
+
+			//	AppliedEnchantments.Add((Enchantment) p.Clone(controller));
+			//});
+			if (playable.AppliedEnchantments != null)
 			{
-				if (AppliedEnchantments == null)
-					AppliedEnchantments = new List<Enchantment>(playable.AppliedEnchantments.Count);
-				
-				AppliedEnchantments.Add((Enchantment) p.Clone(controller));
-			});
+				List<Enchantment> e = playable.AppliedEnchantments;
+				AppliedEnchantments = new List<Enchantment>(e.Count);
+				for (int i = 0; i < e.Count; i++)
+					AppliedEnchantments.Add((Enchantment) e[i].Clone(in controller));
+			}
 
 			if (playable.ChooseOnePlayables != null)
 			{
@@ -552,7 +561,7 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		public abstract IPlayable Clone(Controller controller);
+		public abstract IPlayable Clone(in Controller controller);
 
 		public IAura OngoingEffect { get; set; }
 

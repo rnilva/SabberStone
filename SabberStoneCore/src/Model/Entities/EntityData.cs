@@ -145,7 +145,7 @@ namespace SabberStoneCore.Model.Entities
 			    Insert(tag.Key, tag.Value);
 	    }
 
-		public unsafe EntityData(EntityData data)
+		public unsafe EntityData(in EntityData data)
 		{
 			Card = data.Card;
 			int len = data._buckets.Length;

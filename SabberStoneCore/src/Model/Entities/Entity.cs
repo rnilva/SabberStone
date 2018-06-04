@@ -166,10 +166,10 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="game"><see cref="Model.Game"/> instance of a copied entity.</param>
 		/// <param name="entity">A source <see cref="Entity"/>.</param>
-		protected Entity(Game game, Entity entity)
+		protected Entity(in Game game, in Entity entity)
 		{
 			Game = game;
-			_data = new EntityData(entity._data);
+			_data = new EntityData(in entity._data);
 			Id = entity.Id;
 			OrderOfPlay = entity.OrderOfPlay;
 			AuraEffects = entity.AuraEffects.Clone(this);

@@ -294,7 +294,7 @@ namespace SabberStoneCore.Model
 		}
 
 		/// <summary> A copy constructor. </summary>
-		private Game(Game game, bool logging = false) : base(null, game)
+		private Game(in Game game, bool logging = false) : base(null, game)
 		{
 			IdEntityDic = new Dictionary<int, IPlayable>(game.IdEntityDic.Count);
 			Game = this;

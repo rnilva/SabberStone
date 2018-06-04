@@ -24,7 +24,7 @@ namespace SabberStoneCore.Model.Entities
 			Id = data.GetEntityTag(GameTag.ENTITY_ID);
 		}
 
-		private Enchantment(Controller c, Enchantment e)
+		private Enchantment(in Controller c, in Enchantment e)
 		{
 			Game = c.Game;
 			Controller = c;
@@ -181,9 +181,9 @@ namespace SabberStoneCore.Model.Entities
 			return instance;
 		}
 
-		public IPlayable Clone(Controller controller)
+		public IPlayable Clone(in Controller controller)
 		{
-			return new Enchantment(controller, this);
+			return new Enchantment(in controller, this);
 		}
 
 		public void Remove()

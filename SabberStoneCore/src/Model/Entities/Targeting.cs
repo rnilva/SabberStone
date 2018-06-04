@@ -47,7 +47,7 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="controller">The target <see cref="Controller"/> instance.</param>
 		/// <param name="targeting">The source <see cref="Targeting"/> entity.</param>
-		protected Targeting(Controller controller, Targeting targeting) : base(controller.Game, targeting)
+		protected Targeting(in Controller controller, in Entity targeting) : base(controller.Game, in targeting)
 		{
 			Controller = controller;
 		}

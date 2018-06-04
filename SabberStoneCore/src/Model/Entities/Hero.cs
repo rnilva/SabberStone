@@ -40,10 +40,11 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="controller">The target <see cref="T:SabberStoneCore.Model.Entities.Controller" /> instance.</param>
 		/// <param name="hero">The source <see cref="T:SabberStoneCore.Model.Entities.Hero" />.</param>
-		private Hero(Controller controller, Hero hero) : base(controller, hero)
+		private Hero(in Controller controller, in Entity hero) : base(in controller, in hero)
 		{
-			Auras = new List<Aura>(hero.Auras.Count);
-			IsDamagedThisTurn = hero.IsDamagedThisTurn;
+			var h = hero as Hero;
+			Auras = new List<Aura>(h.Auras.Count);
+			IsDamagedThisTurn = h.IsDamagedThisTurn;
 		}
 
 		public override int TakeDamage(IPlayable source, int damage)
@@ -135,9 +136,9 @@ namespace SabberStoneCore.Model.Entities
 		}
 
 		/// <inheritdoc cref="Playable{T}.Clone(Controller)" />
-		public override IPlayable Clone(Controller controller)
+		public override IPlayable Clone(in Controller controller)
 		{
-			return new Hero(controller, this);
+			return new Hero(in controller, this);
 		}
 
 		public string FullPrint()
