@@ -27,7 +27,7 @@ namespace SabberStoneCore.Model.Entities
 		private Enchantment(in Controller c, in Enchantment e)
 		{
 			Game = c.Game;
-			Controller = c;
+			Controller = e.Controller.PlayerId == c.PlayerId ? c : c.Opponent;
 			//Card = e.Card;
 			_data = e._data;
 			Id = e.Id;

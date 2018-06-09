@@ -545,8 +545,9 @@ namespace SabberStoneCore.Enchants
 			sb.Append(Type);
 			sb.Append("]");
 			sb.Append("[AEs:");
-			foreach (int i in _appliedEntityIds)
-				sb.Append($"{{{i}}}");
+			if (_appliedEntityIds != null)
+				foreach (int i in _appliedEntityIds)
+					sb.Append($"{{{i}}}");
 			sb.Append("]");
 			sb.Append(On ? "[ON]" : "[OFF]");
 			sb.Append(_toBeUpdated ? "[U]" : "[NU]");
