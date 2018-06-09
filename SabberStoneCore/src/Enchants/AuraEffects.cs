@@ -12,37 +12,7 @@ namespace SabberStoneCore.Enchants
 	/// </summary>
 	public class AuraEffects
 	{
-		private class CostEffect
-		{
-			private readonly Func<int, int> _func;
 
-			public CostEffect(Effect e)
-			{
-				Effect = e;
-
-				switch (e.Operator)
-				{
-					case EffectOperator.ADD:
-						_func = p => p + e.Value;
-						break;
-					case EffectOperator.SUB:
-						_func = p => p >= e.Value ? p - e.Value : 0;
-						break;
-					case EffectOperator.SET:
-						_func = p => e.Value;
-						break;
-					case EffectOperator.MUL:
-						throw new NotImplementedException();
-				}
-			}
-
-			public readonly Effect Effect;
-
-			public int Apply(int c)
-			{
-				return _func(c);
-			}
-		}
 
 		private int ATK;
 		private int HEALTH;
@@ -51,14 +21,13 @@ namespace SabberStoneCore.Enchants
 		private int WINDFURY;
 		private int IMMUNE;
 		private int LIFESTEAL;
-		private int CANT_ATTACK;
 		private int CANT_BE_TARGETED_BY_SPELLS;
 		private int CARD_COST_HEALTH;
 		private int RUSH;
 		private int ECHO;
 		private int CANTATTACKHEROES;
 
-		private List<CostEffect> _costEffects;
+		private List<Effect> _costEffects;
 		private AdaptiveCostEffect _adaptiveCostEffect;
 
 		public AuraEffects(IEntity owner)
@@ -72,7 +41,7 @@ namespace SabberStoneCore.Enchants
 		{
 			Owner = owner;
 			Checker = Checker;
-			_costEffects = other._costEffects?.Count > 0 ? new List<CostEffect>(other._costEffects) : null;
+			_costEffects = other._costEffects?.Count > 0 ? new List<Effect>(other._costEffects) : null;
 			COST = other.COST;
 			CANT_BE_TARGETED_BY_SPELLS = other.CANT_BE_TARGETED_BY_SPELLS;
 			IMMUNE = other.IMMUNE;
@@ -83,7 +52,6 @@ namespace SabberStoneCore.Enchants
 			CHARGE = other.CHARGE;
 			WINDFURY = other.WINDFURY;
 			LIFESTEAL = other.LIFESTEAL;
-			CANT_ATTACK = other.CANT_ATTACK;
 			CARD_COST_HEALTH = other.CARD_COST_HEALTH;
 			RUSH = other.RUSH;
 			ECHO = other.ECHO;
@@ -122,8 +90,6 @@ namespace SabberStoneCore.Enchants
 						return IMMUNE;
 					case GameTag.LIFESTEAL:
 						return LIFESTEAL;
-					//case GameTag.CANT_ATTACK:
-					//	return CANT_ATTACK;
 					case GameTag.CANT_BE_TARGETED_BY_SPELLS:
 					case GameTag.CANT_BE_TARGETED_BY_HERO_POWERS:
 						return CANT_BE_TARGETED_BY_SPELLS >= 1 ? 1 : 0;
@@ -173,9 +139,6 @@ namespace SabberStoneCore.Enchants
 					case GameTag.LIFESTEAL:
 						LIFESTEAL = value;
 						return;
-					//case GameTag.CANT_ATTACK:
-					//	CANT_ATTACK = value;
-					//	return;
 					case GameTag.CANT_BE_TARGETED_BY_SPELLS:
 					case GameTag.CANT_BE_TARGETED_BY_HERO_POWERS:
 						CANT_BE_TARGETED_BY_SPELLS = value;
@@ -211,9 +174,9 @@ namespace SabberStoneCore.Enchants
 			Checker = true;
 
 			if (_costEffects == null)
-				_costEffects = new List<CostEffect>{ new CostEffect(e) };
+				_costEffects = new List<Effect> {e};
 			else
-				_costEffects.Add(new CostEffect(e));
+				_costEffects.Add(e);
 		}
 
 		/// <summary>
@@ -224,13 +187,8 @@ namespace SabberStoneCore.Enchants
 			if (_costEffects == null)
 				return;
 			Checker = true;
-			for (int i = 0; i < _costEffects.Count; i++)
-			{
-				if (!_costEffects[i].Effect.Equals(e)) continue;
 
-				_costEffects.Remove(_costEffects[i]);
-				return;
-			}
+			if (_costEffects.Remove(e)) return;
 
 			throw new Exception($"Can't remove cost aura from {Owner}. Zone: {Owner.Zone.Type}, IsDead?: {Owner[GameTag.TO_BE_DESTROYED] == 1}");
 		}
@@ -247,8 +205,25 @@ namespace SabberStoneCore.Enchants
 			if (!Owner.NativeTags.TryGetValue(GameTag.COST, out int c))
 				Owner.Card.Tags.TryGetValue(GameTag.COST, out c);
 			// Apply Cost effects
-			for (int i = 0; i < _costEffects?.Count; i++)
-				c = _costEffects[i].Apply(c);
+			if (_costEffects != null)
+			foreach (Effect e in _costEffects)
+			{
+				switch (e.Operator)
+				{
+					case EffectOperator.ADD:
+						c += e.Value;
+						break;
+					case EffectOperator.SUB:
+						c -= e.Value;
+						if (c < 0) c = 0;
+						break;
+					case EffectOperator.SET:
+						c = e.Value;
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+			}
 			COST = c;
 			Checker = false;
 

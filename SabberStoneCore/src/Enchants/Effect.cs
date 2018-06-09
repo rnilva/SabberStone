@@ -239,11 +239,17 @@ namespace SabberStoneCore.Enchants
 		{
 			return Tag == other.Tag && Operator == other.Operator && Value == other.Value;
 		}
+
 		public override bool Equals(object obj)
 		{
 			if (obj is null) return false;
 			return obj is Effect effect && Equals(effect);
 		}
+
+		public static bool operator ==(Effect e1, Effect e2) => e1.Equals(e2);
+
+		public static bool operator !=(Effect e1, Effect e2) => !e1.Equals(e2);
+
 		public override int GetHashCode()
 		{
 			unchecked
