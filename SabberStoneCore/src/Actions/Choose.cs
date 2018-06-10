@@ -206,6 +206,10 @@ namespace SabberStoneCore.Actions
 								firstCard.Tags[GameTag.CANT_BE_TARGETED_BY_HERO_POWERS] = 1;
 							if (secondCard.Tags.ContainsKey(GameTag.CANT_BE_TARGETED_BY_SPELLS))
 								firstCard.Tags[GameTag.CANT_BE_TARGETED_BY_SPELLS] = 1;
+							if (secondCard.Tags.ContainsKey(GameTag.RUSH))
+								firstCard.Tags[GameTag.RUSH] = 1;
+							if (secondCard.Tags.ContainsKey(GameTag.ECHO))
+								firstCard.Tags[GameTag.ECHO] = 1;
 							firstCard.Name = "Zombeast";
 							firstCard.Text = secondCard.Text + "\n" + firstCard.Text;
 
