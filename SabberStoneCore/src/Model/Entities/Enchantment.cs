@@ -15,6 +15,8 @@ namespace SabberStoneCore.Model.Entities
 		private readonly EntityData _data;
 		private int _creatorId;
 		private IPlayable _creator;
+		private int _controllerId;
+		private Controller _controller;
 
 		private Enchantment(Controller controller, EntityData data)
 		{
@@ -27,7 +29,7 @@ namespace SabberStoneCore.Model.Entities
 		private Enchantment(in Controller c, in Enchantment e)
 		{
 			Game = c.Game;
-			Controller = e.Controller.PlayerId == c.PlayerId ? c : c.Opponent;
+			_controllerId = e._controllerId;
 			//Card = e.Card;
 			_data = e._data;
 			Id = e.Id;
@@ -47,6 +49,16 @@ namespace SabberStoneCore.Model.Entities
 			if (Power.Enchant?.RemoveWhenPlayed ?? false)
 			{
 				Enchant.RemoveWhenPlayedTrigger.Activate(this);
+			}
+		}
+
+		public Controller Controller
+		{
+			get => _controller ?? (_controller = Game.ControllerById(_controllerId));
+			set
+			{
+				_controller = value;
+				_controllerId = value.Id;
 			}
 		}
 
@@ -245,7 +257,6 @@ namespace SabberStoneCore.Model.Entities
 		public int Id { get; }
 		public int OrderOfPlay { get; set; }
 		public Game Game { get; set; }
-		public Controller Controller { get; set; }
 		public IZone Zone { get; set; }
 		public IAura OngoingEffect { get; set; }
 		public IEnumerable<ICharacter> ValidPlayTargets { get; }
