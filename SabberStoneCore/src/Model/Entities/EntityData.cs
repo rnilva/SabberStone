@@ -87,7 +87,7 @@ namespace SabberStoneCore.Model.Entities
 			};
 
 		//private const int _initSize = 23;
-	    private const int _initSize = 32;
+	    private const int _initSize = 16;
 
 		private int[] _buckets;
 		private int _size = _initSize;
@@ -95,9 +95,10 @@ namespace SabberStoneCore.Model.Entities
 		public EntityData(Card card)
 		{
 			Card = card;
-			_buckets = new int[_initSize << 1];
-			for (int i = 0; i < _buckets.Length; i++)
-				_buckets[i] = -1;
+			var buckets = new int[_initSize << 1];
+			for (int i = 0; i < buckets.Length; i++)
+				buckets[i] = -1;
+			_buckets = buckets;
 		}
 
 		public EntityData(Card card, int capacity)
@@ -259,10 +260,11 @@ namespace SabberStoneCore.Model.Entities
 				++n;
 			}
 
-			_buckets = new int[capacity << 1];
-			for (int i = 0; i < _buckets.Length; i++)
-				_buckets[i] = -1;
+			var buckets = new int[capacity << 1];
+			for (int i = 0; i < buckets.Length; i++)
+				buckets[i] = -1;
 			_size = capacity;
+			_buckets = buckets;
 		}
 
 		// TODO: check duplicate
@@ -475,26 +477,57 @@ namespace SabberStoneCore.Model.Entities
 		}
 
 		#region IDictionary
+	    public ICollection<GameTag> Keys
+	    {
+		    get
+		    {
+			    var tags = new GameTag[Count];
+				int[] buckets = _buckets;
+			    for (int i = 0, j = 0; i < buckets.Length; i += 2)
+			    {
+					if (buckets[i] < 0) continue;
+				    tags[j] = (GameTag)buckets[i];
+					++j;
+			    }
 
-		//	NotImplemented
-		public ICollection<GameTag> Keys { get; }
-		public ICollection<int> Values { get; }
+			    return tags;
+		    }
+	    }
+
+		public ICollection<int> Values
+	    {
+			get
+			{
+				var values = new int[Count];
+				int[] buckets = _buckets;
+				for (int i = 0, j = 0; i < buckets.Length; i += 2)
+				{
+					if (buckets[i] < 0) continue;
+					values[j] = buckets[i + 1];
+					++j;
+				}
+
+				return values;
+			}
+		}
 
 	    public void Clear()
 	    {
 		    if (Count == 0)
 			    return;
-		    for (int i = 0; i < _buckets.Length; ++i)
-			    _buckets[i] = -1;
+			int[] buckets = _buckets;
+		    for (int i = 0; i < buckets.Length; ++i)
+			    buckets[i] = -1;
 		    Count = 0;
 	    }
 
 		public IEnumerator<KeyValuePair<GameTag, int>> GetEnumerator()
 		{
-			for (int i = 0; i < _buckets.Length; i += 2)
+			int[] buckets = _buckets;
+			for (int i = 0; i < buckets.Length; i += 2)
 			{
-				if (_buckets[i] > 0)
-					yield return new KeyValuePair<GameTag, int>((GameTag)_buckets[i], _buckets[i + 1]);
+				if (buckets[i] > 0)
+					yield return new KeyValuePair<GameTag, int>((GameTag)buckets[i], buckets[i + 1]);
 			}
 		}
 
@@ -517,11 +550,12 @@ namespace SabberStoneCore.Model.Entities
 			if (array.Length - arrayIndex < Count)
 				throw new ArgumentException();
 			int j = arrayIndex;
-			for (int i = 0; i < _buckets.Length; i += 2)
+			int[] buckets = _buckets;
+			for (int i = 0; i < buckets.Length; i += 2)
 			{
-				if (_buckets[i] > 0)
+				if (buckets[i] > 0)
 				{
-					array[j] = new KeyValuePair<GameTag, int>((GameTag)_buckets[i], _buckets[i + 1]);
+					array[j] = new KeyValuePair<GameTag, int>((GameTag)buckets[i], buckets[i + 1]);
 					j++;
 				}
 			}
