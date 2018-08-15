@@ -158,7 +158,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="id">Entity ID of this controller.</param>
 		public Controller(Game game, string name, int playerId, int id)
 			: base(game,
-			new EntityData(Card.CardPlayer, 71)
+			new EntityData(Card.CardPlayer, 64)
 			{
 				//[GameTag.HERO_ENTITY] = heroId,
 				[GameTag.MAXHANDSIZE] = 10,

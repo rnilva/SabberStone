@@ -83,7 +83,7 @@ namespace SabberStoneCore.Tasks.SabberTasks
 
 					target.AppliedEnchantments?.ForEach(e =>
 					{
-						Enchantment instance = Enchantment.GetInstance(c, copy, copy, e.Card);
+						Enchantment instance = Enchantment.GetInstance(in c, in copy, copy, e.Card);
 						if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
 						{
 							instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];

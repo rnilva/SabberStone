@@ -658,27 +658,28 @@ namespace SabberStoneCore.Model
 				if (c.AmountHeroHealedThisTurn > 0)
 					c.AmountHeroHealedThisTurn = 0;
 			}
-			
 
-			CurrentPlayer.Hero.IsExhausted = false;
-			if (CurrentPlayer.Hero.Weapon != null)
-				CurrentPlayer.Hero.Weapon.IsExhausted = false;
-			CurrentPlayer.Hero.HeroPower.IsExhausted = false;
-			CurrentPlayer.BoardZone.ForEach(m => m.IsExhausted = false);
+			Controller cp = _currentPlayer;
+
+			cp.Hero.IsExhausted = false;
+			if (cp.Hero.Weapon != null)
+				cp.Hero.Weapon.IsExhausted = false;
+			cp.Hero.HeroPower.IsExhausted = false;
+			cp.BoardZone.ForEach(m => m.IsExhausted = false);
 
 			// De-activate combo buff
-			CurrentPlayer.IsComboActive = false;
+			cp.IsComboActive = false;
 
-			CurrentPlayer.SecretZone.ForEach(s => s.IsExhausted = true);
+			cp.SecretZone.ForEach(s => s.IsExhausted = true);
 
-			CurrentPlayer.NumMinionsPlayerKilledThisTurn = 0;
+			cp.NumMinionsPlayerKilledThisTurn = 0;
 			CurrentOpponent.NumMinionsPlayerKilledThisTurn = 0;
-			CurrentPlayer.NumFriendlyMinionsThatAttackedThisTurn = 0;
+			cp.NumFriendlyMinionsThatAttackedThisTurn = 0;
 			NumMinionsKilledThisTurn = 0;
-			CurrentPlayer.HeroPowerActivationsThisTurn = 0;
+			cp.HeroPowerActivationsThisTurn = 0;
 
-			CurrentPlayer.NumElementalsPlayedLastTurn = CurrentPlayer.NumElementalsPlayedThisTurn;
-			CurrentPlayer.NumElementalsPlayedThisTurn = 0;
+			cp.NumElementalsPlayedLastTurn = cp.NumElementalsPlayedThisTurn;
+			cp.NumElementalsPlayedThisTurn = 0;
 
 			MainRessources();
 
@@ -720,18 +721,20 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		public void MainRessources()
 		{
+			Controller c = _currentPlayer;
+
 			// adding manacrystal to next player
-			Generic.ChangeManaCrystal.Invoke(CurrentPlayer, 1, false);
+			Generic.ChangeManaCrystal.Invoke(c, 1, false);
 
 			// clear used mana
-			CurrentPlayer.UsedMana = 0;
+			c.UsedMana = 0;
 
 			// remove temp mana
-			CurrentPlayer.TemporaryMana = 0;
+			c.TemporaryMana = 0;
 
 			// overload
-			CurrentPlayer.OverloadLocked = CurrentPlayer.OverloadOwed;
-			CurrentPlayer.OverloadOwed = 0;
+			c.OverloadLocked = c.OverloadOwed;
+			c.OverloadOwed = 0;
 
 			//// set next step
 			//NextStep = Step.MAIN_DRAW;

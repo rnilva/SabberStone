@@ -145,14 +145,14 @@ namespace SabberStoneCore.Tasks
 					if (left != null)
 					{
 						Generic.SummonBlock.Invoke(c, left, s.ZonePosition);
-						s.AppliedEnchantments?.ForEach(e => Enchantment.GetInstance(c, left, left, e.Card));
+						s.AppliedEnchantments?.ForEach(e => Enchantment.GetInstance(in c, left, left, e.Card));
 						left[GameTag.ATK] = s[GameTag.ATK];
 						left[GameTag.HEALTH] = s[GameTag.HEALTH];
 
 						if (right != null)
 						{
 							Generic.SummonBlock.Invoke(c, right, s.ZonePosition + 1);
-							s.AppliedEnchantments?.ForEach(e => Enchantment.GetInstance(c, right, right, e.Card));
+							s.AppliedEnchantments?.ForEach(e => Enchantment.GetInstance(in c, right, right, e.Card));
 							right[GameTag.ATK] = s[GameTag.ATK];
 							right[GameTag.HEALTH] = s[GameTag.HEALTH];
 						}
@@ -513,7 +513,7 @@ namespace SabberStoneCore.Tasks
 					IPlayable newWeapon = Entity.FromCard(p.Controller, tags);
 					p.AppliedEnchantments?.ForEach(e =>
 					{
-						Enchantment instance = Enchantment.GetInstance(p.Controller, newWeapon, newWeapon, e.Card);
+						Enchantment instance = Enchantment.GetInstance(p.Controller, in newWeapon, newWeapon, e.Card);
 						if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
 						{
 							instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];

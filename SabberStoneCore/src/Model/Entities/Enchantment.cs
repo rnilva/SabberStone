@@ -100,9 +100,9 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="target">The entity who is subjected to the enchantment.</param>
 		/// <param name="card">The card from which the enchantment must be derived.</param>
 		/// <returns>The resulting enchantment entity.</returns>
-		public static Enchantment GetInstance(Controller controller, IPlayable creator, IEntity target, Card card)
+		public static Enchantment GetInstance(in Controller controller, in IPlayable creator, in IEntity target, in Card card)
 		{
-			var data = new EntityData(card, 5)
+			var data = new EntityData(card, 8)
 			{
 				{GameTag.ZONE, (int) Enums.Zone.SETASIDE},
 				{GameTag.CONTROLLER, controller.PlayerId},
