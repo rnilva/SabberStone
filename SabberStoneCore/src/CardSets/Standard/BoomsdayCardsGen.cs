@@ -1022,10 +1022,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DIVINE_SHIELD = 1
 			// - MODULAR = 1
 			// --------------------------------------------------------
-			cards.Add("BOT_911", new CardDef(new Power
-			{
+			cards.Add("BOT_911", new Power {
 				PowerTask = new MagneticTask()
-			}));
+			});
 
 			// ---------------------------------------- SPELL - PALADIN
 			// [BOT_234] Shrink Ray - COST:5
@@ -2324,14 +2323,12 @@ namespace SabberStoneCore.CardSets.Standard
 			// RefTag:
 			// - TAUNT = 1
 			// --------------------------------------------------------
-			cards.Add("BOT_218", new CardDef(new Power
-			{
+			cards.Add("BOT_218", new Power {
 				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new SummonTask("BOT_218t", 1)
 				}
-			}));
+			});
 
 			// --------------------------------------- MINION - WARRIOR
 			// [BOT_237] Beryllium Nullifier - COST:7 [ATK:3/HP:8]
@@ -2496,9 +2493,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// GameTag:
 			// - TAUNT = 1
 			// --------------------------------------------------------
-			cards.Add("BOT_218t", new CardDef(new Power
-			{
-			}));
+			cards.Add("BOT_218t", new Power {
+			});
 
 			// --------------------------------------- WEAPON - WARRIOR
 			// [BOT_042t] Gearblade (*) - COST:2 [ATK:2/HP:0]
@@ -2540,10 +2536,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAUNT = 1
 			// - MODULAR = 1
 			// --------------------------------------------------------
-			cards.Add("BOT_021", new CardDef(new Power
-			{
+			cards.Add("BOT_021", new Power {
 				PowerTask = new MagneticTask()
-			}));
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [BOT_031] Goblin Bomb - COST:1 [ATK:0/HP:2]
@@ -2703,12 +2698,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAUNT = 1
 			// - DIVINE_SHIELD = 1
 			// --------------------------------------------------------
-			cards.Add("BOT_270", new CardDef(new Power
-			{
-				PowerTask = ComplexTask.Create(
-						new SummonTask("BOT_270t", SummonSide.LEFT),
-						new SummonTask("BOT_270t", SummonSide.RIGHT))
-			}));
+			cards.Add("BOT_270", new Power {
+				PowerTask = new SummonTask("BOT_270t", 2)
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [BOT_280] Holomancer - COST:5 [ATK:3/HP:3]
@@ -2740,12 +2732,11 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAUNT = 1
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
-			cards.Add("BOT_296", new CardDef(new Power
-			{
+			cards.Add("BOT_296", new Power {
 				PowerTask = ComplexTask.Create(
 					new ConditionTask(EntityType.SOURCE, SelfCondition.IsManaCrystalFull),
 					new FlagTask(true, new AddEnchantmentTask("BOT_296e", EntityType.SOURCE)))
-			}));
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [BOT_308] Spring Rocket - COST:3 [ATK:2/HP:1]
@@ -2916,10 +2907,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAUNT = 1
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
-			cards.Add("BOT_448", new CardDef(new Power
-			{
+			cards.Add("BOT_448", new Power {
 				PowerTask = new DamageTask(6, EntityType.SOURCE)
-			}));
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [BOT_511] Seaforium Bomber - COST:5 [ATK:5/HP:5]
@@ -3060,10 +3050,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RUSH = 1
 			// - MODULAR = 1
 			// --------------------------------------------------------
-			cards.Add("BOT_548", new CardDef(new Power
-			{
+			cards.Add("BOT_548", new Power {
 				PowerTask = new MagneticTask()
-			}));
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [BOT_550] Electrowright - COST:3 [ATK:3/HP:3]
@@ -3457,10 +3446,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: +10 Attack.
 			// --------------------------------------------------------
-			cards.Add("BOT_296e", new CardDef(new Power
-			{
+			cards.Add("BOT_296e", new Power {
 				Enchant = Enchants.Enchants.GetAutoEnchantFromText("BOT_296e")
-			}));
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [BOT_312e] Replicating Menace (*) - COST:0
