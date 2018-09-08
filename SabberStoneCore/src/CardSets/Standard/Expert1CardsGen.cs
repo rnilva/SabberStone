@@ -2103,10 +2103,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: This minion's Attack is equal to its Health.
 			// --------------------------------------------------------
-			cards.Add("CS1_129e", new CardDef(new Power
-			{
+			cards.Add("CS1_129e", new Power {
 				Enchant = Enchants.Enchants.SetAttackScriptTag
-			}));
+			});
 
 			// ----------------------------------- ENCHANTMENT - PRIEST
 			// [EX1_334e] Shadow Madness (*) - COST:0
@@ -3444,11 +3443,10 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Decreased Attack.
 			// --------------------------------------------------------
-			cards.Add("EX1_411e2", new CardDef(new Power
-			{
-				Enchant = new OngoingEnchant(new Effect(GameTag.ATK, EffectOperator.SUB, 1))
-				//Enchant = new OngoingEnchant(ATK.Effect(EffectOperator.SUB, 1))
-			}));
+			cards.Add("EX1_411e2", new Power {
+				//Enchant = new OngoingEnchant(new Effect(GameTag.ATK, EffectOperator.SUB, 1))
+				Enchant = new OngoingEnchant(new AttackEffect(EffectOperator.SUB, 1))
+			});
 
 			// ---------------------------------- ENCHANTMENT - WARRIOR
 			// [EX1_414e] Enraged (*) - COST:0
@@ -5679,12 +5677,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Health set to 15.
 			// --------------------------------------------------------
-			cards.Add("EX1_561e", new CardDef(new Power
-			{
+			cards.Add("EX1_561e", new Power {
 				Enchant = new Enchant(Effects.SetMaxHealth(15))
-			}));
-
-
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [EX1_570e] Bite (*) - COST:0

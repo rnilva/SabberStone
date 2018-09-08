@@ -210,7 +210,7 @@ namespace SabberStoneCore.Enchants
 					case GameTag.ATK when Type != CardType.MINION:
 						return 0;
 					case GameTag.ATK:
-						return ATK;
+						return AttackDamage;
 					case GameTag.HEALTH:
 						return Health;
 					//case GameTag.COST:
@@ -246,7 +246,7 @@ namespace SabberStoneCore.Enchants
 				switch (t)
 				{
 					case GameTag.ATK:
-						ATK = value;
+						AttackDamage = value;
 						return;
 					case GameTag.HEALTH:
 						Health = value;
@@ -291,9 +291,79 @@ namespace SabberStoneCore.Enchants
 			}
 		}
 
-		public AuraEffects Clone()
+		/// <summary>
+		/// Add a new Cost related effect to the owner.
+		/// </summary>
+		public void AddCostAura(Effect e)
 		{
-			return new AuraEffects(this);
+			Checker = true;
+
+			if (_costEffects == null)
+				_costEffects = new List<CostEffect>{ new CostEffect(e) };
+			else
+				_costEffects.Add(new CostEffect(e));
+		}
+
+		/// <summary>
+		/// Remove a Cost related effect from the owner.
+		/// </summary>
+		public void RemoveCostAura(Effect e)
+		{
+			if (_costEffects == null)
+				return;
+			Checker = true;
+			for (int i = 0; i < _costEffects.Count; i++)
+			{
+				if (!_costEffects[i].Effect.Equals(e)) continue;
+
+				_costEffects.Remove(_costEffects[i]);
+				return;
+			}
+
+			throw new Exception($"Can't remove cost aura from {Owner}. Zone: {Owner.Zone.Type}, IsDead?: {Owner[GameTag.TO_BE_DESTROYED] == 1}");
+		}
+
+		/// <summary>
+		/// Gets the estimated Cost of the owner.
+		/// </summary>
+		/// <returns></returns>
+		public int GetCost()
+		{
+			if (!Checker) return COST;
+
+			// Obtain the Card Cost
+			if (!Owner.NativeTags.TryGetValue(GameTag.COST, out int c))
+				Owner.Card.Tags.TryGetValue(GameTag.COST, out c);
+			// Apply Cost effects
+			for (int i = 0; i < _costEffects?.Count; i++)
+				c = _costEffects[i].Apply(c);
+			COST = c;
+			Checker = false;
+
+			// Lastly apply Adaptive Cost effect (Giants + Naga Sea Witch)
+			if (AdaptiveCostEffect != null)
+				COST = AdaptiveCostEffect.Apply(COST);
+
+			if (COST < 0)
+				COST = 0;
+			return COST;
+		}
+
+		public void ResetCost()
+		{
+			if (_costEffects == null && AdaptiveCostEffect == null && !Owner.NativeTags.ContainsKey(GameTag.COST)) return;
+
+			_costEffects = null;
+			Owner.NativeTags.Remove(GameTag.COST);
+			AdaptiveCostEffect?.Remove();
+			COST = Owner.Card[GameTag.COST];
+			if (Owner.Game.History)
+				Owner.Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Owner.Id, GameTag.COST, COST));
+		}
+
+		public AuraEffects Clone(IEntity clone)
+		{
+			return new AuraEffects(clone, this);
 		}
 
 		public string Hash()

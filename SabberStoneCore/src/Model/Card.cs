@@ -30,6 +30,133 @@ namespace SabberStoneCore.Model
 	/// </summary>
 	public sealed class Card
 	{
+		public int ATK { get; }
+		public int Health { get; }
+		public bool Taunt { get; }
+		public bool Charge { get; }
+		public bool Stealth { get; }
+		public bool CantBeTargetedBySpells { get; }
+		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
+		public bool CantAttack { get; }
+		public bool ChooseOne { get; }
+		public bool IsSecret { get; }
+		public bool IsQuest { get; }
+		public bool Untouchable { get; }
+		public bool HideStat { get; }
+		public bool ReceivesDoubleSpelldamageBonus { get; }
+
+		private Card()
+		{
+
+		}
+
+		internal Card(string id, int assetId, IEnumerable<Tag> tags,
+			Dictionary<PlayReq, int> playRequirements, string[] entourage, IEnumerable<Tag> refTags)
+		{ 
+			Id = id;
+			AssetId = assetId;
+			Entourage = entourage;
+			PlayRequirements = playRequirements;
+			var tagDict = new Dictionary<GameTag, int>();
+			var refTagDict = new Dictionary<GameTag, int>();
+			foreach (Tag tag in tags)
+			{
+				if (tag.TagValue.HasIntValue)
+				{
+					tagDict.Add(tag.GameTag, tag.TagValue);
+					switch (tag.GameTag)
+					{
+						case GameTag.COST:
+							Cost = tag.TagValue;
+							break;
+						case GameTag.ATK:
+							ATK = tag.TagValue;
+							break;
+						case GameTag.HEALTH:
+							Health = tag.TagValue;
+							break;
+						case GameTag.OVERLOAD:
+							HasOverload = true;
+							Overload = tag.TagValue;
+							break;
+						case GameTag.CHOOSE_ONE:
+							ChooseOne = true;
+							break;
+						case GameTag.TAUNT:
+							Taunt = true;
+							break;
+						case GameTag.CHARGE:
+							Charge = true;
+							break;
+						case GameTag.STEALTH:
+							Stealth = true;
+							break;
+						case GameTag.CANT_BE_TARGETED_BY_SPELLS:
+							CantBeTargetedBySpells = true;
+							break;
+						case GameTag.CANT_ATTACK:
+							CantAttack = true;
+							break;
+						case GameTag.SECRET:
+							IsSecret = true;
+							break;
+						case GameTag.QUEST:
+							IsQuest = true;
+							break;
+						case GameTag.UNTOUCHABLE:
+							Untouchable = true;
+							break;
+						case GameTag.HIDE_STATS:
+							HideStat = true;
+							break;
+						case GameTag.RECEIVES_DOUBLE_SPELLDAMAGE_BONUS:
+							ReceivesDoubleSpelldamageBonus = true;
+							break;
+					}
+				}
+				else if
+					(tag.TagValue.HasBoolValue)
+				{
+					tagDict.Add(tag.GameTag, tag.TagValue ? 1 : 0);
+				}
+				else if
+					(tag.TagValue.HasStringValue)
+				{
+					switch (tag.GameTag)
+					{
+						case GameTag.CARDNAME:
+							Name = tag.TagValue;
+							break;
+						case GameTag.CARDTEXT:
+							Text = tag.TagValue;
+							break;
+					}
+				}
+			}
+			foreach (Tag tag in refTags)
+			{
+				if (refTagDict.ContainsKey(tag.GameTag))
+					continue;
+
+				if (tag.TagValue.HasIntValue)
+				{
+					refTagDict.Add(tag.GameTag, tag.TagValue);
+				}
+				else if (tag.TagValue.HasBoolValue)
+				{
+					refTagDict.Add(tag.GameTag, tag.TagValue ? 1 : 0);
+				}
+			}
+			Tags = tagDict;
+			RefTags = refTagDict;
+			// spell damage information add ... 
+			if (Text != null && (Text.Contains("$") || tagDict.ContainsKey(GameTag.AFFECTED_BY_SPELL_POWER)))
+			{
+				Text += " @spelldmg";
+				IsAffectedBySpellDamage = true;
+			}
+		}
+
 		/// <summary>
 		/// Constraint condition based on the state of a target <see cref="ICharacter"/>.
 		/// Returns true if the target is valid for this card.

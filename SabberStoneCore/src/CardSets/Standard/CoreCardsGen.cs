@@ -658,10 +658,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: This minion has 1 Health.
 			// --------------------------------------------------------
-			cards.Add("CS2_084e", new CardDef(new Power
-			{
+			cards.Add("CS2_084e", new Power {
 				Enchant = new Enchant(Effects.SetMaxHealth(1))
-			}));
+			});
 
 			// ----------------------------------- ENCHANTMENT - HUNTER
 			// [DS1_070o] Master's Presence (*) - COST:0
@@ -1093,10 +1092,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Attack has been changed to 1.
 			// --------------------------------------------------------
-			cards.Add("EX1_360e", new CardDef(new Power
-			{
+			cards.Add("EX1_360e", new Power {
 				Enchant = new Enchant(Effects.SetAttack(1))
-			}));
+			});
 
 			// --------------------------------------- MINION - PALADIN
 			// [CS2_101t] Silver Hand Recruit (*) - COST:1 [ATK:1/HP:1]
