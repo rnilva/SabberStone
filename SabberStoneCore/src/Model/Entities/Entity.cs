@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -193,6 +193,7 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
+		[Obsolete("use NativeTag[] instead")]
 		public int GetNativeGameTag(GameTag t)
 		{
 			if (!_data.TryGetValue(t, out int value))
