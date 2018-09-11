@@ -610,9 +610,6 @@ namespace SabberStoneCore.Model
 			// triggers Start of Game triggers (but does not process tasks here)
 			TriggerManager.OnGameStartTrigger();
 
-			if (stopBeforeShuffling)
-				return;
-
 			// set next step
 			NextStep = Step.BEGIN_FIRST;
 		}
