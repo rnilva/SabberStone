@@ -14,6 +14,8 @@
 using System;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace SabberStoneCore.Enchants
 {
@@ -38,30 +40,8 @@ namespace SabberStoneCore.Enchants
 	/// <summary>
 	/// Defines methods for tags value variation.
 	/// </summary>
-	public interface IEffect
-	{
-		GameTag Tag { get; }
-		EffectOperator Operator { get; }
-		int Value { get; }
-
-
-		void ApplyTo(IEntity entity, bool isOneTurnEffect = false);
-		void ApplyAuraTo(IPlayable playable);
-		//void ApplyTo(AuraEffects auraEffects);
-		//void ApplyTo(ControllerAuraEffects controllerAuraEffects);
-
-		void RemoveFrom(IEntity entity);
-		void RemoveAuraFrom(IPlayable playable);
-		//void RemoveFrom(AuraEffects auraEffects);
-		//void RemoveFrom(ControllerAuraEffects controllerAuraEffects);
-
-		IEffect ChangeValue(int newValue);
-	}
-
-	/// <summary>
-	///	A structure for tag value variation.
-	/// </summary>
-	public readonly struct Effect : IEffect, IEquatable<Effect>
+	[ReadOnly(true)]
+	public struct Effect : IEffect, IEquatable<Effect>
 	{
 		public readonly GameTag Tag;
 		public readonly EffectOperator Operator;
