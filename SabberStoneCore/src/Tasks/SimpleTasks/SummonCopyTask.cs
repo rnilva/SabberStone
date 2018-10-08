@@ -22,7 +22,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	// TODO: Should use Generic.Copy()
 	/// <summary>
-	/// Summon a copy of one (or more) existing entity.
+	///     Summon a copy of one (or more) existing entity.
 	/// </summary>
 	/// <seealso cref="SimpleTask" />
 	public class SummonCopyTask : SimpleTask

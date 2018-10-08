@@ -861,10 +861,12 @@ namespace SabberStoneCore.Model.Entities
 		public bool HasStealth
 		{
 			get => _modifiedStealth ?? (_modifiedStealth = Card.Stealth).Value;
+			}
 			set
-			{
 				_modifiedStealth = value;
 				base[GameTag.STEALTH] = value ? 1 : 0;
+				if (_history)
+					this[GameTag.STEALTH] = value ? 1 : 0;
 			}
 		}
 

@@ -306,12 +306,12 @@ namespace SabberStoneCore.Enchants
 		/// </summary>
 		public void AddCostAura(Effect e)
 		{
-			Checker = true;
+			ToBeUpdated = true;
 
 			if (_costEffects == null)
-				_costEffects = new List<CostEffect>{ new CostEffect(e) };
+				_costEffects = new List<Effect>{e};
 			else
-				_costEffects.Add(new CostEffect(e));
+				_costEffects.Add(e);
 		}
 
 		/// <summary>
@@ -321,14 +321,8 @@ namespace SabberStoneCore.Enchants
 		{
 			if (_costEffects == null)
 				return;
-			Checker = true;
-			for (int i = 0; i < _costEffects.Count; i++)
-			{
-				if (!_costEffects[i].Effect.Equals(e)) continue;
-
-				_costEffects.Remove(_costEffects[i]);
-				return;
-			}
+			ToBeUpdated = true;
+			if (_costEffects.Remove(e)) return;
 
 			throw new Exception($"Can't remove cost aura from {Owner}. Zone: {Owner.Zone.Type}, IsDead?: {Owner[GameTag.TO_BE_DESTROYED] == 1}");
 		}
@@ -339,24 +333,43 @@ namespace SabberStoneCore.Enchants
 		/// <returns></returns>
 		public int GetCost()
 		{
-			if (!Checker) return COST;
+			if (!ToBeUpdated) return COST;
 
 			// Obtain the Card Cost
 			if (!Owner.NativeTags.TryGetValue(GameTag.COST, out int c))
-				Owner.Card.Tags.TryGetValue(GameTag.COST, out c);
+				c = Owner.Card.Cost;
 			// Apply Cost effects
-			for (int i = 0; i < _costEffects?.Count; i++)
-				c = _costEffects[i].Apply(c);
-			COST = c;
-			Checker = false;
+			if (_costEffects != null)
+			foreach (Effect e in _costEffects)
+			{
+				switch (e.Operator)
+				{
+					case EffectOperator.ADD:
+						c += e.Value;
+						break;
+					case EffectOperator.SUB:
+						c -= e.Value;
+						if (c < 0) c = 0;
+						break;
+					case EffectOperator.SET:
+						c = e.Value;
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+			}
+			ToBeUpdated = false;
 
 			// Lastly apply Adaptive Cost effect (Giants + Naga Sea Witch)
 			if (AdaptiveCostEffect != null)
-				COST = AdaptiveCostEffect.Apply(COST);
+			{
+				c = AdaptiveCostEffect.Apply(c);
+			}
 
-			if (COST < 0)
-				COST = 0;
-			return COST;
+			if (c < 0) c = 0;
+
+			COST = c;
+			return c;
 		}
 
 		public void ResetCost()

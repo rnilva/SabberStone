@@ -27,7 +27,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private readonly bool _addToStack;
 
 		/// <summary>
-		/// Recruits a random minion satisfying the given conditions.
+		///     Recruits a random minion satisfying the given conditions.
 		/// </summary>
 		public RecruitTask(int amount, params SelfCondition[] conditions)
 		{

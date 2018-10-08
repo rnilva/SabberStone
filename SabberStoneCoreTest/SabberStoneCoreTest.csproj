@@ -3,8 +3,7 @@
   <PropertyGroup>    
     <TargetFramework>netcoreapp2.0</TargetFramework>    
     <AssemblyName>SabberStoneCore.Test</AssemblyName>    
-    <LangVersion>latest</LangVersion>    
-    <Configurations>Debug;Release;NoSpan</Configurations>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

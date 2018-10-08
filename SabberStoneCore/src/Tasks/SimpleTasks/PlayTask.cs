@@ -34,7 +34,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private readonly EntityType _targetType;
 
 		/// <summary>
-		/// Create a PlayTask to play a card as a task.
+		///     Create a PlayTask to play a card as a task.
 		/// </summary>
 		/// <param name="playType">The type of playable.</param>
 		/// <param name="randTarget">true if the target of the playable is chosen randomly</param>
