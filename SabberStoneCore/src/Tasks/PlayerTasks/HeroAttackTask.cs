@@ -20,7 +20,7 @@ namespace SabberStoneCore.Tasks.PlayerTasks
 	{
 		public static HeroAttackTask Any(Controller controller, ICharacter target, bool skipPrePhase = false)
 		{
-			return new HeroAttackTask(controller, target, skipPrePhase);
+			return new HeroAttackTask(in controller, in target, in skipPrePhase);
 		}
 		private HeroAttackTask(Controller controller, ICharacter target, bool skipPrePhase)
 		{

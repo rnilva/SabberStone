@@ -21,7 +21,7 @@ namespace SabberStoneCore.Tasks.PlayerTasks
 		public static HeroPowerTask Any(Controller controller, ICharacter target = null, int chooseOne = 0,
 			bool skipPrePhase = false)
 		{
-			return new HeroPowerTask(controller, target, chooseOne, skipPrePhase);
+			return new HeroPowerTask(in controller, in target, in chooseOne, in skipPrePhase);
 		}
 
 		private HeroPowerTask(Controller controller, ICharacter target, int chooseOne, bool skipPrePhase)

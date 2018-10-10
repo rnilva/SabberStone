@@ -836,7 +836,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(1, ((ICharacter)m1).Health);
 
 			IPlayable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Swipe"));
-			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell, m2));
+			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell, (ICharacter) m2));
 
 			Assert.Equal(29, game.CurrentOpponent.Hero.Health);
 			Assert.Equal(1, m2.Health);
