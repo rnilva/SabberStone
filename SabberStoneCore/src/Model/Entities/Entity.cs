@@ -193,7 +193,6 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		[Obsolete("use NativeTag[] instead")]
 		public int GetNativeGameTag(GameTag t)
 		{
 			if (!_data.TryGetValue(t, out int value))
