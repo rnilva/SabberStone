@@ -304,7 +304,7 @@ namespace SabberStoneCore.Enchants
 		/// <summary>
 		/// Add a new Cost related effect to the owner.
 		/// </summary>
-		public void AddCostAura(Effect e)
+		public void AddCostAura(in Effect e)
 		{
 			ToBeUpdated = true;
 
@@ -317,7 +317,7 @@ namespace SabberStoneCore.Enchants
 		/// <summary>
 		/// Remove a Cost related effect from the owner.
 		/// </summary>
-		public void RemoveCostAura(Effect e)
+		public void RemoveCostAura(in Effect e)
 		{
 			if (_costEffects == null)
 				return;

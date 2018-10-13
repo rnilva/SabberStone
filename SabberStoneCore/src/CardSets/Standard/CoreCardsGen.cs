@@ -1730,10 +1730,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: +2 Attack from Flametongue Totem.
 			// --------------------------------------------------------
-			cards.Add("EX1_565o", new CardDef(new Power
-			{
+			cards.Add("EX1_565o", new Power {
 				Enchant = GetAutoEnchantFromText("EX1_565o")
-			}));
+			});
 
 			// ---------------------------------------- MINION - SHAMAN
 			// [CS2_050] Searing Totem (*) - COST:1 [ATK:1/HP:1]
@@ -2697,10 +2696,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Increased stats.
 			// --------------------------------------------------------
-			cards.Add("CS2_226e", new CardDef(new Power
-			{
+			cards.Add("CS2_226e", new Power {
 				Enchant = AddAttackHealthScriptTag
-			}));
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [EX1_399e] Berserking (*) - COST:0

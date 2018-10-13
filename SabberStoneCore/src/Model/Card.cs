@@ -160,7 +160,7 @@ namespace SabberStoneCore.Model
 			}
 
 			#region Preprocessing requirements
-			//var results = new bool[8];
+			//var results = new bool[6];
 			//Predicate<ICharacter> targetPredicate;
 			//Predicate<Controller> checkTargeting;
 			//Predicate<Controller> checkPlayablility;
@@ -249,35 +249,42 @@ namespace SabberStoneCore.Model
 			//			checkPlayablility = p => p.Hero.Weapon != null;
 			//			break;
 			//		case PlayReq.REQ_ENTIRE_ENTOURAGE_NOT_IN_PLAY:
-			//			checkPlayablility = controller =>
+			//			checkPlayablility = p =>
 			//			{
-			//				int count = entourage.Length;
-			//				if (controller.BoardZone.Count >= count)
+			//				var ent = Entourage;
+			//				int count = ent.Length;
+			//				if (p.BoardZone.Count >= count)
 			//				{
-			//					bool flag = false;
 			//					int[] indices = new int[count];
-			//					ReadOnlySpan<Minion> span = controller.BoardZone.GetSpan();
+			//					ReadOnlySpan<Minion> span = p.BoardZone.GetSpan();
 			//					for (int i = 0, j = span.Length, k = 0; i < span.Length; i++)
 			//					{
-			//						flag = entourage.Contains(span[i].Card.Id);
 			//						int index = Array.IndexOf(entourage, span[i].Card.Id);
 			//						if (index < 0)
 			//						{
-			//							j--;
-			//							if (j < count)
-			//								return false;
+			//							if (--j < count)
+			//								break;
+			//							continue;
+			//						}
+
+			//						bool flag = false;
+			//						for (int l = 0; l < k; l++)
+			//						{
+			//							if (indices[l] != index) continue;
+			//							flag = true;
+			//							break;
+			//						}
+
+			//						if (flag)
+			//						{
+			//							if (--j < count)
+			//								break;
 			//						}
 			//						else
 			//						{
-			//							if (!indices.Contains(index))
-			//							{
-			//								indices[k] = index;
-			//								k++;
-			//								if (k == count)
-			//								{
-			//									return true;
-			//								}
-			//							}
+			//							indices[k++] = index;
+			//							if (k == count)
+			//								return false;
 			//						}
 			//					}
 			//				}
@@ -285,19 +292,19 @@ namespace SabberStoneCore.Model
 			//			};
 			//			break;
 			//		case PlayReq.REQ_FRIENDLY_MINION_DIED_THIS_GAME:
-			//			if (!controller.GraveyardZone.Any(p => p.ToBeDestroyed))
-			//				return (false, null, null);
+			//			checkPlayablility = p => p.GraveyardZone.Any(q => q.ToBeDestroyed);
 			//			break;
 			//		case PlayReq.REQ_MUST_PLAY_OTHER_CARD_FIRST:
-			//			return (false, null, null);
+			//			checkPlayablility = p => false;
+			//			break;
 			//		//	REQ_STEADY_SHOT
 			//		//	REQ_MINION_OR_ENEMY_HERO	//	Steady Shot
 			//		//	REQ_MINION_SLOT_OR_MANA_CRYSTAL_SLOT	//	Jade Blossom
 			//		case PlayReq.REQ_SECRET_ZONE_CAP_FOR_NON_SECRET:
-			//			if (controller.SecretZone.IsFull) return (false, null, null);
+			//			checkPlayablility = p => !p.SecretZone.IsFull;
 			//			break;
 			//	}
-			//} 
+			//}
 			#endregion
 
 

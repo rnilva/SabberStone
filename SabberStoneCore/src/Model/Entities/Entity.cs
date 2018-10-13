@@ -158,7 +158,7 @@ namespace SabberStoneCore.Model.Entities
 		protected Entity(in Game game, in Entity entity)
 		{
 			Game = game;
-			_data = new EntityData(entity._data);
+			_data = new EntityData(entityData: entity._data);
 			Card = entity.Card;
 			Id = entity.Id;
 			OrderOfPlay = entity.OrderOfPlay;
