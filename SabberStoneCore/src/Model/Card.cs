@@ -30,23 +30,27 @@ namespace SabberStoneCore.Model
 	/// </summary>
 	public sealed class Card
 	{
-		/// <summary>
-		/// 
-		/// </summary>
-		public int ATK { get; }
-		public int Health { get; }
-		public bool Taunt { get; }
-		public bool Charge { get; }
-		public bool Stealth { get; }
-		public bool CantBeTargetedBySpells { get; }
+		public int ATK { get; private set; }
+		public int Health { get; private set; }
+		public bool Taunt { get; private set; }
+		public bool Charge { get; private set; }
+		public bool Stealth { get; private set; }
+		public bool Poisonous { get; private set; }
+		public bool DivineShield { get; private set; }
+		public bool Windfury { get; private set; }
+		public bool LifeSteal { get; private set; }
+		public bool Echo { get; private set; }
+		public bool Rush { get; private set; }
+		public bool CantBeTargetedBySpells { get; private set; }
 		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
-		public bool CantAttack { get; }
-		public bool ChooseOne { get; }
-		public bool IsSecret { get; }
-		public bool IsQuest { get; }
-		public bool Untouchable { get; }
-		public bool HideStat { get; }
-		public bool ReceivesDoubleSpelldamageBonus { get; }
+		public bool CantAttack { get; private set; }
+		public bool ChooseOne { get; private set; }
+		public bool IsSecret { get; private set; }
+		public bool IsQuest { get; private set; }
+		public bool Deathrattle { get; }
+		public bool Untouchable { get; private set; }
+		public bool HideStat { get; private set; }
+		public bool ReceivesDoubleSpelldamageBonus { get; private set; }
 
 		private Card()
 		{
@@ -96,6 +100,24 @@ namespace SabberStoneCore.Model
 						case GameTag.STEALTH:
 							Stealth = true;
 							break;
+						case GameTag.POISONOUS:
+							Poisonous = true;
+							break;
+						case GameTag.DIVINE_SHIELD:
+							DivineShield = true;
+							break;
+						case GameTag.WINDFURY:
+							Windfury = true;
+							break;
+						case GameTag.LIFESTEAL:
+							LifeSteal = true;
+							break;
+						case GameTag.ECHO:
+							Echo = true;
+							break;
+						case GameTag.RUSH:
+							Rush = true;
+							break;
 						case GameTag.CANT_BE_TARGETED_BY_SPELLS:
 							CantBeTargetedBySpells = true;
 							break;
@@ -107,6 +129,9 @@ namespace SabberStoneCore.Model
 							break;
 						case GameTag.QUEST:
 							IsQuest = true;
+							break;
+						case GameTag.DEATHRATTLE:
+							Deathrattle = true;
 							break;
 						case GameTag.UNTOUCHABLE:
 							Untouchable = true;
@@ -122,6 +147,9 @@ namespace SabberStoneCore.Model
 							break;
 						case GameTag.CLASS:
 							Class = (CardClass)(int)tag.TagValue;
+							break;
+						case GameTag.CARDTYPE:
+							Type = (CardType)(int)tag.TagValue;
 							break;
 					}
 				}
@@ -213,7 +241,7 @@ namespace SabberStoneCore.Model
 			//			targetPredicate = p => p[GameTag.STEALTH] == 1;
 			//			break;
 			//		case PlayReq.REQ_TARGET_WITH_DEATHRATTLE:
-			//			targetPredicate = p => p.HasDeathrattle;
+			//			targetPredicate = p => p.IsDeathrattle;
 			//			break;
 			//		case PlayReq.REQ_TARGET_FOR_COMBO:
 			//			checkTargeting = p => p.IsComboActive;

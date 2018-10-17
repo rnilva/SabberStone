@@ -1506,7 +1506,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Minion testCard = game.CurrentPlayer.BoardZone[0];
 
 			Assert.False(testCard.HasTaunt);
-			Assert.False(testCard.HasLifeSteal);
+			Assert.False(testCard.IsLifeSteal);
 
 			game.ProcessCard("Blessing of Might", testCard);
 

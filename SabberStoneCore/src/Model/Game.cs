@@ -383,6 +383,12 @@ namespace SabberStoneCore.Model
 				_players[0].DeckZone.DrawWithRandom = true;
 				_players[1].DeckZone.DrawWithRandom = true;
 			}
+
+
+
+			AllCharacters = new Character[17];
+			AllCharacters[0] = Player1.Hero;
+			AllCharacters[16] = Player2.Hero;
 		}
 
 		/// <summary> A copy constructor. </summary>
@@ -1104,7 +1110,7 @@ namespace SabberStoneCore.Model
 					minion.LastBoardPosition = minion.ZonePosition;
 					minion.Zone.Remove(minion);
 
-					if (minion.HasDeathrattle)
+					if (minion.IsDeathrattle)
 						minion.ActivateTask(PowerActivation.DEATHRATTLE);
 
 					minion.Controller.GraveyardZone.Add(minion);
@@ -1447,5 +1453,10 @@ namespace SabberStoneCore.Model
 				return list;
 			}
 		}
+
+
+
+
+		internal readonly Character[] AllCharacters;
 	}
 }

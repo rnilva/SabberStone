@@ -1381,11 +1381,11 @@ namespace SabberStoneCoreTest.CardSets
 			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spikeridged Steed"));
 			var minion = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
-			Assert.False(((Minion)minion).HasDeathrattle);
+			Assert.False(((Minion)minion).IsDeathrattle);
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, testCard, minion));
 			Assert.Equal(3, ((Minion)minion).AttackDamage);
 			Assert.Equal(7, ((Minion)minion).Health);
-			Assert.True(((Minion)minion).HasDeathrattle);
+			Assert.True(((Minion)minion).IsDeathrattle);
 		}
 
 		// ---------------------------------------- SPELL - PALADIN
@@ -4870,7 +4870,7 @@ namespace SabberStoneCoreTest.CardSets
 			switch (game.IdEntityDic[choice].Card.Id)
 			{
 				case "UNG_999t2":  // [UNG_999t2] Living Spores
-					return minion.HasDeathrattle;
+					return minion.IsDeathrattle;
 				case "UNG_999t3":  // [UNG_999t3] Flaming Claws
 					return minion.Card[GameTag.ATK] + 3 == minion.AttackDamage;
 				case "UNG_999t4":  // [UNG_999t4] Rocky Carapace
@@ -4881,7 +4881,7 @@ namespace SabberStoneCoreTest.CardSets
 				case "UNG_999t6":  // [UNG_999t6] Massive
 					return minion.HasTaunt;
 				case "UNG_999t7":  // [UNG_999t7] Lightning Speed
-					return minion.HasWindfury;
+					return minion.IsWindfury;
 				case "UNG_999t8":  // [UNG_999t8] Crackling Shield
 					return minion.HasDivineShield;
 				case "UNG_999t10": // [UNG_999t10] Shrouding Mist

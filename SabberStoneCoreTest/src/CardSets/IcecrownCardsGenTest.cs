@@ -468,7 +468,7 @@ namespace SabberStoneCoreTest.CardSets
 			var tarCreeper = (Minion)Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tar Creeper"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			Assert.Equal(1, game.CurrentPlayer.BoardZone.Count);
-			Assert.True(game.CurrentPlayer.BoardZone.First().HasLifeSteal);
+			Assert.True(game.CurrentPlayer.BoardZone.First().IsLifeSteal);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -477,14 +477,14 @@ namespace SabberStoneCoreTest.CardSets
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, tarCreeper));
-			Assert.True(tarCreeper.HasLifeSteal);
+			Assert.True(tarCreeper.IsLifeSteal);
 
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, opponentWisp));
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
 
 			var playerWisp = (Minion)Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, playerWisp));
-			Assert.False(playerWisp.HasLifeSteal);
+			Assert.False(playerWisp.IsLifeSteal);
 		}
 
 		// ----------------------------------------- HERO - WARRIOR
@@ -5516,12 +5516,12 @@ namespace SabberStoneCoreTest.CardSets
 			var testCard2 = (Minion)Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Prince Valanar"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 			Assert.False(testCard.HasTaunt);
-			Assert.False(testCard.HasLifeSteal);
+			Assert.False(testCard.IsLifeSteal);
 			game.Player1.UsedMana = 0;
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Arcane Intellect"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard2));
 			Assert.True(testCard2.HasTaunt);
-			Assert.True(testCard2.HasLifeSteal);
+			Assert.True(testCard2.IsLifeSteal);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

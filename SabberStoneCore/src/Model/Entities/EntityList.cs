@@ -41,11 +41,7 @@ namespace SabberStoneCore.Model.Entities
 					list = newList;
 					_list = newList;
 				}
-
-				if (list[id] == null)
-					_count++;
-
-				list[id] = value;
+				return values;
 			}
 		}
 

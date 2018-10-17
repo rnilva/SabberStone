@@ -245,7 +245,7 @@ namespace SabberStoneCore.Model.Entities
 			//	323 = 1
 
 			if (card.Power.DeathrattleTask != null)
-				((IPlayable)target).HasDeathrattle = true;
+				((IPlayable)target).IsDeathrattle = true;
 
 			controller.Game.Log(LogLevel.VERBOSE, BlockType.ACTION, "Enchantment",
 				!controller.Game.Logging ? "" : $"Enchantment {card} created by {creator} is added to {target}.");
