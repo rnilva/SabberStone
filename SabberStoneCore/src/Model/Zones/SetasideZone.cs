@@ -26,6 +26,8 @@ namespace SabberStoneCore.Model.Zones
 		{
 		}
 
+		public override Zone Type => Zone.SETASIDE;
+
 		public SetasideZone Clone(Controller c)
 		{
 			return new SetasideZone(c, this);

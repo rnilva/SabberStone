@@ -22,6 +22,9 @@ namespace SabberStoneCore.Enchants
 		ADD, SUB, MUL, SET
 	}
 
+	/// <summary>
+	/// Defines methods for tags value variation.
+	/// </summary>
 	public interface IEffect
 	{
 		void ApplyTo(IEntity entity, bool isOneTurnEffect);
@@ -36,7 +39,7 @@ namespace SabberStoneCore.Enchants
 	}
 
 	/// <summary>
-	/// Defines methods for tags value variation.
+	///	A structure for tag value variation.
 	/// </summary>
 	public readonly struct Effect : IEffect, IEquatable<Effect>
 	{
@@ -435,6 +438,9 @@ namespace SabberStoneCore.Enchants
 					return;
 				case EffectOperator.SUB:
 					target += _value;
+					return;
+				case EffectOperator.SET:
+					target = 0;
 					return;
 				default:
 					throw new NotImplementedException();

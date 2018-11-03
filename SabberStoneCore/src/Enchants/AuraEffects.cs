@@ -17,19 +17,20 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
+// ReSharper disable InconsistentNaming
 
 // ReSharper disable InconsistentNaming
 
 namespace SabberStoneCore.Enchants
 {
-	public abstract class AuraEffectBase
-	{
-		public IEntity Owner { get; }
-		public abstract int this[GameTag t] { get; set; }
+	//public abstract class AuraEffectBase
+	//{
+	//	public IEntity Owner { get; }
+	//	public abstract int this[GameTag t] { get; set; }
 
-		public abstract AuraEffectBase Clone(AuraEffectBase other);
-		public abstract string Hash();
-	}
+	//	public abstract AuraEffectBase Clone(AuraEffectBase other);
+	//	public abstract string Hash();
+	//}
 
 
 	/// <summary>
@@ -333,31 +334,34 @@ namespace SabberStoneCore.Enchants
 		/// <returns></returns>
 		public int GetCost()
 		{
-			if (!ToBeUpdated) return COST;
+			return !ToBeUpdated ? COST : GetCostInternal();
+		}
 
+		private int GetCostInternal()
+		{
 			// Obtain the Card Cost
 			if (!Owner.NativeTags.TryGetValue(GameTag.COST, out int c))
 				c = Owner.Card.Cost;
 			// Apply Cost effects
 			if (_costEffects != null)
-			foreach (Effect e in _costEffects)
-			{
-				switch (e.Operator)
+				foreach (Effect e in _costEffects)
 				{
-					case EffectOperator.ADD:
-						c += e.Value;
-						break;
-					case EffectOperator.SUB:
-						c -= e.Value;
-						if (c < 0) c = 0;
-						break;
-					case EffectOperator.SET:
-						c = e.Value;
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
+					switch (e.Operator)
+					{
+						case EffectOperator.ADD:
+							c += e.Value;
+							break;
+						case EffectOperator.SUB:
+							c -= e.Value;
+							if (c < 0) c = 0;
+							break;
+						case EffectOperator.SET:
+							c = e.Value;
+							break;
+						default:
+							throw new ArgumentOutOfRangeException();
+					}
 				}
-			}
 			ToBeUpdated = false;
 
 			// Lastly apply Adaptive Cost effect (Giants + Naga Sea Witch)

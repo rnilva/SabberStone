@@ -15,7 +15,7 @@ namespace SabberStoneCoreTest.Basic
 	/// </summary>
 	public class UpdatedMechanics
 	{
-		[Fact]
+		[Fact(Skip = "not yet implemented")]
 		public static void CopyEnchantment1()
 		{
 			var game = new Game(new GameConfig

@@ -60,5 +60,20 @@ namespace SabberStoneCore.Model
 			}
 			return sb.ToString();
 		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder($"[P{SourceController}]");
+			sb.Append($"[{SourceCard}]");
+			if (SubOption > 0)
+				sb.Append($"[SubOption:{SubOption}]");
+			if (TargetController != 0)
+			{
+				sb.Append("=>");
+				sb.Append($"[P{TargetController}]");
+				sb.Append($"[{TargetCard}]");
+			}
+			return sb.ToString();
+		}
 	}
 }

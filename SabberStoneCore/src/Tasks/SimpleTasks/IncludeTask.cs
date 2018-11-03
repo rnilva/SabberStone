@@ -425,6 +425,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					throw new NotImplementedException();
 			}
 		}
+
+		//public static IPlayable GetEntity(in EntityType type, in TaskStack stack)
+		//{
+		//	switch (type) { }
+		//}
 	}
 
 	public class IncludeAdjacentTask : SimpleTask

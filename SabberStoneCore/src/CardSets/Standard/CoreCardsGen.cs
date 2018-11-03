@@ -1511,10 +1511,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ADJACENT_BUFF = 1
 			// - AURA = 1
 			// --------------------------------------------------------
-			cards.Add("EX1_565", new CardDef(new Power
-			{
+			cards.Add("EX1_565", new Power {
 				Aura = new AdjacentAura("EX1_565o")
-			}));
+			});
 
 			// ---------------------------------------- MINION - SHAMAN
 			// [EX1_587] Windspeaker - COST:4 [ATK:3/HP:3]

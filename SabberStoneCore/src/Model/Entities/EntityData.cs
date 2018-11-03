@@ -40,6 +40,7 @@ namespace SabberStoneCore.Model.Entities
 			for (int i = 0; i < buckets.Length; i += 2)
 				buckets[i] = -1;
 			_buckets = buckets;
+			//_buckets = new int[_initSize << 1];
 		}
 
 		/// <summary>
@@ -272,7 +273,6 @@ namespace SabberStoneCore.Model.Entities
 		{
 			int h = (k & (_size - 1)) << 1;
 			int[] buckets = _buckets;
-
 			if (buckets[h] == k)
 			{
 				index = h;

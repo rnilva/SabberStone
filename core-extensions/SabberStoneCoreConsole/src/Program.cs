@@ -57,7 +57,7 @@ namespace SabberStoneCoreConsole
 			//EntityChangeTest();
 			//YoggTest();
 			//TessGreymane();
-			Shudderwock();
+			//Shudderwock();
 
 			//BasicBuffTest();
 			//CardsTest();

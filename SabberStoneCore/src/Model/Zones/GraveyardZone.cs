@@ -28,6 +28,8 @@ namespace SabberStoneCore.Model.Zones
 		{
 		}
 
+		public override Zone Type => Zone.GRAVEYARD;
+
 		public override void Add(IPlayable entity, int zonePosition = -1)
 		{
 			base.Add(entity, zonePosition);

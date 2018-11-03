@@ -365,6 +365,13 @@ namespace SabberStoneCore.Model.Zones
 		public override bool IsFull => false;
 		public override int FreeSpace => int.MaxValue;
 
+		public override IPlayable this[int zonePosition]
+		{
+			get => Entities[zonePosition];
+		}
+
+		public override IPlayable Random => Count == 0 ? default : Entities[Util.Random.Next(Count)];
+
 		public override void Add(IPlayable entity, int zonePosition = -1)
 		{
 			if (entity.Controller != Controller)
@@ -414,6 +421,16 @@ namespace SabberStoneCore.Model.Zones
 			int pos = Array.FindIndex(_entities, p => p == oldEntity);
 			_entities[pos] = newEntity;
 			newEntity.Zone = this;
+		}
+
+		public override bool Any(Func<IPlayable, bool> predicate)
+		{
+			List<IPlayable> entities = Entities;
+			for (int i = 0; i < entities.Count; i++)
+				if (predicate(entities[i]))
+					return true;
+
+			return false;
 		}
 
 		public override IEnumerator<IPlayable> GetEnumerator()
