@@ -45,6 +45,7 @@ namespace SabberStoneCore.Model
 		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
 		public bool CantAttack { get; private set; }
 		public bool ChooseOne { get; private set; }
+		public bool Combo { get; private set; }
 		public bool IsSecret { get; private set; }
 		public bool IsQuest { get; private set; }
 		public bool Deathrattle { get; }
@@ -90,6 +91,9 @@ namespace SabberStoneCore.Model
 							break;
 						case GameTag.CHOOSE_ONE:
 							ChooseOne = true;
+							break;
+						case GameTag.COMBO:
+							Combo = true;
 							break;
 						case GameTag.TAUNT:
 							Taunt = true;
