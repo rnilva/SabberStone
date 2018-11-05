@@ -21,7 +21,7 @@ namespace SabberStoneCore.Tasks.PlayerTasks
 		public static MinionAttackTask Any(Controller controller, IPlayable source, ICharacter target,
 			bool skipPrePhase = false)
 		{
-			return new MinionAttackTask(in controller, in source, in target, in skipPrePhase);
+			return new MinionAttackTask(controller, source, target, skipPrePhase);
 		}
 
 		private MinionAttackTask(Controller controller, IPlayable source, ICharacter target, bool skipPrePhase)
