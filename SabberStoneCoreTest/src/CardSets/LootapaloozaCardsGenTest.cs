@@ -142,7 +142,7 @@ namespace SabberStoneCoreTest.CardSets
 
 		// ----------------------------------------- MINION - DRUID
 		// [LOOT_329] Ixlid, Fungal Lord - COST:5 [ATK:2/HP:4] 
-		// - Race: elemental, Set: lootapalooza, Rarity: legendary
+		// - Set: lootapalooza, Rarity: legendary
 		// --------------------------------------------------------
 		// Text: After you play a minion, summon a copy of it.
 		// --------------------------------------------------------
@@ -1434,7 +1434,7 @@ namespace SabberStoneCoreTest.CardSets
 		// [LOOT_398] Benevolent Djinn - COST:3 [ATK:2/HP:4] 
 		// - Race: elemental, Set: lootapalooza, Rarity: common
 		// --------------------------------------------------------
-		// Text: At the end of your turn, restore 3 Health to your_hero.
+		// Text: At the end of your turn, restore #3 Health to your_hero.
 		// --------------------------------------------------------
 		[Fact(Skip = "ignore")]
 		public void BenevolentDjinn_LOOT_398()
@@ -3463,7 +3463,7 @@ namespace SabberStoneCoreTest.CardSets
 		// Text: Destroy all minions. Discard your hand.
 		// --------------------------------------------------------
 		// GameTag:
-		// - 890 = 10
+		// - DISCARD_CARDS = 10
 		// --------------------------------------------------------
 		[Fact(Skip = "ignore")]
 		public void Cataclysm_LOOT_417()
@@ -4930,7 +4930,7 @@ namespace SabberStoneCoreTest.CardSets
 		// [LOOT_291] Shroom Brewer - COST:4 [ATK:4/HP:4] 
 		// - Set: lootapalooza, Rarity: common
 		// --------------------------------------------------------
-		// Text: <b>Battlecry:</b> Restore 4_Health.
+		// Text: <b>Battlecry:</b> Restore #4_Health.
 		// --------------------------------------------------------
 		// GameTag:
 		// - BATTLECRY = 1
@@ -5228,7 +5228,7 @@ namespace SabberStoneCoreTest.CardSets
 		// [LOOT_388] Fungal Enchanter - COST:3 [ATK:3/HP:3] 
 		// - Set: lootapalooza, Rarity: common
 		// --------------------------------------------------------
-		// Text: <b>Battlecry:</b> Restore 2 Health to all friendly characters.
+		// Text: <b>Battlecry:</b> Restore #2 Health to all friendly characters.
 		// --------------------------------------------------------
 		// GameTag:
 		// - BATTLECRY = 1

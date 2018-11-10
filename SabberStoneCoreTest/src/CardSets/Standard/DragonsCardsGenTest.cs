@@ -149,6 +149,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		// - 676 = 1
 		// - GALAKROND_HERO_CARD = 1
 		// --------------------------------------------------------
+		// GameTag:
+		// - 1086 = 2743
+		// --------------------------------------------------------
 		[Fact(Skip = "ignore")]
 		public void GalakrondTheNightmare_DRG_610()
 		{
@@ -227,6 +230,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		// - ARMOR = 5
 		// - HERO_POWER = 55806
 		// - GALAKROND_HERO_CARD = 1
+		// --------------------------------------------------------
+		// GameTag:
+		// - 1086 = 2745
 		// --------------------------------------------------------
 		[Fact(Skip = "ignore")]
 		public void GalakrondAzerothsEnd_DRG_610t3()
