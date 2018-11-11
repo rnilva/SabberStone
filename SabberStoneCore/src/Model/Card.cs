@@ -32,6 +32,7 @@ namespace SabberStoneCore.Model
 	{
 		public int ATK { get; private set; }
 		public int Health { get; private set; }
+		public int SpellPower { get; private set; }
 		public bool Taunt { get; private set; }
 		public bool Charge { get; private set; }
 		public bool Stealth { get; private set; }
@@ -88,6 +89,9 @@ namespace SabberStoneCore.Model
 						case GameTag.OVERLOAD:
 							HasOverload = true;
 							Overload = tag.TagValue;
+							break;
+						case GameTag.SPELLPOWER:
+							SpellPower = tag.TagValue;
 							break;
 						case GameTag.CHOOSE_ONE:
 							ChooseOne = true;

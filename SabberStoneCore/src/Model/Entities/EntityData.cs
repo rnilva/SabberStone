@@ -40,7 +40,6 @@ namespace SabberStoneCore.Model.Entities
 			for (int i = 0; i < buckets.Length; i += 2)
 				buckets[i] = -1;
 			_buckets = buckets;
-			//_buckets = new int[_initSize << 1];
 		}
 
 		/// <summary>
