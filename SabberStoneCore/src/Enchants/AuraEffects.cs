@@ -13,6 +13,7 @@
 #endregion
 using System;
 using System.Text;
+using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;
