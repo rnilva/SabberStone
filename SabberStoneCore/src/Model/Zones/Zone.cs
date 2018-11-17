@@ -21,6 +21,7 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Exceptions;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Auras;
+using System.Memory;
 
 namespace SabberStoneCore.Model.Zones
 {
@@ -367,10 +368,10 @@ namespace SabberStoneCore.Model.Zones
 
 		public override IPlayable this[int zonePosition]
 		{
-			get => Entities[zonePosition];
+			get => _entities[zonePosition];
 		}
 
-		public override IPlayable Random => Count == 0 ? default : Entities[Util.Random.Next(Count)];
+		public override IPlayable Random => Count == 0 ? default : _entities[Util.Random.Next(Count)];
 
 		public override void Add(IPlayable entity, int zonePosition = -1)
 		{
@@ -425,7 +426,7 @@ namespace SabberStoneCore.Model.Zones
 
 		public override bool Any(Func<IPlayable, bool> predicate)
 		{
-			List<IPlayable> entities = Entities;
+			List<IPlayable> entities = _entities;
 			for (int i = 0; i < entities.Count; i++)
 				if (predicate(entities[i]))
 					return true;

@@ -348,7 +348,7 @@ namespace SabberStoneCore.Enchants
 		/// <returns></returns>
 		public int GetCost()
 		{
-			return !ToBeUpdated ? COST : GetCostInternal();
+			return !ToBeUpdated ? Cost : GetCostInternal();
 		}
 
 		private int GetCostInternal()
@@ -386,7 +386,7 @@ namespace SabberStoneCore.Enchants
 
 			if (c < 0) c = 0;
 
-			COST = c;
+			Cost = c;
 			return c;
 		}
 
@@ -397,9 +397,9 @@ namespace SabberStoneCore.Enchants
 			_costEffects = null;
 			Owner.NativeTags.Remove(GameTag.COST);
 			AdaptiveCostEffect?.Remove();
-			COST = Owner.Card[GameTag.COST];
+			Cost = Owner.Card[GameTag.COST];
 			if (Owner.Game.History)
-				Owner.Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Owner.Id, GameTag.COST, COST));
+				Owner.Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Owner.Id, GameTag.COST, Cost));
 		}
 
 		public AuraEffects Clone(Entity clone)
