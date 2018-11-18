@@ -250,6 +250,8 @@ namespace SabberStoneCore.Auras
 				switch (inst.Instruction)
 				{
 					case Instruction.RemoveAll:
+						if (removeAllProcessed)
+							;
 						RemoveInternal();
 						return;
 					case Instruction.AddAll:
@@ -266,6 +268,8 @@ namespace SabberStoneCore.Auras
 					default:
 						throw new ArgumentOutOfRangeException();
 				}
+
+				processedInstructions.Push(inst);
 			}
 		}
 
