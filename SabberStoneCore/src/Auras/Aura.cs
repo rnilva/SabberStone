@@ -243,15 +243,12 @@ namespace SabberStoneCore.Auras
 			}
 
 			Util.PriorityQueue<AuraUpdateInstruction> queue = AuraUpdateInstructionsQueue;
-
 			while (queue.Count != 0)
 			{
 				AuraUpdateInstruction inst = queue.Dequeue();
 				switch (inst.Instruction)
 				{
 					case Instruction.RemoveAll:
-						if (removeAllProcessed)
-							;
 						RemoveInternal();
 						return;
 					case Instruction.AddAll:

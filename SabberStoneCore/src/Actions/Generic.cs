@@ -254,6 +254,17 @@ namespace SabberStoneCore.Actions
 					c.Game.CurrentEventData = temp;
 				}
 
+				if (sender is IPlayable p && c.Game.TriggerManager.HasShuffleIntoDeckTrigger)
+				{
+					EventMetaData temp = c.Game.CurrentEventData;
+
+					c.Game.CurrentEventData = new EventMetaData(p, playable);
+
+					c.Game.TriggerManager.OnShuffleIntoDeckTrigger(playable);
+
+					c.Game.CurrentEventData = temp;
+				}
+
 				// add hide entity 
 				if (c.Game.History)
 					c.Game.PowerHistory.Add(PowerHistoryBuilder.HideEntity(playable));

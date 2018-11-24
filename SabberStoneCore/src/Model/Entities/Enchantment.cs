@@ -131,6 +131,11 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
+		/// <summary>
+		/// The 
+		/// </summary>
+		public Card ContainedCard { get; set; }
+
 		public IPlayable Creator
 		{
 			get => _creator ?? (_creator = Game.IdEntityDic[_creatorId]);

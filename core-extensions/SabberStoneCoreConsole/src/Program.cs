@@ -36,6 +36,7 @@ namespace SabberStoneCoreConsole
 
 		static void Main(string[] args)
 		{
+			//SimpleTest();
 
 			//SimpleTest();
 
