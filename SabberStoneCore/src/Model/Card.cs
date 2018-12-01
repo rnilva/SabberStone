@@ -45,6 +45,7 @@ namespace SabberStoneCore.Model
 		public bool CantBeTargetedBySpells { get; private set; }
 		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
 		public bool CantAttack { get; private set; }
+		public bool Modular { get; private set; }
 		public bool ChooseOne { get; private set; }
 		public bool Combo { get; private set; }
 		public bool IsSecret { get; private set; }
@@ -131,6 +132,9 @@ namespace SabberStoneCore.Model
 							break;
 						case GameTag.CANT_ATTACK:
 							CantAttack = true;
+							break;
+						case GameTag.MODULAR:
+							Modular = true;
 							break;
 						case GameTag.SECRET:
 							IsSecret = true;
