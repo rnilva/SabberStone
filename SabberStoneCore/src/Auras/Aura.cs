@@ -265,8 +265,6 @@ namespace SabberStoneCore.Auras
 					default:
 						throw new ArgumentOutOfRangeException();
 				}
-
-				processedInstructions.Push(inst);
 			}
 		}
 
