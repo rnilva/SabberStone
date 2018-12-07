@@ -74,8 +74,6 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 							c[t] = a;
 							break;
 					}
-				else if (t == GameTag.EXHAUSTED)
-					p.IsExhausted = Amount > 0;
 				else
 					p[Tag] = Amount;
 
