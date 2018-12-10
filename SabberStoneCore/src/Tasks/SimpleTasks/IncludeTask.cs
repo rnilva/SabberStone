@@ -252,6 +252,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			switch (type)
 			{
 				case EntityType.STACK:
+					if (stack == null)
+						;
 					return stack;
 				case EntityType.HAND:
 					return c.HandZone.GetAll();
@@ -358,12 +360,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 					var arr = new IPlayable[c.BoardZone.CountExceptUntouchables +
 					                        c.Opponent.BoardZone.CountExceptUntouchables + 1];
-
 					if (source is Enchantment e)
 					{
 						source = e.Target;
 					}
-
 					if (source.Zone == c.BoardZone)
 					{
 						c.BoardZone.GetAll(p => p != source).CopyTo(arr, 0);

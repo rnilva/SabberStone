@@ -569,6 +569,13 @@ namespace SabberStoneCore.Actions
 					p.Power?.Trigger?.Activate(p, TriggerActivation.DECK);
 				}
 
+				// Reapply auras
+				if (hand != null)
+					hand.Auras.ForEach(a => a.EntityAdded(p));
+				else if
+					(board != null)
+					board.Auras.ForEach(a => a.EntityAdded(p));
+
 				// Not sure C'Thun from Shifter Zerus will have Proxy's buffs
 
 				return p;

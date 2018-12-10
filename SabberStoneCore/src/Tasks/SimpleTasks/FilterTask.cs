@@ -48,6 +48,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			in IPlayable target,
 			in TaskStack stack = null)
 		{
+			if (stack?.Playables == null)
+			{
+				;
+			}
+
 			if (_relaConditions != null)
 			{
 				IList<IPlayable> entities =
@@ -85,6 +90,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 				stack.Playables = filtered;
 			}
+
+			if (stack.Playables == null)
+				;
 
 			return TaskState.COMPLETE;
 		}
