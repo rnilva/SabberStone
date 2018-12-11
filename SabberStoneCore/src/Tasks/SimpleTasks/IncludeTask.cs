@@ -252,8 +252,6 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			switch (type)
 			{
 				case EntityType.STACK:
-					if (stack == null)
-						;
 					return stack;
 				case EntityType.HAND:
 					return c.HandZone.GetAll();
