@@ -91,9 +91,6 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				stack.Playables = filtered;
 			}
 
-			if (stack.Playables == null)
-				;
-
 			return TaskState.COMPLETE;
 		}
 	}
