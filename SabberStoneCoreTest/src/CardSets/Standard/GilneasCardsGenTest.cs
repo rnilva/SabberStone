@@ -1789,6 +1789,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 				test = game.IdEntityDic[testId];
 				Assert.Contains(test.Card.Id, game.CurrentOpponent.HandZone.Select(p => p.Card.Id));
 				Assert.NotNull(test.AppliedEnchantments);
+
+				if (test.AppliedEnchantments.Count != 1)
+					;
+
 				Assert.Single(test.AppliedEnchantments);
 			}
 

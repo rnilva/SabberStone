@@ -160,10 +160,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// PlayReq:
 			// - REQ_TARGET_TO_PLAY = 0
 			// --------------------------------------------------------
-			cards.Add("CS2_034", new CardDef(new Dictionary<PlayReq, int>() { { PlayReq.REQ_TARGET_TO_PLAY, 0 } }, new Power
-			{
+			cards.Add("CS2_034", new Power {
 				PowerTask = new DamageTask(1, EntityType.TARGET)
-			}));
+			});
 
 			// ------------------------------------ HERO_POWER - SHAMAN
 			// [CS2_049] Totemic Call (*) - COST:2
@@ -219,10 +218,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// PlayReq:
 			// - REQ_NUM_MINION_SLOTS = 1
 			// --------------------------------------------------------
-			cards.Add("CS2_101", new CardDef(new Dictionary<PlayReq, int>() { { PlayReq.REQ_NUM_MINION_SLOTS, 1 } }, new Power
-			{
+			cards.Add("CS2_101", new Power {
 				PowerTask = new SummonTask("CS2_101t")
-			}));
+			});
 
 			// ----------------------------------- HERO_POWER - WARRIOR
 			// [CS2_102] Armor Up! (*) - COST:2
@@ -247,10 +245,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - REQ_STEADY_SHOT = 0
 			// - REQ_MINION_OR_ENEMY_HERO = 0
 			// --------------------------------------------------------
-			cards.Add("DS1h_292", new CardDef(new Dictionary<PlayReq, int>() { { PlayReq.REQ_STEADY_SHOT, 0 }, { PlayReq.REQ_MINION_OR_ENEMY_HERO, 0 } }, new Power
-			{
+			cards.Add("DS1h_292", new Power {
 				PowerTask = new DamageTask(2, EntityType.OP_HERO)
-			}));
+			});
 		}
 
 		private static void Druid(IDictionary<string, CardDef> cards)

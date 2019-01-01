@@ -46,10 +46,9 @@ namespace SabberStoneCore.CardSets
 			// - REQ_MINION_TARGET = 0
 			// - REQ_TARGET_WITH_RACE = 20
 			// --------------------------------------------------------
-			cards.Add("KAR_065", new CardDef(new Dictionary<PlayReq, int>() {{PlayReq.REQ_TARGET_IF_AVAILABLE,0},{PlayReq.REQ_FRIENDLY_TARGET,0},{PlayReq.REQ_MINION_TARGET,0},{PlayReq.REQ_TARGET_WITH_RACE,20}}, new Power
-			{
+			cards.Add("KAR_065", new Power {
 				PowerTask = new CopyTask(EntityType.TARGET, Zone.PLAY)
-			}));
+			});
 
 			// ----------------------------------------- MINION - DRUID
 			// [KAR_300] Enchanted Raven - COST:1 [ATK:2/HP:2]

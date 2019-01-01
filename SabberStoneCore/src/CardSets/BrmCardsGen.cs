@@ -234,7 +234,7 @@ namespace SabberStoneCore.CardSets
 
 		}
 
-		//private static void MageNonCollect(IDictionary<string, CardDef> cards)
+		//private static void MageNonCollect(IDictionary<string, Power> cards)
 		//{
 
 		//}
@@ -322,7 +322,7 @@ namespace SabberStoneCore.CardSets
 
 		}
 
-		//private static void PriestNonCollect(IDictionary<string, CardDef> cards)
+		//private static void PriestNonCollect(IDictionary<string, Power> cards)
 		//{
 		//}
 
@@ -355,10 +355,9 @@ namespace SabberStoneCore.CardSets
 			// - REQ_TARGET_TO_PLAY = 0
 			// - REQ_MINION_TARGET = 0
 			// --------------------------------------------------------
-			cards.Add("BRM_007", new CardDef(new Dictionary<PlayReq, int>() {{PlayReq.REQ_TARGET_TO_PLAY,0},{PlayReq.REQ_MINION_TARGET,0}}, new Power
-			{
+			cards.Add("BRM_007", new Power {
 				PowerTask = new CopyTask(EntityType.TARGET, Zone.DECK, 3)
-			}));
+			});
 		}
 
 		private static void Shaman(IDictionary<string, CardDef> cards)
@@ -404,7 +403,7 @@ namespace SabberStoneCore.CardSets
 
 		}
 
-		//private static void ShamanNonCollect(IDictionary<string, CardDef> cards)
+		//private static void ShamanNonCollect(IDictionary<string, Power> cards)
 		//{
 
 		//}

@@ -52,7 +52,7 @@ namespace SabberStoneCoreConsole
 			//SabberStoneCoreConsole.PowerHistoryTest.Run();
 
 			//StabilityTest.CloneStabilityTest();
-			//StabilityTest.TestRun();
+			StabilityTest.TestRun();
 			//for (int i = 0; i < 10000; i++)
 			//	StabilityTest.ThreadSafetyTest();
 			//EntityChangeTest();

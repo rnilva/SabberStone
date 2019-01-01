@@ -104,6 +104,39 @@ namespace SabberStoneCore.Actions
 					if (id == source.Id)
 						oneTurnEffects.Add((copiedEntity.Id, effect));
 				}
+
+				if (source.OngoingEffect != null && copiedEntity.OngoingEffect == null)
+					source.OngoingEffect.Clone(copiedEntity);
+
+				List<(int entityId, IEffect effect)> oneTurnEffects = controller.Game.OneTurnEffects;
+				for (int i = oneTurnEffects.Count - 1; i >= 0; i--)
+				{
+					(int id, IEffect effect) = oneTurnEffects[i];
+					if (id == source.Id)
+						oneTurnEffects.Add((copiedEntity.Id, effect));
+				}
+			}
+			else
+			{
+				copiedEntity = Entity.FromCard(in controller, source.Card);
+				copiedEntity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, creator.Id);
+			}
+
+			switch (targetZone)
+			{
+				case Zone.HAND:
+					Generic.AddHandPhase.Invoke(controller, copiedEntity);
+					break;
+				case Zone.DECK:
+					Generic.ShuffleIntoDeck.Invoke(controller, creator, copiedEntity);
+					break;
+				case Zone.PLAY:
+					Generic.SummonBlock.Invoke(controller.Game, (Minion) copiedEntity,
+						creator is Enchantment e && e.Power?.DeathrattleTask != null ? e.Target[GameTag.TAG_LAST_KNOWN_POSITION_ON_BOARD] : -1);
+					break;
+				case Zone.SETASIDE:
+					controller.SetasideZone.Add(copiedEntity);
+					break;
 			}
 			else
 			{

@@ -1789,10 +1789,9 @@ namespace SabberStoneCore.CardSets.Adventure
 			// PlayReq:
 			// - REQ_NUM_MINION_SLOTS = 1
 			// --------------------------------------------------------
-			cards.Add("LOOTA_BOSS_49p", new CardDef(new Dictionary<PlayReq, int>() {{PlayReq.REQ_NUM_MINION_SLOTS,1}}, new Power
-			{
+			cards.Add("LOOTA_BOSS_49p", new Power {
 				PowerTask = new SummonTask("LOOTA_BOSS_49t"),
-			}));
+			});
 
 			// ----------------------------------- HERO_POWER - NEUTRAL
 			// [LOOTA_BOSS_50p] Mushroom, Mushroom (*) - COST:2
