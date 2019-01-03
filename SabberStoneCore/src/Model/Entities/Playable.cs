@@ -230,6 +230,7 @@ namespace SabberStoneCore.Model.Entities
 			: base(controller.Game, in card, in tags, in id)
 		{
 			Controller = controller;
+
 			if (_history)
 				tags[GameTag.CONTROLLER] = controller.PlayerId;
 		}
