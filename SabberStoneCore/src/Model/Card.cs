@@ -31,10 +31,6 @@ namespace SabberStoneCore.Model
 	public sealed class Card
 	{
 		/// <summary>
-		/// Represents the range of characters in which a card can target.
-		/// </summary>
-		public readonly TargetingType TargetingType;
-		/// <summary>
 		/// Constraint condition based on the state of a target <see cref="ICharacter"/>.
 		/// Returns true if the target is valid for this card.
 		/// The result of this predicate is independent of <see cref="TargetingType"/> of this card.
@@ -49,11 +45,15 @@ namespace SabberStoneCore.Model
 		/// <summary>
 		/// Returns false if this card cannot be played with respect to the given state of a <see cref="Controller"/>.
 		/// </summary>
-		public readonly AvailabilityPredicate PlayAvailabilityPredicate;
+		public AvailabilityPredicate PlayAvailabilityPredicate { get; private set; }
 		/// <summary>
 		/// True if playing this card requires at least one valid target.
 		/// </summary>
-		public readonly bool MustHaveTargetToPlay;
+		public bool MustHaveTargetToPlay { get; private set; }
+		/// <summary>
+		/// Represents the range of characters in which a card can target.
+		/// </summary>
+		public TargetingType TargetingType { get; private set; }
 
 		public int ATK { get; private set; }
 		public int Health { get; private set; }

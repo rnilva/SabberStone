@@ -43,6 +43,9 @@ namespace SabberStoneCore.Actions
 					[GameTag.DISPLAYED_CREATOR] = creator.Id
 				};
 
+				if (source.NativeTags.TryGetValue(GameTag.COST, out int cost))
+					tags.Add(GameTag.COST, cost);
+
 				copiedEntity = Entity.FromCard(in controller, source.Card, tags);
 
 				int? modifiedCost = ((Playable)source)._modifiedCost;
@@ -131,8 +134,14 @@ namespace SabberStoneCore.Actions
 					Generic.ShuffleIntoDeck.Invoke(controller, creator, copiedEntity);
 					break;
 				case Zone.PLAY:
-					Generic.SummonBlock.Invoke(controller.Game, (Minion) copiedEntity,
-						creator is Enchantment e && e.Power?.DeathrattleTask != null ? e.Target[GameTag.TAG_LAST_KNOWN_POSITION_ON_BOARD] : -1);
+					int position = -1;
+					if (deathrattle)
+					{
+						position = ((Minion) source).LastBoardPosition;
+						if (position > controller.BoardZone.Count)
+							position = controller.BoardZone.Count;
+					}
+					Generic.SummonBlock.Invoke(controller.Game, (Minion) copiedEntity, position);
 					break;
 				case Zone.SETASIDE:
 					controller.SetasideZone.Add(copiedEntity);
@@ -166,6 +175,9 @@ namespace SabberStoneCore.Actions
 					controller.SetasideZone.Add(copiedEntity);
 					break;
 			}
+
+			if (copyEnchantments && source.OngoingEffect != null && copiedEntity.OngoingEffect == null)
+				source.OngoingEffect.Clone(copiedEntity);
 
 			if (copyEnchantments && source.OngoingEffect != null && copiedEntity.OngoingEffect == null)
 				source.OngoingEffect.Clone(copiedEntity);
