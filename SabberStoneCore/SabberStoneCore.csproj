@@ -28,7 +28,7 @@
     <TreatSpecificWarningsAsErrors />
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <DefineConstants />
     <NoWarn>1701;1702;0008;0049;</NoWarn>
   </PropertyGroup>
