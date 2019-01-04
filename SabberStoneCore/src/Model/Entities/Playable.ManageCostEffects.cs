@@ -19,6 +19,7 @@ namespace SabberStoneCore.Model.Entities
 			private int _cachedValue;
 			private bool _toBeUpdated;
 			private AdaptiveCostEffect _adaptiveCostEffect;
+			private int _cache;
 
 			public CostManager()
 			{
@@ -259,5 +260,6 @@ namespace SabberStoneCore.Model.Entities
 					base[t] = value;
 			}
 		}
+	}
 	}
 }
