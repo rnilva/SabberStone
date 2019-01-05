@@ -236,6 +236,8 @@ namespace SabberStoneCore.Model.Entities
 				if (_history)
 					Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.COST, Cost));
 			}
+
+			_costManager?.AddCostEnchantment(in e);
 		}
 
 		internal void ResetCost()
@@ -260,6 +262,5 @@ namespace SabberStoneCore.Model.Entities
 					base[t] = value;
 			}
 		}
-	}
 	}
 }
