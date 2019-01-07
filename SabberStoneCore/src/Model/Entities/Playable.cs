@@ -374,11 +374,6 @@ namespace SabberStoneCore.Model.Entities
 				Game.TaskQueue.Enqueue(in task, Controller, this, target);
 		}
 
-		public void ClearEnchantments()
-		{
-			
-		}
-
 		/// <summary>
 		/// Stores the next Order Of Play index held by the <see cref="T:SabberStoneCore.Model.Game" /> instance.
 		/// Order of play is important because it's the order in which effects are resolved.
