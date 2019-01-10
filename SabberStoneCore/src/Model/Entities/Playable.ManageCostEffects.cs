@@ -44,6 +44,26 @@ namespace SabberStoneCore.Model.Entities
 				set => _cachedValue = value;
 			}
 
+			public CostManager() { }
+
+			public CostManager(AdaptiveCostEffect adaptiveEffect)
+			{
+				_adaptiveCostEffect = adaptiveEffect;
+			}
+
+			private CostManager(CostManager original)
+			{
+				_cachedValue = original._cachedValue;
+				_toBeUpdated = original._toBeUpdated;
+				_costEffects.AddRange(original._costEffects);
+			}
+
+			public int CachedValue
+			{
+				get => _cachedValue;
+				set => _cachedValue = value;
+			}
+
 			/// <summary>
 			/// Apply a new Cost effect of an <see cref="Aura"/>
 			/// </summary>
@@ -97,6 +117,19 @@ namespace SabberStoneCore.Model.Entities
 			public void ActivateAdaptiveEffect(AdaptiveCostEffect adaptiveCostEffect)
 			{
 				_adaptiveCostEffect = adaptiveCostEffect;
+			}
+
+			public void UpdateAdaptiveEffect(int setValue = -1)
+			{
+				if (setValue > 0)
+					_cachedValue = setValue;
+				else
+					_toBeUpdated = true;
+			}
+
+			public void DeactivateAdaptiveEffect()
+			{
+				_adaptiveCostEffect = null;
 			}
 
 			/// <summary>
@@ -239,6 +272,35 @@ namespace SabberStoneCore.Model.Entities
 
 			_costManager?.AddCostEnchantment(in e);
 		}
+
+		//internal void ActivateAdaptiveCostEffect(AdaptiveCostEffect e)
+		//{
+		//	if (_costManager == null)
+		//	{
+		//		var costManager = new CostManager();
+		//		costManager.ActivateAdaptiveEffect(e);
+		//		_costManager = costManager;
+		//	}
+		//	else
+		//	{
+		//		_costManager.ActivateAdaptiveEffect(e);
+		//	}
+		//}
+
+		//internal void UpdateAdaptiveCostEffect(int setValue = -1)
+		//{
+		//	if (setValue >= 0)
+		//	{
+		//		_costManager.CachedValue = setValue;
+		//		return;
+		//	}
+		//	_costManager.QueueUpdate();
+		//}
+
+		//internal void DeactivateAdaptiveCostEffect()
+		//{
+		//	_costManager.DeactivateAdaptiveEffect();
+		//}
 
 		internal void ResetCost()
 		{

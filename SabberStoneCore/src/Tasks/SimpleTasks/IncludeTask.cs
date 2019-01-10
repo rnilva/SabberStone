@@ -70,12 +70,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		EVENT_SOURCE,
 
 		/// <summary>
-		///     The top card from the player's deck
+		/// The top card from the player's deck
 		/// </summary>
 		TOPCARDFROMDECK,
 
 		/// <summary>
-		///     The top card from the opponent's deck
+		/// The top card from the opponent's deck
 		/// </summary>
 		OP_TOPDECK,
 
@@ -185,12 +185,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		HEROES,
 
 		/// <summary>
-		///     The Controller entity of the player
+		/// The Controller entity of the player
 		/// </summary>
 		CONTROLLER,
 
 		/// <summary>
-		///     The Controller entity of the opponent.
+		/// The Controller entity of the opponent.
 		/// </summary>
 		OP_CONTROLLER,
 

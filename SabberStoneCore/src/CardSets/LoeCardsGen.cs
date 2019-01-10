@@ -447,8 +447,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			// Text: Copied Deathrattle from {0}.
 			// --------------------------------------------------------
-			cards.Add("LOE_019e", new CardDef(new Power
-			{
+			cards.Add("LOE_019e", new Power {
 				//DeathrattleTask = ComplexTask.Create(
 				//	new IncludeTask(EntityType.SOURCE),
 				//	new IncludeTask(EntityType.TARGET, null, true),
@@ -458,7 +457,7 @@ namespace SabberStoneCore.CardSets
 				//		return null;
 				//	}))
 				DeathrattleTask = ActivateCapturedDeathrattleTask.Task
-			}));
+			});
 
 		}
 

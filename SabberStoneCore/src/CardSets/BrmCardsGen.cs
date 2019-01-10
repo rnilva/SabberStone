@@ -78,10 +78,9 @@ namespace SabberStoneCore.CardSets
 			// GameTag:
 			// - TAUNT = 1
 			// --------------------------------------------------------
-			cards.Add("BRM_009", new CardDef(new Power
-			{
+			cards.Add("BRM_009", new Power {
 				Aura = AdaptiveCostEffect.NumEachMinionDiedThisTurn
-			}));
+			});
 
 			// ----------------------------------------- MINION - DRUID
 			// [BRM_010] Druid of the Flame - COST:3 [ATK:2/HP:2]
@@ -225,12 +224,11 @@ namespace SabberStoneCore.CardSets
 			// PlayReq:
 			// - REQ_TARGET_TO_PLAY = 0
 			// --------------------------------------------------------
-			cards.Add("BRM_003", new CardDef(new Dictionary<PlayReq, int>() {{PlayReq.REQ_TARGET_TO_PLAY,0}}, new Power
-			{
+			cards.Add("BRM_003", new Power {
 				Aura = AdaptiveCostEffect.NumEachMinionDiedThisTurn,
 				PowerTask = ComplexTask.Create(
 					new DamageTask(4, EntityType.TARGET, true))
-			}));
+			});
 
 		}
 
@@ -261,11 +259,10 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			// Text: Draw 2 cards. Costs (1) less for each minion that died this turn.
 			// --------------------------------------------------------
-			cards.Add("BRM_001", new CardDef(new Power
-			{
+			cards.Add("BRM_001", new Power {
 				Aura = AdaptiveCostEffect.NumEachMinionDiedThisTurn,
 				PowerTask = new EnqueueTask(2, new DrawTask())
-			}));
+			});
 
 		}
 
@@ -557,10 +554,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			// Text: Costs (1) less for each minion that died this turn.
 			// --------------------------------------------------------
-			cards.Add("BRM_025", new CardDef(new Power
-			{
+			cards.Add("BRM_025", new Power {
 				Aura = AdaptiveCostEffect.NumEachMinionDiedThisTurn,
-			}));
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [BRM_026] Hungry Dragon - COST:4 [ATK:5/HP:6]

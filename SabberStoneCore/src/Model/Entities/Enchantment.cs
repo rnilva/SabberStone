@@ -132,9 +132,22 @@ namespace SabberStoneCore.Model.Entities
 		}
 
 		/// <summary>
-		/// The 
+		/// <see cref="SabberStoneCore.Model.Card"/> information captured in this instance.
 		/// </summary>
-		public Card ContainedCard { get; set; }
+		public Card CapturedCard
+		{
+			get => _capturedCard;
+			set
+			{
+				_capturedCard = value;
+				if (Game.History)
+				{
+					Card c = Card.Clone();
+					c.Text = String.Format(c.Text, value.Name);
+					Card = c;
+				}
+			}
+		}
 
 		public IPlayable Creator
 		{

@@ -957,10 +957,9 @@ namespace SabberStoneCore.CardSets
 			// Text: [x]Costs (1) less for each spell
 			//       you've cast this game.
 			// --------------------------------------------------------
-			cards.Add("KAR_711", new CardDef(new Power
-			{
+			cards.Add("KAR_711", new Power {
 				Aura = new AdaptiveCostEffect(p => p.Controller.NumSpellsPlayedThisGame)
-			}));
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [KAR_712] Violet Illusionist - COST:3 [ATK:4/HP:3]
