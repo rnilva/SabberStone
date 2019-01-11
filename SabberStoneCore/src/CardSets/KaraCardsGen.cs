@@ -100,13 +100,12 @@ namespace SabberStoneCore.CardSets
 			// RefTag:
 			// - SECRET = 1
 			// --------------------------------------------------------
-			cards.Add("KAR_006", new CardDef(new Power
-			{
+			cards.Add("KAR_006", new Power {
 				Aura = new Aura(AuraType.HAND, Effects.SetCost(0))
 				{
 					Condition = SelfCondition.IsSecret
 				}
-			}));
+			});
 
 			// ----------------------------------------- SPELL - HUNTER
 			// [KAR_004] Cat Trick - COST:2

@@ -112,7 +112,6 @@ namespace SabberStoneCore.Model.Entities
 		protected Character(in Controller controller, in Card card, in IDictionary<GameTag, int> tags, in int id)
 			: base(in controller, in card, in tags, in id)
 		{
-
 		}
 
 		/// <summary>

@@ -753,10 +753,9 @@ namespace SabberStoneCore.CardSets
 			// GameTag:
 			// - AURA = 1
 			// --------------------------------------------------------
-			cards.Add("LOE_038", new CardDef(new Power
-			{
+			cards.Add("LOE_038", new Power {
 				Aura = new Aura(AuraType.HAND, Effects.SetCost(5))
-			}));
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [LOE_039] Gorillabot A-3 - COST:4 [ATK:3/HP:4]

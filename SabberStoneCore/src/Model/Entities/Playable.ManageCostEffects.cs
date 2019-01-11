@@ -273,35 +273,6 @@ namespace SabberStoneCore.Model.Entities
 			_costManager?.AddCostEnchantment(in e);
 		}
 
-		//internal void ActivateAdaptiveCostEffect(AdaptiveCostEffect e)
-		//{
-		//	if (_costManager == null)
-		//	{
-		//		var costManager = new CostManager();
-		//		costManager.ActivateAdaptiveEffect(e);
-		//		_costManager = costManager;
-		//	}
-		//	else
-		//	{
-		//		_costManager.ActivateAdaptiveEffect(e);
-		//	}
-		//}
-
-		//internal void UpdateAdaptiveCostEffect(int setValue = -1)
-		//{
-		//	if (setValue >= 0)
-		//	{
-		//		_costManager.CachedValue = setValue;
-		//		return;
-		//	}
-		//	_costManager.QueueUpdate();
-		//}
-
-		//internal void DeactivateAdaptiveCostEffect()
-		//{
-		//	_costManager.DeactivateAdaptiveEffect();
-		//}
-
 		internal void ResetCost()
 		{
 			_costManager = null;

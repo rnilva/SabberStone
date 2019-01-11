@@ -212,7 +212,7 @@ namespace SabberStoneCore.Enchants
 					case GameTag.ATK when Type != CardType.MINION:
 						return 0;
 					case GameTag.ATK:
-						return AttackDamage;
+						return ATK;
 					case GameTag.HEALTH:
 						return Health;
 					//case GameTag.COST:
@@ -248,7 +248,7 @@ namespace SabberStoneCore.Enchants
 				switch (t)
 				{
 					case GameTag.ATK:
-						AttackDamage = value;
+						ATK = value;
 						return;
 					case GameTag.HEALTH:
 						Health = value;

@@ -524,13 +524,12 @@ namespace SabberStoneCore.CardSets
 			// RefTag:
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
-			cards.Add("FP1_017", new CardDef(new Power
-			{
+			cards.Add("FP1_017", new Power {
 				Aura = new Aura(AuraType.HANDS, Effects.AddCost(2))
 				{
 					Condition = SelfCondition.IsBattlecryMinion
 				}
-			}));
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [FP1_024] Unstable Ghoul - COST:2 [ATK:1/HP:3]
@@ -659,14 +658,13 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			// Text: Your spells cost (5) more this turn.
 			// --------------------------------------------------------
-			cards.Add("FP1_030e", new CardDef(new Power
-			{
+			cards.Add("FP1_030e", new Power {
 				Aura = new Aura(AuraType.OP_HAND, Effects.AddCost(5))
 				{
 					Condition = SelfCondition.IsSpell,
 					RemoveTrigger = (TriggerType.TURN_END, SelfCondition.IsOpTurn)
 				}
-			}));
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [FP1_002t] Spectral Spider (*) - COST:1 [ATK:1/HP:1]

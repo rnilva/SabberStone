@@ -274,14 +274,13 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			// Text: Your next Dragon costs (2) less.
 			// --------------------------------------------------------
-			cards.Add("BRM_018e", new CardDef(new Power
-			{
+			cards.Add("BRM_018e", new Power {
 				Aura = new Aura(AuraType.HAND, Effects.ReduceCost(2))
 				{
 					Condition = SelfCondition.IsRace(Race.DRAGON),
 					RemoveTrigger = (TriggerType.PLAY_MINION, SelfCondition.IsRace(Race.DRAGON))
 				}
-			}));
+			});
 		}
 
 		private static void Priest(IDictionary<string, CardDef> cards)

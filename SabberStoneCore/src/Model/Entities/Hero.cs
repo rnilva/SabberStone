@@ -80,7 +80,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public override bool IsImmune
 		{
-			get => AuraEffects.Immune > 0 || base.IsImmune;
+			get => (AuraEffects?.Immune > 0) || base.IsImmune;
 			set => base.IsImmune = value;
 		}
 

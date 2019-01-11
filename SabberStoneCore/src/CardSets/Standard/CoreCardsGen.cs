@@ -1665,10 +1665,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// GameTag:
 			// - TAUNT = 1
 			// --------------------------------------------------------
-			cards.Add("CS2_041e", new CardDef(new Power
-			{
+			cards.Add("CS2_041e", new Power {
 				Enchant = new Enchant(Effects.TauntEff)
-			}));
+			});
 
 			// ----------------------------------- ENCHANTMENT - SHAMAN
 			// [CS2_045e] Rockbiter Weapon (*) - COST:0
