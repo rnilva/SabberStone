@@ -21,6 +21,7 @@ namespace SabberStoneCore.Auras
 		/// </summary>
 		/// <param name="owner">The entity who owns this effect.</param>
 		void Activate(IPlayable owner);
+
 		/// <summary>
 		/// Performs a deep copy of this object.
 		/// The resulting cloned instance will be added to the given clone entity's game.
