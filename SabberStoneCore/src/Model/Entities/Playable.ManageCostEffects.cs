@@ -44,7 +44,10 @@ namespace SabberStoneCore.Model.Entities
 				set => _cachedValue = value;
 			}
 
-			public CostManager() { }
+			public CostManager()
+			{
+				_toBeUpdated = true;
+			}
 
 			public CostManager(AdaptiveCostEffect adaptiveEffect)
 			{

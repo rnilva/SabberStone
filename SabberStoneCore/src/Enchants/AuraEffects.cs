@@ -29,6 +29,8 @@ namespace SabberStoneCore.Enchants
 	/// </summary>
 	public class AuraEffects : IEquatable<AuraEffects>
 	{
+		private static readonly int _int32Size = sizeof(int);
+
 		private const int PlayableLength = 2;
 		private const int WeaponLength = PlayableLength + 1;
 		private const int CharacterLength = PlayableLength + 2;

@@ -140,7 +140,7 @@ namespace SabberStoneCore.Model.Entities
 			set
 			{
 				_capturedCard = value;
-				if (Game.History)
+				if (Game.History && Card.Text.Contains("{0}"))
 				{
 					Card c = Card.Clone();
 					c.Text = String.Format(c.Text, value.Name);

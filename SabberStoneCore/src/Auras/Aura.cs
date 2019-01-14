@@ -218,7 +218,6 @@ namespace SabberStoneCore.Auras
 			//				Enchantment e = Enchantment.GetInstance(in c, in owner, minion, in EnchantmentCard);
 			//				EnchantmentCard.Power.Trigger?.Activate(e);
 			//			}
-
 			//		}
 			//		break;
 			//	case AuraType.SUMMONING_PORTAL:
