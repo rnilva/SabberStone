@@ -23,7 +23,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	// TODO: Should use Generic.Copy()
 	/// <summary>
-	///     Summon a copy of one (or more) existing entity.
+	/// Summon a copy of one (or more) existing entity.
 	/// </summary>
 	/// <seealso cref="SimpleTask" />
 	public class SummonCopyTask : SimpleTask
@@ -135,6 +135,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 								instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
 								if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
 									instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
+
+								instance.CapturedCard = e.CapturedCard;
 							}
 							
 							instance.CapturedCard = e.CapturedCard;
