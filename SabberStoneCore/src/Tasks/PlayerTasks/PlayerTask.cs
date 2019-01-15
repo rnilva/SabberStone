@@ -151,17 +151,5 @@ namespace SabberStoneCore.Tasks.PlayerTasks
 
 			return sb.ToString();
 		}
-
-		//private class PlayerTaskDebuggerProxy
-		//{
-		//	private readonly PlayerTask _task;
-
-		//	public PlayerTaskDebuggerProxy(PlayerTask task)
-		//	{
-		//		_task = task;
-		//	}
-
-
-		//}
 	}
 }

@@ -160,6 +160,10 @@ namespace SabberStoneCoreTest
 	    {
 		    if (n > game.CurrentPlayer.Choice.Choices.Count)
 			    throw new ArgumentOutOfRangeException();
+		    var option = ChooseTask.Pick(game.CurrentPlayer, game.CurrentPlayer.Choice.Choices[n - 1]);
+		    if (!game.Process(option))
+			    throw new Exception($"{option} is not a valid task.");
+		}
 
 		    int pick = game.CurrentPlayer.Choice.Choices[n - 1];
 		    ChooseTask option = ChooseTask.Pick(game.CurrentPlayer, pick);
