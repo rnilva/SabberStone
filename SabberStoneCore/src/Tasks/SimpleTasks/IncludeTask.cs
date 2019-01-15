@@ -338,7 +338,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 							return arr;
 						}
 
-						return new[] {c.Opponent.Hero};
+						return new[] { c.Opponent.Hero };
 					}
 
 				case EntityType.ALL:
