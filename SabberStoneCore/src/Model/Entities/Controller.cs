@@ -750,7 +750,7 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="skipPrePhase">Doesn't check validity of the options generated from this when it is processed.</param>
 		/// <returns></returns>
-		public List<PlayerTask> Options_improved(bool skipPrePhase = true)
+		public List<PlayerTask> Options(bool skipPrePhase = true)
 		{
 			// No options for the opponent player.
 			if (this != Game.CurrentPlayer)
@@ -1156,7 +1156,6 @@ namespace SabberStoneCore.Model.Entities
 			}
 			#endregion
 		}
-		#endregion
 
 		/// <summary>
 		/// Returns a string which dumps information about this player.
