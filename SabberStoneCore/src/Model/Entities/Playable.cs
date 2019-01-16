@@ -113,12 +113,12 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// Playable has deathrattle.
 		/// </summary>
-		bool IsDeathrattle { get; set; }
+		bool HasDeathrattle { get; set; }
 
 		/// <summary>
 		/// Playable has lifesteal.
 		/// </summary>
-		bool IsLifeSteal { get; set; }
+		bool HasLifeSteal { get; set; }
 
 		/// <summary>
 		/// Playable has Echo ability.
@@ -679,7 +679,7 @@ namespace SabberStoneCore.Model.Entities
 			set => throw new NotImplementedException();
 		}
 
-		public virtual bool IsLifeSteal
+		public virtual bool HasLifeSteal
 		{
 			get => Card.LifeSteal;
 			set => this[GameTag.LIFESTEAL] = value ? 1 : 0;

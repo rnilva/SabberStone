@@ -577,7 +577,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// Character has windfury.
 		/// </summary>
-		bool IsWindfury { get; }
+		bool HasWindfury { get; }
 
 		/// <summary>
 		/// Character has stealth.

@@ -5614,12 +5614,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			IPlayable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Leper Gnome"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, minion1));
 
-			Assert.True(((Minion)minion1).IsDeathrattle);
+			Assert.True(((Minion)minion1).HasDeathrattle);
 
 			IPlayable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ironbeak Owl"));
 			game.Process(PlayCardTask.MinionTarget(game.CurrentPlayer, minion2, (ICharacter) minion1));
 
-			Assert.False(((Minion)minion1).IsDeathrattle);
+			Assert.False(((Minion)minion1).HasDeathrattle);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

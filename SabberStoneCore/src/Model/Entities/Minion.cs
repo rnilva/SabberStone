@@ -59,10 +59,10 @@ namespace SabberStoneCore.Model.Entities
 			IsFrozen = false;
 			IsEnraged = false;
 			HasCharge = false;
-			IsWindfury = false;
+			HasWindfury = false;
 			HasDivineShield = false;
 			HasStealth = false;
-			IsDeathrattle = false;
+			HasDeathrattle = false;
 			HasBattleCry = false;
 			HasInspire = false;
 			HasLifeSteal = false;
