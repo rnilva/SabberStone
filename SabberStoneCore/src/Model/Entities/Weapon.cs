@@ -92,7 +92,7 @@ namespace SabberStoneCore.Model.Entities
 			get => base.ToBeDestroyed;
 			set
 			{
-				Game.ClearWeapons += Controller.Hero.RemoveWeaponDelegate.Value;
+				Game.ClearWeapons += Controller.Hero.RemoveWeapon;
 				base.ToBeDestroyed = value;
 			}
 		}
