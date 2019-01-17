@@ -50,6 +50,8 @@ namespace SabberStoneCore.Model.Entities
 			_list = new IPlayable[length];
 		}
 
+		public int Capacity => _list.Length;
+
 		public void Add(int key, IPlayable value)
 		{
 			IPlayable[] list = _list;
