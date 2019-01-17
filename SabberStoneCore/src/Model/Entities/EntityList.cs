@@ -38,6 +38,8 @@ namespace SabberStoneCore.Model.Entities
 					_list = newlist;
 				}
 
+				if (list.Length <= id)
+					;
 				if (list[id] == null)
 					_count++;
 
@@ -49,6 +51,8 @@ namespace SabberStoneCore.Model.Entities
 		{
 			_list = new IPlayable[length];
 		}
+
+		public int Capacity => _list.Length;
 
 		public void Add(int key, IPlayable value)
 		{

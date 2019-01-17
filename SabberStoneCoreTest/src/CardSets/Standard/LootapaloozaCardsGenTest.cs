@@ -3210,10 +3210,11 @@ namespace SabberStoneCoreTest.CardSets.Standard
 				var testCard = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Possessed Lackey"));
 				var darkPact = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dark Pact"));
 				int previousBoardAmount = game.CurrentPlayer.BoardZone.Count;
-				game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
-				game.Process(PlayCardTask.Any(game.CurrentPlayer, darkPact, testCard));
+				//game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 				if (previousBoardAmount < 7)
 				{
+					game.ProcessCard(testCard, asZeroCost: true);
+					game.Process(PlayCardTask.Any(game.CurrentPlayer, darkPact, testCard));
 					Assert.Equal(demonsInDeck.Count + minionsInDeck.Count - i - 1, game.CurrentPlayer.DeckZone.Count);
 				}
 				else

@@ -149,7 +149,6 @@ namespace SabberStoneCore.Model.Entities
 			Id = entity.Id;
 			OrderOfPlay = entity.OrderOfPlay;
 			AuraEffects = entity.AuraEffects?.Clone();
-			_toBeDestroyed = entity._toBeDestroyed;
 		}
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -393,20 +392,6 @@ namespace SabberStoneCore.Model.Entities
 		{
 			this[GameTag.TURN_START] = 0;
 		}
-
-		public virtual bool ToBeDestroyed
-		{
-			get => _toBeDestroyed;
-			set
-			{
-				_toBeDestroyed = value;
-
-				if (_history)
-					this[GameTag.TO_BE_DESTROYED] = value ? 1 : 0;
-			}
-		}
-
-		private bool _toBeDestroyed;
 
 		//public int NumTurnsInPlay
 		//{

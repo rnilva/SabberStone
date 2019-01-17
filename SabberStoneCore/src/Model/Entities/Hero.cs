@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
@@ -31,6 +32,7 @@ namespace SabberStoneCore.Model.Entities
 			: base(in controller, in card, in tags, in id)
 		{
 			Auras = new List<Aura>();
+			RemoveWeaponDelegate = new Lazy<Action>(() => RemoveWeapon);
 			Game.Log(LogLevel.VERBOSE, BlockType.PLAY, "Hero", !Game.Logging? "":$"{card.Name} ({card.Class}) was created.");
 		}
 
@@ -43,6 +45,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			Auras = new List<Aura>(hero.Auras.Count);
 			DamageTakenThisTurn = hero.DamageTakenThisTurn;
+			RemoveWeaponDelegate = hero.RemoveWeaponDelegate;
 		}
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -129,6 +132,24 @@ namespace SabberStoneCore.Model.Entities
 			return str.ToString();
 		}
 
+		internal readonly Lazy<Action> RemoveWeaponDelegate;
+
+		private void DisposeHero()
+		{
+			if (Controller.Opponent.PlayState == PlayState.LOSING)
+			{
+				Controller.PlayState = PlayState.TIED;
+				Controller.Opponent.PlayState = PlayState.TIED;
+			}
+			Controller.PlayState = PlayState.LOSING;
+		}
+
+		private static readonly Action<Game> SetDraw = g =>
+		{
+			g.Player1.PlayState = PlayState.TIED;
+			g.Player2.PlayState = PlayState.TIED;
+		};
+
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 	}
 
@@ -137,6 +158,17 @@ namespace SabberStoneCore.Model.Entities
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 		//public int SpellPowerDamage => this[GameTag.CURRENT_SPELLPOWER];
+
+		public override bool ToBeDestroyed
+		{
+			set
+			{
+				base.ToBeDestroyed = value;
+
+				if (value)
+					Game.ResolveDeadHeroes += DisposeHero;
+			}
+		}
 
 		public int EquippedWeapon
 		{

@@ -234,5 +234,23 @@ namespace SabberStoneCoreTest.Cloning
 			Assert.Equal(3, clone.CurrentOpponent.HandZone[0].Cost);
 			Assert.Equal(3, clone.CurrentOpponent.HandZone[1].Cost);
 		}
+
+		[Fact]
+		public void CloneWeaponRemove()
+		{
+			var game = new Game(new GameConfig());
+
+			game.StartGame();
+
+			game.ProcessCard("Fiery War Axe", asZeroCost: true);
+
+			Game clone = game.Clone();
+
+			clone.ProcessCard("Arcanite Reaper", asZeroCost: true);
+
+			Assert.NotNull(game.CurrentPlayer.Hero.Weapon);
+			Assert.Equal("Fiery War Axe", game.CurrentPlayer.Hero.Weapon.Card.Name);
+			Assert.Equal("Arcanite Reaper", clone.CurrentPlayer.Hero.Weapon.Card.Name);
+		}
 	}
 }

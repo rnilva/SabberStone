@@ -349,7 +349,7 @@ namespace SabberStoneCore.Model
 		private Game(Game game, bool logging = false) : base(null, game)
 		{
 			//IdEntityDic = new Dictionary<int, IPlayable>(game.IdEntityDic.Count);
-			IdEntityDic = new EntityList(game.IdEntityDic.Count);
+			IdEntityDic = new EntityList(game.IdEntityDic.Capacity);
 			Game = this;
 
 			Auras = new List<IAura>(game.Auras.Count);
@@ -1002,6 +1002,7 @@ namespace SabberStoneCore.Model
 		#endregion
 
 		internal Action ClearWeapons;
+		internal Action ResolveDeadHeroes;
 		private static readonly Func<Minion, int> GetOrderOfPlay = m => m.OrderOfPlay;
 
 		/// <summary>
@@ -1024,21 +1025,25 @@ namespace SabberStoneCore.Model
 					PowerHistoryBuilder.BlockStart(BlockType.DEATHS, 1, "", 0, 0);
 
 				DeadMinions.InsertionSort(GetOrderOfPlay);
-				foreach (Minion minion in DeadMinions)
+				for (var i = 0; i < DeadMinions.Count; i++)
 				{
-					Log(LogLevel.INFO, BlockType.PLAY, "Game", !Logging ? "" : $"{minion} is Dead! Graveyard say 'Hello'!");
+					Minion minion = DeadMinions[i];
+					Log(LogLevel.INFO, BlockType.PLAY, "Game",
+						!Logging ? "" : $"{minion} is Dead! Graveyard say 'Hello'!");
 
 					// Death event created
 					TriggerManager.OnDeathTrigger(minion);
 
 					minion.LastBoardPosition = minion.ZonePosition;
-					minion.Zone.Remove(minion);
+					//minion.Zone.Remove(minion);
+					Controller c = minion.Controller;
+					c.BoardZone.Remove(minion);
 
 					if (minion.HasDeathrattle)
 						minion.ActivateTask(PowerActivation.DEATHRATTLE);
 
-					minion.Controller.GraveyardZone.Add(minion);
-					minion.Controller.NumFriendlyMinionsThatDiedThisTurn++;
+					c.GraveyardZone.Add(minion);
+					c.NumFriendlyMinionsThatDiedThisTurn++;
 					CurrentPlayer.NumMinionsPlayerKilledThisTurn++;
 					NumMinionsKilledThisTurn++;
 
@@ -1054,32 +1059,40 @@ namespace SabberStoneCore.Model
 				DeadMinions.Clear();
 			}
 
-			if (Player1.Hero.ToBeDestroyed)
+			//if (Player1.Hero.ToBeDestroyed)
+			//{
+			//	// TODO: Temporary approach. Should change the whole structure.
+			//	if (State == State.COMPLETE)
+			//		return;
+
+			//	if (Player2.Hero.ToBeDestroyed)
+			//	{
+			//		Player1.PlayState = PlayState.TIED;
+			//		Player2.PlayState = PlayState.TIED;
+			//	}
+			//	else
+			//		Player1.PlayState = PlayState.LOSING;
+
+			//	NextStep = Step.FINAL_WRAPUP;
+			//}
+			//else if (Player2.Hero.ToBeDestroyed)
+			//{
+			//	// TODO: Temporary approach. Should change the whole structure.
+			//	if (State == State.COMPLETE)
+			//		return;
+
+			//	Player2.PlayState = PlayState.LOSING;
+
+			//	if (State == State.COMPLETE)
+			//		return;
+			//	NextStep = Step.FINAL_WRAPUP;
+			//}
+
+			if (ResolveDeadHeroes != null)
 			{
-				// TODO: Temporary approach. Should change the whole structure.
-				if (State == State.COMPLETE)
-					return;
+				ResolveDeadHeroes.Invoke();
+				ResolveDeadHeroes = null;
 
-				if (Player2.Hero.ToBeDestroyed)
-				{
-					Player1.PlayState = PlayState.TIED;
-					Player2.PlayState = PlayState.TIED;
-				}
-				else
-					Player1.PlayState = PlayState.LOSING;
-
-				NextStep = Step.FINAL_WRAPUP;
-			}
-			else if (Player2.Hero.ToBeDestroyed)
-			{
-				// TODO: Temporary approach. Should change the whole structure.
-				if (State == State.COMPLETE)
-					return;
-
-				Player2.PlayState = PlayState.LOSING;
-
-				if (State == State.COMPLETE)
-					return;
 				NextStep = Step.FINAL_WRAPUP;
 			}
 		}

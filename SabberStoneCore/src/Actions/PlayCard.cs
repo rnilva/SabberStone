@@ -39,8 +39,9 @@ namespace SabberStoneCore.Actions
 
 				bool echo = source.IsEcho;
 
-				if (!RemoveFromZone.Invoke(c, source))
-					return false;
+				//if (!RemoveFromZone.Invoke(c, source))
+				//	return false;
+				c.HandZone.Remove(source);
 
 				c.NumCardsPlayedThisTurn++;
 				c.LastCardPlayed = source.Id;

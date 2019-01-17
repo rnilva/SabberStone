@@ -251,6 +251,7 @@ namespace SabberStoneCore.Model.Entities
 				Array.Copy(playable.ChooseOnePlayables, ChooseOnePlayables, 2);
 			}
 
+			_toBeDestroyed = playable._toBeDestroyed;
 			_exhausted = playable._exhausted;
 			_zonePosition = playable._zonePosition;
 
@@ -611,6 +612,7 @@ namespace SabberStoneCore.Model.Entities
 	{
 		protected bool _exhausted;
 		protected int _zonePosition;
+		private bool _toBeDestroyed;
 
 		public int ZonePosition
 		{
@@ -626,6 +628,18 @@ namespace SabberStoneCore.Model.Entities
 		public bool Combo => Card.Combo;
 
 		public bool ChooseOne => Card.ChooseOne;
+
+		public virtual bool ToBeDestroyed
+		{
+			get => _toBeDestroyed;
+			set
+			{
+				_toBeDestroyed = value;
+
+				if (_history)
+					this[GameTag.TO_BE_DESTROYED] = value ? 1 : 0;
+			}
+		}
 
 		//public bool JustPlayed
 		//{
