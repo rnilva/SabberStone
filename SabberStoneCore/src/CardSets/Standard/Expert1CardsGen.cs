@@ -1479,11 +1479,10 @@ namespace SabberStoneCore.CardSets.Standard
 						new CopyTask(EntityType.TARGET, Zone.PLAY, addToStack: true),
 						new FuncPlayablesTask(list =>
 						{
-							var target = list[0] as ICharacter;
+							var target = list[0] as Minion;
 							if (target == null)
 								return list;
-							target.Damage = target.Health - 1;
-							target.IsIgnoreDamage = false;
+							target._damage = target.Card.Health - 1;
 							return list;
 						})),
 					RemoveAfterTriggered = true,

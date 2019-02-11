@@ -336,19 +336,7 @@ namespace SabberStoneCore.Model.Entities
 		public Card Card { get; set; }
 		public IZone Zone { get; set; }
 		public IAura OngoingEffect { get; set; }
-		public IEnumerable<ICharacter> ValidPlayTargets => null;
-		public bool ChooseOne { get; set; }
-		public bool IsPlayable => false;
-		public bool IsPlayableByPlayer => false;
-		public bool IsPlayableByCardReq => false;
-		public bool IsIgnoreDamage { get; set; }
-		public bool Combo => false;
-		public int Cost { get; set; }
-		public bool ToBeDestroyed { get; set; }
 		public int CardTarget { get; set; }
-		public int ZonePosition { get; set; }
-		public bool IsExhausted { get; set; }
-		public int Overload { get; set; }
 		public bool HasDeathrattle { get; set; }
 		public bool HasLifeSteal { get; set; }
 		public bool IsEcho => false;
@@ -388,7 +376,6 @@ namespace SabberStoneCore.Model.Entities
 		{
 			return GetEnumerator();
 		}
-
-		IPlayable IPlayable.Clone(in Controller controller) => Clone(in controller);
+		#endregion
 	}
 }
