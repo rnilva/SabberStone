@@ -272,27 +272,62 @@ namespace SabberStoneCore.Model.Entities
 		public Card Card { get; set; }
 		public IZone Zone { get; set; }
 		public IAura OngoingEffect { get; set; }
-		public IEnumerable<ICharacter> ValidPlayTargets => null;
-		public bool ChooseOne { get; set; }
-		public bool IsPlayable => false;
-		public bool IsPlayableByPlayer => false;
-		public bool IsPlayableByCardReq => false;
-		public bool IsIgnoreDamage { get; set; }
-		public bool Combo => false;
-		public int Cost { get; set; }
-		public bool ToBeDestroyed { get; set; }
 		public int CardTarget { get; set; }
-		public int ZonePosition { get; set; }
-		public bool IsExhausted { get; set; }
-		public int Overload { get; set; }
 		public bool HasDeathrattle { get; set; }
-		public bool HasLifeSteal { get; set; }
-		public bool IsEcho => false;
-		public IPlayable[] ChooseOnePlayables { get; set; }
-		public AuraEffects AuraEffects { get; set; }
-		public IDictionary<GameTag, int> NativeTags => _tags;
-		public List<Enchantment> AppliedEnchantments { get; set; }
-		public bool HasAnyValidPlayTargets { get; }
+
+		IPlayable IPlayable.Clone(in Controller controller) => Clone(in controller);
+
+		#region unused interface properties
+		List<Enchantment> IEntity.AppliedEnchantments
+		{
+			get => null;
+			set => throw new InvalidOperationException();
+		}
+		AuraEffects IEntity.AuraEffects
+		{
+			get => null;
+			set => throw new InvalidOperationException();
+		}
+		IDictionary<GameTag, int> IEntity.NativeTags => _tags;
+
+		bool IPlayable.ChooseOne => false;
+		IPlayable[] IPlayable.ChooseOnePlayables
+		{
+			get => null;
+			set => throw new InvalidOperationException();
+		}
+		bool IPlayable.Combo => false;
+		int IPlayable.Cost
+		{
+			get => 0;
+			set => throw new InvalidOperationException();
+		}
+		bool IPlayable.HasAnyValidPlayTargets => false;
+		bool IPlayable.HasLifeSteal
+		{
+			get => false;
+			set => throw new InvalidOperationException();
+		}
+		bool IPlayable.IsEcho => false;
+		bool IPlayable.IsExhausted
+		{
+			get => false;
+			set => throw new InvalidOperationException();
+		}
+		bool IPlayable.IsPlayableByCardReq => false;
+		bool IPlayable.IsPlayableByPlayer => false;
+		int IPlayable.Overload => 0;
+		bool IPlayable.ToBeDestroyed
+		{
+			get => false;
+			set => throw new InvalidOperationException();
+		}
+		IEnumerable<ICharacter> IPlayable.ValidPlayTargets => null;
+		int IPlayable.ZonePosition
+		{
+			get => 0;
+			set => throw new InvalidOperationException();
+		}
 
 		public string Hash(params GameTag[] ignore)
 		{
@@ -323,7 +358,6 @@ namespace SabberStoneCore.Model.Entities
 		{
 			return GetEnumerator();
 		}
-
-		IPlayable IPlayable.Clone(in Controller controller) => Clone(in controller);
+		#endregion
 	}
 }

@@ -21,7 +21,7 @@ namespace SabberStoneCore.Model.Entities
 		/// a result for the current state of the game.
 		/// </summary>
 		/// <value><c>true</c> if this entity is playable; otherwise, <c>false</c>.</value>
-		bool IsPlayable { get; }
+		//bool IsPlayable { get; }
 
 		/// <summary>Gets a value indicating whether this entity is playable by player. Dynamic requirements
 		/// are checked, eg: If a spell costs health instead of mana, this method will return <c>false</c>
@@ -34,13 +34,6 @@ namespace SabberStoneCore.Model.Entities
 		/// Static requirements are checked.</summary>
 		/// <value><c>true</c> if this entity is playable by card requirements; otherwise, <c>false</c>.</value>
 		bool IsPlayableByCardReq { get; }
-
-		/// <summary>Gets or sets a value indicating whether this entity is ignoring damage.
-		/// This is usefull when damage related tags have to be edited without causing
-		///	side-effects on this entities health and destruction status.
-		/// </summary>
-		/// <value><c>true</c> if this instance is ignoring damage; otherwise, <c>false</c>.</value>
-		bool IsIgnoreDamage { get; set; }
 
 		/// <summary>Gets a value indicating whether this <see cref="IPlayable"/> has a combo effect.</summary>
 		/// <value><c>true</c> if combo; otherwise, <c>false</c>.</value>
