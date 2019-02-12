@@ -328,16 +328,28 @@ namespace SabberStoneCore.Model
 			}
 
 			// setting up the decks ...
-			_gameConfig.Player1Deck?.ForEach(p =>
+			//_gameConfig.Player1Deck?.ForEach(p =>
+			//{
+			//	Player1.DeckCards.Add(p);
+			//	FromCard(Player1, p, null, Player1.DeckZone);
+			//});
+			//_gameConfig.Player2Deck?.ForEach(p =>
+			//{
+			//	Player2.DeckCards.Add(p);
+			//	FromCard(Player2, p, null, Player2.DeckZone);
+			//});
+
+			if (_gameConfig.Player1Deck != null)
 			{
-				Player1.DeckCards.Add(p);
-				FromCard(Player1, p, null, Player1.DeckZone);
-			});
-			_gameConfig.Player2Deck?.ForEach(p =>
+				Player1.DeckCards = new List<Card>(_gameConfig.Player1Deck);
+				Player1.DeckZone.Setup(this, _gameConfig.Player1Deck);
+			}
+			if (_gameConfig.Player2Deck != null)
 			{
-				Player2.DeckCards.Add(p);
-				FromCard(Player2, p, null, Player2.DeckZone);
-			});
+				Player2.DeckCards = new List<Card>(_gameConfig.Player2Deck);
+				Player2.DeckZone.Setup(this, _gameConfig.Player2Deck);
+			}
+
 			if (_gameConfig.FillDecks)
 			{
 				Player1.DeckZone.Fill(_gameConfig.FillDecksPredictably ? GameConfig.UnPredictableCardIDs : null);

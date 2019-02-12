@@ -2949,13 +2949,25 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("BOT_573", new Power {
 				PowerTask = new FuncNumberTask(source =>
 				{
-					Dictionary<int, Spell> secrets = new Dictionary<int, Spell>();
-					ReadOnlySpan<IPlayable> deck = source.Controller.DeckZone.GetSpan();
+					//Dictionary<int, Spell> secrets = new Dictionary<int, Spell>();
+					//ReadOnlySpan<IPlayable> deck = source.Controller.DeckZone.GetSpan();
+					//for (int i = 0; i < deck.Length; i++)
+					//	if (deck[i] is Spell s && s.IsSecret && !secrets.ContainsKey(s.Card.AssetId))
+					//		secrets.Add(s.Card.AssetId, s);
+					//foreach (KeyValuePair<int, Spell> item in secrets)
+					//	Generic.DrawBlock.Invoke(source.Controller, item.Value);
+
+					Dictionary<int, int> secrets = new Dictionary<int, int>();
+					ReadOnlySpan<PlayableSurrogate> deck = source.Controller.DeckZone.GetSpan();
 					for (int i = 0; i < deck.Length; i++)
-						if (deck[i] is Spell s && s.IsSecret && !secrets.ContainsKey(s.Card.AssetId))
-							secrets.Add(s.Card.AssetId, s);
-					foreach (KeyValuePair<int, Spell> item in secrets)
-						Generic.DrawBlock.Invoke(source.Controller, item.Value);
+					{
+						var deckCard = deck[i].Card;
+						if (deckCard.IsSecret && !secrets.ContainsKey(deckCard.AssetId))
+							secrets.Add(deckCard.AssetId, deck[i].Id);
+					}
+					foreach (var item in secrets)
+						Generic.DrawBlock.Invoke(source.Controller, )
+
 					return 0;
 				})
 			});

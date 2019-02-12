@@ -29,7 +29,8 @@ namespace SabberStoneCore.Model.Entities
 		/// The deck of this player.
 		/// This zone contains cards which are not yet drawn. Can be empty.
 		/// </summary>
-		public DeckZone DeckZone;
+		//public DeckZone DeckZone;
+		public DeckZone_new DeckZone;
 
 		/// <summary>
 		/// The hand of this player.
@@ -80,7 +81,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// Initial cards that are in the deck of the controller.
 		/// </summary>
-		public List<Card> DeckCards { get; internal set; } = new List<Card>();
+		public List<Card> DeckCards { get; internal set; }
 
 		/// <summary>
 		/// Base class of the controller.

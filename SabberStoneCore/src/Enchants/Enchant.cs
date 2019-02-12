@@ -55,10 +55,20 @@ namespace SabberStoneCore.Enchants
 		/// <param name="num2">Integer value for GameTag.TAG_SCRIPT_DATA_NUM_2.</param>
 		public virtual void ActivateTo(IEntity entity, Enchantment enchantment, int num1 = 0, int num2 = -1)
 		{
-			var effects = Effects;
+			IEffect[] effects = Effects;
+
+			if (entity is PlayableSurrogate surrogate)
+			{
+				for (int i = 0; i < effects.Length; i++)
+					surrogate.ApplyEffect(effects[i]);
+				return;
+			}
+
 			if (!UseScriptTag)
+			{
 				for (int i = 0; i < effects.Length; i++)
 					effects[i].ApplyTo(entity, IsOneTurnEffect);
+			}
 			else if (enchantment != null)
 			{
 				effects[0].ChangeValue(enchantment[GameTag.TAG_SCRIPT_DATA_NUM_1]).ApplyTo(entity, IsOneTurnEffect);
