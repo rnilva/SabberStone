@@ -72,6 +72,7 @@ namespace SabberStoneCore.Enchants
 		{
 			IEffect[] effects = Effects;
 			if (!UseScriptTag)
+			{
 				for (int i = 0; i < effects.Length; i++)
 					effects[i].ApplyTo(entity, IsOneTurnEffect);
 			else
