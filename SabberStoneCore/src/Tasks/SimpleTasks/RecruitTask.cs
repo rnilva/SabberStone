@@ -55,7 +55,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			for (int i = 0; i < deck.Length; i++)
 			{
-				if (!(deck[i] is Minion)) continue;
+				if (!(deck[i].IsMinion)) continue;
 
 				bool flag = true;
 				for (int j = 0; j < conditions?.Length; j++)
@@ -69,7 +69,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			int[] results = indices.ChooseNElements(amount, game.Random);
 
-			IPlayable[] entities = new IPlayable[results.Length];
+			PlayableSurrogate[] entities = new PlayableSurrogate[results.Length];
 			for (int i = 0; i < entities.Length; i++)
 				entities[i] = deck[results[i]];
 

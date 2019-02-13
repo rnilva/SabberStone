@@ -14,22 +14,42 @@ namespace SabberStoneCore.Model.Entities
 		private int _cost;
 		private int _atk;
 		private int _health;
+		private Card _card;
+		private int _id;
 
 		internal PlayableSurrogate(in Game game, in Card card)
 		{
-			Id = game.NextId;
-			//_game = game;
-			Card = card;
-			//_controller = controller;
-
+			int id = game.NextId;
+			game.IdEntityDic[id] = this;
+			_id = id;
+			_card = card;
 			_cost = card.Cost;
 			_atk = card.ATK;
 			_health = card.Health;
+
+			IsMinion = card.Type == CardType.MINION;
 		}
 
-		public int Id { get; set; }
+		private PlayableSurrogate(in PlayableSurrogate other)
+		{
+			_cost = other._cost;
+			_atk = other._atk;
+			_health = other._health;
+			_card = other._card;
+			_id = other._id;
+		}
 
-		public Card Card { get; set; }
+		public int Id
+		{
+			get => _id;
+			set => _id = value;
+		}
+
+		public Card Card
+		{
+			get => _card;
+			set => _card = value;
+		}
 
 		public int Cost
 		{
@@ -37,11 +57,30 @@ namespace SabberStoneCore.Model.Entities
 			set => _cost = value;
 		}
 
+		public int AttackDamage
+		{
+			get => _atk;
+			set => _atk = value;
+		}
+
+		public int Health
+		{
+			get => _health;
+			set => _health = value;
+		}
+
 		public Power Power => Card.Power;
 
-		internal IPlayable CastToPlayable(in Controller controller)
+		public bool IsMinion { get; private set; }
+
+		public bool HasTaunt => Card.Taunt;
+		public bool HasDivineShield => Card.DivineShield;
+		public bool HasLifeSteal => Card.LifeSteal;
+		public bool HasWindfury => Card.Windfury;
+
+		public IPlayable CastToPlayable(in Controller controller)
 		{
-			IPlayable entity = Entity.FromCard(in controller, in Card, id: in Id);
+			IPlayable entity = Entity.FromCard(in controller, in _card, id: in _id);
 			entity.Cost = _cost;
 			if (entity is Minion m)
 			{
@@ -123,6 +162,23 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
+		public static implicit operator PlayableSurrogate(Playable p)
+		{
+			var surrogate = new PlayableSurrogate(p.Game, p.Card);
+			return surrogate;
+		}
+
+		internal static PlayableSurrogate CastFromPlayable(IPlayable ip)
+		{
+			if (ip is Playable p)
+				return p;
+			else if
+				(ip is PlayableSurrogate ps)
+				return ps;
+
+			throw new InvalidCastException();
+		}
+
 		#region Implementation of IEnumerable
 
 		IEnumerator<KeyValuePair<GameTag, int>> IEnumerable<KeyValuePair<GameTag, int>>.GetEnumerator()
@@ -150,16 +206,25 @@ namespace SabberStoneCore.Model.Entities
 			set => throw new NotImplementedException();
 		}
 
-		IZone IEntity.Zone
-		{
-			get => throw new NotImplementedException();
-			set => throw new NotImplementedException();
-		}
+		public IZone Zone { get; set; }
 
-		int IEntity.this[GameTag t]
+		public int this[GameTag t]
 		{
-			get => throw new NotImplementedException();
-			set => throw new NotImplementedException();
+			get
+			{
+				switch (t)
+				{
+					case GameTag.COST:
+						return _cost;
+					case GameTag.ATK:
+						return _atk;
+					case GameTag.HEALTH:
+						return _health;
+					default:
+						return Card[t];
+				}
+			}
+			set { return; }
 		}
 
 		void IEntity.Reset()
@@ -273,11 +338,7 @@ namespace SabberStoneCore.Model.Entities
 			set => throw new NotImplementedException();
 		}
 
-		Trigger IPlayable.ActivatedTrigger
-		{
-			get => throw new NotImplementedException();
-			set => throw new NotImplementedException();
-		}
+		public Trigger ActivatedTrigger { get; set; }
 
 		IEnumerable<ICharacter> IPlayable.ValidPlayTargets => throw new NotImplementedException();
 
@@ -289,5 +350,10 @@ namespace SabberStoneCore.Model.Entities
 		bool IPlayable.HasAnyValidPlayTargets => throw new NotImplementedException();
 
 		#endregion
+
+		public override string ToString()
+		{
+			return $"'{Card.Name}[{Id}]'";
+		}
 	}
 }

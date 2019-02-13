@@ -14,6 +14,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Triggers
@@ -34,7 +35,7 @@ namespace SabberStoneCore.Triggers
 			_triggers = triggers;
 		}
 
-		public override Trigger Activate(IPlayable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
+		public override Trigger Activate(Game game, IPlayable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
 		{
 			if (source.ActivatedTrigger != null && !IsAncillaryTrigger)
 				throw new Exceptions.EntityException($"{source} already has an activated trigger.");
@@ -44,14 +45,14 @@ namespace SabberStoneCore.Triggers
 			bool flag = false;
 			for (int i = 0; i < triggers.Length; i++)
 			{
-				triggers[i] = _triggers[i]?.Activate(source, activation, cloning, true);
+				triggers[i] = _triggers[i]?.Activate(game, source, activation, cloning, true);
 				if (triggers[i] != null)
 					flag = true;
 			}
 
 			if (!flag) return null;
 
-			var instance = new MultiTrigger(triggers, this, source);
+			var instance = new MultiTrigger(triggers, this, game, source);
 
 			if (!IsAncillaryTrigger)
 				source.ActivatedTrigger = instance;

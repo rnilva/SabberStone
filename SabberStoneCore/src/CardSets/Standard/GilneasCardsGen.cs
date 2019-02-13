@@ -788,7 +788,7 @@ namespace SabberStoneCore.CardSets.Standard
 					//}, p.Controller, legendaries);
 					Random rnd = Util.Random;
 					Controller c = p.Controller;
-					DeckZone deck = c.DeckZone;
+					var deck = c.DeckZone;
 
 					for (int i = 0; i < deck.Count; i++)
 					{

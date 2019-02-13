@@ -162,7 +162,7 @@ namespace SabberStoneCore.Model.Zones
 		/// <param name="entity"></param>
 		public static void ActivateAura(Minion entity)
 		{
-			entity.Power?.Trigger?.Activate(entity);
+			entity.Power?.Trigger?.Activate(entity.Game, entity);
 			entity.Power?.Aura?.Activate(entity);
 		}
 
