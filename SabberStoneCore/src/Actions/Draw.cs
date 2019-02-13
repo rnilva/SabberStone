@@ -15,9 +15,9 @@ namespace SabberStoneCore.Actions
 			return DrawCardBlock.Invoke(c, card);
 		}
 
-		public static IPlayable Draw(Controller c, IPlayable cardToDraw = null)
+		public static IPlayable Draw(Controller c, int cardIdToDraw = -1)
 		{
-			return DrawBlock.Invoke(c, cardToDraw);
+			return DrawBlock.Invoke(c, cardIdToDraw);
 		}
 
 		public static Func<Controller, Card, IPlayable> DrawCardBlock
@@ -29,20 +29,20 @@ namespace SabberStoneCore.Actions
 				return playable;
 			};
 
-		public static Func<Controller, IPlayable, IPlayable> DrawBlock
-			=> delegate (Controller c, IPlayable cardToDraw)
+		public static Func<Controller, int, IPlayable> DrawBlock
+			=> delegate (Controller c, int cardIdToDraw)
 			{
 				if (!PreDrawPhase.Invoke(c))
 					return null;
 
-				IPlayable playable = DrawPhase.Invoke(c, cardToDraw);
+				IPlayable playable = DrawPhase.Invoke(c, cardIdToDraw);
 				//c.NumCardsToDraw--; 
 
 				if (AddHandPhase.Invoke(c, playable))
 				{
 					// DrawTrigger vs TOPDECK ?? not sure which one is first
 
-					if (cardToDraw == null)
+					if (cardIdToDraw > 0)
 					{
 						c.Game.TaskQueue.StartEvent();
 						c.Game.TriggerManager.OnDrawTrigger(playable);
@@ -88,11 +88,11 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		private static Func<Controller, IPlayable, IPlayable> DrawPhase
-			=> delegate (Controller c, IPlayable cardToDraw)
+		private static Func<Controller, int, IPlayable> DrawPhase
+			=> delegate (Controller c, int cardIdToDraw)
 			{
 				//IPlayable playable = c.DeckZone.Remove(cardToDraw ?? c.DeckZone.TopCard);
-				//IPlayable playable = c.DeckZone.Draw();
+				IPlayable playable = c.DeckZone.Draw(cardIdToDraw);
 
 				c.Game.Log(LogLevel.INFO, BlockType.ACTION, "DrawPhase", !c.Game.Logging ? "" : $"{c.Name} draws {playable}");
 

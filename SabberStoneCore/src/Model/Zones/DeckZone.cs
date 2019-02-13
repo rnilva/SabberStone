@@ -123,14 +123,15 @@ namespace SabberStoneCore.Model.Zones
 
 		public IPlayable Draw(int cardIdToDraw = -1)
 		{
+			PlayableSurrogate draw;
 			if (cardIdToDraw > 0)
 			{
-				// TODO
+					
 
 			}
 
-			PlayableSurrogate top = Remove(_entities[_count - 1]);
-			return top.CastToPlayable(Controller);
+			draw = Remove(_entities[_count - 1]);
+			return draw.CastToPlayable(Controller);
 		}
 
 		public void Setup(in Game game, in List<Card> cards)
