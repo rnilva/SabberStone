@@ -194,10 +194,10 @@ namespace SabberStoneCore.Actions
 				hero.Weapon = oldHero.Weapon;
 				c.SetasideZone.Add(oldHero.HeroPower);
 				hero.HeroPower = (HeroPower) Entity.FromCard(c, Cards.GetHeroPower(hero.Card[GameTag.HERO_POWER]));
-				hero.HeroPower.Power?.Trigger?.Activate(hero.HeroPower);
+				hero.HeroPower.Power?.Trigger?.Activate(game, hero.HeroPower);
 
 				c.Hero = hero;
-				hero.Power?.Trigger?.Activate(hero);
+				hero.Power?.Trigger?.Activate(game, hero);
 
 				// - OnPlay Phase --> OnPlay Trigger (Illidan)
 				//   (death processing, aura updates)
@@ -408,7 +408,7 @@ namespace SabberStoneCore.Actions
 
 				// not sure... need some test
 				weapon.Card.Power?.Aura?.Activate(weapon);
-				weapon.Card.Power?.Trigger?.Activate(weapon);
+				weapon.Card.Power?.Trigger?.Activate(game, weapon);
 
 
 				if (target != null)

@@ -19,13 +19,13 @@ namespace SabberStoneCore.Actions
 			    c.Game.TaskQueue.StartEvent();
 			    if (spell.IsSecret || spell.IsQuest)
 			    {
-				    spell.Power.Trigger?.Activate(spell);
+				    spell.Power.Trigger?.Activate(c.Game, spell);
 				    c.SecretZone.Add(spell);
 				    spell.IsExhausted = true;
 			    }
 			    else
 			    {
-				    spell.Power?.Trigger?.Activate(spell);
+				    spell.Power?.Trigger?.Activate(c.Game, spell);
 				    spell.Power?.Aura?.Activate(spell);
 
 				    if (spell.Combo && c.IsComboActive)

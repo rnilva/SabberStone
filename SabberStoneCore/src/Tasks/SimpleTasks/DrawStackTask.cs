@@ -10,10 +10,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
 			in TaskStack stack = null)
 		{
-			if (stack?.Playables.Count == 0) return TaskState.STOP;
+			if (stack == null || stack.Playables.Count == 0) return TaskState.STOP;
 
 			var list = new List<IPlayable>();
-			foreach (IPlayable p in stack?.Playables) list.Add(Generic.DrawBlock(controller, p));
+			foreach (IPlayable p in stack.Playables) list.Add(Generic.DrawBlock(controller, p.Id));
 
 			stack.Playables = list;
 			return TaskState.COMPLETE;

@@ -3280,7 +3280,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dr. Morrigan"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Dr. Morrigan"));
 
-			DeckZone deck = game.CurrentPlayer.DeckZone;
+			DeckZone_new deck = game.CurrentPlayer.DeckZone;
 			BoardZone board = game.CurrentPlayer.BoardZone;
 			Assert.Single(deck);
 

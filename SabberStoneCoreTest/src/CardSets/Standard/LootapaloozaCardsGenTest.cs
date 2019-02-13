@@ -1916,7 +1916,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Empty(game.CurrentPlayer.BoardZone);
 			Assert.Empty(game.CurrentOpponent.BoardZone);
 
-			Assert.All(game.CurrentPlayer.DeckZone, p => Assert.Equal(p.Controller, game.CurrentPlayer));
+			//Assert.All(game.CurrentPlayer.DeckZone, p => Assert.Equal(p.Controller, game.CurrentPlayer));
 		}
 
 		// ----------------------------------------- SPELL - PRIEST
@@ -2080,10 +2080,11 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			int i = 0;
 			do
 			{
-				if (game.CurrentPlayer.DeckZone[i] is Minion m)
+				PlayableSurrogate m = game.CurrentPlayer.DeckZone[i];
+				if (m.IsMinion)
 				{
 					game.CurrentPlayer.DeckZone.Remove(m);
-					game.CurrentPlayer.BoardZone.Add(m);
+					game.CurrentPlayer.BoardZone.Add((Minion)m.CastToPlayable(game.CurrentPlayer));
 				}
 
 				i++;
@@ -5686,7 +5687,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			game.EndTurn();
 			if (game.CurrentPlayer.HandZone.Last().Card.Id != "LOOT_541t")
-				Generic.Draw(game.CurrentPlayer, game.CurrentPlayer.DeckZone.First(p => p.Card.Id == "LOOT_541t"));
+				Generic.Draw(game.CurrentPlayer, game.CurrentPlayer.DeckZone.First(p => p.Card.Id == "LOOT_541t").Id);
 
 			game.ProcessCard(game.CurrentPlayer.HandZone.Last());
 

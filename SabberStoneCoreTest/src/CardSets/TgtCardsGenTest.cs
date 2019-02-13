@@ -2541,11 +2541,11 @@ namespace SabberStoneCoreTest.CardSets
 			if (minionsDeck.Any())
 			{
 				int count = minionsDeck.Count();
-				int nAtk = minionsDeck.Sum(p => ((Minion)p).AttackDamage);
-				int oAtk = minionsDeck.Sum(p => ((Minion)p).Card[GameTag.ATK]);
+				int nAtk = minionsDeck.Sum(p => p.AttackDamage);
+				int oAtk = minionsDeck.Sum(p => p.Card.ATK);
 				Assert.Equal(oAtk + count, nAtk);
-				int nHp = minionsDeck.Sum(p => ((Minion)p).Health);
-				int oHp = minionsDeck.Sum(p => ((Minion)p).Card[GameTag.HEALTH]);
+				int nHp = minionsDeck.Sum(p => p.Health);
+				int oHp = minionsDeck.Sum(p => p.Card.Health);
 				Assert.Equal(oHp + count, nHp);
 			}
 		}

@@ -169,7 +169,8 @@ namespace SabberStoneCore.Model.Entities
 			_playerId = playerId;
 			Controller = this;
 
-			DeckZone = new DeckZone(this);
+			//DeckZone = new DeckZone(this);
+			DeckZone = new DeckZone_new(this);
 			BoardZone = new BoardZone(this);
 			HandZone = new HandZone(this);
 			SecretZone = new SecretZone(this);

@@ -545,7 +545,7 @@ namespace SabberStoneCore.Auras
 			if (EnchantmentCard != null && ((Game.History /*&& _tempList == null*/) || EnchantmentCard.Power.Trigger != null))
 			{
 				Enchantment instance = Enchantment.GetInstance(entity.Controller, Owner, entity, in EnchantmentCard);
-				EnchantmentCard.Power.Trigger?.Activate(instance);
+				EnchantmentCard.Power.Trigger?.Activate(Game, instance);
 			}
 
 			AppliedEntityIdCollection.Add(entity.Id);

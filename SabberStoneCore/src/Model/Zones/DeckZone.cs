@@ -3,6 +3,7 @@ using System.Linq;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 using System.Collections.Generic;
+using SabberStoneCore.Exceptions;
 
 
 namespace SabberStoneCore.Model.Zones
@@ -38,7 +39,7 @@ namespace SabberStoneCore.Model.Zones
 		{
 			base.Add(entity, zonePosition);
 
-			entity.Power?.Trigger?.Activate(entity, TriggerActivation.DECK);
+			entity.Power?.Trigger?.Activate(Game, entity, TriggerActivation.DECK);
 
 			if (NoEvenCostCards || NoOddCostCards)
 			{
@@ -120,25 +121,118 @@ namespace SabberStoneCore.Model.Zones
 
 		public bool NoEvenCostCards { get; private set; } = true;
 		public bool NoOddCostCards { get; private set; } = true;
+		public IPlayable TopCard => _entities[_count - 1];
+
+		public DeckZone_new(Controller controller)
+		{
+			Game = controller.Game;
+			Controller = controller;
+		}
+
+		private DeckZone_new(Controller c, DeckZone_new zone) : base(c, zone)
+		{
+			NoEvenCostCards = zone.NoEvenCostCards;
+			NoOddCostCards = zone.NoOddCostCards;
+		}
+
+		public void Add(IPlayable playable, int zonePosition = -1)
+		{
+			if (playable is Playable p)
+				Add(p, zonePosition);
+			else if
+				(playable is PlayableSurrogate ps)
+				Add(entity: ps, zonePosition);
+		}
+
+		public IPlayable Remove(IPlayable playable)
+		{
+			return Remove(entity: (PlayableSurrogate) playable).CastToPlayable(Controller);
+		}
+
+		private PlayableSurrogate Remove(int id)
+		{
+			var entities = _entities;
+			var c = _count;
+			for (int i = _count - 1; i >= 0; i--)
+				if (entities[i].Id == id)
+				{
+					//IPlayable p = entities[i].CastToPlayable(Controller);
+					PlayableSurrogate ps = entities[i];
+					ps.ActivatedTrigger?.Remove();
+
+					if (i != _count - 1)
+						Array.Copy(entities, i + 1, entities, i, _count - i - 1);
+
+					return ps;
+				}
+
+			return null;
+		}
 
 		public IPlayable Draw(int cardIdToDraw = -1)
 		{
 			PlayableSurrogate draw;
 			if (cardIdToDraw > 0)
 			{
-					
-
+				draw = Remove(cardIdToDraw);
+				if (draw == null)
+					return null;
 			}
-
-			draw = Remove(_entities[_count - 1]);
+			else
+				draw = Remove(entity: _entities[_count - 1]);
 			return draw.CastToPlayable(Controller);
 		}
+
+		public IPlayable Draw(Predicate<Card> predicate)
+		{
+			var entities = _entities;
+			var c = _count;
+			for (int i = _count - 1; i >= 0; i--)
+				if (predicate(entities[i].Card))
+				{
+					IPlayable p = entities[i].CastToPlayable(Controller);
+					entities[i].ActivatedTrigger?.Remove();
+
+					if (i != _count - 1)
+						Array.Copy(entities, i + 1, entities, i, _count - i - 1);
+
+					return p;
+				}
+
+			return null;
+		}
+
+		public PlayableSurrogate Pop()
+		{
+			return Remove(entity: _entities[_count - 1]);
+		}
+
 
 		public void Setup(in Game game, in List<Card> cards)
 		{
 			for (int i = 0; i < cards.Count; i++)
-				Add(new PlayableSurrogate(in game, cards[i]));
+			{
+				var ps = new PlayableSurrogate(in game, cards[i]);
+				Add(ps);
+			}
+		}
 
+		public void Shuffle()
+		{
+			int n = _count;
+
+			Random rnd = Util.Random;
+
+			Game.Log(LogLevel.INFO, BlockType.PLAY, "Deck", !Game.Logging ? "" : $"{Controller.Name} shuffles its deck.");
+
+			var entities = _entities;
+			for (int i = 0; i < n; i++)
+			{
+				int r = rnd.Next(i, n);
+				var temp = entities[i];
+				entities[i] = entities[r];
+				entities[r] = temp;
+			}
 		}
 
 		public void Fill(IReadOnlyCollection<string> excludeIds = null)
@@ -163,10 +257,22 @@ namespace SabberStoneCore.Model.Zones
 				Controller.DeckCards.Add(card);
 
 				//IPlayable entity = Entity.FromCard(Controller, card);
-				Add(new PlayableSurrogate(Game, card));
-
+				//Add(new PlayableSurrogate(Game, card));
+				var ps = new PlayableSurrogate(Game, in card);
+				Add(ps);
 				cardsToAdd--;
 			}
+		}
+
+		public DeckZone_new Clone(Controller c)
+		{
+			return new DeckZone_new(c, this);
+		}
+
+		internal void SetEntity(int index, IPlayable newEntity)
+		{
+			_entities[index] = PlayableSurrogate.CastFromPlayable(newEntity);
+			newEntity.Zone = this;
 		}
 
 		#region Overrides of Zone<PlayableSurrogate>
@@ -177,9 +283,14 @@ namespace SabberStoneCore.Model.Zones
 
 		public override void Add(PlayableSurrogate entity, int zonePosition = -1)
 		{
-			base.Add(entity, zonePosition);
+			if (zonePosition > _count)
+				throw new ZoneException($"Zoneposition '{zonePosition}' isn't in a valid range.");
 
-			entity.Power?.Trigger?.Activate(entity, TriggerActivation.DECK);
+			MoveTo(entity, zonePosition);
+
+			Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}'.");
+
+			entity.Power?.Trigger?.Activate(Game, entity, TriggerActivation.DECK);
 
 			if (NoEvenCostCards || NoOddCostCards)
 			{

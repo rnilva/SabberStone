@@ -5857,10 +5857,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Corpsetaker"));
-			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p is Minion && ((Minion)p).HasTaunt), game.CurrentPlayer.BoardZone[0].HasTaunt);
-			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p is Minion && ((Minion)p).HasDivineShield), game.CurrentPlayer.BoardZone[0].HasDivineShield);
-			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p is Minion && ((Minion)p).HasLifeSteal), game.CurrentPlayer.BoardZone[0].HasLifeSteal);
-			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p is Minion && ((Minion)p).HasWindfury), game.CurrentPlayer.BoardZone[0].HasWindfury);
+			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p.IsMinion && p.HasTaunt), game.CurrentPlayer.BoardZone[0].HasTaunt);
+			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p.IsMinion && p.HasDivineShield), game.CurrentPlayer.BoardZone[0].HasDivineShield);
+			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p.IsMinion && p.HasLifeSteal), game.CurrentPlayer.BoardZone[0].HasLifeSteal);
+			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p.IsMinion && p.HasWindfury), game.CurrentPlayer.BoardZone[0].HasWindfury);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

@@ -2706,12 +2706,12 @@ namespace SabberStoneCoreTest.CardSets
 				int oAtk = weaponsHand.Sum(p => ((Weapon)p).Card[GameTag.ATK]);
 				Assert.Equal(oAtk + count, nAtk);
 			}
-			var weaponsDeck = game.CurrentPlayer.DeckZone.Where(p => p is Weapon).ToList();
+			var weaponsDeck = game.CurrentPlayer.DeckZone.Where(p => p.Card.Type == CardType.WEAPON).ToList();
 			if (weaponsDeck.Any())
 			{
 				int count = weaponsDeck.Count();
-				int nAtk = weaponsDeck.Sum(p => ((Weapon)p).AttackDamage);
-				int oAtk = weaponsDeck.Sum(p => ((Weapon)p).Card[GameTag.ATK]);
+				int nAtk = weaponsDeck.Sum(p => p.AttackDamage);
+				int oAtk = weaponsDeck.Sum(p => p.Card.ATK);
 				Assert.Equal(oAtk + count, nAtk);
 			}
 		}

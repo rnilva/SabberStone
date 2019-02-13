@@ -38,7 +38,7 @@ namespace SabberStoneCore.Model.Entities
 			_creatorId = e._creatorId;
 			_capturedCard = e._capturedCard;
 			//e.OngoingEffect?.Clone(this);
-			e.ActivatedTrigger?.Activate(this);
+			e.ActivatedTrigger?.Activate(Game, this);
 			//Game.IdEntityDic.Add(Id, this);
 			Game.IdEntityDic[Id] = this;
 			if (e.IsOneTurnActive)
@@ -52,7 +52,7 @@ namespace SabberStoneCore.Model.Entities
 
 			if (Power.Enchant?.RemoveWhenPlayed ?? false)
 			{
-				Enchant.RemoveWhenPlayedTrigger.Activate(this);
+				Enchant.RemoveWhenPlayedTrigger.Activate(Game, this);
 			}
 
 			if (e.Creator is Enchantment eCreator)

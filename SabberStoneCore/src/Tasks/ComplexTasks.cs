@@ -249,7 +249,7 @@ namespace SabberStoneCore.Tasks
 							}
 
 							c.DeckZone.Remove(pick);
-							pick.Power.Trigger?.Activate(pick);
+							pick.Power.Trigger?.Activate(c.Game, pick);
 							c.SecretZone.Add((Spell) pick);
 							if (c == c.Game.CurrentPlayer)
 								pick.IsExhausted = true;

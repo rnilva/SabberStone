@@ -536,12 +536,13 @@ namespace SabberStoneCore.CardSets.Standard
 				PowerTask = ComplexTask.Create(
 					new FuncNumberTask(p =>
 					{
-						DeckZone deck = p.Controller.DeckZone;
+						var deck = p.Controller.DeckZone;
 						if (deck.IsEmpty) return 0;
 						List<int> ids = new List<int>(3);
 						for (int i = 0; i < 3 && deck.Count != 0; i++)
 						{
-							IPlayable entity = deck.Remove(deck.TopCard);
+							//IPlayable entity = deck.Remove(deck.TopCard);
+							var entity = deck.Pop();
 							ids.Add(entity.Id);
 							p.Controller.SetasideZone.Add(entity);
 						}

@@ -2965,8 +2965,9 @@ namespace SabberStoneCore.CardSets.Standard
 						if (deckCard.IsSecret && !secrets.ContainsKey(deckCard.AssetId))
 							secrets.Add(deckCard.AssetId, deck[i].Id);
 					}
+
 					foreach (var item in secrets)
-						Generic.DrawBlock.Invoke(source.Controller, )
+						Generic.DrawBlock.Invoke(source.Controller, item.Value);
 
 					return 0;
 				})

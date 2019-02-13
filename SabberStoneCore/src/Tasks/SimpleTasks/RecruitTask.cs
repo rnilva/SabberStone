@@ -35,13 +35,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			if (amount == 0) return TaskState.STOP;
 
-			ReadOnlySpan<IPlayable> deck = controller.DeckZone.GetSpan();
+			ReadOnlySpan<PlayableSurrogate> deck = controller.DeckZone.GetSpan();
 			SelfCondition[] conditions = _conditions;
 			var indices = new List<int>();
 
 			for (int i = 0; i < deck.Length; i++)
 			{
-				if (!(deck[i] is Minion)) continue;
+				if (!(deck[i].IsMinion)) continue;
 
 				bool flag = true;
 				for (int j = 0; j < conditions?.Length; j++)
@@ -55,7 +55,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			int[] results = indices.ChooseNElements(amount);
 
-			IPlayable[] entities = new IPlayable[results.Length];
+			PlayableSurrogate[] entities = new PlayableSurrogate[results.Length];
 			for (int i = 0; i < entities.Length; i++)
 				entities[i] = deck[results[i]];
 
@@ -65,7 +65,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			for (int i = 0; i < entities.Length; i++)
 			{
 				Generic.RemoveFromZone.Invoke(controller, entities[i]);
-				Generic.SummonBlock.Invoke(game, (Minion)entities[i], -1);
+				//Generic.SummonBlock.Invoke(game, (Minion)entities[i], -1);
+				Generic.SummonBlock.Invoke(game, (Minion)entities[i].CastToPlayable(in controller), -1);
 
 				if (controller.BoardZone.IsFull)
 					break;

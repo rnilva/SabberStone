@@ -286,7 +286,7 @@ namespace SabberStoneCore.Model.Zones
 
 			MoveTo(entity, zonePosition < 0 ? _count : zonePosition);
 
-			Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}' in position '{entity.ZonePosition}'.");
+			Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}'.");
 		}
 
 		public override void MoveTo(T entity, int zonePosition = -1)

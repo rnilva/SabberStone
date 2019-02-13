@@ -595,15 +595,15 @@ namespace SabberStoneCore.Tasks
 				Controller c = p.Controller;
 				Controller op = c.Opponent;
 
-				DeckZone temp = c.DeckZone;
+				DeckZone_new temp = c.DeckZone;
 				temp.ForEach(x =>
 				{
-					x.Controller = op;
+					//x.Controller = op;
 					x[GameTag.CONTROLLER] = op.PlayerId;
 				});
 				op.DeckZone.ForEach(x =>
 				{
-					x.Controller = c;
+					//x.Controller = c;
 					x[GameTag.CONTROLLER] = c.PlayerId;
 				});
 				c.DeckZone = op.DeckZone;
@@ -615,7 +615,7 @@ namespace SabberStoneCore.Tasks
 			});
 
 		public static ISimpleTask TessGreymane
-			=> new FuncNumberTask(p =>
+			=> new FuncNumberTask((IPlayable p) =>
 			{
 				IList<Card> playedCards = p.Controller.PlayHistory
 					.Select(e => e.SourceCard)
@@ -657,7 +657,7 @@ namespace SabberStoneCore.Tasks
 						case CardType.WEAPON:
 							var weapon = entity as Weapon;
 							weapon.Card.Power?.Aura?.Activate(weapon);
-							weapon.Card.Power?.Trigger?.Activate(weapon);
+							weapon.Card.Power?.Trigger?.Activate(c.Game, weapon);
 							c.Hero.AddWeapon(weapon);
 							break;
 						case CardType.HERO:
@@ -798,7 +798,7 @@ namespace SabberStoneCore.Tasks
 				c.SetasideZone.Add(currentPower);
 				HeroPower nextPower = (HeroPower)Entity.FromCard(in c, Cards.FromId(nextId));
 				c.Hero.HeroPower = nextPower;
-				nextPower.Power?.Trigger?.Activate(nextPower);
+				nextPower.Power?.Trigger?.Activate(c.Game, nextPower);
 
 				return 0;
 			});
@@ -808,7 +808,7 @@ namespace SabberStoneCore.Tasks
 			new FuncNumberTask(p =>
 			{
 				Controller c = p.Controller;
-				ReadOnlySpan<IPlayable> deck = c.DeckZone.GetSpan();
+				ReadOnlySpan<PlayableSurrogate> deck = c.DeckZone.GetSpan();
 				List<int> minions = new List<int>();
 				List<int> spells = new List<int>();
 				for (int i = 0; i < deck.Length; i++)
@@ -826,17 +826,17 @@ namespace SabberStoneCore.Tasks
 
 				if (minionToDraw == null)
 				{
-					Generic.Draw(c, spellToDraw);
+					Generic.Draw(c, spellToDraw?.Id ?? -1);
 					return 0;
 				}
 				if (spellToDraw == null)
 				{
-					Generic.Draw(c, minionToDraw);
+					Generic.Draw(c, minionToDraw?.Id ?? -1);
 					return 0;
 				}
 
-				Generic.Draw(c, minionToDraw);
-				Generic.Draw(c, spellToDraw);
+				Generic.Draw(c, minionToDraw.Id);
+				Generic.Draw(c, spellToDraw.Id);
 
 				int temp = minionToDraw.Cost;
 				minionToDraw.Cost = spellToDraw.Cost;
@@ -919,12 +919,12 @@ namespace SabberStoneCore.Tasks
 					newEntity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, source.Id);
 					newEntity.Cost = newEntity.Card.Cost - 1;
 				}
-				
 
+				ReadOnlySpan<PlayableSurrogate> deck = controller.DeckZone.GetSpan();
 				// replace cards in deck
-				for (int i = controller.DeckZone.Count - 1; i >= 0; i--)
+				for (int i = deck.Length - 1; i >= 0; i--)
 				{
-					IPlayable entity = controller.DeckZone[i];
+					PlayableSurrogate entity = deck[i];
 					if (entity.Card.Class != CardClass.WARLOCK) continue;
 
 					Card randCard = Util.Choose(cards);

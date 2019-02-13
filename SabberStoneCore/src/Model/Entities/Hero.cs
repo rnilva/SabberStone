@@ -137,7 +137,8 @@ namespace SabberStoneCore.Model.Entities
 				Controller.PlayState = PlayState.TIED;
 				Controller.Opponent.PlayState = PlayState.TIED;
 			}
-			Controller.PlayState = PlayState.LOSING;
+			else
+				Controller.PlayState = PlayState.LOSING;
 		}
 
 		private static readonly Action<Game> SetDraw = g =>

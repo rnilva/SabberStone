@@ -281,11 +281,11 @@ namespace SabberStoneCore.Actions
 					}
 
 					power.Aura?.Activate(enchantment);
-					power.Trigger?.Activate(enchantment);
+					power.Trigger?.Activate(c.Game, enchantment);
 					power.Enchant?.ActivateTo(target, enchantment);
 
 					if (power.Enchant?.RemoveWhenPlayed ?? false)
-						Enchant.RemoveWhenPlayedTrigger.Activate(enchantment);
+						Enchant.RemoveWhenPlayedTrigger.Activate(c.Game, enchantment);
 
 					if (power.DeathrattleTask != null)
 						((IPlayable)target).HasDeathrattle = true;
@@ -305,10 +305,10 @@ namespace SabberStoneCore.Actions
 								instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = num2;
 						}
 						power.Aura?.Activate(instance);
-						power.Trigger?.Activate(instance);
+						power.Trigger?.Activate(c.Game, instance);
 
 						if (power.Enchant?.RemoveWhenPlayed ?? false)
-							Enchant.RemoveWhenPlayedTrigger.Activate(instance);
+							Enchant.RemoveWhenPlayedTrigger.Activate(c.Game, instance);
 
 						if (useEntityId)
 							instance.CapturedCard = c.Game.IdEntityDic[num1].Card;
@@ -420,12 +420,12 @@ namespace SabberStoneCore.Actions
 				switch (p.Zone.Type)
 				{
 					case Zone.HAND:
-						p.Power?.Trigger?.Activate(p, TriggerActivation.HAND);
+						p.Power?.Trigger?.Activate(c.Game, p, TriggerActivation.HAND);
 						if (p.Power?.Aura is AdaptiveCostEffect e)
 							e.Activate((Playable)p);
 						break;
 					case Zone.DECK:
-						p.Power?.Trigger?.Activate(p, TriggerActivation.DECK);
+						p.Power?.Trigger?.Activate(c.Game, p, TriggerActivation.DECK);
 						break;
 					case Zone.PLAY:
 						BoardZone.ActivateAura((Minion) p);

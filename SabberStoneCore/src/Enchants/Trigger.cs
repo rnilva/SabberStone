@@ -75,9 +75,9 @@ namespace SabberStoneCore.Enchants
 		    }
 	    }
 
-	    protected Trigger(Trigger prototype, IEntity owner)
+	    protected Trigger(Trigger prototype, Game game, IEntity owner)
 	    {
-			Game = owner.Game;
+			Game = game;
 			_sourceId = owner.Id;
 		    _owner = (IPlayable)owner;
 		    _triggerType = prototype._triggerType;
@@ -101,7 +101,7 @@ namespace SabberStoneCore.Enchants
 		/// <summary>
 		/// Create a new instance of <see cref="Trigger"/> object in source's Game. During activation, the instance's <see cref="Process(IEntity)"/> subscribes to the events in <see cref="TriggerManager"/>.
 		/// </summary>
-		public virtual Trigger Activate(IPlayable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
+		public virtual Trigger Activate(Game game, IPlayable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
 		{
 			if (source.ActivatedTrigger != null && !IsAncillaryTrigger && !asAncillary)
 				throw new Exceptions.EntityException($"{source} already has an activated trigger.");
@@ -115,7 +115,7 @@ namespace SabberStoneCore.Enchants
 					return null;
 			}
 
-			var instance = new Trigger(this, source);
+			var instance = new Trigger(this, game, source);
 
 			if (asAncillary)
 				instance.IsAncillaryTrigger = true;
@@ -123,12 +123,12 @@ namespace SabberStoneCore.Enchants
 				source.ActivatedTrigger = instance;
 
 			if (_sequenceType != SequenceType.None)
-				source.Game.Triggers.Add(instance);
+				game.Triggers.Add(instance);
 
 			switch (_triggerType)
 			{
 				case TriggerType.DEAL_DAMAGE:
-					source.Game.TriggerManager.DealDamageTrigger += instance._processHandler;
+					game.TriggerManager.DealDamageTrigger += instance._processHandler;
 					break;
 				case TriggerType.TAKE_DAMAGE:
 					if (TriggerSource == TriggerSource.SELF)
@@ -144,26 +144,26 @@ namespace SabberStoneCore.Enchants
 						source.Controller.Hero.TakeDamageTrigger += instance._processHandler;
 						break;
 					}
-					source.Game.TriggerManager.DamageTrigger += instance._processHandler;
+					game.TriggerManager.DamageTrigger += instance._processHandler;
 					break;
 				case TriggerType.HEAL:
-					source.Game.TriggerManager.HealTrigger += instance._processHandler;
+					game.TriggerManager.HealTrigger += instance._processHandler;
 					break;
 				case TriggerType.TURN_END:
 				case TriggerType.WORGEN_TRANSFORM:
-					source.Game.TriggerManager.EndTurnTrigger += instance._processHandler;
+					game.TriggerManager.EndTurnTrigger += instance._processHandler;
 					break;
 				case TriggerType.TURN_START:
-					source.Game.TriggerManager.TurnStartTrigger += instance._processHandler;
+					game.TriggerManager.TurnStartTrigger += instance._processHandler;
 					break;
 				case TriggerType.SUMMON:
-					source.Game.TriggerManager.SummonTrigger += instance._processHandler;
+					game.TriggerManager.SummonTrigger += instance._processHandler;
 					break;
 				case TriggerType.AFTER_SUMMON:
-					source.Game.TriggerManager.AfterSummonTrigger += instance._processHandler;
+					game.TriggerManager.AfterSummonTrigger += instance._processHandler;
 					break;
 				case TriggerType.ATTACK:
-					source.Game.TriggerManager.AttackTrigger += instance._processHandler;
+					game.TriggerManager.AttackTrigger += instance._processHandler;
 					break;
 				case TriggerType.AFTER_ATTACK:
 					switch (TriggerSource)
@@ -182,25 +182,25 @@ namespace SabberStoneCore.Enchants
 					}
 					break;
 				case TriggerType.DEATH:
-					source.Game.TriggerManager.DeathTrigger += instance._processHandler;
+					game.TriggerManager.DeathTrigger += instance._processHandler;
 					break;
 				case TriggerType.PLAY_CARD:
-					source.Game.TriggerManager.PlayCardTrigger += instance._processHandler;
+					game.TriggerManager.PlayCardTrigger += instance._processHandler;
 					break;
 				case TriggerType.AFTER_PLAY_CARD:
-					source.Game.TriggerManager.AfterPlayCardTrigger += instance._processHandler;
+					game.TriggerManager.AfterPlayCardTrigger += instance._processHandler;
 					break;
 				case TriggerType.PLAY_MINION:
-					source.Game.TriggerManager.PlayMinionTrigger += instance._processHandler;
+					game.TriggerManager.PlayMinionTrigger += instance._processHandler;
 					break;
 				case TriggerType.AFTER_PLAY_MINION:
-					source.Game.TriggerManager.AfterPlayMinionTrigger += instance._processHandler;
+					game.TriggerManager.AfterPlayMinionTrigger += instance._processHandler;
 					break;
 				case TriggerType.CAST_SPELL:
-					source.Game.TriggerManager.CastSpellTrigger += instance._processHandler;
+					game.TriggerManager.CastSpellTrigger += instance._processHandler;
 					break;
 				case TriggerType.AFTER_CAST:
-					source.Game.TriggerManager.AfterCastTrigger += instance._processHandler;
+					game.TriggerManager.AfterCastTrigger += instance._processHandler;
 					break;
 				case TriggerType.PREDAMAGE:
 					switch (TriggerSource)
@@ -217,40 +217,40 @@ namespace SabberStoneCore.Enchants
 					}
 					break;
 				case TriggerType.SECRET_REVEALED:
-					source.Game.TriggerManager.SecretRevealedTrigger += instance._processHandler;
+					game.TriggerManager.SecretRevealedTrigger += instance._processHandler;
 					break;
 				case TriggerType.ZONE:
-					source.Game.TriggerManager.ZoneTrigger += instance._processHandler;
+					game.TriggerManager.ZoneTrigger += instance._processHandler;
 					break;
 				case TriggerType.DISCARD:
-					source.Game.TriggerManager.DiscardTrigger += instance._processHandler;
+					game.TriggerManager.DiscardTrigger += instance._processHandler;
 					break;
 				case TriggerType.GAME_START:
-					source.Game.TriggerManager.GameStartTrigger += instance._processHandler;
+					game.TriggerManager.GameStartTrigger += instance._processHandler;
 					break;
 				case TriggerType.DRAW:
-					source.Game.TriggerManager.DrawTrigger += instance._processHandler;
+					game.TriggerManager.DrawTrigger += instance._processHandler;
 					break;
 				case TriggerType.TARGET:
-					source.Game.TriggerManager.TargetTrigger += instance._processHandler;
+					game.TriggerManager.TargetTrigger += instance._processHandler;
 					break;
 				case TriggerType.LOSE_DIVINE_SHIELD:
-					source.Game.TriggerManager.LoseDivineShield += instance._processHandler;
+					game.TriggerManager.LoseDivineShield += instance._processHandler;
 					break;
 				case TriggerType.INSPIRE:
-					source.Game.TriggerManager.InspireTrigger += instance._processHandler;
+					game.TriggerManager.InspireTrigger += instance._processHandler;
 					break;
 				case TriggerType.FROZEN:
-					source.Game.TriggerManager.FreezeTrigger += instance._processHandler;
+					game.TriggerManager.FreezeTrigger += instance._processHandler;
 					break;
 				case TriggerType.ARMOR:
-					source.Game.TriggerManager.ArmorTrigger += instance._processHandler;
+					game.TriggerManager.ArmorTrigger += instance._processHandler;
 					break;
 				case TriggerType.EQUIP_WEAPON:
-					source.Game.TriggerManager.EquipWeaponTrigger += instance._processHandler;
+					game.TriggerManager.EquipWeaponTrigger += instance._processHandler;
 					break;
 				case TriggerType.SHUFFLE_INTO_DECK:
-					source.Game.TriggerManager.ShuffleIntoDeckTrigger += instance._processHandler;
+					game.TriggerManager.ShuffleIntoDeckTrigger += instance._processHandler;
 					break;
 			}
 

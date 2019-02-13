@@ -608,7 +608,7 @@ namespace SabberStoneCore.Model
 			_players.ToList().ForEach(p =>
 			{
 				// quest draw if there is
-				IPlayable quest = p.DeckZone.FirstOrDefault(q => q is Spell spell && spell.IsQuest);
+				int quest = p.DeckZone.FirstOrDefault(q => q.Card.IsQuest)?.Id ?? -1;
 				Generic.Draw(p, quest);
 				Generic.Draw(p);
 				Generic.Draw(p);
