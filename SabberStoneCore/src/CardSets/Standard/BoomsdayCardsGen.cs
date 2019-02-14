@@ -1499,8 +1499,8 @@ namespace SabberStoneCore.CardSets.Standard
 				PowerTask = ComplexTask.Repeat(
 					ComplexTask.Create(
 						new RandomCardTask(EntityType.OP_HERO),
-						new AddEnchantmentTask("BOT_087e", EntityType.STACK),
-						new AddStackTo(EntityType.DECK)), 10)
+						new AddStackTo(EntityType.DECK),
+						new AddEnchantmentTask("BOT_087e", EntityType.STACK)), 10)
 			});
 
 			// ------------------------------------------ SPELL - ROGUE
