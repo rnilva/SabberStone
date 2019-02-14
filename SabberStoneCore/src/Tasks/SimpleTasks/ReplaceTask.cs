@@ -42,7 +42,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			{
 				IZone zone = p.Zone;
 				controller.SetasideZone.Add(zone.Remove(p));
-				zone.Add(Entity.FromCard(in controller, cards.Count > 1 ? Util.Choose(cards) : cards.First()));
+				if (zone is DeckZone_new deck)
+					deck.Add(new PlayableSurrogate(in game, cards.Count > 1 ? Util.Choose(cards) : cards.First()));
+				else
+					zone.Add((Playable)Entity.FromCard(in controller, cards.Count > 1 ? Util.Choose(cards) : cards.First()));
 			}
 
 			return TaskState.COMPLETE;

@@ -2514,7 +2514,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			// Should not maintain enchantments when copied into Deck
 			for (int i = 0; i < 3; i++)
-				Assert.Equal(1, game.CurrentPlayer.DeckZone[i].AsCharacter().AttackDamage);
+				Assert.Equal(1, ((PlayableSurrogate)game.CurrentPlayer.DeckZone[i]).AttackDamage);
 		}
 
 		// ----------------------------------------- MINION - ROGUE

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -25,6 +26,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			{
 				case EntityType.DECK:
 					foreach (IPlayable p in stack.Playables) Generic.ShuffleIntoDeck.Invoke(p.Controller, source, p);
+					var result = new IPlayable[stack.Playables.Count];
+					for (int i = 0; i < stack.Playables.Count; i++)
+						result[i] = game.IdEntityDic[stack.Playables[i].Id];
+					stack.Playables = result;
 					return TaskState.COMPLETE;
 
 				case EntityType.HAND:

@@ -29,7 +29,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			Minion summonEntity = Card != null
 				? Entity.FromCard(controller.Opponent, Card) as Minion
-				: stack?.Playables[0] as Minion;
+				: stack?.Playables[0] is PlayableSurrogate ps
+					? (Minion)ps.CastToPlayable(controller.Opponent)
+					: stack?.Playables[0] as Minion;
 
 			if (summonEntity == null)
 				return TaskState.STOP;

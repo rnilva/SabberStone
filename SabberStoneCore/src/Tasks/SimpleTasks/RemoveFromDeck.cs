@@ -19,7 +19,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			in TaskStack stack = null)
 		{
 			stack.Playables = IncludeTask.GetEntities(Type, in controller, source, target, stack.Playables)
-				.Where(p => p is PlayableSurrogate || p.Zone.Type == Zone.DECK && Generic.RemoveFromZone.Invoke(p.Controller, p)).ToList();
+				.Where(p => p.Zone.Type == Zone.DECK && Generic.RemoveFromZone.Invoke(p.Controller, p)).ToList();
 			return TaskState.COMPLETE;
 		}
 	}

@@ -368,7 +368,12 @@ namespace SabberStoneCore.Actions
 				// send tag variations and the id of the new Card
 				// Tag.REAL_TIME_TRANSFORM = 0
 
-				if (p.Card.Type == newCard.Type)
+				if (p is PlayableSurrogate ps)
+				{
+					ps.ChangeEntity(newCard);
+					return ps;
+				}
+				else if (p.Card.Type == newCard.Type)
 					p.Card = newCard;
 				else
 				{

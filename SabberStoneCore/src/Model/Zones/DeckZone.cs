@@ -159,6 +159,7 @@ namespace SabberStoneCore.Model.Zones
 					//IPlayable p = entities[i].CastToPlayable(Controller);
 					PlayableSurrogate ps = entities[i];
 					ps.ActivatedTrigger?.Remove();
+					ps.Zone = null;
 
 					if (i != --_count)
 						Array.Copy(entities, i + 1, entities, i, _count - i);
@@ -303,6 +304,11 @@ namespace SabberStoneCore.Model.Zones
 					NoOddCostCards = false;
 				}
 			}
+		}
+
+		public override PlayableSurrogate Remove(PlayableSurrogate entity)
+		{
+			return Remove(entity.Id);
 		}
 		#endregion
 

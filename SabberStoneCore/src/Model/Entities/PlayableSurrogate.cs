@@ -163,6 +163,15 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
+		public void ChangeEntity(Card newCard)
+		{
+			_card = newCard;
+			_cost = newCard.Cost;
+			_atk = newCard.ATK;
+			_health = newCard.Health;
+			ActivatedTrigger?.Remove();
+		}
+
 		public static implicit operator PlayableSurrogate(Playable p)
 		{
 			var surrogate = new PlayableSurrogate(p.Game, p.Card, p.Id);
@@ -338,7 +347,7 @@ namespace SabberStoneCore.Model.Entities
 
 		IAura IPlayable.OngoingEffect
 		{
-			get => throw new NotImplementedException();
+			get => null;
 			set => throw new NotImplementedException();
 		}
 
