@@ -66,7 +66,7 @@ namespace SabberStoneCore.Conditions
 		public static readonly SelfCondition IsSecret = new SelfCondition(me => me.Card.IsSecret);
 		public static readonly SelfCondition IsWeapon = new SelfCondition(me => me is Weapon);
 		public static readonly SelfCondition IsWeaponEquiped = new SelfCondition(me => me.Controller.Hero.Weapon != null);
-		public static readonly SelfCondition IsHero = new SelfCondition(me => me is Hero);
+		public static readonly SelfCondition IsHero = new SelfCondition(me => me.Card.Type == CardType.HERO);
 		public static readonly SelfCondition IsHeroPower = new SelfCondition(me => me is HeroPower);
 
 		public static readonly SelfCondition IsHeroPowerTargetingMinion = new SelfCondition(me =>

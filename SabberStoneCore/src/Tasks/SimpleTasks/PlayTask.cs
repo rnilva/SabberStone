@@ -57,7 +57,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			switch (_playType)
 			{
 				case PlayType.SPELL:
-					foreach (IPlayable p in stack?.Playables)
+					for (int i = 0; i < (stack?.Playables).Count; i++)
 					{
 						if (!(p is Spell spell)) throw new Exception();
 						Controller c = spell.Controller;

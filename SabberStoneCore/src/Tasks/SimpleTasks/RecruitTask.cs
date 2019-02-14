@@ -76,6 +76,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (indices.Count > amount)
 				game.OnRandomHappened(true);
 
+			List<IPlayable> playables = null;
+			if (_addToStack)
+				playables = new List<IPlayable>(entities.Length);
+
 			for (int i = 0; i < entities.Length; i++)
 			{
 				Generic.RemoveFromZone.Invoke(controller, entities[i]);
@@ -86,7 +90,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			}
 
 			if (_addToStack)
-				stack.Playables = entities;
+				stack.Playables = playables;
 
 			return TaskState.COMPLETE;
 		}

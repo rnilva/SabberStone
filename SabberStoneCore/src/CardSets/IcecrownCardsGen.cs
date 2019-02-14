@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
@@ -408,14 +409,17 @@ namespace SabberStoneCore.CardSets.Standard
 					new IncludeTask(EntityType.OP_DECK),
 					new FilterStackTask(SelfCondition.IsMinion),
 					new RandomTask(1, EntityType.STACK),
-					new FuncPlayablesTask(p => {
+					new FuncPlayablesTask(p =>
+					{
 						if (p.Count == 0)
-							return new List<IPlayable>();
+							return new IPlayable[0];
+
+						Controller c = p[0].Controller;
 						// reveal ?
-						p[0].Controller.DeckZone.Remove(p[0]);
-						p[0].Controller = p[0].Controller.Opponent;
-						p[0][GameTag.CONTROLLER] = p[0].Controller.PlayerId;
-						return new List<IPlayable>() { p[0] };
+						c.DeckZone.Remove(p[0]);
+						//p[0].Controller = p[0].Controller.Opponent;
+						p[0][GameTag.CONTROLLER] = c.Opponent.PlayerId;
+						return new [] { p[0] };
 					}),
 					new AddStackTo(EntityType.HAND))
 			});
@@ -1209,19 +1213,30 @@ namespace SabberStoneCore.CardSets.Standard
 					{
 						Controller c = p.Controller;
 						if (c.SecretZone.IsFull) return 0;
-						IPlayable[] entities = c.DeckZone.GetAll(x => x.Card.IsSecret);
+						//IPlayable[] entities = c.DeckZone.GetAll(x => x.Card.IsSecret);
 						List<int> ids = c.SecretZone.Select(x => x.Card.AssetId).ToList();
-						for (int i = 0; i < entities.Length; i++)
+						ReadOnlySpan<PlayableSurrogate> deck = c.DeckZone.GetSpan();
+						for (int i = 0; i < deck.Length; i++)
 						{
-							IPlayable e = entities[i];
-							if (ids.Contains(e.Card.AssetId)) continue;
-
-							c.DeckZone.Remove(e);
-							Generic.CastSpell(c, (Spell) e, null, 0, true);
-							ids.Add(e.Card.AssetId);
+							if (!deck[i].Card.IsSecret) continue;
+							if (ids.Contains(deck[i].Card.AssetId)) continue;
+							var spell = (Spell) c.DeckZone.Remove(deck[i]);
+							Generic.CastSpell(c, spell, null, 0, true);
+							ids.Add(spell.Card.AssetId);
 
 							if (c.SecretZone.IsFull) return 0;
 						}
+						//for (int i = 0; i < entities.Length; i++)
+						//{
+						//	IPlayable e = entities[i];
+						//	if (ids.Contains(e.Card.AssetId)) continue;
+
+						//	var spell = c.DeckZone.Remove(e).
+						//	Generic.CastSpell(c, (Spell) e, null, 0, true);
+						//	ids.Add(e.Card.AssetId);
+
+						//	if (c.SecretZone.IsFull) return 0;
+						//}
 						return 0;
 					}))
 			});
@@ -3005,8 +3020,18 @@ namespace SabberStoneCore.CardSets.Standard
 					new IncludeTask(EntityType.DECK, null, true),
 					new FuncPlayablesTask(list =>
 					{
+						var result = new List<IPlayable>();
 						int atk = ((Character)list[0]).AttackDamage;
-						return list.Where(p => p is Minion m && m.AttackDamage < atk).ToList();
+						//return list.Where(p => p is Minion m && m.AttackDamage < atk).ToList();
+						for (int i = 1; i < list.Count; i++)
+						{
+							var ps = (PlayableSurrogate) list[i];
+							if (ps.AttackDamage < atk)
+								result.Add(ps);
+						}
+
+						return result;
+
 					}),
 					new RandomTask(1, EntityType.STACK),
 					new RemoveFromDeck(EntityType.STACK),
