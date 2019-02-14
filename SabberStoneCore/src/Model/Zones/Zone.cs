@@ -135,7 +135,9 @@ namespace SabberStoneCore.Model.Zones
 				var m = p as Minion;
 				var w = p as Weapon;
 				string mStr = m != null ? $"[{m.AttackDamage}/{m.Health}]" : (w != null ? $"[{w.AttackDamage}/{w.Durability}]" : "");
-				str.Append($"[P{p.ZonePosition}]{mStr}[C{p.Cost}]{p}|");
+				if (this is PositioningZone<T>)
+					str.Append($"[P{p.ZonePosition}]");
+				str.Append($"{mStr}[C{p.Cost}]{p}|");
 			}
 			return str.ToString();
 		}
@@ -195,7 +197,7 @@ namespace SabberStoneCore.Model.Zones
 
 		public override void Add(IPlayable entity, int zonePosition = -1)
 		{
-			if (entity.Controller != Controller)
+			if (entity.Controller != null && entity.Controller != Controller)
 				throw new ZoneException("Can't add an opponent's entity to own Zones");
 			MoveTo(entity, zonePosition);
 			Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}'.");

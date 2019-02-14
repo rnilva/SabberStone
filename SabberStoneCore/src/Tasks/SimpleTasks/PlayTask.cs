@@ -44,11 +44,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			switch (_playType)
 			{
 				case PlayType.SPELL:
-					foreach (IPlayable p in stack?.Playables)
+					for (int i = 0; i < (stack?.Playables).Count; i++)
 					{
+						IPlayable p = (stack?.Playables)[i];
 						ICharacter cardTarget = null;
 						if (_randTarget && p.Card.MustHaveTargetToPlay)
 						{
+							if (p is PlayableSurrogate ps)
+								p = ps.CastToPlayable(in controller);
+
 							var targets = (List<ICharacter>) p.ValidPlayTargets;
 
 							cardTarget = targets.Count > 0
@@ -63,7 +67,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						else if
 							(_targetType != EntityType.INVALID)
 						{
-							cardTarget = (ICharacter)IncludeTask.GetEntities(_targetType, in controller, source, target, stack?.Playables)[0];
+							cardTarget = (ICharacter) IncludeTask.GetEntities(_targetType, in controller, source,
+								target, stack?.Playables)[0];
 						}
 
 						if (p is Spell spell && (p.Zone == null || Generic.RemoveFromZone(controller, p)))

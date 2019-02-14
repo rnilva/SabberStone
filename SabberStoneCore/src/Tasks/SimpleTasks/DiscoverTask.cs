@@ -407,14 +407,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					{
 						choiceAction = ChoiceAction.HAND;
 						Card[][] cardSets =
-							{controller.DeckZone.Where(p => p is Minion).Select(p => p.Card).ToArray()};
+							{controller.DeckZone.Where(p => p.IsMinion).Select(p => p.Card).ToArray()};
 						return cardSets;
 					}
 					case DiscoverType.OP_DECK_MINION:
 					{
 						choiceAction = ChoiceAction.HAND;
 						Card[][] cardSets =
-							{controller.Opponent.DeckZone.Where(p => p is Minion).Select(p => p.Card).ToArray()};
+							{controller.Opponent.DeckZone.Where(p => p.IsMinion).Select(p => p.Card).ToArray()};
 						return cardSets;
 					}
 					case DiscoverType.DEATHRATTLE:

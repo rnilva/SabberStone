@@ -11,6 +11,8 @@ namespace SabberStoneCore.Model.Zones
 	/// </summary>
 	public interface IZone
 	{
+		Controller Controller { get; }
+
 		/// <summary>
 		/// Gets the kind of zone.
 		/// </summary>

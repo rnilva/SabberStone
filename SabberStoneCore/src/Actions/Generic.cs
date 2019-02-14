@@ -104,6 +104,11 @@ namespace SabberStoneCore.Actions
 		public static Func<Controller, IPlayable, bool> AddHandPhase
 			=> delegate (Controller c, IPlayable playable)
 			{
+				if (playable is PlayableSurrogate ps)
+				{
+					playable = ps.CastToPlayable(in c);
+				}
+
 				if (c.HandZone.IsFull)
 				{
 					c.Game.Log(LogLevel.INFO, BlockType.PLAY, "AddHandPhase", !c.Game.Logging ? "" : $"Hand ist full. Card {playable} drawn is burnt to graveyard.");
@@ -210,7 +215,7 @@ namespace SabberStoneCore.Actions
 				c.Game.Log(LogLevel.INFO, BlockType.PLAY, "ShuffleIntoDeck", !c.Game.Logging ? "" : $"adding to deck {playable}.");
 
 				// don't activate powers when shuffling cards back into the deck
-				c.DeckZone.Add(playable, c.DeckZone.Count == 0 ? -1 : Util.Random.Next(c.DeckZone.Count + 1));
+				c.DeckZone.Add(playable: playable, c.DeckZone.Count == 0 ? -1 : Util.Random.Next(c.DeckZone.Count + 1));
 
 				if (sender is IPlayable p && c.Game.TriggerManager.HasShuffleIntoDeckTrigger)
 				{
@@ -225,7 +230,7 @@ namespace SabberStoneCore.Actions
 
 				// add hide entity 
 				if (c.Game.History)
-					c.Game.PowerHistory.Add(PowerHistoryBuilder.HideEntity(playable));
+					c.Game.PowerHistory.Add(PowerHistoryBuilder.HideEntity(c.Game.IdEntityDic[playable.Id]));
 
 				return true;
 			};

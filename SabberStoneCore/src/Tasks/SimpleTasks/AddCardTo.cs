@@ -37,7 +37,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				case EntityType.DECK:
 					for (int i = 0; i < entities.Length; i++)
 					{
-						entities[i] = Entity.FromCard(in controller, in _card);
+						//entities[i] = Entity.FromCard(in controller, in _card);
+						entities[i] = new PlayableSurrogate(in game, in _card);
 						entities[i][GameTag.DISPLAYED_CREATOR] = source.Id;
 					}
 

@@ -138,7 +138,7 @@ namespace SabberStoneCore.Model.Zones
 		public void Add(IPlayable playable, int zonePosition = -1)
 		{
 			if (playable is Playable p)
-				Add(p, zonePosition);
+				Add(entity: p, zonePosition);
 			else if
 				(playable is PlayableSurrogate ps)
 				Add(entity: ps, zonePosition);
@@ -160,8 +160,8 @@ namespace SabberStoneCore.Model.Zones
 					PlayableSurrogate ps = entities[i];
 					ps.ActivatedTrigger?.Remove();
 
-					if (i != _count - 1)
-						Array.Copy(entities, i + 1, entities, i, _count - i - 1);
+					if (i != --_count)
+						Array.Copy(entities, i + 1, entities, i, _count - i);
 
 					return ps;
 				}
@@ -213,7 +213,7 @@ namespace SabberStoneCore.Model.Zones
 			for (int i = 0; i < cards.Count; i++)
 			{
 				var ps = new PlayableSurrogate(in game, cards[i]);
-				Add(ps);
+				Add(entity: ps);
 			}
 		}
 
@@ -259,7 +259,7 @@ namespace SabberStoneCore.Model.Zones
 				//IPlayable entity = Entity.FromCard(Controller, card);
 				//Add(new PlayableSurrogate(Game, card));
 				var ps = new PlayableSurrogate(Game, in card);
-				Add(ps);
+				Add(ps, 0);
 				cardsToAdd--;
 			}
 		}

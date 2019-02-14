@@ -39,14 +39,14 @@ namespace SabberStoneCore.Conditions
 
 		public static readonly SelfCondition IsDragonInHand = new SelfCondition(me => me.Controller.HandZone.Any(p => p is ICharacter && ((ICharacter)p).Race == Race.DRAGON));
 		public static readonly SelfCondition Is5PlusAtkInHand = new SelfCondition(me => me.Controller.HandZone.Any(p => p is ICharacter && ((ICharacter)p).AttackDamage >= 5));
-		public static SelfCondition IsRace(Race race) => new SelfCondition(me => me is ICharacter ch && race == ch.Race);
+		public static SelfCondition IsRace(Race race) => new SelfCondition(me => me.Card.Race == race);
 		public static SelfCondition IsNotRace(params Race[] races) => new SelfCondition(me => me is ICharacter && !races.Contains(((ICharacter)me).Race));
 		public static readonly SelfCondition IsMinion = new SelfCondition(me => me.Card.Type == CardType.MINION);
-		public static readonly SelfCondition IsSpell = new SelfCondition(me => me is Spell);
-		public static readonly SelfCondition IsSecret = new SelfCondition(me => me is Spell && me[GameTag.SECRET] == 1);
-		public static readonly SelfCondition IsWeapon = new SelfCondition(me => me is Weapon);
+		public static readonly SelfCondition IsSpell = new SelfCondition(me => me.Card.Type == CardType.SPELL);
+		public static readonly SelfCondition IsSecret = new SelfCondition(me => me.Card.IsSecret);
+		public static readonly SelfCondition IsWeapon = new SelfCondition(me => me.Card.Type == CardType.WEAPON);
 		public static readonly SelfCondition IsWeaponEquiped = new SelfCondition(me => me.Controller.Hero.Weapon != null);
-		public static readonly SelfCondition IsHero = new SelfCondition(me => me is Hero);
+		public static readonly SelfCondition IsHero = new SelfCondition(me => me.Card.Type == CardType.HERO);
 		public static readonly SelfCondition IsHeroPower = new SelfCondition(me => me is HeroPower);
 		public static SelfCondition HasArmorLessThan(int amount) => new SelfCondition(me => me.Controller.Hero.Armor < amount);
 		public static readonly SelfCondition IsAttacking = new SelfCondition(me => me is ICharacter && ((ICharacter)me).IsAttacking);

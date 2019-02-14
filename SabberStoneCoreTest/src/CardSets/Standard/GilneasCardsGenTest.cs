@@ -946,13 +946,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(4, target.Health);
 
 			Assert.Equal(3, game.CurrentPlayer.DeckZone.Count);
-			foreach (IPlayable card in game.CurrentPlayer.DeckZone)
+			foreach (PlayableSurrogate card in game.CurrentPlayer.DeckZone)
 			{
-				var m = card as Minion;
-				Assert.NotNull(m);
-				Assert.Equal("Stonetusk Boar", m.Card.Name);
-				Assert.Equal(4, m.AttackDamage);
-				Assert.Equal(4, m.Health);
+				Assert.NotNull(card);
+				Assert.Equal("Stonetusk Boar", card.Card.Name);
+				Assert.Equal(4, card.AttackDamage);
+				Assert.Equal(4, card.Health);
 			}
 		}
 

@@ -42,7 +42,7 @@ namespace SabberStoneCore.Actions
 				{
 					// DrawTrigger vs TOPDECK ?? not sure which one is first
 
-					if (cardIdToDraw > 0)
+					if (playable != null)
 					{
 						c.Game.TaskQueue.StartEvent();
 						c.Game.TriggerManager.OnDrawTrigger(playable);

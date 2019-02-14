@@ -102,7 +102,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				}
 				else if (stack?.Playables.Count > 0)
 				{
-					summonEntity = stack.Playables[0] as Minion;
+					IPlayable entity = stack.Playables[0];
+					if (entity is PlayableSurrogate ps)
+						summonEntity = (Minion)ps.CastToPlayable(in controller);
+					else
+						summonEntity = (Minion)entity;
 					if (RemoveFromStack) stack.Playables.Remove(summonEntity);
 				}
 

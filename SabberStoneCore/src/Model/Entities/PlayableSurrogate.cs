@@ -17,9 +17,10 @@ namespace SabberStoneCore.Model.Entities
 		private Card _card;
 		private int _id;
 
-		internal PlayableSurrogate(in Game game, in Card card)
+		internal PlayableSurrogate(in Game game, in Card card, int id = -1)
 		{
-			int id = game.NextId;
+			if (id < 0)
+				id = game.NextId;
 			game.IdEntityDic[id] = this;
 			_id = id;
 			_card = card;
@@ -164,7 +165,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public static implicit operator PlayableSurrogate(Playable p)
 		{
-			var surrogate = new PlayableSurrogate(p.Game, p.Card);
+			var surrogate = new PlayableSurrogate(p.Game, p.Card, p.Id);
 			return surrogate;
 		}
 
@@ -200,9 +201,9 @@ namespace SabberStoneCore.Model.Entities
 			set => throw new NotImplementedException();
 		}
 
-		Controller IEntity.Controller
+		public Controller Controller
 		{
-			get => throw new NotImplementedException();
+			get => Zone?.Controller;
 			set => throw new NotImplementedException();
 		}
 
@@ -247,8 +248,11 @@ namespace SabberStoneCore.Model.Entities
 
 		List<Enchantment> IEntity.AppliedEnchantments
 		{
-			get => throw new NotImplementedException();
-			set => throw new NotImplementedException();
+			get => null;
+			set
+			{
+				return;
+			}
 		}
 
 		#endregion
@@ -329,7 +333,7 @@ namespace SabberStoneCore.Model.Entities
 
 		IPlayable IPlayable.Clone(in Controller controller)
 		{
-			throw new NotImplementedException();
+			return new PlayableSurrogate(this);
 		}
 
 		IAura IPlayable.OngoingEffect
@@ -347,7 +351,87 @@ namespace SabberStoneCore.Model.Entities
 			throw new NotImplementedException();
 		}
 
-		bool IPlayable.HasAnyValidPlayTargets => throw new NotImplementedException();
+		bool IPlayable.HasAnyValidPlayTargets
+		{
+			get
+			{
+				bool friendlyMinions = false;
+				bool enemyMinions = false;
+				bool hero = false;
+				bool opHero = false;
+				switch (Card.TargetingType)
+				{
+					case TargetingType.None:
+						return false;
+					case TargetingType.FriendlyCharacters:
+						hero = true;
+						friendlyMinions = true;
+						break;
+					case TargetingType.Heroes:
+						hero = true;
+						opHero = true;
+						break;
+					case TargetingType.All:
+						hero = true;
+						opHero = true;
+						friendlyMinions = true;
+						enemyMinions = true;
+						break;
+					case TargetingType.FriendlyMinions:
+						friendlyMinions = true;
+						break;
+					case TargetingType.EnemyCharacters:
+						opHero = true;
+						enemyMinions = true;
+						break;
+					case TargetingType.EnemyMinions:
+						enemyMinions = true;
+						break;
+					case TargetingType.AllMinions:
+						friendlyMinions = true;
+						enemyMinions = true;
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+
+				if (hero && TargetingRequirements(Controller.Hero)) return true;
+
+				if (opHero && TargetingRequirements(Controller.Opponent.Hero)) return true;
+
+				if (friendlyMinions)
+				{
+					ReadOnlySpan<Minion> span = Controller.BoardZone.GetSpan();
+					for (int i = 0; i < span.Length; i++)
+						if (TargetingRequirements(span[i]))
+							return true;
+				}
+
+				if (enemyMinions)
+				{
+					ReadOnlySpan<Minion> span = Controller.Opponent.BoardZone.GetSpan();
+					for (int i = 0; i < span.Length; i++)
+						if (TargetingRequirements(span[i]))
+							return true;
+				}
+
+				return false;
+			}
+		}
+
+		private bool TargetingRequirements(ICharacter target)
+		{
+			if (target.Card.Untouchable)
+				return false;
+
+			if ((target.HasStealth || target.IsImmune) && target.Controller != Controller)
+				return false;
+
+			if (!Card.TargetingPredicate?.Invoke(target) ?? false)
+				return false;
+
+			return true;
+		}
 
 		#endregion
 

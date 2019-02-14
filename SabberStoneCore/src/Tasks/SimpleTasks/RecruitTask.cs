@@ -62,18 +62,25 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (indices.Count > amount)
 				game.OnRandomHappened(true);
 
+			List<IPlayable> playables = null;
+			if (_addToStack)
+				playables = new List<IPlayable>(entities.Length);
+
 			for (int i = 0; i < entities.Length; i++)
 			{
 				Generic.RemoveFromZone.Invoke(controller, entities[i]);
 				//Generic.SummonBlock.Invoke(game, (Minion)entities[i], -1);
-				Generic.SummonBlock.Invoke(game, (Minion)entities[i].CastToPlayable(in controller), -1);
+				IPlayable entity = entities[i].CastToPlayable(in controller);
+				Generic.SummonBlock.Invoke(game, (Minion)entity, -1);
+
+				playables?.Add(entity);
 
 				if (controller.BoardZone.IsFull)
 					break;
 			}
 
 			if (_addToStack)
-				stack.Playables = entities;
+				stack.Playables = playables;
 
 			return TaskState.COMPLETE;
 		}

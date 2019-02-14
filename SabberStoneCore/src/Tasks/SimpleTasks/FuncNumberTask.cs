@@ -21,7 +21,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		}
 
 		/// <summary>
-		///     Process a custom delegate which takes <see cref="TaskStack.Number" /> as the first parameter and
+		///     Process a custom delegate which takes the source of this task as the first parameter and
 		///     <see cref="TaskStack.Number" /> as the second parameter.
 		/// </summary>
 		public FuncNumberTask(Action<IPlayable, int> function)
