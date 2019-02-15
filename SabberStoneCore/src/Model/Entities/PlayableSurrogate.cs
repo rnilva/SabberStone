@@ -25,10 +25,19 @@ namespace SabberStoneCore.Model.Entities
 			_id = id;
 			_card = card;
 			_cost = card.Cost;
-			_atk = card.ATK;
-			_health = card.Health;
 
-			IsMinion = card.Type == CardType.MINION;
+			if (card.Type == CardType.MINION)
+			{
+
+				_atk = card.ATK;
+				_health = card.Health;
+				IsMinion = true;
+			}
+			else if (card.Type == CardType.WEAPON)
+			{
+				_atk = card.ATK;
+				_health = card[GameTag.DURABILITY];
+			}
 		}
 
 		private PlayableSurrogate(in PlayableSurrogate other)
@@ -244,7 +253,16 @@ namespace SabberStoneCore.Model.Entities
 
 		string IEntity.Hash(params GameTag[] ignore)
 		{
-			throw new NotImplementedException();
+			var sb = new StringBuilder();
+			sb.Append("[");
+			sb.Append(Card.Name);
+			sb.Append("{");
+			sb.Append(_cost);
+			sb.Append(_atk);
+			sb.Append(_health);
+			sb.Append("}");
+			sb.Append("]");
+			return sb.ToString();
 		}
 
 		AuraEffects IEntity.AuraEffects

@@ -43,68 +43,91 @@ namespace SabberStoneCore.Actions
 					[GameTag.DISPLAYED_CREATOR] = creator.Id
 				};
 
-				copiedEntity = Entity.FromCard(in controller, source.Card, tags);
+				copiedEntity = targetZone == Zone.DECK ?
+					new PlayableSurrogate(controller.Game, source.Card) :
+					Entity.FromCard(in controller, source.Card, tags);
 
-				int? modifiedCost = ((Playable)source)._modifiedCost;
-
-				if (modifiedCost.HasValue)
-					copiedEntity.Cost = modifiedCost.Value;
-
-				if (copiedEntity is Character c)
-					((Character)source).CopyInternalAttributes(in c);
-
-
-				if (source.AppliedEnchantments != null)
+				if (source is PlayableSurrogate ps)
 				{
-					foreach (Enchantment e in source.AppliedEnchantments)
-					{
-						Enchantment instance = Enchantment.GetInstance(in controller, e.Creator, copiedEntity, e.Card);
-						if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
-						{
-							instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
-							if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
-								instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
+					copiedEntity.Cost = ps.Cost;
 
-							instance.CapturedCard = e.CapturedCard;
+					if (copiedEntity is Character c)
+					{
+						c._modifiedATK = ps.AttackDamage;
+						c._modifiedHealth = ps.Health;
+					}
+				}
+				else
+				{
+
+					int? modifiedCost = ((Playable)source)._modifiedCost;
+
+					if (modifiedCost.HasValue)
+						copiedEntity.Cost = modifiedCost.Value;
+
+					if (copiedEntity is Character c)
+						((Character)source).CopyInternalAttributes(in c);
+
+					if (source.AppliedEnchantments != null)
+					{
+						foreach (Enchantment e in source.AppliedEnchantments)
+						{
+							Enchantment instance = Enchantment.GetInstance(in controller, e.Creator, copiedEntity, e.Card);
+							if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
+							{
+								instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
+								if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
+									instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
+
+								instance.CapturedCard = e.CapturedCard;
+							}
+
+							if (e.IsOneTurnActive)
+								instance.Game.OneTurnEffectEnchantments.Add(instance);
 						}
 
-						if (e.IsOneTurnActive)
-							instance.Game.OneTurnEffectEnchantments.Add(instance);
 					}
-					
+
+					var kvps = new KeyValuePair<GameTag, int>[source.NativeTags.Count];
+					source.NativeTags.CopyTo(kvps, 0);
+
+					//for (int i = 0; i < kvps.Length; i++)
+					//{
+					//	switch (kvps[i].Key)
+					//	{
+					//		case GameTag.ENTITY_ID:
+					//		case GameTag.CONTROLLER:
+					//		case GameTag.ZONE:
+					//		case GameTag.ZONE_POSITION:
+					//		case GameTag.CREATOR:
+					//		case GameTag.DISPLAYED_CREATOR:
+					//		case GameTag.EXHAUSTED:
+					//			continue;
+					//		case GameTag.COST:
+					//			copiedEntity.AuraEffects.ToBeUpdated = true;
+					//			goto default;
+					//		default:
+					//			tags.Add(kvps[i]);
+					//			break;
+					//	}
+					//}
+
+					List<(int entityId, IEffect effect)> oneTurnEffects = controller.Game.OneTurnEffects;
+					for (int i = oneTurnEffects.Count - 1; i >= 0; i--)
+					{
+						(int id, IEffect effect) = oneTurnEffects[i];
+						if (id == source.Id)
+							oneTurnEffects.Add((copiedEntity.Id, effect));
+					}
 				}
-
-				var kvps = new KeyValuePair<GameTag, int>[source.NativeTags.Count];
-				source.NativeTags.CopyTo(kvps, 0);
-
-				//for (int i = 0; i < kvps.Length; i++)
-				//{
-				//	switch (kvps[i].Key)
-				//	{
-				//		case GameTag.ENTITY_ID:
-				//		case GameTag.CONTROLLER:
-				//		case GameTag.ZONE:
-				//		case GameTag.ZONE_POSITION:
-				//		case GameTag.CREATOR:
-				//		case GameTag.DISPLAYED_CREATOR:
-				//		case GameTag.EXHAUSTED:
-				//			continue;
-				//		case GameTag.COST:
-				//			copiedEntity.AuraEffects.ToBeUpdated = true;
-				//			goto default;
-				//		default:
-				//			tags.Add(kvps[i]);
-				//			break;
-				//	}
-				//}
-
-				List<(int entityId, IEffect effect)> oneTurnEffects = controller.Game.OneTurnEffects;
-				for (int i = oneTurnEffects.Count - 1; i >= 0; i--)
-				{
-					(int id, IEffect effect) = oneTurnEffects[i];
-					if (id == source.Id)
-						oneTurnEffects.Add((copiedEntity.Id, effect));
-				}
+			}
+			else if
+				(targetZone == Zone.DECK)
+			{
+				copiedEntity = new PlayableSurrogate(controller.Game, source.Card);
+				ShuffleIntoDeck(controller, creator, copiedEntity);
+				return copiedEntity;
+				// TODO: Add tag
 			}
 			else
 			{

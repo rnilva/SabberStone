@@ -34,7 +34,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 				if (RemoveFromZone)
 					p.Zone.Remove(p);
-				Generic.SummonBlock(game, (Minion) p, -1);
+
+				Generic.SummonBlock(game, p as Minion ?? (Minion)((PlayableSurrogate)p).CastToPlayable(in controller), -1);
 			}
 
 			return TaskState.COMPLETE;
