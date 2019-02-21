@@ -2,6 +2,7 @@
 
 using System.Linq;
 using System.Collections.Generic;
+using SabberStoneCore.Auras;
 using SabberStoneCore.Config;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -5535,7 +5536,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 				},
 				Player2HeroClass = CardClass.MAGE,
 				FillDecks = true,
-				FillDecksPredictably = true
+				FillDecksPredictably = true,
+				Shuffle = false,
 			});
 			game.StartGame();
 			game.Player1.BaseMana = 10;

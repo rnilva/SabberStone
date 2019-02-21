@@ -5678,11 +5678,16 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(21, game.CurrentOpponent.DeckZone.Count);
 			Assert.Equal(20, game.CurrentPlayer.DeckZone.Count);
 
-			foreach (IPlayable entity in game.CurrentPlayer.DeckZone)
+			//foreach (IPlayable entity in game.CurrentPlayer.DeckZone)
+			//{
+			//	Assert.Equal(penguin, entity.Card);
+			//	Assert.Equal(game.CurrentPlayer, entity.Controller);
+			//	Assert.Equal(game.CurrentPlayer.PlayerId, entity[GameTag.CONTROLLER]);
+			//}
+
+			foreach (PlayableSurrogate entity in game.CurrentPlayer.DeckZone)
 			{
 				Assert.Equal(penguin, entity.Card);
-				Assert.Equal(game.CurrentPlayer, entity.Controller);
-				Assert.Equal(game.CurrentPlayer.PlayerId, entity[GameTag.CONTROLLER]);
 			}
 
 			game.EndTurn();
@@ -5691,11 +5696,16 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			game.ProcessCard(game.CurrentPlayer.HandZone.Last());
 
-			foreach (IPlayable entity in game.CurrentPlayer.DeckZone)
+			//foreach (IPlayable entity in game.CurrentPlayer.DeckZone)
+			//{
+			//	Assert.Equal(penguin, entity.Card);
+			//	Assert.Equal(game.CurrentPlayer, entity.Controller);
+			//	Assert.Equal(game.CurrentPlayer.PlayerId, entity[GameTag.CONTROLLER]);
+			//}
+
+			foreach (PlayableSurrogate entity in game.CurrentPlayer.DeckZone)
 			{
 				Assert.Equal(penguin, entity.Card);
-				Assert.Equal(game.CurrentPlayer, entity.Controller);
-				Assert.Equal(game.CurrentPlayer.PlayerId, entity[GameTag.CONTROLLER]);
 			}
 		}
 

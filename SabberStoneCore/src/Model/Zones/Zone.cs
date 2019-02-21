@@ -414,6 +414,8 @@ namespace SabberStoneCore.Model.Zones
 			T[] entities = _entities;
 			for (int i = 0; i < _count; i++)
 				yield return entities[i];
+
+			//return new ArraySegment<T>(_entities, 0, _count).AsEnumerable().GetEnumerator();
 		}
 	}
 

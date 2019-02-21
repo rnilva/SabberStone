@@ -25,7 +25,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			switch (Type)
 			{
 				case EntityType.DECK:
-					foreach (IPlayable p in stack.Playables) Generic.ShuffleIntoDeck.Invoke(p.Controller, source, p);
+					foreach (IPlayable p in stack.Playables) Generic.ShuffleIntoDeck.Invoke(controller, source, p);
 					var result = new IPlayable[stack.Playables.Count];
 					for (int i = 0; i < stack.Playables.Count; i++)
 						result[i] = game.IdEntityDic[stack.Playables[i].Id];
@@ -33,15 +33,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					return TaskState.COMPLETE;
 
 				case EntityType.HAND:
-					foreach (IPlayable p in stack.Playables) Generic.AddHandPhase.Invoke(p.Controller, p);
+					foreach (IPlayable p in stack.Playables) Generic.AddHandPhase.Invoke(controller, p);
 					return TaskState.COMPLETE;
 
 				case EntityType.OP_HAND:
-					foreach (IPlayable p in stack.Playables) Generic.AddHandPhase.Invoke(p.Controller, p);
+					foreach (IPlayable p in stack.Playables) Generic.AddHandPhase.Invoke(controller.Opponent, p);
 					return TaskState.COMPLETE;
 
 				case EntityType.OP_DECK:
-					foreach (IPlayable p in stack.Playables) Generic.ShuffleIntoDeck.Invoke(p.Controller, source, p);
+					foreach (IPlayable p in stack.Playables) Generic.ShuffleIntoDeck.Invoke(controller.Opponent, source, p);
 					return TaskState.COMPLETE;
 
 				default:
