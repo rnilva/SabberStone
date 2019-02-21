@@ -124,10 +124,12 @@ namespace SabberStoneCoreTest.Basic
 			game.ProcessCard("Luna's Pocket Galaxy", asZeroCost: true);
 			game.ProcessCard("Prince Keleseth", asZeroCost: true);
 
-			Minion[] minions = game.CurrentPlayer.DeckZone
-				.Where(p => p.Card.Type == CardType.MINION)
-				.Cast<Minion>()
-				.ToArray();
+			//Minion[] minions = game.CurrentPlayer.DeckZone
+			//	.Where(p => p.Card.Type == CardType.MINION)
+			//	.Cast<Minion>()
+			//	.ToArray();
+
+			PlayableSurrogate[] minions = game.CurrentPlayer.DeckZone.GetAll();
 
 			for (int i = 0; i < minions.Length; i++)
 			{

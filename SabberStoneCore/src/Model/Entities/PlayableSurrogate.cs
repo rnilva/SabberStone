@@ -327,23 +327,23 @@ namespace SabberStoneCore.Model.Entities
 			set => throw new NotImplementedException();
 		}
 
-		int IPlayable.Overload => throw new NotImplementedException();
+		int IPlayable.Overload => _card.Overload;
 
 		bool IPlayable.HasDeathrattle
 		{
-			get => throw new NotImplementedException();
+			get => _card.Deathrattle;
 			set => throw new NotImplementedException();
 		}
 
 		bool IPlayable.HasLifeSteal
 		{
-			get => throw new NotImplementedException();
+			get => _card.LifeSteal;
 			set => throw new NotImplementedException();
 		}
 
-		bool IPlayable.IsEcho => throw new NotImplementedException();
+		bool IPlayable.IsEcho => _card.Echo;
 
-		bool IPlayable.ChooseOne => throw new NotImplementedException();
+		bool IPlayable.ChooseOne => _card.ChooseOne;
 
 		IPlayable[] IPlayable.ChooseOnePlayables
 		{
