@@ -96,7 +96,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					{
 						IPlayable m = stack.Playables[0];
 						if (m.Zone == null)
-							m.Controller.GraveyardZone.Add(stack.Playables[0]);
+							controller.GraveyardZone.Add(stack.Playables[0]);
 					}
 
 					return TaskState.STOP;
