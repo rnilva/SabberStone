@@ -525,8 +525,6 @@ namespace SabberStoneCore.Enchants
 				    if (!(source is Minion) || source.Controller != _owner.Controller) return;
 				    break;
 			    case TriggerSource.MINIONS_EXCEPT_SELF:
-				    if (source.Zone == null)
-					    ;
 				    if (!(source is Minion) || source.Controller != _owner.Controller || source.Id == _sourceId ||
 				        source.Zone.Type != Zone.PLAY) return;
 					break;

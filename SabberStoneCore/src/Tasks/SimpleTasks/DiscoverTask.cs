@@ -493,7 +493,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					{
 						choiceAction = ChoiceAction.HAND;
 						Card[][] cardSets =
-							{controller.DeckZone.Where(p => p is Spell).Select(p => p.Card).ToArray()};
+							{controller.DeckZone.Where(p => p.Card.Type == CardType.SPELL).Select(p => p.Card).ToArray()};
 						return cardSets;
 					}
 					case DiscoverType.BASIC_TOTEM:

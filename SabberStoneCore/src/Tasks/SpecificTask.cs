@@ -78,11 +78,11 @@ namespace SabberStoneCore.Tasks
 
 		public static ISimpleTask JusticarTrueheart
 			=> ComplexTask.Create(
-				new IncludeTask(EntityType.SOURCE),
+				new IncludeTask(EntityType.HERO_POWER),
 				new FuncPlayablesTask(p =>
 				{
 					Controller controller = p[0].Controller;
-					switch (controller.Hero.HeroPower.Card.Id)
+					switch (p[0].Card.Id)
 					{
 						case "CS1h_001":
 							return new List<IPlayable> { Entity.FromCard(controller, Cards.FromId("AT_132_PRIEST")) };
@@ -279,7 +279,7 @@ namespace SabberStoneCore.Tasks
 						lock (locker)
 						{
 							var dic = new Dictionary<Rarity, Card[]>(4);
-							var ungCards = Cards.All.Where(c => c.Set == CardSet.UNGORO && c.Collectible && !c.IsQuest).ToArray();
+							Card[] ungCards = Cards.All.Where(c => c.Set == CardSet.UNGORO && c.Collectible && !c.IsQuest).ToArray();
 							dic.Add(Rarity.COMMON, ungCards.Where(c => c.Rarity == Rarity.COMMON).ToArray());
 							dic.Add(Rarity.RARE, ungCards.Where(c => c.Rarity == Rarity.RARE).ToArray());
 							dic.Add(Rarity.EPIC, ungCards.Where(c => c.Rarity == Rarity.EPIC).ToArray());
@@ -813,11 +813,15 @@ namespace SabberStoneCore.Tasks
 				List<int> spells = new List<int>();
 				for (int i = 0; i < deck.Length; i++)
 				{
-					if (deck[i] is Minion)
-						minions.Add(i);
-					else if
-						(deck[i] is Spell)
-						spells.Add(i);
+					switch (deck[i].Card.Type)
+					{
+						case CardType.MINION:
+							minions.Add(i);
+							break;
+						case CardType.SPELL:
+							spells.Add(i);
+							break;
+					}
 				}
 
 				Random rnd = Util.Random;
@@ -899,7 +903,7 @@ namespace SabberStoneCore.Tasks
 				controller.SetasideZone.Add(controller.Hero.HeroPower);
 				controller.Hero.HeroPower = heroPower;
 
-				var cards = Cards.FormatTypeClassCards(game.FormatType)[randClass].Where(p => p.Class == randClass && !p.IsQuest).ToArray();
+				Card[] cards = Cards.FormatTypeClassCards(game.FormatType)[randClass].Where(p => p.Class == randClass && !p.IsQuest).ToArray();
 
 				// replace cards in hand
 				for (int i = 0; i < controller.HandZone.Count; i++)
