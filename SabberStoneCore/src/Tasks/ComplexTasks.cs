@@ -206,7 +206,7 @@ namespace SabberStoneCore.Tasks
 		{
 			return Create(
 				new IncludeTask(EntityType.GRAVEYARD),
-				new FilterStackTask(SelfCondition.IsMinion, SelfCondition.IsTagValue(GameTag.TO_BE_DESTROYED, 1), selfCondition),
+				new FilterStackTask(SelfCondition.IsMinion, SelfCondition.IsDead, selfCondition),
 				new RandomTask(amount, EntityType.STACK),
 				new CopyTask(EntityType.STACK, Zone.PLAY));
 		}
@@ -241,7 +241,7 @@ namespace SabberStoneCore.Tasks
 						Controller c = stack[0].Controller;
 						do
 						{
-							IPlayable pick = Util.Choose((List<IPlayable>)stack);
+							var pick = (PlayableSurrogate)Util.Choose((List<IPlayable>)stack);
 							if (c.SecretZone.Any(p => p.Card.AssetId == pick.Card.AssetId))
 							{
 								stack.Remove(pick);
@@ -249,10 +249,11 @@ namespace SabberStoneCore.Tasks
 							}
 
 							c.DeckZone.Remove(pick);
-							pick.Power.Trigger?.Activate(c.Game, pick);
-							c.SecretZone.Add((Spell) pick);
+							var secret = (Spell) pick.CastToPlayable(c);
+							secret.Power.Trigger?.Activate(c.Game, secret);
+							c.SecretZone.Add(secret);
 							if (c == c.Game.CurrentPlayer)
-								pick.IsExhausted = true;
+								secret.IsExhausted = true;
 							break;
 
 						} while (stack.Count > 0);

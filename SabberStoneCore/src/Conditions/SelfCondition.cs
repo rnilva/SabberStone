@@ -285,6 +285,9 @@ namespace SabberStoneCore.Conditions
 			if (tag == GameTag.COST)
 				return me.Cost;
 
+			if (tag == GameTag.TO_BE_DESTROYED)
+				return me.ToBeDestroyed ? 1 : 0;
+
 			if (me is Character c)
 			{
 				if (tag == GameTag.ATK)

@@ -467,6 +467,8 @@ namespace SabberStoneCore.Auras
 					(id, idDict, effs) =>
 					{
 						IPlayable entity = idDict[id];
+						if (entity is PlayableSurrogate)
+							return;
 						for (int i = 0; i < effs.Length; i++)
 							effs[i].RemoveAuraFrom(entity);
 					});
@@ -482,6 +484,8 @@ namespace SabberStoneCore.Auras
 					(id, ownerId, idDict) =>
 					{
 						IPlayable entity = idDict[id];
+						if (entity is PlayableSurrogate)
+							return;
 						for (int i = entity.AppliedEnchantments.Count - 1; i >= 0; i--)
 							if (entity.AppliedEnchantments[i].Creator.Id == ownerId)
 								entity.AppliedEnchantments[i].Remove();

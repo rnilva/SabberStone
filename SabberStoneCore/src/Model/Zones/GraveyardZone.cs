@@ -18,11 +18,15 @@ namespace SabberStoneCore.Model.Zones
 
 		public override void Add(IPlayable entity, int zonePosition = -1)
 		{
-			base.Add(entity, zonePosition);
+			entity.Zone = this;
 
 			if (entity.AppliedEnchantments != null)
 				for (int i = entity.AppliedEnchantments.Count - 1; i >= 0; i--)
 					entity.AppliedEnchantments[i].Remove();
+
+			PlayableSurrogate ps = PlayableSurrogate.CastFromPlayable(entity);
+
+			base.Add(ps, zonePosition);
 
 			//entity.Reset();
 		}

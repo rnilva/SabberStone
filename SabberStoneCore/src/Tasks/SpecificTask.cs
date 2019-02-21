@@ -494,9 +494,9 @@ namespace SabberStoneCore.Tasks
 				new IncludeTask(EntityType.GRAVEYARD),
 				new FuncPlayablesTask(list =>
 				{
-					list[0].Game.OnRandomHappened(true);
+					list[0].Controller.Game.OnRandomHappened(true);
 					return list
-						.Where(p => p is Minion && p.ToBeDestroyed)
+						.Where(p => p.Card.Type == CardType.MINION && p.ToBeDestroyed)
 						.Select(p => p.Card.Id)
 						.Distinct()
 						.OrderBy(p => Util.Random)

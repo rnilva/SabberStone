@@ -83,6 +83,9 @@ namespace SabberStoneCore.Auras
 
 		private static void DeApply(IPlayable playable)
 		{
+			if (playable is PlayableSurrogate)
+				return;
+
 			Playable p = (Playable)playable;
 
 			if (p._modifiedCost == null) return;

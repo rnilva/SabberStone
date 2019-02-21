@@ -365,7 +365,7 @@ namespace SabberStoneCore.CardSets
 					new IncludeTask(EntityType.OP_DECK),
 					new FilterStackTask(SelfCondition.IsMinion),
 					new RandomTask(1, EntityType.STACK),
-					new SummonStackTask())
+					new SummonOpTask())
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -418,10 +418,11 @@ namespace SabberStoneCore.CardSets
 						int j = 0;
 						do
 						{
-							if (graveyard[i] is Minion m && m.ToBeDestroyed)
+							IPlayable p = graveyard[i];
+							if (p.Card.Type == CardType.MINION && p.ToBeDestroyed)
 							{
 								if (c.BoardZone.IsFull) return 0;
-								Generic.SummonBlock.Invoke(c.Game, (Minion) Entity.FromCard(c, m.Card), -1);
+								Generic.SummonBlock.Invoke(c.Game, (Minion) Entity.FromCard(c, p.Card), -1);
 								j++;
 							}
 							i--;
