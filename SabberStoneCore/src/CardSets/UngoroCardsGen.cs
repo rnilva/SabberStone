@@ -1875,8 +1875,9 @@ namespace SabberStoneCore.CardSets.Standard
 						var minions = new List<IPlayable>(c.DiscardedEntities.Count);
 						c.DiscardedEntities.ForEach(q =>
 						{
-							if (c.Game.IdEntityDic[q] is Minion m)
-								minions.Add(m);
+							IPlayable pp = c.Game.IdEntityDic[q];
+							if (pp.Card.Type == CardType.MINION)
+								minions.Add(pp);
 						});
 						return minions.Count > 0
 							? new List<IPlayable>{Entity.FromCard(c, Util.Choose(list: minions).Card)}

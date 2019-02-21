@@ -271,10 +271,11 @@ namespace SabberStoneCore.Tasks
 							}
 
 							c.DeckZone.Remove(pick);
-							pick.Power.Trigger?.Activate(c.Game, pick);
-							c.SecretZone.Add((Spell) pick);
+							var secret = (Spell) pick.CastToPlayable(c);
+							secret.Power.Trigger?.Activate(c.Game, secret);
+							c.SecretZone.Add(secret);
 							if (c == c.Game.CurrentPlayer)
-								pick.IsExhausted = true;
+								secret.IsExhausted = true;
 							break;
 
 						} while (stack.Count > 0);

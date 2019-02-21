@@ -473,7 +473,7 @@ namespace SabberStoneCore.Tasks
 					list[0].Game.OnRandomHappened(true);
 					Util.DeepCloneableRandom rnd = list[0].Game.Random;
 					return list
-						.Where(p => p is Minion && p.ToBeDestroyed)
+						.Where(p => p.Card.Type == CardType.MINION && p.ToBeDestroyed)
 						.Select(p => p.Card.Id)
 						.Distinct()
 						.OrderBy(p => rnd.Next())

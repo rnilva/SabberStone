@@ -398,8 +398,8 @@ namespace SabberStoneCore.CardSets
 					new IncludeTask(EntityType.OP_DECK),
 					new FilterStackTask(SelfCondition.IsMinion),
 					new RandomTask(1, EntityType.STACK),
-					new SummonStackTask())
-			}));
+					new SummonOpTask())
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [FP1_010] Maexxna - COST:6 [ATK:2/HP:8]

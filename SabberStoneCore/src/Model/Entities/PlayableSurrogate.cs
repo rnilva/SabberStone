@@ -16,6 +16,7 @@ namespace SabberStoneCore.Model.Entities
 		private int _health;
 		private Card _card;
 		private int _id;
+		private bool _toBeDestroyed;
 
 		internal PlayableSurrogate(in Game game, in Card card, int id = -1)
 		{
@@ -47,6 +48,7 @@ namespace SabberStoneCore.Model.Entities
 			_health = other._health;
 			_card = other._card;
 			_id = other._id;
+			_toBeDestroyed = other._toBeDestroyed;
 		}
 
 		public int Id
@@ -77,6 +79,12 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get => _health;
 			set => _health = value;
+		}
+
+		public bool ToBeDestroyed
+		{
+			get => _toBeDestroyed;
+			set => _toBeDestroyed = value;
 		}
 
 		public Power Power => Card.Power;
@@ -184,6 +192,8 @@ namespace SabberStoneCore.Model.Entities
 		public static implicit operator PlayableSurrogate(Playable p)
 		{
 			var surrogate = new PlayableSurrogate(p.Game, p.Card, p.Id);
+			if (p.ToBeDestroyed)
+				surrogate._toBeDestroyed = true;
 			return surrogate;
 		}
 
@@ -295,12 +305,6 @@ namespace SabberStoneCore.Model.Entities
 		void IPlayable.Destroy()
 		{
 			throw new NotImplementedException();
-		}
-
-		bool IPlayable.ToBeDestroyed
-		{
-			get => throw new NotImplementedException();
-			set => throw new NotImplementedException();
 		}
 
 		void IPlayable.ActivateTask(in PowerActivation activation, in ICharacter target, in int chooseOne,
