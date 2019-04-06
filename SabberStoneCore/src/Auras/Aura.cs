@@ -513,6 +513,8 @@ namespace SabberStoneCore.Auras
 
 			for (int i = 0; i < Effects.Length; i++)
 			{
+				if (entity is PlayableSurrogate)
+					continue;
 				Effects[i].RemoveAuraFrom(entity);
 			}
 

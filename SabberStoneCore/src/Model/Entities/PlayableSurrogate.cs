@@ -49,6 +49,7 @@ namespace SabberStoneCore.Model.Entities
 			_card = other._card;
 			_id = other._id;
 			_toBeDestroyed = other._toBeDestroyed;
+			IsMinion = other.IsMinion;
 		}
 
 		public int Id
@@ -176,7 +177,7 @@ namespace SabberStoneCore.Model.Entities
 					}
 					break;
 				default:
-					throw new ArgumentOutOfRangeException($"Can't apply effect {iEffect.GetType()} {iEffect} to PlayableSurrogate entity."); ;
+					throw new ArgumentOutOfRangeException($"Can't apply effect {iEffect.GetType()} {iEffect} to PlayableSurrogate entity.");
 			}
 		}
 
@@ -191,10 +192,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public static implicit operator PlayableSurrogate(Playable p)
 		{
-			var surrogate = new PlayableSurrogate(p.Game, p.Card, p.Id);
-			if (p.ToBeDestroyed)
-				surrogate._toBeDestroyed = true;
-			return surrogate;
+			return new PlayableSurrogate(p.Game, p.Card, p.Id);
 		}
 
 		internal static PlayableSurrogate CastFromPlayable(IPlayable ip)
@@ -364,7 +362,9 @@ namespace SabberStoneCore.Model.Entities
 
 		IPlayable IPlayable.Clone(in Controller controller)
 		{
-			return new PlayableSurrogate(this);
+			var clone = new PlayableSurrogate(this);
+			controller.Game.IdEntityDic[clone.Id] = clone;
+			return clone;
 		}
 
 		IAura IPlayable.OngoingEffect

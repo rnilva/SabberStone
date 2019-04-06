@@ -29,6 +29,10 @@ namespace SabberStoneCore.Actions
 				}
 
 				IPlayable playable = c.Game.IdEntityDic[choice];
+				//IPlayable playable = ((PlayableSurrogate) c.Game.IdEntityDic[choice]).CastToPlayable(in c);
+				//playable[GameTag.CREATOR] = c.Choice.SourceId;
+				//playable[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
+				
 
 				c.Game.Log(LogLevel.INFO, BlockType.ACTION, "ChoicePick", !c.Game.Logging? "":$"{c.Name} Picks {playable.Card.Name} as choice!");
 
@@ -53,29 +57,30 @@ namespace SabberStoneCore.Actions
 
 					case ChoiceAction.CAST:
 						RemoveFromZone(c, playable);
-						CastSpell.Invoke(c, playable as Spell, null, 0, true);
+						CastSpell.Invoke(c, (Spell)((PlayableSurrogate)playable).CastToPlayable(c), null, 0, true);
 						break;
 
 					case ChoiceAction.SPELL_RANDOM:
 						if (RemoveFromZone(c, playable))
 						{
+							Spell spell = (Spell) ((PlayableSurrogate) playable).CastToPlayable(c);
 							ICharacter randTarget = null;
-							if (playable.Card.TargetingType != TargetingType.None)
+							if (spell.Card.TargetingType != TargetingType.None)
 							{
-								List<ICharacter> targets = (List<ICharacter>)playable.ValidPlayTargets;
+								List<ICharacter> targets = (List<ICharacter>)spell.ValidPlayTargets;
 
 								randTarget = targets.Count > 0 ? Util.RandomElement(targets) : null;
 
-								playable.CardTarget = randTarget?.Id ?? -1;
+								spell.CardTarget = randTarget?.Id ?? -1;
 
 								c.Game.Log(LogLevel.INFO, BlockType.POWER, "CastRandomSpell",
-									!c.Game.Logging ? "" : $"{playable}'s target is randomly selected to {randTarget}");
+									!c.Game.Logging ? "" : $"{spell}'s target is randomly selected to {randTarget}");
 							}
-							if (playable.Card.HasOverload)
-								c.OverloadOwed = playable.Overload;
+							if (spell.Card.HasOverload)
+								c.OverloadOwed = spell.Card.Overload;
 
 							c.Game.TaskQueue.StartEvent();
-							CastSpell.Invoke(c, (Spell)playable, randTarget, 0, true);
+							CastSpell.Invoke(c, spell, randTarget, 0, true);
 							c.Game.TaskQueue.EndEvent();
 						}
 						break;
@@ -83,7 +88,7 @@ namespace SabberStoneCore.Actions
 					case ChoiceAction.SUMMON:
 						if (!c.BoardZone.IsFull && RemoveFromZone(c, playable))
 						{
-							SummonBlock.Invoke(c.Game, (Minion)playable, -1);
+							SummonBlock.Invoke(c.Game, (Minion)((PlayableSurrogate)playable).CastToPlayable(in c), -1);
 						}
 						//if (RemoveFromZone(c, playable))
 						//{
@@ -99,10 +104,18 @@ namespace SabberStoneCore.Actions
 						break;
 
 					case ChoiceAction.ADAPT:
+						playable = ((PlayableSurrogate) playable).CastToPlayable(in c);
 						c.Game.TaskQueue.StartEvent();
-						c.Choice.TargetIds.ForEach(p =>
-							playable.ActivateTask(PowerActivation.POWER, (ICharacter)c.Game.IdEntityDic[p])
-						);
+						// TODO
+						//c.Choice.TargetIds.ForEach(p =>
+						//	playable.ActivateTask(PowerActivation.POWER, (ICharacter)c.Game.IdEntityDic[p])
+						//);
+						foreach (int id in c.Choice.TargetIds)
+						{
+							ICharacter target = c.Game.IdEntityDic[id] as ICharacter;
+							if (target == null) continue;
+							playable.ActivateTask(PowerActivation.POWER, target);
+						}
 						// Need to move the chosen adaptation to the Graveyard
 						c.Game.TaskQueue.Enqueue(new MoveToGraveYard(EntityType.SOURCE), in c, playable, playable);
 						c.Game.TaskQueue.EndEvent();
@@ -139,7 +152,7 @@ namespace SabberStoneCore.Actions
 								!c.Game.Logging ? "" : $"{c.Hero} power replaced by {playable}");
 
 							c.SetasideZone.Add(c.Hero.HeroPower);
-							c.Hero.HeroPower = (HeroPower) playable;
+							c.Hero.HeroPower = (HeroPower)((PlayableSurrogate)playable).CastToPlayable(in c);
 						}
 						break;
 
@@ -176,7 +189,7 @@ namespace SabberStoneCore.Actions
 							Card zombeastCard = Card.CreateZombeastCard(in firstCard, in secondCard, c.Game.History);
 
 							IPlayable zombeast = Entity.FromCard(in c, in zombeastCard);
-							zombeast[GameTag.DISPLAYED_CREATOR] = playable[GameTag.DISPLAYED_CREATOR];
+							zombeast[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
 
 							AddHandPhase.Invoke(c, zombeast);
 							break;
@@ -189,6 +202,9 @@ namespace SabberStoneCore.Actions
 						throw new NotImplementedException();
 				}
 
+				if (c.Game.IdEntityDic[choice] is Playable pp)
+					pp._data.Add(GameTag.DISPLAYED_CREATOR, c.Choice.SourceId); 
+
 				if (c.Choice.EnchantmentCard != null)
 					AddEnchantmentBlock.Invoke(c, c.Choice.EnchantmentCard, c.Game.IdEntityDic[c.Choice.SourceId], playable, 0, 0, false);
 
@@ -197,7 +213,7 @@ namespace SabberStoneCore.Actions
 				{
 					// choice creator as Source
 					// selected card as Target
-					c.Game.TaskQueue.Enqueue(c.Choice.AfterChooseTask, in c, c.Game.IdEntityDic[playable[GameTag.CREATOR]], playable);
+					c.Game.TaskQueue.Enqueue(c.Choice.AfterChooseTask, in c, c.Game.IdEntityDic[c.Choice.SourceId], playable);
 				}
 
 				// set displayed creator at least for discover
@@ -309,12 +325,13 @@ namespace SabberStoneCore.Actions
 				var choicesIds = new List<int>();
 				foreach (Card p in choices)
 				{
-					IPlayable choiceEntity = Entity.FromCard(c, p,
-						new EntityData
-						{
-							{GameTag.CREATOR, source.Id},
-							{GameTag.DISPLAYED_CREATOR, source.Id }
-						});
+					//IPlayable choiceEntity = Entity.FromCard(c, p,
+					//	new EntityData
+					//	{
+					//		{GameTag.CREATOR, source.Id},
+					//		{GameTag.DISPLAYED_CREATOR, source.Id }
+					//	});
+					var choiceEntity = new PlayableSurrogate(c.Game, p);
 					c.SetasideZone.Add(choiceEntity);
 					choicesIds.Add(choiceEntity.Id);
 				}

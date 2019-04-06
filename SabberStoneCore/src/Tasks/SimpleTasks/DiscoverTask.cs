@@ -114,6 +114,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 							result[i] = pick;
 						}
+
+						game.OnRandomHappened(true);
 					}
 					break;
 				case 2:
@@ -148,6 +150,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						else
 							classCount--;
 					}
+					game.OnRandomHappened(true);
 					break;
 				case 3:
 					result = new Card[3];
@@ -166,6 +169,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 						result[i] = pick;
 					}
+					game.OnRandomHappened(true);
 					break;
 				default:
 					throw new NotImplementedException();

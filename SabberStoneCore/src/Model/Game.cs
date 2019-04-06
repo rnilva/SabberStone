@@ -885,7 +885,13 @@ namespace SabberStoneCore.Model
 
 			// Removing one-turn-effects
 			foreach ((int id, IEffect eff) in OneTurnEffects)
-				eff.RemoveFrom(IdEntityDic[id]);
+			{
+				IPlayable p = IdEntityDic[id];
+				if (p is PlayableSurrogate)
+					continue;
+				eff.RemoveFrom(p);
+			}
+
 			OneTurnEffects.Clear();
 			List<Enchantment> enchantments = OneTurnEffectEnchantments;
 			for (int i = enchantments.Count - 1; i >= 0; --i)
@@ -1037,7 +1043,7 @@ namespace SabberStoneCore.Model
 					PowerHistoryBuilder.BlockStart(BlockType.DEATHS, 1, "", 0, 0);
 
 				DeadMinions.InsertionSort(GetOrderOfPlay);
-				for (var i = 0; i < DeadMinions.Count; i++)
+				for (int i = 0; i < DeadMinions.Count; i++)
 				{
 					Minion minion = DeadMinions[i];
 					Log(LogLevel.INFO, BlockType.PLAY, "Game",

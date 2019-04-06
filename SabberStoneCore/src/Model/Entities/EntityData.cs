@@ -15,7 +15,7 @@ namespace SabberStoneCore.Model.Entities
 	/// </summary>
 	internal class EntityData : IDictionary<GameTag, int>
 	{
-		private const int _initSize = 16;
+		private const int _initSize = 8;
 
 		private int[] _buckets;
 		private int _size = _initSize;
@@ -158,7 +158,7 @@ namespace SabberStoneCore.Model.Entities
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void Initialise(int capacity)
 		{
-			int pow = 8;
+			int pow = 2;
 			while (pow < capacity)
 				pow *= 2;
 

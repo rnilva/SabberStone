@@ -4577,6 +4577,27 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			test.Kill();
 
 			Assert.True(target.ToBeDestroyed);
+
+			// If you transform the minion that’s already been cursed by Voodoo Doll,
+			// the curse will be broken, and the transformed(and formerly cursed) minion
+			// will not be killed when Voodoo Doll dies.Silencing the cursed minion will
+			// also break the curse, in addition to silencing the Voodoo Doll.
+
+			// 1. Silence Test
+			Minion target2 = game.ProcessCard<Minion>("Stonetusk Boar");
+			target2.Silence();
+			Minion test2 = game.ProcessCard<Minion>("Voodoo Doll", target);
+			test2.Kill();
+			Assert.False(target2.ToBeDestroyed);
+
+			game.Player1.UsedMana = 0;
+
+			// 2. Transform Test
+			//Minion target3 = game.ProcessCard<Minion>("Stonetusk Boar");
+			//game.ProcessCard()
+			//Minion test3 = game.ProcessCard<Minion>("Voodoo Doll", target);
+			//test2.Kill();
+			//Assert.False(target.ToBeDestroyed);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

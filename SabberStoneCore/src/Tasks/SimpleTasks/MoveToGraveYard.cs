@@ -20,7 +20,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//entities.ForEach(p =>
 			foreach (IPlayable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
 			{
-				p.Controller.GraveyardZone.Add(p.Zone.Remove(p));
+				p.Controller.GraveyardZone.Add(p.Zone?.Remove(p) ?? p);
 				if (p.Card.IsSecret && p[GameTag.REVEALED] == 1)
 					game.TriggerManager.OnSecretRevealedTrigger(p);
 			}

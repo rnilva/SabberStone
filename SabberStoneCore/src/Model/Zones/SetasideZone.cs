@@ -15,6 +15,17 @@ namespace SabberStoneCore.Model.Zones
 
 		public override Zone Type => Zone.SETASIDE;
 
+		public override void Add(IPlayable entity, int zonePosition = -1)
+		{
+			if (entity is Playable p)
+			{
+				p.Zone = this;
+				entity = (PlayableSurrogate)p;
+			}
+
+			base.Add(entity, zonePosition);
+		}
+
 		public SetasideZone Clone(Controller c)
 		{
 			return new SetasideZone(c, this);

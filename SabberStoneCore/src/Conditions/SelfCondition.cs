@@ -49,7 +49,7 @@ namespace SabberStoneCore.Conditions
 		public static readonly SelfCondition IsHero = new SelfCondition(me => me.Card.Type == CardType.HERO);
 		public static readonly SelfCondition IsHeroPower = new SelfCondition(me => me is HeroPower);
 		public static SelfCondition HasArmorLessThan(int amount) => new SelfCondition(me => me.Controller.Hero.Armor < amount);
-		public static readonly SelfCondition IsAttacking = new SelfCondition(me => me is ICharacter && ((ICharacter)me).IsAttacking);
+		//public static readonly SelfCondition IsAttacking = new SelfCondition(me => me is ICharacter && ((ICharacter)me).IsAttacking);
 		public static readonly SelfCondition IsCthun = new SelfCondition(me => me.Card.Id.Equals("OG_280"));
 		public static readonly SelfCondition IsSilverHandRecruit = new SelfCondition(me => me.Card.Id.Equals("CS2_101t"));
 		public static readonly SelfCondition IsSpellDmgOnHero = new SelfCondition(me => me.Controller.CurrentSpellPower > 0);

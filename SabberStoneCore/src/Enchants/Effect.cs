@@ -89,7 +89,7 @@ namespace SabberStoneCore.Enchants
 						case GameTag.WINDFURY:
 							{
 								var m = (Minion)entity;
-								if (m.NumAttacksThisTurn > 0 && m.IsExhausted)
+								if (m.NumAttacksThisTurn == 1 && m.IsExhausted)
 									m.IsExhausted = false;
 								break;
 							}
@@ -102,6 +102,17 @@ namespace SabberStoneCore.Enchants
 							else
 								break;
 							return;
+						case GameTag.RUSH:
+						{
+							var m = (Minion)entity;
+							if (m.IsExhausted && m.NumAttacksThisTurn == 0)
+							{
+								m.IsExhausted = false;
+								m.AttackableByRush = true;
+								m.Game.RushMinions.Add(m.Id);
+							}
+							return;
+						}
 					}
 
 					if (oneTurnEffect && entity.NativeTags[Tag] == Value)

@@ -111,8 +111,8 @@ namespace SabberStoneCore.Actions
 				//{
 
 				//}
-				source.IsAttacking = true;
-				target.IsDefending = true;
+				//source.IsAttacking = true;
+				//target.IsDefending = true;
 
 				// Invoke onAttackTrigger
 				//Trigger.ValidateTriggers(g, source, SequenceType.Attack);
@@ -215,8 +215,9 @@ namespace SabberStoneCore.Actions
 				//{
 
 				//}
-				source.IsAttacking = false;
-				target.IsDefending = false;
+
+				//source.IsAttacking = false;
+				//target.IsDefending = false;
 
 				int numAtk = source.NumAttacksThisTurn + 1;
 

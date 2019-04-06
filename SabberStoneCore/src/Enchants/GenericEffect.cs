@@ -50,7 +50,7 @@ namespace SabberStoneCore.Enchants
 		void IEffect.ApplyAuraTo(IPlayable playable)
 		{
 			if (!(playable is T p))
-				throw new Exception($"Cannot apply {this} to an entity of type {playable.GetType()}");
+				throw new Exception($"Cannot apply AuraEffect {this} to an entity of type {playable.GetType()}");
 
 			ApplyAuraTo(p);
 		}
@@ -58,7 +58,7 @@ namespace SabberStoneCore.Enchants
 		void IEffect.RemoveFrom(IEntity entity)
 		{
 			if (!(entity is T playable))
-				throw new Exception();
+				throw new Exception($"Cannot remove {this} from an entity of type {entity.GetType()}");
 
 			RemoveFrom(playable);
 		}
@@ -66,7 +66,7 @@ namespace SabberStoneCore.Enchants
 		void IEffect.RemoveAuraFrom(IPlayable playable)
 		{
 			if (!(playable is T p))
-				throw new Exception();
+				throw new Exception($"Cannot remove AuraEffect {this} from an entity of type {playable.GetType()}");
 
 			RemoveAuraFrom(p);
 		}
