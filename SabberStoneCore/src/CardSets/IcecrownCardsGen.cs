@@ -3026,7 +3026,7 @@ namespace SabberStoneCore.CardSets.Standard
 						for (int i = 1; i < list.Count; i++)
 						{
 							var ps = (PlayableSurrogate) list[i];
-							if (ps.AttackDamage < atk)
+							if (ps.IsMinion && ps.AttackDamage < atk)
 								result.Add(ps);
 						}
 

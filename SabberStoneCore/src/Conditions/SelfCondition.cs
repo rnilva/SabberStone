@@ -73,7 +73,7 @@ namespace SabberStoneCore.Conditions
 			me.Card.Type == CardType.HERO_POWER &&
 			me.Game.CurrentEventData.EventTarget.Card.Type == CardType.MINION);
 		public static SelfCondition HasArmorLessThan(int amount) => new SelfCondition(me => me.Controller.Hero.Armor < amount);
-		public static readonly SelfCondition IsAttacking = new SelfCondition(me => me is ICharacter && ((ICharacter)me).IsAttacking);
+		//public static readonly SelfCondition IsAttacking = new SelfCondition(me => me is ICharacter && ((ICharacter)me).IsAttacking);
 		public static readonly SelfCondition IsCthun = new SelfCondition(me => me.Card.Id.Equals("OG_280"));
 		public static readonly SelfCondition IsSilverHandRecruit = new SelfCondition(me => me.Card.Id.Equals("CS2_101t"));
 		public static readonly SelfCondition IsTreant = new SelfCondition(me => me.Card.Name == "Treant");

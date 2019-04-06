@@ -254,7 +254,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			Game game = controller.Game;
 
-			tags = tags ?? new EntityData();
+			//tags = tags ?? new EntityData();
 			//tags[GameTag.CARD_ID] = card.AssetId;
 
 			//if (creator != null)
@@ -264,14 +264,20 @@ namespace SabberStoneCore.Model.Entities
 			switch (card.Type)
 			{
 				case CardType.MINION:
+					if (tags == null)
+						tags = new EntityData();
 					result = new Minion(in controller, in card, in tags, in id);
 					break;
 
 				case CardType.SPELL:
+					if (tags == null)
+						tags = new EntityData(4);
 					result = new Spell(in controller, in card, in tags, in id);
 					break;
 
 				case CardType.WEAPON:
+					if (tags == null)
+						tags = new EntityData(4);
 					result = new Weapon(in controller, in card, in tags, in id);
 					break;
 
@@ -285,11 +291,14 @@ namespace SabberStoneCore.Model.Entities
 					//tags[GameTag.CARDTYPE] = card[GameTag.CARDTYPE];
 					//tags[GameTag.RARITY] = card[GameTag.RARITY];
 					//tags[GameTag.HERO_POWER] = card[GameTag.HERO_POWER];
-
+					if (tags == null)
+						tags = new EntityData();
 					result = new Hero(in controller, in card, in tags, in id);
 					break;
 
 				case CardType.HERO_POWER:
+					if (tags == null)
+						tags = new EntityData(4);
 					//tags[GameTag.COST] = card[GameTag.COST];
 					tags[GameTag.ZONE] = (int)Enums.Zone.PLAY;
 					//tags[GameTag.FACTION] = card[GameTag.FACTION];

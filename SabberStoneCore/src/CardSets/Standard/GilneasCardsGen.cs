@@ -2877,7 +2877,6 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("GIL_614e1", new Power {
 				// TODO: must check the real log
 				Enchant = new Enchant(GameTag.VOODOO_LINK, EffectOperator.SET, 1),
-				
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -2890,7 +2889,8 @@ namespace SabberStoneCore.CardSets.Standard
 				DeathrattleTask = ComplexTask.Create(
 					new IncludeTask(EntityType.TARGET),
 					new FuncPlayablesTask(p => new List<IPlayable>{p[0].Game.IdEntityDic[p[0][GameTag.TAG_SCRIPT_DATA_NUM_1]]}),
-					new DestroyTask(EntityType.STACK))
+					new ConditionTask(EntityType.STACK, SelfCondition.IsTagValue(GameTag.VOODOO_LINK, 1)),
+					new FlagTask(true, new DestroyTask(EntityType.STACK)))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

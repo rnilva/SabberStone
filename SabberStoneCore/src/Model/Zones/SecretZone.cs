@@ -83,6 +83,11 @@ namespace SabberStoneCore.Model.Zones
 				yield return Quest;
 		}
 
+		public bool Any()
+		{
+			return _count > 0 || Quest != null;
+		}
+
 		public SecretZone Clone(Controller c)
 		{
 			return new SecretZone(c, this);

@@ -1095,7 +1095,7 @@ namespace SabberStoneCore.Model
 					PowerHistoryBuilder.BlockStart(BlockType.DEATHS, 1, "", 0, 0);
 
 				DeadMinions.InsertionSort(GetOrderOfPlay);
-				for (var i = 0; i < DeadMinions.Count; i++)
+				for (int i = 0; i < DeadMinions.Count; i++)
 				{
 					Minion minion = DeadMinions[i];
 					Log(LogLevel.INFO, BlockType.PLAY, "Game",

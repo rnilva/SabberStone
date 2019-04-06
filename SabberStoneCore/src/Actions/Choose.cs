@@ -139,7 +139,7 @@ namespace SabberStoneCore.Actions
 								!g.Logging ? "" : $"{c.Hero} power replaced by {playable}");
 
 							c.SetasideZone.Add(c.Hero.HeroPower);
-							c.Hero.HeroPower = (HeroPower) playable;
+							c.Hero.HeroPower = (HeroPower)((PlayableSurrogate)playable).CastToPlayable(in c);
 						}
 						break;
 
@@ -185,7 +185,7 @@ namespace SabberStoneCore.Actions
 							Card zombeastCard = Card.CreateZombeastCard(in firstCard, in secondCard, g.History);
 
 							IPlayable zombeast = Entity.FromCard(in c, in zombeastCard);
-							zombeast[GameTag.DISPLAYED_CREATOR] = playable[GameTag.DISPLAYED_CREATOR];
+							zombeast[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
 
 							AddHandPhase.Invoke(c, zombeast);
 							break;

@@ -100,7 +100,7 @@ namespace SabberStoneCore.Enchants
 						case GameTag.WINDFURY:
 							{
 								var m = (Minion)entity;
-								if (m.NumAttacksThisTurn > 0 && m.IsExhausted)
+								if (m.NumAttacksThisTurn == 1 && m.IsExhausted)
 									m.IsExhausted = false;
 								break;
 							}
