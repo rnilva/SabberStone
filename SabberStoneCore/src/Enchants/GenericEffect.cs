@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Enchants
@@ -16,21 +17,25 @@ namespace SabberStoneCore.Enchants
 			_value = value;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void ApplyTo(T entity)
 		{
 			_attr.Apply(entity, _operator, _value);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void ApplyAuraTo(T playable)
 		{
 			_attr.ApplyAura(playable, _operator, _value);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void RemoveFrom(T entity)
 		{
 			_attr.Remove(entity, _operator, _value);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void RemoveAuraFrom(T playable)
 		{
 			_attr.RemoveAura(playable, _operator, _value);
