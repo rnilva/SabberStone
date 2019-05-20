@@ -92,6 +92,13 @@ namespace SabberStoneCore.Model.Zones
 			RemoveAura(oldEntity);
 			for (int i = 0; i < Auras.Count; i++)
 				Auras[i].EntityRemoved(oldEntity);
+			if (oldEntity.AppliedEnchantments != null)
+				for (int i = oldEntity.AppliedEnchantments.Count - 1; i >= 0; i--)
+				{
+					//if (oldEntity.AppliedEnchantments[i].Creator.Power?.Aura != null)
+					//	continue;
+					oldEntity.AppliedEnchantments[i].Remove();
+				}
 			oldEntity.ActivatedTrigger?.Remove();
 			if (oldEntity.Card.Untouchable && --_untouchableCount == 0)
 				_hasUntouchables = false;

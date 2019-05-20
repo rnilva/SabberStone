@@ -3,6 +3,7 @@ using System.Linq;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 using System.Collections.Generic;
+using SabberStoneCore.Enchants;
 using SabberStoneCore.Exceptions;
 
 
@@ -118,6 +119,8 @@ namespace SabberStoneCore.Model.Zones
 	{
 		public const int StartingCards = 30;
 		public const int DeckMaximumCapcity = 60;
+
+		public readonly List<Trigger> Triggers = new List<Trigger>();
 
 		public bool NoEvenCostCards { get; private set; } = true;
 		public bool NoOddCostCards { get; private set; } = true;
@@ -267,7 +270,10 @@ namespace SabberStoneCore.Model.Zones
 
 		public DeckZone_new Clone(Controller c)
 		{
-			return new DeckZone_new(c, this);
+			var clone = new DeckZone_new(c, this);
+			//Game g = c.Game;
+			//Triggers.ForEach(t => t.Activate())
+			return clone;
 		}
 
 		internal void SetEntity(int index, IPlayable newEntity)
@@ -291,7 +297,7 @@ namespace SabberStoneCore.Model.Zones
 
 			Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}'.");
 
-			entity.Power?.Trigger?.Activate(Game, entity, TriggerActivation.DECK);
+			Triggers.Add(entity.Power?.Trigger?.Activate(Game, entity, TriggerActivation.DECK));
 
 			if (NoEvenCostCards || NoOddCostCards)
 			{

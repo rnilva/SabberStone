@@ -43,13 +43,17 @@ namespace SabberStoneCore.Tasks
 
 		public static ISimpleTask TotemicCall
 			=> ComplexTask.Create(
-				new FuncNumberTask(p =>
+				new FuncNumberTask((IPlayable p) =>
 				{
-					Minion[] minions = p.Controller.BoardZone.GetAll();
-					var notContained = new List<Card>(4);
-					for (int i = 0; i < p.Card.Entourage.Length; i++)
+					//Minion[] minions = p.Controller.BoardZone.GetAll();
+					var minions = p.Controller.BoardZone.GetSpan();
+					//var notContained = new List<Card>(4);
+					Span<int> notContained = stackalloc int[4];
+					int k = 0;
+					var entourage = p.Card.Entourage;
+					for (int i = 0; i < entourage.Length; i++)
 					{
-						string id = p.Card.Entourage[i];
+						string id = entourage[i];
 						bool flag = false;
 						for (int j = 0; j < minions.Length; j++)
 						{
@@ -61,9 +65,11 @@ namespace SabberStoneCore.Tasks
 							}
 						}
 						if (!flag)
-							notContained.Add(Cards.FromId(id));
+							//notContained.Add(Cards.FromId(id));
+							notContained[k++] = i;
 					}
-					Entity.FromCard(p.Controller, notContained[Util.Random.Next(notContained.Count)],
+					Entity.FromCard(p.Controller, Cards.FromId(entourage[notContained[
+							Util.Random.Next(k)]]),
 						null, p.Controller.BoardZone);
 					p.Game.OnRandomHappened(true);
 					return 0;

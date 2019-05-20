@@ -3,12 +3,23 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Version>2.0.0</Version>
     <RepositoryUrl>https://github.com/HearthSim/Sabberstone</RepositoryUrl>
+    <Configurations>Debug;Release;Test</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
     <LangVersion>latest</LangVersion>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
+    <DefineConstants>NETSTANDARD2_0</DefineConstants>
+    <OutputPath>bin\Debug\netstandard2.0\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
+    <LangVersion>latest</LangVersion>
+    <Optimize>false</Optimize>
     <DefineConstants>NETSTANDARD2_0</DefineConstants>
     <OutputPath>bin\Debug\netstandard2.0\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -20,7 +31,7 @@
     <TreatSpecificWarningsAsErrors />
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <DefineConstants></DefineConstants>
   </PropertyGroup>
   <ItemGroup>

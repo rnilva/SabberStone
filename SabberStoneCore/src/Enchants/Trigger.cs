@@ -125,6 +125,9 @@ namespace SabberStoneCore.Enchants
 			if (_sequenceType != SequenceType.None)
 				game.Triggers.Add(instance);
 
+			//if (activation == TriggerActivation.DECK)
+			//	source.Controller.DeckZone.Triggers.Add(instance);
+
 			switch (_triggerType)
 			{
 				case TriggerType.DEAL_DAMAGE:
@@ -457,6 +460,9 @@ namespace SabberStoneCore.Enchants
 
 			if (_sequenceType != SequenceType.None)
 				Game.Triggers.Remove(this);
+
+			//if (TriggerActivation == TriggerActivation.DECK)
+			//	_owner.Controller.DeckZone.Triggers.Remove(this);
 
 			_removed = true;
 
