@@ -1583,14 +1583,15 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Copied Deathrattle from {0}.
 			// --------------------------------------------------------
 			cards.Add("BOT_243e", new Power {
-				DeathrattleTask = ComplexTask.Create(
-					new IncludeTask(EntityType.SOURCE),
-					new IncludeTask(EntityType.TARGET, null, true),
-					new FuncPlayablesTask(p =>
-					{
-						p[0].Game.IdEntityDic[p[1][GameTag.TAG_SCRIPT_DATA_NUM_1]].ActivateTask(PowerActivation.DEATHRATTLE, null, 0, p[0]);
-						return null;
-					}))
+				//DeathrattleTask = ComplexTask.Create(
+				//	new IncludeTask(EntityType.SOURCE),
+				//	new IncludeTask(EntityType.TARGET, null, true),
+				//	new FuncPlayablesTask(p =>
+				//	{
+				//		p[0].Game.IdEntityDic[p[1][GameTag.TAG_SCRIPT_DATA_NUM_1]].ActivateTask(PowerActivation.DEATHRATTLE, null, 0, p[0]);
+				//		return null;
+				//	}))
+				DeathrattleTask = ActivateCapturedDeathrattleTask.Task
             });
 
 			// ------------------------------------ ENCHANTMENT - ROGUE

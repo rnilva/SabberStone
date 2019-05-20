@@ -56,7 +56,7 @@ namespace SabberStoneCore.Tasks
 
 		public static ISimpleTask TotemicCall
 			=> ComplexTask.Create(
-				new FuncNumberTask(p =>
+				new FuncNumberTask((IPlayable p) =>
 				{
 					ReadOnlySpan<Minion> minions = p.Controller.BoardZone.GetSpan();
 					Span<int> notContained = stackalloc int[4];
