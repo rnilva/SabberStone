@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
     <LangVersion>latest</LangVersion>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <DefineConstants>NETSTANDARD2_0</DefineConstants>
     <OutputPath>bin\Debug\netstandard2.0\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -51,7 +51,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.2-servicing-27114-05" />
+    <PackageReference Include="System.Memory" Version="4.5.3" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Memory">

@@ -1395,6 +1395,7 @@ namespace SabberStoneCoreTest.CardSets
 			// Mulligan Player 2
 			game.Process(ChooseTask.Mulligan(game.CurrentOpponent, new List<int>()));
 			game.NextStep = Step.MAIN_BEGIN; // End Mulligan phase.
+			game.MainBegin();
 
 			// Post MULLIGAN.
 			Assert.Equal(31, game.CurrentPlayer.DeckZone.Count); // 30-4(hand)+5 legendaries

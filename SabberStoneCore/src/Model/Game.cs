@@ -469,12 +469,14 @@ namespace SabberStoneCore.Model
 						Player1.PlayState = PlayState.LOSING;
 
 					NextStep = Step.FINAL_WRAPUP;
+					FinalWrapUp();
 				}
 				else if (Player2.Hero.ToBeDestroyed)
 				{
 					Player2.PlayState = PlayState.LOSING;
 
 					NextStep = Step.FINAL_WRAPUP;
+					FinalWrapUp();
 				}
 			}
 
@@ -562,6 +564,19 @@ namespace SabberStoneCore.Model
 
 			// set next step
 			NextStep = Step.BEGIN_FIRST;
+
+			BeginFirst();
+			BeginShuffle();
+			BeginDraw();
+			if (!_gameConfig.SkipMulligan)
+			{
+				BeginMulligan();
+				return;
+			}
+			MainBegin();
+			MainReady();
+			MainStartTriggers();
+			MainStart();
 		}
 
 		/// <summary>
@@ -859,6 +874,11 @@ namespace SabberStoneCore.Model
 			// set next step
 			//NextStep = Step.MAIN_NEXT;
 			NextStep = Step.MAIN_CLEANUP;
+			MainCleanUp();
+			MainNext();
+			MainReady();
+			MainStartTriggers();
+			MainStart();
 		}
 
 		/// <summary>
@@ -1000,6 +1020,7 @@ namespace SabberStoneCore.Model
 
 			// set next step
 			NextStep = Step.FINAL_GAMEOVER;
+			FinalGameOver();
 		}
 
 		/// <summary>
@@ -1332,7 +1353,8 @@ namespace SabberStoneCore.Model
 			set
 			{
 				this[GameTag.NEXT_STEP] = (int)value;
-				GamesEventManager.NextStepEvent(this, value);
+				Step = value;
+				//GamesEventManager.NextStepEvent(this, value);
 			}
 		}
 

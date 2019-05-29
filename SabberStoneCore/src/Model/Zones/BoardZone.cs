@@ -173,6 +173,58 @@ namespace SabberStoneCore.Model.Zones
 			return base.GetAll(predicate);
 		}
 
+		///// <summary>
+		///// Copy minions to the given buffer. This won't copy untouchable (dormant) entities.
+		///// </summary>
+		///// <typeparam name="T"></typeparam>
+		///// <param name="buffer">The target buffer.</param>
+		///// <param name="offset">The offset of the buffer.</param>
+		///// <param name="targets">True: exclude stealth/immune minions.</param>
+		//public void GetAll<T>(Span<T> buffer, int offset, bool targets = false) where T: ICharacter
+		//{
+		//	Span<Minion> entities = _entities.AsSpan(0, _count);
+		//	if (targets)
+		//	{
+		//		if (_hasUntouchables)
+		//		{
+		//			for (int i = 0; i < entities.Length; i++)
+		//			{
+		//				Minion m = entities[i];
+		//				if (m.HasStealth || m.IsImmune || m.Untouchable)
+		//					continue;
+		//				buffer[offset++] = (T)(ICharacter)m;
+		//			}
+		//		}
+		//		else
+		//		{
+		//			for (int i = 0; i < entities.Length; i++)
+		//			{
+		//				Minion m = entities[i];
+		//				if (m.HasStealth || m.IsImmune)
+		//					continue;
+		//				buffer[offset++] = (T) (ICharacter) m;
+		//			}
+		//		}
+		//	}
+		//	else
+		//	{
+		//		if (_hasUntouchables)
+		//		{
+		//			for (int i = 0; i < entities.Length; i++)
+		//			{
+		//				Minion m = entities[i];
+		//				if (m.Untouchable)
+		//					continue;
+		//				buffer[offset++] = (T) (ICharacter) m;
+		//			}
+		//		}
+		//		else
+		//		{
+		//			entities.CopyTo(buffer);
+		//		}
+		//	}
+		//}
+
 		internal override void CopyTo(Array destination, int index)
 		{
 			if (_hasUntouchables)
