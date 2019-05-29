@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -17,6 +18,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public IPlayable this[int id]
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get
 			{
 				if (id >= _list.Length)
@@ -27,6 +29,7 @@ namespace SabberStoneCore.Model.Entities
 
 				return value;
 			}
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set
 			{
 				IPlayable[] list = _list;
