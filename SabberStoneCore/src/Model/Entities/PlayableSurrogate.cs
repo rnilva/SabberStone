@@ -41,7 +41,7 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		private PlayableSurrogate(in PlayableSurrogate other)
+		private PlayableSurrogate(PlayableSurrogate other)
 		{
 			_cost = other._cost;
 			_atk = other._atk;

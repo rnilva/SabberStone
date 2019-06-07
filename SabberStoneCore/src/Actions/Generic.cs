@@ -54,12 +54,12 @@ namespace SabberStoneCore.Actions
 			{
 				int baseMana = c.BaseMana;
 
-				if (baseMana + amount > c.MaxResources)
+				if (baseMana + amount > Controller.MaxResources)
 				{
-					c.Game.Log(LogLevel.INFO, BlockType.PLAY, "ChangeManaCrystal", !c.Game.Logging ? "" : $"{c.Name} is already capped in {c.MaxResources} mana crystals.");
+					c.Game.Log(LogLevel.INFO, BlockType.PLAY, "ChangeManaCrystal", !c.Game.Logging ? "" : $"{c.Name} is already capped in {Controller.MaxResources} mana crystals.");
 					if (!fill)
-						c.UsedMana += c.MaxResources - c.BaseMana;
-					c.BaseMana = c.MaxResources;
+						c.UsedMana += Controller.MaxResources - c.BaseMana;
+					c.BaseMana = Controller.MaxResources;
 
 				}
 				else if (baseMana + amount < 0)

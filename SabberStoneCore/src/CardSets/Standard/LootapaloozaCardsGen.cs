@@ -458,7 +458,7 @@ namespace SabberStoneCore.CardSets.Standard
 					new FlagTask(true, ComplexTask.Create(
 						new FuncNumberTask(p => p.Controller.HandZone.Count),
 						new MathNumberIndexTask(0, 1, MathOperation.ADD, 1),
-						new FuncNumberTask(p => p.Controller.MaxHandSize),
+						new FuncNumberTask((IPlayable p) => Controller.MaxHandSize),
 						new MathNumberIndexTask(0, 1, MathOperation.SUB),
 						new EnqueueNumberTask(
 							ComplexTask.Create(

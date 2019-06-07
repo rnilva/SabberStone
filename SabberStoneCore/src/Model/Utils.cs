@@ -413,19 +413,24 @@ namespace SabberStoneCore.Model
 			if (amount > c)
 				amount = c;
 
-			int[] indices = Enumerable.Range(0, c).ToArray();
-
 			T[] results = new T[amount];
-			for (int i = 0, k = 0; i < amount; i++)
+			unsafe
 			{
-				int j = rnd.Next(i, c);
+				int* indices = stackalloc int[amount << 1];
+				for (int i = 0; i < amount; i++)
+					indices[i] = i;
+				for (int i = 0, k = 0; i < amount; i++)
+				{
+					int j = rnd.Next(i, c);
 
-				int temp = indices[i];
-				indices[i] = indices[j];
-				indices[j] = temp;
+					int temp = indices[i];
+					indices[i] = indices[j];
+					indices[j] = temp;
 
-				results[k++] = list[indices[i]];
+					results[k++] = list[indices[i]];
+				}
 			}
+			//int[] indices = Enumerable.Range(0, c).ToArray();
 
 			return results;
 		}

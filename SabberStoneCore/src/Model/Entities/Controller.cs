@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
@@ -18,8 +19,6 @@ namespace SabberStoneCore.Model.Entities
 	/// </summary>
 	public partial class Controller : Entity
 	{
-		private readonly int _playerId;
-
 		/// <summary>
 		/// Available zones for this player.
 		/// </summary>
@@ -166,7 +165,6 @@ namespace SabberStoneCore.Model.Entities
 			: base(in game, Card.CardPlayer, in tags, in id)
 		{
 			Name = name;
-			_playerId = playerId;
 			Controller = this;
 
 			//DeckZone = new DeckZone(this);
@@ -187,6 +185,8 @@ namespace SabberStoneCore.Model.Entities
 			PlayHistory = new List<PlayHistoryEntry>(30);
 		
 			Game.Log(LogLevel.INFO, BlockType.PLAY, "Controller", !Game.Logging? "":$"Created Controller '{name}'");
+
+			_attrs = new ControllerAttributes {PlayerId = playerId};
 		}
 
 		/// <summary>
@@ -248,10 +248,12 @@ namespace SabberStoneCore.Model.Entities
 			}
 
 			// non-tag attributes
-			_playerId = controller._playerId;
-			_currentSpellPower = controller._currentSpellPower;
-			NumTotemSummonedThisGame = controller.NumTotemSummonedThisGame;
-			TemporusFlag = controller.TemporusFlag;
+			//_playerId = controller._playerId;
+			//_currentSpellPower = controller._currentSpellPower;
+			//NumTotemSummonedThisGame = controller.NumTotemSummonedThisGame;
+			//TemporusFlag = controller.TemporusFlag;
+
+			_attrs = new ControllerAttributes(controller._attrs);
 		}
 
 		/// <summary>
@@ -753,38 +755,54 @@ namespace SabberStoneCore.Model.Entities
 
 	public partial class Controller
 	{
+		private ControllerAttributes _attrs;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void CleanTurnStatistics()
+		{
+			_attrs.CleanTurnStatistics();
+		}
+
 		/// <summary>
 		/// Maximum amount of cards in the player's hand
 		/// </summary>
-		public int MaxHandSize => this[GameTag.MAXHANDSIZE];
+		public const int MaxHandSize = 10;
 
 		/// <summary>
 		/// Maximum amount of mana this player is allowed to spend.
 		/// </summary>
-		public int MaxResources => this[GameTag.MAXRESOURCES];
+		public const int MaxResources = 10;
 
 		/// <summary>
 		/// Duration of seconds of this player's turn.
 		/// </summary>
 		public int TimeOut
 		{
-			get { return this[GameTag.TIMEOUT]; }
-			set { this[GameTag.TIMEOUT] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.TimeOut;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.TimeOut = value;
 		}
 
 		/// <summary>
 		/// ID of the player, which is a monotone ranking order starting from 1.
 		/// The first player gets PlayerID == 1
 		/// </summary>
-		public int PlayerId => _playerId;
+		public int PlayerId
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.PlayerId;
+		}
 
 		/// <summary>
 		/// The EntityID of the selected Hero.
 		/// </summary>
 		public int HeroId
 		{
-			get { return this[GameTag.HERO_ENTITY]; }
-			set { this[GameTag.HERO_ENTITY] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.HeroId;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.HeroId = value;
 		}
 
 
@@ -793,8 +811,10 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public PlayState PlayState
 		{
-			get { return (PlayState)this[GameTag.PLAYSTATE]; }
-			set { this[GameTag.PLAYSTATE] = (int)value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => (PlayState) _attrs.PlayState;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.PlayState = (int) value;
 		}
 
 		/// <summary>
@@ -813,12 +833,12 @@ namespace SabberStoneCore.Model.Entities
 		/// 
 		/// This value is limited to 1 turnand should be reset in the next turn.
 		/// </summary>
-		public int BaseMana
+		public unsafe int BaseMana
 		{
 			//get { return this[GameTag.RESOURCES]; }
 			//set { this[GameTag.RESOURCES] = value; }
-			get { return this[GameTag.RESOURCES]; }
-			set { this[GameTag.RESOURCES] = value; }
+			get => _attrs.BaseMana;
+			set => _attrs.BaseMana = value;
 		}
 
 		/// <summary>
@@ -828,12 +848,14 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int UsedMana
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.RESOURCES_USED, out int value);
-				return value;
-			}
-			set { this[GameTag.RESOURCES_USED] = value; }
+			//get
+			//{
+			//	_data.TryGetValue(GameTag.RESOURCES_USED, out int value);
+			//	return value;
+			//}
+			//set { this[GameTag.RESOURCES_USED] = value; }
+			get => _attrs.UsedMana;
+			set => _attrs.UsedMana = value;
 		}
 
 		/// <summary>
@@ -841,12 +863,14 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int TemporaryMana
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.TEMP_RESOURCES, out int value);
-				return value;
-			}
-			set { this[GameTag.TEMP_RESOURCES] = value; }
+			//get
+			//{
+			//	_data.TryGetValue(GameTag.TEMP_RESOURCES, out int value);
+			//	return value;
+			//}
+			//set { this[GameTag.TEMP_RESOURCES] = value; }
+			get => _attrs.TemporaryMana;
+			set => _attrs.TemporaryMana = value;
 		}
 
 		/// <summary>
@@ -856,206 +880,154 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public bool IsComboActive
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.COMBO_ACTIVE, out int value);
-				return value == 1;
-			}
-			set { this[GameTag.COMBO_ACTIVE] =  value ? 1 : 0; }
+			//get
+			//{
+			//	_data.TryGetValue(GameTag.COMBO_ACTIVE, out int value);
+			//	return value == 1;
+			//}
+			//set { this[GameTag.COMBO_ACTIVE] =  value ? 1 : 0; }
+			get => _attrs.IsComboActive > 0;
+			set => _attrs.IsComboActive = value ? 1 : 0;
 		}
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+		
+	    public int NumCardsDrawnThisTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.NumCardsDrawnThisTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.NumCardsDrawnThisTurn = value;
+	    }
+	    
+	    public int NumCardsPlayedThisTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.NumCardsPlayedThisTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.NumCardsPlayedThisTurn = value;
+	    }
+	    
+	    public int NumMinionsPlayedThisTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.NumMinionsPlayedThisTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.NumMinionsPlayedThisTurn = value;
+	    }
+	    
+	    public int NumOptionsPlayedThisTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.NumOptionsPlayedThisTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.NumOptionsPlayedThisTurn = value;
+	    }
+	    
+	    public int NumFriendlyMinionsThatDiedThisTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.NumFriendlyMinionThatDiedThisTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.NumFriendlyMinionThatDiedThisTurn = value;
+	    }
+	    
+	    public int AmountHeroHealedThisTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.AmountHeroHealedThisTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.AmountHeroHealedThisTurn = value;
+	    }
+	    
+	    public int NumMinionsPlayerKilledThisTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.NumMinionsPlayerKilledThisTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.NumMinionsPlayerKilledThisTurn = value;
+	    }
+	    
+	    public int NumElementalsPlayedThisTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.NumElementalPlayedThisTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.NumElementalPlayedThisTurn = value;
+	    }
+	    
+	    public int NumElementalsPlayedLastTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.NumElementalPlayedLastTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.NumElementalPlayedLastTurn = value;
+	    }
+	    
+	    public int NumFriendlyMinionsThatAttackedThisTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.NumFriendlyMinionsThatAttackedThisTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.NumFriendlyMinionsThatAttackedThisTurn = value;
+	    }
+	    
+	    public int HeroPowerActivationsThisTurn
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.HeroPowerActivationsThisTurn;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.HeroPowerActivationsThisTurn = value;
+	    }
+	    
+	    public int TotalManaSpentThisGame
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.TotalManaSpentThisGame;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.TotalManaSpentThisGame = value;
+	    }
 
-		public int NumCardsDrawnThisTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_CARDS_DRAWN_THIS_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_CARDS_DRAWN_THIS_TURN] = value; }
-		}
+	    public int NumTimesHeroPowerUsedThisGame
+	    {
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        get => _attrs.NumTimesHeroPowerUsedThisGame;
+	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	        set => _attrs.NumTimesHeroPowerUsedThisGame = value;
+	    }
 
-		public int NumCardsToDraw
-		{
-			get { return this[GameTag.NUM_CARDS_TO_DRAW]; }
-			set { this[GameTag.NUM_CARDS_TO_DRAW] = value; }
-		}
-
-		public int NumAttacksThisTurn
-		{
-			get { return this[GameTag.NUM_ATTACKS_THIS_TURN]; }
-			set { this[GameTag.NUM_ATTACKS_THIS_TURN] = value; }
-		}
-
-		public int NumCardsPlayedThisTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_CARDS_PLAYED_THIS_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_CARDS_PLAYED_THIS_TURN] = value; }
-		}
-
-		public int NumMinionsPlayedThisTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_MINIONS_PLAYED_THIS_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_MINIONS_PLAYED_THIS_TURN] = value; }
-		}
-
-		public int NumElementalsPlayedThisTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_ELEMENTAL_PLAYED_THIS_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_ELEMENTAL_PLAYED_THIS_TURN] = value; }
-		}
-
-		public int NumElementalsPlayedLastTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_ELEMENTAL_PLAYED_LAST_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_ELEMENTAL_PLAYED_LAST_TURN] = value; }
-		}
-
-		public int NumOptionsPlayedThisTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_OPTIONS_PLAYED_THIS_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_OPTIONS_PLAYED_THIS_TURN] = value; }
-		}
-
-		public int NumFriendlyMinionsThatAttackedThisTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_FRIENDLY_MINIONS_THAT_ATTACKED_THIS_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_FRIENDLY_MINIONS_THAT_ATTACKED_THIS_TURN] = value; }
-		}
-
-		public int NumFriendlyMinionsThatDiedThisTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_FRIENDLY_MINIONS_THAT_DIED_THIS_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_FRIENDLY_MINIONS_THAT_DIED_THIS_TURN] = value; }
-		}
-
-		public int NumFriendlyMinionsThatDiedThisGame
-		{
-			get { return this[GameTag.NUM_FRIENDLY_MINIONS_THAT_DIED_THIS_GAME]; }
-			set { this[GameTag.NUM_FRIENDLY_MINIONS_THAT_DIED_THIS_GAME] = value; }
-		}
-
-		public int NumMinionsPlayerKilledThisTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_MINIONS_PLAYER_KILLED_THIS_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_MINIONS_PLAYER_KILLED_THIS_TURN] = value; }
-		}
-
-		public int TotalManaSpentThisGame
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_RESOURCES_SPENT_THIS_GAME, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_RESOURCES_SPENT_THIS_GAME] = value; }
-		}
-
-		public int HeroPowerActivationsThisTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.HEROPOWER_ACTIVATIONS_THIS_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.HEROPOWER_ACTIVATIONS_THIS_TURN] = value; }
-		}
-
-		public int NumTimesHeroPowerUsedThisGame
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_TIMES_HERO_POWER_USED_THIS_GAME, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_TIMES_HERO_POWER_USED_THIS_GAME] = value; }
-		}
-
-		public int NumSecretsPlayedThisGame
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_SECRETS_PLAYED_THIS_GAME, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_SECRETS_PLAYED_THIS_GAME] = value; }
-		}
-
-		public int NumSpellsPlayedThisGame
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_SPELLS_PLAYED_THIS_GAME, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_SPELLS_PLAYED_THIS_GAME] = value; }
-		}
-
-		public int NumWeaponsPlayedThisGame
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_WEAPONS_PLAYED_THIS_GAME, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_WEAPONS_PLAYED_THIS_GAME] = value; }
-		}
-
-		public int NumMurlocsPlayedThisGame
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_MURLOCS_PLAYED_THIS_GAME, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_MURLOCS_PLAYED_THIS_GAME] = value; }
-		}
-
-		public int NumDiscardedThisGame => DiscardedEntities.Count;
-
-		public int AmountHeroHealedThisTurn
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.AMOUNT_HERO_HEALED_THIS_TURN, out int value);
-				return value;
-			}
-			set => this[GameTag.AMOUNT_HERO_HEALED_THIS_TURN] = value;
-		}
-
+	    public int NumSecretsPlayedThisGame
+	    {
+		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		    get => _attrs.NumSecretPlayedThisGame;
+		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		    set => _attrs.NumSecretPlayedThisGame = value;
+	    }
+    
+	    public int NumSpellsPlayedThisGame
+	    {
+		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		    get => _attrs.NumSpellsPlayedThisGame;
+		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		    set => _attrs.NumSpellsPlayedThisGame = value;
+	    }
+    
+	    public int NumWeaponsPlayedThisGame
+	    {
+		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		    get => _attrs.NumWeaponsPlayedThisGame;
+		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		    set => _attrs.NumWeaponsPlayedThisGame = value;
+	    }
+    
+	    public int NumMurlocsPlayedThisGame
+	    {
+		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		    get => _attrs.NumMurlocsPlayedThisGame;
+		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		    set => _attrs.NumMurlocsPlayedThisGame = value;
+	    }
+    
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
 
@@ -1067,12 +1039,10 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int NumTurnsLeft
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_TURNS_LEFT, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_TURNS_LEFT] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.NumTurnsLeft;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.NumTurnsLeft = value;
 		}
 
 		/// <summary>
@@ -1080,12 +1050,10 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int OverloadOwed
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.OVERLOAD_OWED, out int value);
-				return value;
-			}
-			set { this[GameTag.OVERLOAD_OWED] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.OverloadOwed;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.OverloadOwed = value;
 		}
 
 		/// <summary>
@@ -1096,12 +1064,10 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int OverloadLocked
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.OVERLOAD_LOCKED, out int value);
-				return value;
-			}
-			set { this[GameTag.OVERLOAD_LOCKED] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.OverloadLocked;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.OverloadLocked = value;
 		}
 
 		/// <summary>
@@ -1109,43 +1075,47 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int OverloadThisGame
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.OVERLOAD_THIS_GAME, out int value);
-				return value;
-			}
-			set { this[GameTag.OVERLOAD_THIS_GAME] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.OverloadThisGame;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.OverloadThisGame = value;
 		}
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 		public int LastCardPlayed
 		{
-			get { return this[GameTag.LAST_CARD_PLAYED]; }
-			set { this[GameTag.LAST_CARD_PLAYED] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.LastCardPlayed;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.LastCardPlayed = value;
 		}
 
 		public int LastCardDrawn
 		{
-			get { return this[GameTag.LAST_CARD_DRAWN]; }
-			set { this[GameTag.LAST_CARD_DRAWN] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.LastCardDrawn;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.LastCardDrawn = value;
 		}
 
 		public int LastCardDiscarded
 		{
-			get { return this[GameTag.LAST_CARD_DISCARDED]; }
-			set { this[GameTag.LAST_CARD_DISCARDED] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.LastCardDiscarded;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.LastCardDiscarded = value;
 		}
 
 		public bool SeenCthun
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.SEEN_CTHUN, out int value);
-				return value == 1;
-			}
-			set { this[GameTag.SEEN_CTHUN] = value ? 1 : 0; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.SeenCthun > 0;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.SeenCthun = value ? 1 : 0;
 		}
+
+		public int NumDiscardedThisGame => DiscardedEntities.Count;
 
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
@@ -1156,12 +1126,10 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int ProxyCthun
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.PROXY_CTHUN, out int value);
-				return value;
-			}
-			set { this[GameTag.PROXY_CTHUN] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.ProxyCthun;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.ProxyCthun = value;
 		}
 
 		/// <summary>
@@ -1219,16 +1187,13 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int CurrentSpellPower
 		{
-			get => _currentSpellPower;
-			set
-			{
-				_currentSpellPower = value;
-				if (Game.History)
-					this[GameTag.CURRENT_SPELLPOWER] = value;
-			}
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.CurrentSpellPower;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.CurrentSpellPower = value;
 		}
 
-		private int _currentSpellPower;
+		//private int _currentSpellPower;
 		private Controller _opponent;
 	}
 }

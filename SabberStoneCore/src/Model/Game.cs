@@ -248,7 +248,7 @@ namespace SabberStoneCore.Model
 		/// <summary>Initializes a new instance of the <see cref="Game"/> class.</summary>
 		/// <param name="gameConfig">The game configuration.</param>
 		/// <param name="setupHeroes"></param>
-		public Game(GameConfig gameConfig, bool setupHeroes = true)
+		public Game(in GameConfig gameConfig, bool setupHeroes = true)
 			: base(null, Card.CardGame, new EntityData
 			{
 				[GameTag.ENTITY_ID] = GAME_ENTITYID,
@@ -277,11 +277,7 @@ namespace SabberStoneCore.Model
 					[GameTag.MAXRESOURCES] = 10,
 					[GameTag.CARDTYPE] = (int) CardType.PLAYER
 				}
-				: new EntityData(64)
-				{
-					{GameTag.MAXRESOURCES, 10},
-					{GameTag.MAXHANDSIZE, 10}
-				};
+				: new EntityData();
 			EntityData p2Dict = gameConfig.History
 				? new EntityData(64)
 				{
@@ -295,11 +291,7 @@ namespace SabberStoneCore.Model
 					[GameTag.MAXRESOURCES] = 10,
 					[GameTag.CARDTYPE] = (int) CardType.PLAYER
 				}
-				: new EntityData(64)
-				{
-					{GameTag.MAXRESOURCES, 10},
-					{GameTag.MAXHANDSIZE, 10}
-				};
+				: new EntityData();
 			_players[0] = new Controller(this, gameConfig.Player1Name, 1, 2, p1Dict);
 			_players[1] = new Controller(this, gameConfig.Player2Name, 2, 3, p2Dict);
 
@@ -373,7 +365,8 @@ namespace SabberStoneCore.Model
 			
 			GamesEventManager = new GameEventManager(this);
 
-			_gameConfig = game._gameConfig.Clone();
+			// game._gameConfig is cloned here
+			_gameConfig = game._gameConfig;
 			_gameConfig.Logging = logging;
 
 			CloneIndex = game.CloneIndex + $"[{game.NextCloneIndex++}]";
@@ -703,49 +696,67 @@ namespace SabberStoneCore.Model
 			if (History)
 				PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, CurrentPlayer.Id, "", 1, 0));
 
+			Controller c;
 
 			for (int i = 0; i < 2; ++i)
 			{
-				Controller c = _players[i];
+				c = _players[i];
 
-				c.BoardZone.ForEach(p =>
+				//c.BoardZone.ForEach(p =>
+				//{
+				//	//p.NumTurnsInPlay++;
+				//	p.NumAttacksThisTurn = 0;
+				//});
 				{
-					//p.NumTurnsInPlay++;
-					p.NumAttacksThisTurn = 0;
-				});
+					ReadOnlySpan<Minion> board = c.BoardZone.GetSpan();
+					for (int j = 0; j < board.Length; j++)
+						board[j].NumAttacksThisTurn = 0;
+				}
 
 				//c.Hero.NumTurnsInPlay++;
 				c.Hero.NumAttacksThisTurn = 0;
 
-				c.NumCardsDrawnThisTurn = 0;
-				c.NumCardsPlayedThisTurn = 0;
-				c.NumMinionsPlayedThisTurn = 0;
-				c.NumOptionsPlayedThisTurn = 0;
-				c.NumFriendlyMinionsThatDiedThisTurn = 0;
-				if (c.AmountHeroHealedThisTurn > 0)
-					c.AmountHeroHealedThisTurn = 0;
-			}
-			
+				//c.NumCardsDrawnThisTurn = 0;
+				//c.NumCardsPlayedThisTurn = 0;
+				//c.NumMinionsPlayedThisTurn = 0;
+				//c.NumOptionsPlayedThisTurn = 0;
+				//c.NumFriendlyMinionsThatDiedThisTurn = 0;
+				//c.NumMinionsPlayerKilledThisTurn = 0;
+				//if (c.AmountHeroHealedThisTurn > 0)
+				//	c.AmountHeroHealedThisTurn = 0;
 
-			CurrentPlayer.Hero.IsExhausted = false;
-			if (CurrentPlayer.Hero.Weapon != null)
-				CurrentPlayer.Hero.Weapon.IsExhausted = false;
-			CurrentPlayer.Hero.HeroPower.IsExhausted = false;
-			CurrentPlayer.BoardZone.ForEach(m => m.IsExhausted = false);
+				c.CleanTurnStatistics();
+			}
+
+			c = CurrentPlayer;
+
+			c.Hero.IsExhausted = false;
+			if (c.Hero.Weapon != null)
+				c.Hero.Weapon.IsExhausted = false;
+			c.Hero.HeroPower.IsExhausted = false;
+			//c.BoardZone.ForEach(m => m.IsExhausted = false);
+			{
+				ReadOnlySpan<Minion> board = c.BoardZone.GetSpan();
+				for (int i = 0; i < board.Length; i++)
+					board[i].IsExhausted = false;
+			}
 
 			// De-activate combo buff
-			CurrentPlayer.IsComboActive = false;
+			c.IsComboActive = false;
 
-			CurrentPlayer.SecretZone.ForEach(s => s.IsExhausted = true);
+			//c.SecretZone.ForEach(s => s.IsExhausted = true);
+			{
+				ReadOnlySpan<Spell> secrets = c.SecretZone.GetSpan();
+				for (int i = 0; i < secrets.Length; i++)
+					secrets[i].IsExhausted = false;
+			}
 
-			CurrentPlayer.NumMinionsPlayerKilledThisTurn = 0;
-			CurrentOpponent.NumMinionsPlayerKilledThisTurn = 0;
-			CurrentPlayer.NumFriendlyMinionsThatAttackedThisTurn = 0;
+			c.NumFriendlyMinionsThatAttackedThisTurn = 0;
 			NumMinionsKilledThisTurn = 0;
-			CurrentPlayer.HeroPowerActivationsThisTurn = 0;
+			c.HeroPowerActivationsThisTurn = 0;
 
-			CurrentPlayer.NumElementalsPlayedLastTurn = CurrentPlayer.NumElementalsPlayedThisTurn;
-			CurrentPlayer.NumElementalsPlayedThisTurn = 0;
+			c.NumElementalsPlayedLastTurn = c.NumElementalsPlayedThisTurn;
+			c.NumElementalsPlayedThisTurn = 0;
 
 			MainRessources();
 
@@ -1352,6 +1363,7 @@ namespace SabberStoneCore.Model
 		{
 			set
 			{
+				if (_gameConfig.History)
 				this[GameTag.NEXT_STEP] = (int)value;
 				Step = value;
 				//GamesEventManager.NextStepEvent(this, value);

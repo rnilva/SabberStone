@@ -273,7 +273,7 @@ namespace SabberStoneCore.Tasks
 				new FuncPlayablesTask(p =>
 				{
 					Controller controller = p[0].Controller;
-					int space = controller.MaxHandSize - controller.HandZone.Count;
+					int space = Controller.MaxHandSize - controller.HandZone.Count;
 					if (space >= 5)
 						space = 5;
 					else if (space == 0)
