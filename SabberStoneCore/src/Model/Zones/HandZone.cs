@@ -33,7 +33,7 @@ namespace SabberStoneCore.Model.Zones
 		{
 		}
 
-		public override bool IsFull => _count == MaxHandSize;
+		public override bool IsFull => _count == Controller.MaxHandSize;
 
 		public override void Add(IPlayable entity, int zonePosition = -1)
 		{
