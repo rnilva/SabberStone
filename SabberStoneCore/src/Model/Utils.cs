@@ -490,7 +490,7 @@ namespace SabberStoneCore.Model
 				results[k] = list[j];
 				indices[k] = j;
 			}
-			//int[] indices = Enumerable.Range(0, c).ToArray();
+
 
 
 			return results;
