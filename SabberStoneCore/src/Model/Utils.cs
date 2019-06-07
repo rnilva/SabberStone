@@ -414,23 +414,29 @@ namespace SabberStoneCore.Model
 				amount = c;
 
 			T[] results = new T[amount];
-			unsafe
+
+			Span<int> indices = stackalloc int[amount];
+			for (int k = 0; k < amount; k++)
 			{
-				int* indices = stackalloc int[amount << 1];
-				for (int i = 0; i < amount; i++)
-					indices[i] = i;
-				for (int i = 0, k = 0; i < amount; i++)
+				int j;
+				bool flag;
+				do
 				{
-					int j = rnd.Next(i, c);
+					j = rnd.Next(c);
 
-					int temp = indices[i];
-					indices[i] = indices[j];
-					indices[j] = temp;
+					flag = false;
+					for (int i = 0; i < k; i++)
+						if (indices[i] == j)
+						{
+							flag = true;
+							break;
+						}
+				} while (flag);
 
-					results[k++] = list[indices[i]];
-				}
+				results[k] = list[j];
+				indices[k] = j;
 			}
-			//int[] indices = Enumerable.Range(0, c).ToArray();
+
 
 			return results;
 		}
