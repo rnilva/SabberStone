@@ -108,6 +108,7 @@ namespace SabberStoneCore.Model.Entities
 			set => InsertOrOverwrite(key, value);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Add(GameTag key, int value)
 		{
 			if (_count == _size)
@@ -115,6 +116,7 @@ namespace SabberStoneCore.Model.Entities
 			Insert(key, value);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Add(KeyValuePair<GameTag, int> item)
 		{
 			if (_count == _size)
@@ -122,6 +124,7 @@ namespace SabberStoneCore.Model.Entities
 			Insert(item.Key, item.Value);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool ContainsKey(GameTag key)
 		{
 			return SearchIndex(key) >= 0;

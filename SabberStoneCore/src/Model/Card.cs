@@ -657,6 +657,39 @@ namespace SabberStoneCore.Model
 			return clone;
 		}
 
+		private int GetTagValue(GameTag gameTag)
+		{
+			switch (gameTag)
+			{
+				case GameTag.ATK: return ATK;
+				case GameTag.HEALTH: return Health;
+				case GameTag.SPELLPOWER: return SpellPower;
+				case GameTag.TAUNT: return Taunt ? 1 : 0;
+				case GameTag.CHARGE: return Charge ? 1 : 0;
+				case GameTag.STEALTH: return Stealth ? 1 : 0;
+				case GameTag.POISONOUS: return Poisonous ? 1 : 0;
+				case GameTag.DIVINE_SHIELD: return DivineShield ? 1 : 0;
+				case GameTag.WINDFURY: return Windfury ? 1 : 0;
+				case GameTag.LIFESTEAL: return LifeSteal ? 1 : 0;
+				case GameTag.ECHO: return Echo ? 1 : 0;
+				case GameTag.RUSH: return Rush ? 1 : 0;
+				case GameTag.CANT_BE_TARGETED_BY_SPELLS:
+				case GameTag.CANT_BE_TARGETED_BY_HERO_POWERS: return CantBeTargetedBySpells ? 1 : 0;
+				case GameTag.CANT_ATTACK: return CantAttack ? 1 : 0;
+				case GameTag.MODULAR: return Modular ? 1 : 0;
+				case GameTag.CHOOSE_ONE: return ChooseOne ? 1 : 0;
+				case GameTag.COMBO: return Combo ? 1 : 0;
+				case GameTag.SECRET: return IsSecret ? 1 : 0;
+				case GameTag.QUEST: return IsQuest ? 1 : 0;
+				case GameTag.DEATHRATTLE: return Deathrattle ? 1 : 0;
+				case GameTag.UNTOUCHABLE: return Untouchable ? 1 : 0;
+				case GameTag.HIDE_STATS: return HideStat ? 1 : 0;
+				case GameTag.RECEIVES_DOUBLE_SPELLDAMAGE_BONUS: return ReceivesDoubleSpelldamageBonus ? 1 : 0;
+				case GameTag.FREEZE: return Freeze? 1 : 0;
+				default: return -1;
+			}
+		}
+
 		public static Card CreateZombeastCard(in Card firstCard, in Card secondCard, bool modifyTags)
 		{
 			Card zombeast = firstCard.Clone();

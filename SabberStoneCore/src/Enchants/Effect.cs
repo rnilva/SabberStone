@@ -54,76 +54,96 @@ namespace SabberStoneCore.Enchants
 		/// </summary>
 		public void ApplyTo(IEntity entity, bool oneTurnEffect = false)
 		{
-			if (!entity.NativeTags.ContainsKey(Tag))
-				entity.NativeTags.Add(Tag, entity.Card[Tag]);
-
 			if (oneTurnEffect)
 				entity.Game.OneTurnEffects.Add((entity.Id, this));
 
-			switch (Operator)
+			EntityData tags = (EntityData)entity.NativeTags;
+
+			if (Operator == EffectOperator.SET)
 			{
-				case EffectOperator.ADD:
-					entity.NativeTags[Tag] += Value;
-					if (Tag == GameTag.SPELLPOWER)
-						entity.Controller.CurrentSpellPower += Value;
-					break;
-				case EffectOperator.SUB:
-					entity.NativeTags[Tag] -= Value;
-					break;
-				case EffectOperator.MUL:
-					entity.NativeTags[Tag] *= Value;
-					break;
-				case EffectOperator.SET:
-					// experimental implmentation for simulating tricky situations
-					switch (Tag)
+				// experimental implmentation for simulating tricky situations
+				switch (Tag)
+				{
+					case GameTag.CHARGE:
 					{
-						case GameTag.CHARGE:
-							{
-								var m = (Minion)entity;
-								if (m.IsExhausted && m.NumAttacksThisTurn == 0)
-									m.IsExhausted = false;
-								if (m.AttackableByRush)
-									m.AttackableByRush = false;
-								break;
-							}
-						case GameTag.WINDFURY:
-							{
-								var m = (Minion)entity;
-								if (m.NumAttacksThisTurn == 1 && m.IsExhausted)
-									m.IsExhausted = false;
-								break;
-							}
-						case GameTag.TAUNT:
-							((Character) entity).HasTaunt = Value > 0;
-							return;
-						case GameTag.IMMUNE:
-							if (entity is Character c)
-								c.IsImmune = Value > 0;
-							else
-								break;
-							return;
-						case GameTag.RUSH:
-						{
-							var m = (Minion)entity;
-							if (m.IsExhausted && m.NumAttacksThisTurn == 0)
-							{
-								m.IsExhausted = false;
-								m.AttackableByRush = true;
-								m.Game.RushMinions.Add(m.Id);
-							}
-							return;
-						}
+						var m = (Minion)entity;
+						if (m.IsExhausted && m.NumAttacksThisTurn == 0)
+							m.IsExhausted = false;
+						if (m.AttackableByRush)
+							m.AttackableByRush = false;
+						break;
 					}
+					case GameTag.WINDFURY:
+					{
+						var m = (Minion)entity;
+						if (m.NumAttacksThisTurn == 1 && m.IsExhausted)
+							m.IsExhausted = false;
+						break;
+					}
+					case GameTag.TAUNT:
+						((Character) entity).HasTaunt = Value > 0;
+						return;
+					case GameTag.IMMUNE:
+						if (entity is Character c)
+							c.IsImmune = Value > 0;
+						else
+							break;
+						return;
+					case GameTag.RUSH:
+					{
+						var m = (Minion)entity;
+						if (m.IsExhausted && m.NumAttacksThisTurn == 0)
+						{
+							m.IsExhausted = false;
+							m.AttackableByRush = true;
+							m.Game.RushMinions.Add(m.Id);
+						}
+						return;
+					}
+				}
 
-					if (oneTurnEffect && entity.NativeTags[Tag] == Value)
-						entity.Game.OneTurnEffects.Remove((entity.Id, this));
+				if (oneTurnEffect && tags[Tag] == Value)
+					entity.Game.OneTurnEffects.Remove((entity.Id, this));
 
-					entity.NativeTags[Tag] = Value;
+				tags[Tag] = Value;
 
-					break;
-	
-				default:
-					throw new ArgumentException();
+				return;
+			}
+
+
+			if (!tags.ContainsKey(Tag))
+			{
+				switch (Operator)
+				{
+					case EffectOperator.ADD:
+						tags.Add(Tag, entity.Card[Tag] + Value);
+						if (Tag == GameTag.SPELLPOWER)
+							entity.Controller.CurrentSpellPower += Value;
+						break;
+					case EffectOperator.SUB:
+						tags.Add(Tag, entity.Card[Tag] - Value);
+						break;
+					case EffectOperator.MUL:
+						tags.Add(Tag, entity.Card[Tag] * Value);
+						break;
+				}
+			}
+			else
+			{
+				switch (Operator)
+				{
+					case EffectOperator.ADD:
+						tags[Tag] += Value;
+						if (Tag == GameTag.SPELLPOWER)
+							entity.Controller.CurrentSpellPower += Value;
+						break;
+					case EffectOperator.SUB:
+						tags[Tag] -= Value;
+						break;
+					case EffectOperator.MUL:
+						tags[Tag] *= Value;
+						break;
+				}
 			}
 		}
 

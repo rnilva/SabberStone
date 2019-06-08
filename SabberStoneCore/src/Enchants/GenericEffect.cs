@@ -97,13 +97,21 @@ namespace SabberStoneCore.Enchants
 		protected abstract ref int GetAuraRef(AuraEffects auraEffects);
 	}
 
-	internal abstract class IntAttr<T> : Attr<T> where T : Playable
+	internal abstract class IntAttr<TSelf, TPlayable> : Attr<TPlayable> where TPlayable : Playable where TSelf : IntAttr<TSelf, TPlayable>, new()
 	{
-		protected abstract ref int? GetRef(T entity);
+		private static readonly TSelf _singleton = new TSelf();
 
-		protected abstract int GetCardValue(T entity);
+		public static GenericEffect<TSelf, TPlayable> Effect(EffectOperator @operator, int value)
+		{
+			return new GenericEffect<TSelf, TPlayable>(_singleton, @operator, value);
+		}
 
-		public override void Apply(T entity, EffectOperator @operator, int value)
+		protected abstract ref int? GetRef(TPlayable entity);
+
+		protected abstract int GetCardValue(TPlayable entity);
+
+
+		public override void Apply(TPlayable entity, EffectOperator @operator, int value)
 		{
 			ref int? target = ref GetRef(entity);
 
@@ -131,7 +139,7 @@ namespace SabberStoneCore.Enchants
 			}
 		}
 
-		public override void Remove(T entity, EffectOperator @operator, int value)
+		public override void Remove(TPlayable entity, EffectOperator @operator, int value)
 		{
 			ref int? target = ref GetRef(entity);
 
@@ -151,7 +159,7 @@ namespace SabberStoneCore.Enchants
 			}
 		}
 
-		public override void ApplyAura(T entity, EffectOperator @operator, int value)
+		public override void ApplyAura(TPlayable entity, EffectOperator @operator, int value)
 		{
 			AuraEffects auraEffects = entity.AuraEffects;
 			if (auraEffects == null)
@@ -182,7 +190,7 @@ namespace SabberStoneCore.Enchants
 			}
 		}
 
-		public override void RemoveAura(T entity, EffectOperator @operator, int value)
+		public override void RemoveAura(TPlayable entity, EffectOperator @operator, int value)
 		{
 			ref int target = ref GetAuraRef(entity.AuraEffects);
 
@@ -242,16 +250,16 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
-	internal abstract class SelfContainedIntAttr<TSelf, TTarget> : IntAttr<TTarget>
-		where TSelf : SelfContainedIntAttr<TSelf, TTarget>, new() where TTarget : Playable
-	{
-		private static readonly TSelf _singleton = new TSelf();
+	//internal abstract class SelfContainedIntAttr<TSelf, TTarget> : IntAttr<TTarget>
+	//	where TSelf : SelfContainedIntAttr<TSelf, TTarget>, new() where TTarget : Playable
+	//{
+	//	private static readonly TSelf _singleton = new TSelf();
 
-		public static GenericEffect<TSelf, TTarget> Effect(EffectOperator @operator, int value)
-		{
-			return new GenericEffect<TSelf, TTarget>(_singleton, @operator, value);
-		}
-	}
+	//	public static GenericEffect<TSelf, TTarget> Effect(EffectOperator @operator, int value)
+	//	{
+	//		return new GenericEffect<TSelf, TTarget>(_singleton, @operator, value);
+	//	}
+	//}
 
 	internal abstract class SelfContainedBoolAttr<TSelf, TTarget> : BoolAttr<TTarget>
 		where TSelf : SelfContainedBoolAttr<TSelf, TTarget>, new() where TTarget : Playable
@@ -264,7 +272,7 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
-	internal class Cost : SelfContainedIntAttr<Cost, Playable>
+	internal class Cost : IntAttr<Cost, Playable>
 	{
 		protected override ref int? GetRef(Playable entity)
 		{
@@ -306,7 +314,7 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
-	internal class ATK : SelfContainedIntAttr<ATK, Playable>
+	internal class ATK : IntAttr<ATK, Playable>
 	{
 		protected override ref int? GetRef(Playable entity)
 		{
@@ -360,7 +368,7 @@ namespace SabberStoneCore.Enchants
 		//}
 	}
 
-	internal class Health : SelfContainedIntAttr<Health, Character>
+	internal class Health : IntAttr<Health, Character>
 	{
 		protected override ref int? GetRef(Character entity)
 		{
