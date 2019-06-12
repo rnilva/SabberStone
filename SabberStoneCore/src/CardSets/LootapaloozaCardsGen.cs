@@ -428,7 +428,7 @@ namespace SabberStoneCore.CardSets.Standard
 						if (board.Count == 0)
 							return new List<IPlayable>(0);
 						if (board.Count < 3)
-							return board.GetAll().Cast<IPlayable>().ToList();
+							return board.GetAll();
 
 						var list = new List<IPlayable>(2);
 						if (!board[0].Untouchable)
@@ -831,7 +831,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DIVINE_SHIELD = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_313", new Power {
-				Aura = new AdaptiveCostEffect(p => p.Controller.BoardZone.GetAll(q => q.Card.Id.Equals("CS2_101t")).Length)
+				Aura = new AdaptiveCostEffect(p => p.Controller.BoardZone.CountOf(q => q.Card.Id.Equals("CS2_101t")))
 			});
 
 			// --------------------------------------- MINION - PALADIN

@@ -129,6 +129,7 @@ namespace SabberStoneCore.Model.Zones
 					//	continue;
 					oldEntity.AppliedEnchantments[i].Remove();
 				}
+
 			oldEntity.ActivatedTrigger?.Remove();
 			if (oldEntity.Card.Untouchable && --_untouchableCount == 0)
 				_hasUntouchables = false;
@@ -204,6 +205,7 @@ namespace SabberStoneCore.Model.Zones
 					predicate = p => predicate1(p) && !p.Card.Untouchable;
 				}
 			}
+
 			return base.GetAll(predicate);
 		}
 
@@ -287,10 +289,22 @@ namespace SabberStoneCore.Model.Zones
 			Minion[] src = zone._entities;
 			for (int i = 0; i < _count; ++i)
 			{
-				Minion copy = (Minion)entities[i].Clone(zone.Controller);
+				Minion copy = (Minion) entities[i].Clone(zone.Controller);
 				copy.Zone = zone;
 				src[i] = copy;
 			}
 		}
+
+		public int CountOf(Predicate<Minion> predicate)
+		{
+			int count = 0;
+			var span = new Span<Minion>(_entities);
+			for (int i = 0; i < span.Length; i++)
+				if (predicate(span[i]))
+					count++;
+
+			return count;
+		}
 	}
 }
+

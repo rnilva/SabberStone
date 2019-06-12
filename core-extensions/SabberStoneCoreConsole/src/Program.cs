@@ -694,7 +694,7 @@ namespace SabberStoneCoreConsole
 
 			//Console.WriteLine(game.PowerHistory.Print(false));
 
-			game.MainReady();
+			game.MainReady(game.CurrentPlayer);
 
 			//options = game.CurrentPlayer.Options();
 			//Console.WriteLine($" *** - {game.CurrentPlayer.Name} options on {game.Turn}. - ***");
@@ -941,7 +941,7 @@ namespace SabberStoneCoreConsole
 			game.Process(ChooseTask.Mulligan(game.Player2,
 				game.Player2.Choice.Choices.Where(p => game.IdEntityDic[p].Cost > 3).ToList()));
 
-			game.MainReady();
+			game.MainReady(game.CurrentPlayer);
 
 			ShowLog(game, LogLevel.VERBOSE);
 

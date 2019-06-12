@@ -2026,7 +2026,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("OG_173", new Power {
 				Trigger = new Trigger(TriggerType.TURN_END)
 				{
-					Condition = new SelfCondition(p => p.Controller.BoardZone.GetAll(m => m.Card.Id == "OG_173").Length > 1),
+					Condition = new SelfCondition(p => p.Controller.BoardZone.CountOf(m => m.Card.Id == "OG_173") > 1),
 					SingleTask = ComplexTask.Create(
 						new IncludeTask(EntityType.MINIONS),
 						new FilterStackTask(SelfCondition.IsCardId("OG_173")),

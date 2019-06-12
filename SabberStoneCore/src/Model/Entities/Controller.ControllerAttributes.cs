@@ -8,8 +8,10 @@ namespace SabberStoneCore.Model.Entities
 		private unsafe struct ControllerAttributes
 		{
 			private const int COUNT = 37;
+			private const int TURN_STATISTICS_OFFSET = 17;
+			private const int TURN_STATISTICS_COUNT = 7;
 
-			public fixed int _data[COUNT];
+			private fixed int _data[COUNT];
 
 			public ControllerAttributes(ControllerAttributes other)
 			{
@@ -21,7 +23,7 @@ namespace SabberStoneCore.Model.Entities
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void CleanTurnStatistics()
 			{
-				for (int i = 17; i < 24; i++)
+				for (int i = TURN_STATISTICS_OFFSET; i < TURN_STATISTICS_OFFSET + TURN_STATISTICS_COUNT; i++)
 					_data[i] = 0;
 			}
 
