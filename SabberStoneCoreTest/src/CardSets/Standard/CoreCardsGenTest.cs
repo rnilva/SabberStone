@@ -2586,7 +2586,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(1, game.CurrentPlayer[GameTag.NUM_CARDS_DRAWN_THIS_TURN]);
 
-			Generic.PlayCardBlock(game.CurrentPlayer, minion1, null, -1, 0, false);
+			Generic.PlayCardBlock(game, game.CurrentPlayer, minion1, null, -1, 0, false);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -2594,7 +2594,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(1, game.CurrentPlayer[GameTag.NUM_CARDS_DRAWN_THIS_TURN]);
 
-			Generic.PlayCardBlock(game.CurrentPlayer, minion2, null, -1, 0, false);
+			Generic.PlayCardBlock(game, game.CurrentPlayer, minion2, null, -1, 0, false);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -2730,7 +2730,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(1, game.CurrentPlayer[GameTag.NUM_CARDS_DRAWN_THIS_TURN]);
 
-			Generic.PlayCardBlock(game.CurrentPlayer, minion1, null, -1, 0, false);
+			Generic.PlayCardBlock(game, game.CurrentPlayer, minion1, null, -1, 0, false);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -2738,7 +2738,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(1, game.CurrentPlayer[GameTag.NUM_CARDS_DRAWN_THIS_TURN]);
 
-			Generic.PlayCardBlock(game.CurrentPlayer, minion2, null, -1, 0, false);
+			Generic.PlayCardBlock(game, game.CurrentPlayer, minion2, null, -1, 0, false);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -3787,7 +3787,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			IPlayable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Northshire Cleric"));
 
-			Generic.PlayCardBlock(game.Player1, minion, null, -1, 0, false);
+			Generic.PlayCardBlock(game, game.Player1, minion, null, -1, 0, false);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -3876,7 +3876,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 
 			IPlayable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Northshire Cleric"));
-			Generic.PlayCard(game.CurrentPlayer, minion);
+			Generic.PlayCard(game, game.CurrentPlayer, minion);
 			Assert.Equal(1, game.CurrentPlayer[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
@@ -3919,8 +3919,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			// Player 1 plays Northshire Cleric (not demon) and Imp Gang Boss (demon)
 			IPlayable cleric = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Northshire Cleric"));
 			IPlayable impgangboss = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Imp Gang Boss"));
-			Generic.PlayCard(game.CurrentPlayer, cleric);
-			Generic.PlayCard(game.CurrentPlayer, impgangboss);
+			Generic.PlayCard(game, game.CurrentPlayer, cleric);
+			Generic.PlayCard(game, game.CurrentPlayer, impgangboss);
 			Assert.Equal(2, game.CurrentPlayer[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 
 			// end turn
@@ -3945,7 +3945,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			// player 1 plays Lord Jaraxxus
 			IPlayable jaraxxus = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("EX1_323"));
-			Generic.PlayCard(game.CurrentPlayer, jaraxxus);
+			Generic.PlayCard(game, game.CurrentPlayer, jaraxxus);
 			Assert.Equal(1, game.CurrentPlayer[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 
 			// end turn
@@ -4640,20 +4640,20 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(0, game.Player1[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 
 			Generic.DrawCard(game.Player1, Cards.FromName("Murloc Raider"));
-			Generic.PlayCard(game.Player1, game.Player1.HandZone[4]);
+			Generic.PlayCard(game, game.Player1, game.Player1.HandZone[4]);
 
 			Assert.Equal(1, game.Player1[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 			Assert.Equal(2, game.Player1.BoardZone[0][GameTag.ATK]);
 
 			Generic.DrawCard(game.Player1, Cards.FromName("Raid Leader"));
-			Generic.PlayCard(game.Player1, game.Player1.HandZone[4]);
+			Generic.PlayCard(game, game.Player1, game.Player1.HandZone[4]);
 
 			Assert.Equal(2, game.Player1[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 			Assert.Equal(3, game.Player1.BoardZone[0][GameTag.ATK]);
 			Assert.Equal(2, game.Player1.BoardZone[1][GameTag.ATK]);
 
 			Generic.DrawCard(game.Player1, Cards.FromName("Raid Leader"));
-			Generic.PlayCard(game.Player1, game.Player1.HandZone[4]);
+			Generic.PlayCard(game, game.Player1, game.Player1.HandZone[4]);
 
 			Assert.Equal(3, game.Player1[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 			Assert.Equal(4, game.Player1.BoardZone[0][GameTag.ATK]);
@@ -5357,13 +5357,13 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(0, game.Player1[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 
 			Generic.DrawCard(game.Player1, Cards.FromName("Murloc Raider"));
-			Generic.PlayCard(game.Player1, game.Player1.HandZone[4]);
+			Generic.PlayCard(game, game.Player1, game.Player1.HandZone[4]);
 
 			Assert.Equal(1, game.Player1[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 			Assert.Equal(2, game.Player1.BoardZone[0][GameTag.ATK]);
 
 			Generic.DrawCard(game.Player1, Cards.FromName("Stormwind Champion"));
-			Generic.PlayCard(game.Player1, game.Player1.HandZone[4]);
+			Generic.PlayCard(game, game.Player1, game.Player1.HandZone[4]);
 
 			Assert.Equal(2, game.Player1[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 			Assert.Equal(3, game.Player1.BoardZone[0][GameTag.ATK]);
@@ -5724,13 +5724,13 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(0, game.Player1[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 
 			Generic.DrawCard(game.Player1, Cards.FromName("Murloc Raider"));
-			Generic.PlayCard(game.Player1, game.Player1.HandZone[4]);
+			Generic.PlayCard(game, game.Player1, game.Player1.HandZone[4]);
 
 			Assert.Equal(1, game.Player1[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 			Assert.Equal(2, game.Player1.BoardZone[0][GameTag.ATK]);
 
 			Generic.DrawCard(game.Player1, Cards.FromName("Grimscale Oracle"));
-			Generic.PlayCard(game.Player1, game.Player1.HandZone[4]);
+			Generic.PlayCard(game, game.Player1, game.Player1.HandZone[4]);
 
 			Assert.Equal(2, game.Player1[GameTag.NUM_CARDS_PLAYED_THIS_TURN]);
 			Assert.Equal(3, game.Player1.BoardZone[0][GameTag.ATK]);

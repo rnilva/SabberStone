@@ -667,7 +667,7 @@ namespace SabberStoneCore.Tasks
 							c.Hero.AddWeapon(weapon);
 							break;
 						case CardType.HERO:
-							Generic.PlayHero.Invoke(c, entity as Hero, randTarget, randChooseOne);
+							Generic.PlayHero.Invoke(c.Game, c, entity as Hero, randTarget, randChooseOne);
 							break;
 						case CardType.SPELL:
 							Generic.CastSpell.Invoke(c, entity as Spell, randTarget, randChooseOne, true);

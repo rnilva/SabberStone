@@ -130,12 +130,12 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public Choice Choice { get; set; }
 
-		/// <summary>
-		/// The opponent player instance.
-		/// </summary>
-		public Controller Opponent => _opponent ?? (_opponent = Game.Player1 == this ? Game.Player2 : Game.Player1);
+        /// <summary>
+        /// The opponent player instance.
+        /// </summary>
+        public Controller Opponent { get; internal set;}
 
-		public override int this[GameTag t]
+        public override int this[GameTag t]
 		{
 			get
 			{
@@ -422,10 +422,10 @@ namespace SabberStoneCore.Model.Entities
 			#region MinionAttackTasks
 			Minion[] attackTargets = null;
 			bool isOpHeroValidAttackTarget = false;
-			ReadOnlySpan<Minion> boardSpan = BoardZone.GetSpan();
+			var boardSpan = BoardZone.GetSpan();
 			for (int j = 0; j < boardSpan.Length; j++)
 			{
-				Minion minion = boardSpan[j];
+				var minion = boardSpan[j];
 
 				if (minion.IsExhausted && (!minion.HasCharge || minion.NumAttacksThisTurn != 0))
 					continue;
@@ -1192,8 +1192,5 @@ namespace SabberStoneCore.Model.Entities
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.CurrentSpellPower = value;
 		}
-
-		//private int _currentSpellPower;
-		private Controller _opponent;
 	}
 }

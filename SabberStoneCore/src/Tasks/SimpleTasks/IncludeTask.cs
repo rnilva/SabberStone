@@ -258,7 +258,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				{
 					if (source.Controller == c)
 					{
-						Minion[] board = c.BoardZone.GetAll(p => p != source);
+						Minion[] board = c.BoardZone. GetAll(p => p != source);
 						var array = new Minion[board.Length + c.Opponent.BoardZone.CountExceptUntouchables];
 						board.CopyTo(array, 0);
 						c.Opponent.BoardZone.CopyTo(array, board.Length);

@@ -936,8 +936,8 @@ namespace SabberStoneCore.CardSets
 			cards.Add("AT_078", new Power {
 				PowerTask = new FuncNumberTask(p =>
 				{
-					ReadOnlySpan<Minion> minions = p.Controller.BoardZone.GetSpan();
-					ReadOnlySpan<Minion> opMinions = p.Controller.Opponent.BoardZone.GetSpan();
+					var minions = p.Controller.BoardZone.GetSpan();
+					var opMinions = p.Controller.Opponent.BoardZone.GetSpan();
 
 					int max = -1;
 					int maxIndex = -1;
@@ -2028,7 +2028,7 @@ namespace SabberStoneCore.CardSets
 				Aura = new AdaptiveCostEffect(p =>
 				{
 					int count = 0;
-					ReadOnlySpan<Minion> board = p.Controller.BoardZone.GetSpan();
+					var board = p.Controller.BoardZone.GetSpan();
 					for (int i = 0; i < board.Length; i++)
 						if (board[i].Race == Race.PIRATE)
 							count++;

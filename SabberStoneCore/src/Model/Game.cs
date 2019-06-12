@@ -11,6 +11,7 @@ using SabberStoneCore.Tasks.PlayerTasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Auras;
 
@@ -42,6 +43,7 @@ namespace SabberStoneCore.Model
 	{
 		private readonly GameConfig _gameConfig;
 
+		private GameAttributes _attrs;
 		private Controller _currentPlayer;
 
 		/// <summary>
@@ -121,7 +123,7 @@ namespace SabberStoneCore.Model
 		/// <summary>
 		/// Occurs when a TAG on an entity, which is hooked onto this game, changes.
 		/// </summary>
-		public event EntityChangedEventHandler EntityChangedEvent;
+		//public event EntityChangedEventHandler EntityChangedEvent;
 
 		/// <summary>Occurs when a random event was processed by this game.</summary>
 		public event EventHandler<bool> RandomHappenedEvent;
@@ -131,32 +133,24 @@ namespace SabberStoneCore.Model
 		/// the game.
 		/// </summary>
 		/// <value>The game event manager.</value>
-		public GameEventManager GamesEventManager { get; }
+		//public GameEventManager GamesEventManager { get; }
 
 		/// <summary>
 		/// Holds all the controllers (== players) which are attached to this game.
 		/// </summary>
-		private readonly Controller[] _players = new Controller[2];
+		//private readonly Controller[] _players = new Controller[2];
 
 		/// <summary>
 		/// Player with the first turn, alias Player 1.
 		/// </summary>
 		/// <value><see cref="Controller"/></value>
-		public Controller Player1
-		{
-			get => _players[0];
-			protected set => _players[0] = value;
-		}
+		public Controller Player1 { get; protected set; }
 
 		/// <summary>
 		/// Player starting at the second turn, alias Player 2.
 		/// </summary>
 		/// <value><see cref="Controller"/></value>
-		public Controller Player2
-		{
-			get => _players[1];
-			protected set => _players[1] = value;
-		}
+		public Controller Player2 { get; protected set; }
 
 		/// <summary>
 		/// Gets the format type of this game.
@@ -259,10 +253,12 @@ namespace SabberStoneCore.Model
 			//IdEntityDic = new Dictionary<int, IPlayable>(75);
 			IdEntityDic = new EntityList(75);
 			_gameConfig = gameConfig;
+			_attrs = new GameAttributes();
 			Game = this;
 			Auras = new List<IAura>();
 			Triggers = new List<Trigger>();
-			GamesEventManager = new GameEventManager(this);
+			//GamesEventManager = new GameEventManager(this);
+			//_characters = new Character[CHARACTERS_LENGTH];
 
 			EntityData p1Dict = gameConfig.History
 				? new EntityData(64)
@@ -292,20 +288,23 @@ namespace SabberStoneCore.Model
 					[GameTag.CARDTYPE] = (int) CardType.PLAYER
 				}
 				: new EntityData();
-			_players[0] = new Controller(this, gameConfig.Player1Name, 1, 2, p1Dict);
-			_players[1] = new Controller(this, gameConfig.Player2Name, 2, 3, p2Dict);
+			Player1 = new Controller(this, gameConfig.Player1Name, 1, 2, p1Dict);
+			Player2 = new Controller(this, gameConfig.Player2Name, 2, 3, p2Dict);
+
+			Player1.Opponent = Player2;
+			Player2.Opponent = Player1;
 
 			// add power history create game
 			if (History)
-				PowerHistory.Add(PowerHistoryBuilder.CreateGame(this, _players));
+				PowerHistory.Add(PowerHistoryBuilder.CreateGame(this, new []{Player1, Player2}));
 
 			if (setupHeroes)
 			{
-				_players[0].AddHeroAndPower(gameConfig.Player1HeroCard ?? Cards.HeroCard(gameConfig.Player1HeroClass));
-				_players[0].BaseClass = _players[0].HeroClass;
+				Player1.AddHeroAndPower(gameConfig.Player1HeroCard ?? Cards.HeroCard(gameConfig.Player1HeroClass));
+				Player1.BaseClass = Player1.HeroClass;
 
-				_players[1].AddHeroAndPower(gameConfig.Player2HeroCard ?? Cards.HeroCard(gameConfig.Player2HeroClass));
-				_players[1].BaseClass = _players[1].HeroClass;
+				Player2.AddHeroAndPower(gameConfig.Player2HeroCard ?? Cards.HeroCard(gameConfig.Player2HeroClass));
+				Player2.BaseClass = Player2.HeroClass;
 			}
 
 			TaskQueue = new TaskQueue(this);
@@ -363,18 +362,21 @@ namespace SabberStoneCore.Model
 			RushMinions.AddRange(game.RushMinions);
 			GhostlyCards.AddRange(game.GhostlyCards);
 			
-			GamesEventManager = new GameEventManager(this);
+			//GamesEventManager = new GameEventManager(this);
 
 			// game._gameConfig is cloned here
 			_gameConfig = game._gameConfig;
 			_gameConfig.Logging = logging;
+			_attrs = new GameAttributes(game._attrs);
 
 			CloneIndex = game.CloneIndex + $"[{game.NextCloneIndex++}]";
 
 			Player1 = game.Player1.Clone(this);
 			Player2 = game.Player2.Clone(this);
+			Player1.Opponent = Player2;
+			Player2.Opponent = Player1;
 			if (game._currentPlayer != null)
-				CurrentPlayer = game.CurrentPlayer.Id == 2 ? _players[0] : _players[1];
+				CurrentPlayer = game.CurrentPlayer.Id == 2 ? Player1 : Player2;
 
 			// Clone auras lastly
 			foreach (IAura aura in game.Auras)
@@ -387,15 +389,15 @@ namespace SabberStoneCore.Model
 			SetIndexer(game._idIndex, game._oopIndex);
 		}
 
-		/// <summary>Method which is called when an entity wants to notify that one of it's tags changed value.</summary>
-		/// <param name="entity">The entity which has changed.</param>
-		/// <param name="t">The game tag which value changed.</param>
-		/// <param name="oldValue">The old value.</param>
-		/// <param name="newValue">The new value.</param>
-		protected internal virtual void OnEntityChanged(Entity entity, GameTag t, int oldValue, int newValue)
-		{
-			EntityChangedEvent?.Invoke(entity, t, oldValue, newValue);
-		}
+		///// <summary>Method which is called when an entity wants to notify that one of it's tags changed value.</summary>
+		///// <param name="entity">The entity which has changed.</param>
+		///// <param name="t">The game tag which value changed.</param>
+		///// <param name="oldValue">The old value.</param>
+		///// <param name="newValue">The new value.</param>
+		//protected internal virtual void OnEntityChanged(Entity entity, GameTag t, int oldValue, int newValue)
+		//{
+		//	EntityChangedEvent?.Invoke(entity, t, oldValue, newValue);
+		//}
 
 		/// <summary>Call this method to invode the <see cref="RandomHappenedEvent"/>.</summary>
 		/// <param name="isHappened">TODO</param>
@@ -412,7 +414,7 @@ namespace SabberStoneCore.Model
 		public Controller ControllerById(int entityID)
 		{
 			//return _players.First(p => p.Id == entityID);
-			return entityID == 2 ? _players[0] : _players[1];
+			return entityID == 2 ? Player1 : Player2;
 		}
 
 		/// <summary>Process the specified task.
@@ -535,17 +537,25 @@ namespace SabberStoneCore.Model
 
 			// set gamestats
 			State = State.RUNNING;
-			_players.ToList().ForEach(p => p.PlayState = PlayState.PLAYING);
+			//_players.ToList().ForEach(p => p.PlayState = PlayState.PLAYING);
+			Player1.PlayState = PlayState.PLAYING;
+			Player2.PlayState = PlayState.PLAYING;
+
 
 			// starting mulligan draw block
 			if (History)
 				PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, Id, "", -1, 0));
 
 			// getting first player
-			FirstPlayer = _gameConfig.StartPlayer < 0
-				? _players[Util.Random.Next(0, 2)]
-				: _players[_gameConfig.StartPlayer - 1];
-			CurrentPlayer = FirstPlayer;
+			int first = _gameConfig.StartPlayer - 1;
+			if (first < 0)
+				first = Util.Random.Next(0, 2);
+
+			if (first == 0)
+				FirstPlayer = CurrentPlayer = Player1;
+			else
+				FirstPlayer = CurrentPlayer = Player2;
+			
 
 			Log(LogLevel.INFO, BlockType.PLAY, "Game", !Logging ? "" : $"Starting Player is {CurrentPlayer.Name}.");
 
@@ -567,7 +577,7 @@ namespace SabberStoneCore.Model
 				return;
 			}
 			MainBegin();
-			MainReady();
+			MainReady(FirstPlayer);
 			MainStartTriggers();
 			MainStart();
 		}
@@ -613,7 +623,7 @@ namespace SabberStoneCore.Model
 			//FirstPlayer.NumCardsToDraw = 3;
 			//FirstPlayer.Opponent.NumCardsToDraw = 4;
 
-			_players.ToList().ForEach(p =>
+			void Draw(Controller p)
 			{
 				// quest draw if there is
 				int quest = p.DeckZone.FirstOrDefault(q => q.Card.IsQuest)?.Id ?? -1;
@@ -636,7 +646,10 @@ namespace SabberStoneCore.Model
 				}
 
 				p.NumTurnsLeft = 1;
-			});
+			};
+
+			Draw(Player1);
+			Draw(Player2);
 
 			Player1.TimeOut = 75;
 			Player2.TimeOut = 75;
@@ -691,72 +704,47 @@ namespace SabberStoneCore.Model
 		/// Part of the state machine.
 		/// Runs when STATE = RUNNING &amp;&amp; NEXTSTEP = MAIN_READY
 		/// </summary>
-		public void MainReady()
+		public void MainReady(Controller currentPlayer)
 		{
 			if (History)
 				PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, CurrentPlayer.Id, "", 1, 0));
 
-			Controller c;
+			ReadOnlySpan<Minion> board;
 
-			for (int i = 0; i < 2; ++i)
+			// Is this necessary?
+			Controller currentOpponent = currentPlayer.Opponent;
+			board = currentOpponent.BoardZone.GetSpan();
+			for (int j = 0; j < board.Length; j++)
+				board[j].NumAttacksThisTurn = 0;
+			currentOpponent.Hero.NumAttacksThisTurn = 0;
+			currentOpponent.CleanTurnStatistics();
+
+
+			board = currentPlayer.BoardZone.GetSpan();
+			for (int j = 0; j < board.Length; j++)
 			{
-				c = _players[i];
-
-				//c.BoardZone.ForEach(p =>
-				//{
-				//	//p.NumTurnsInPlay++;
-				//	p.NumAttacksThisTurn = 0;
-				//});
-				{
-					ReadOnlySpan<Minion> board = c.BoardZone.GetSpan();
-					for (int j = 0; j < board.Length; j++)
-						board[j].NumAttacksThisTurn = 0;
-				}
-
-				//c.Hero.NumTurnsInPlay++;
-				c.Hero.NumAttacksThisTurn = 0;
-
-				//c.NumCardsDrawnThisTurn = 0;
-				//c.NumCardsPlayedThisTurn = 0;
-				//c.NumMinionsPlayedThisTurn = 0;
-				//c.NumOptionsPlayedThisTurn = 0;
-				//c.NumFriendlyMinionsThatDiedThisTurn = 0;
-				//c.NumMinionsPlayerKilledThisTurn = 0;
-				//if (c.AmountHeroHealedThisTurn > 0)
-				//	c.AmountHeroHealedThisTurn = 0;
-
-				c.CleanTurnStatistics();
+				board[j].NumAttacksThisTurn = 0;
+				board[j].IsExhausted = false;
 			}
 
-			c = CurrentPlayer;
+			currentPlayer.Hero.NumAttacksThisTurn = 0;
+			currentPlayer.Hero.IsExhausted = false;
+			currentPlayer.Hero.HeroPower.IsExhausted = false;
+			if (currentPlayer.Hero.Weapon != null)
+				currentPlayer.Hero.Weapon.IsExhausted = false;
+			ReadOnlySpan<Spell> secrets = currentPlayer.SecretZone.GetSpan();
+			for (int i = 0; i < secrets.Length; i++)
+				secrets[i].IsExhausted = false;
 
-			c.Hero.IsExhausted = false;
-			if (c.Hero.Weapon != null)
-				c.Hero.Weapon.IsExhausted = false;
-			c.Hero.HeroPower.IsExhausted = false;
-			//c.BoardZone.ForEach(m => m.IsExhausted = false);
-			{
-				ReadOnlySpan<Minion> board = c.BoardZone.GetSpan();
-				for (int i = 0; i < board.Length; i++)
-					board[i].IsExhausted = false;
-			}
+			currentPlayer.CleanTurnStatistics();
+			currentPlayer.IsComboActive = false; // 9
+			currentPlayer.NumFriendlyMinionsThatAttackedThisTurn = 0; //26
+			currentPlayer.HeroPowerActivationsThisTurn = 0; // 27
+			currentPlayer.NumElementalsPlayedLastTurn = currentPlayer.NumElementalsPlayedThisTurn;
+			currentPlayer.NumElementalsPlayedThisTurn = 0;
 
-			// De-activate combo buff
-			c.IsComboActive = false;
 
-			//c.SecretZone.ForEach(s => s.IsExhausted = true);
-			{
-				ReadOnlySpan<Spell> secrets = c.SecretZone.GetSpan();
-				for (int i = 0; i < secrets.Length; i++)
-					secrets[i].IsExhausted = false;
-			}
-
-			c.NumFriendlyMinionsThatAttackedThisTurn = 0;
-			NumMinionsKilledThisTurn = 0;
-			c.HeroPowerActivationsThisTurn = 0;
-
-			c.NumElementalsPlayedLastTurn = c.NumElementalsPlayedThisTurn;
-			c.NumElementalsPlayedThisTurn = 0;
+			NumMinionsKilledThisTurn = 0; 
 
 			MainRessources();
 
@@ -856,15 +844,17 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		public void MainEnd()
 		{
-			Log(LogLevel.INFO, BlockType.PLAY, "Game", !Logging ? "" : $"End turn proccessed by player {CurrentPlayer}");
+			Controller currentPlayer = CurrentPlayer;
+
+			Log(LogLevel.INFO, BlockType.PLAY, "Game", !Logging ? "" : $"End turn proccessed by player {currentPlayer}");
 
 			if (History)
-				PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, CurrentPlayer.Id, "", 4, 0);
+				PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, currentPlayer.Id, "", 4, 0);
 
 			//CurrentPlayer.TurnStart = false;
 
 			TaskQueue.StartEvent();
-			TriggerManager.OnEndTurnTrigger(CurrentPlayer);
+			TriggerManager.OnEndTurnTrigger(currentPlayer);
 			ProcessTasks();
 			TaskQueue.EndEvent();
 			DeathProcessingAndAuraUpdate();
@@ -872,9 +862,9 @@ namespace SabberStoneCore.Model
 			if (History)
 				PowerHistoryBuilder.BlockEnd();
 
-			CurrentPlayer.CardsPlayedThisTurn.Clear();
+			currentPlayer.CardsPlayedThisTurn.Clear();
 
-			CurrentPlayer.Hero.DamageTakenThisTurn = 0;
+			currentPlayer.Hero.DamageTakenThisTurn = 0;
 
 			if (RushMinions.Count > 0)
 			{
@@ -885,9 +875,9 @@ namespace SabberStoneCore.Model
 			// set next step
 			//NextStep = Step.MAIN_NEXT;
 			NextStep = Step.MAIN_CLEANUP;
-			MainCleanUp();
-			MainNext();
-			MainReady();
+			MainCleanUp(currentPlayer);
+			currentPlayer = MainNext(currentPlayer);
+			MainReady(currentPlayer);
 			MainStartTriggers();
 			MainStart();
 		}
@@ -896,7 +886,7 @@ namespace SabberStoneCore.Model
 		/// Part of the state machine.
 		/// Runs when STATE = RUNNING &amp;&amp; NEXTSTEP = MAIN_CLEANUP
 		/// </summary>
-		public void MainCleanUp()
+		public void MainCleanUp(Controller currentPlayer)
 		{
 			if (History)
 				PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, CurrentPlayer.Id, "", 5, 0);
@@ -914,40 +904,39 @@ namespace SabberStoneCore.Model
 				GhostlyCards.Clear();
 			}
 
+
 			// Removing one-turn-effects
-			foreach ((int id, IEffect eff) in OneTurnEffects)
+			for (int i = 0; i < OneTurnEffects.Count; i++)
 			{
-				IPlayable p = IdEntityDic[id];
+				IPlayable p = IdEntityDic[OneTurnEffects[i].entityId];
 				if (p is PlayableSurrogate)
 					continue;
-				eff.RemoveFrom(p);
+				OneTurnEffects[i].effect.RemoveFrom(p);
 			}
-
 			OneTurnEffects.Clear();
-			List<Enchantment> enchantments = OneTurnEffectEnchantments;
-			for (int i = enchantments.Count - 1; i >= 0; --i)
-				enchantments[i].Remove();
-			
+			for (int i = OneTurnEffectEnchantments.Count - 1; i >= 0; --i)
+				OneTurnEffectEnchantments[i].Remove();
+
 
 			// After a player ends their turn (just before the next player's Start of
 			// Turn Phase), un-Freeze all characters they control that are Frozen, 
 			// don't have summoning sickness (or do have Charge) and have not attacked
 			// that turn.
-			CurrentPlayer.BoardZone.ForEach(m =>
+			currentPlayer.BoardZone.ForEach(m =>
 			{
 				if (m.IsFrozen && m.NumAttacksThisTurn == 0 && !m.IsExhausted)
 					m.IsFrozen = false;
 			});
 
-			if (CurrentPlayer.Hero.IsFrozen && CurrentPlayer.Hero.NumAttacksThisTurn == 0)
+			if (currentPlayer.Hero.IsFrozen && currentPlayer.Hero.NumAttacksThisTurn == 0)
 			{
-				CurrentPlayer.Hero.IsFrozen = false;
+				currentPlayer.Hero.IsFrozen = false;
 			}
 
 			// Exhausts weapon and secrets
-			if (CurrentPlayer.Hero.Weapon != null)
-				CurrentPlayer.Hero.Weapon.IsExhausted = true;
-			CurrentPlayer.SecretZone.ForEach(p => p.IsExhausted = false);
+			if (currentPlayer.Hero.Weapon != null)
+				currentPlayer.Hero.Weapon.IsExhausted = true;
+			currentPlayer.SecretZone.ForEach(p => p.IsExhausted = false);
 
 			if (History)
 				PowerHistoryBuilder.BlockEnd();
@@ -959,35 +948,37 @@ namespace SabberStoneCore.Model
 		/// Part of the state machine.
 		/// Runs when STATE = RUNNING &amp;&amp; NEXTSTEP = MAIN_NEXT
 		/// </summary>
-		public void MainNext()
+		public Controller MainNext(Controller currentPlayer)
 		{
 			if (History)
 				PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, Id, "", -1, 0);
 
+			Controller opponent = currentPlayer.Opponent;
+
 			// extra turn effect here
-			if (CurrentPlayer.NumTurnsLeft > 1)
+			if (currentPlayer.NumTurnsLeft > 1)
 			{
 				//this[GameTag.EXTRA_TURNS_TAKEN_THIS_GAME]++;
 				//CurrentPlayer[GameTag.EXTRA_TURNS_TAKEN_THIS_GAME]++;
 				//this[GameTag.IS_CURRENT_TURN_AN_EXTRA_TURN] = 1;
-				CurrentPlayer.NumTurnsLeft--;
+				currentPlayer.NumTurnsLeft--;
 			}
 			else if
-				(CurrentOpponent.TemporusFlag)
+				(opponent.TemporusFlag)
 			{
 				//this[GameTag.EXTRA_TURNS_TAKEN_THIS_GAME]++;
 				//CurrentOpponent[GameTag.EXTRA_TURNS_TAKEN_THIS_GAME]++;
 				//this[GameTag.IS_CURRENT_TURN_AN_EXTRA_TURN] = 1;
-				CurrentPlayer = CurrentOpponent;
-				CurrentPlayer.NumTurnsLeft = 2;
-				CurrentPlayer.TemporusFlag = false;
+				CurrentPlayer = opponent;
+				opponent.NumTurnsLeft = 2;
+				opponent.TemporusFlag = false;
 			}
 			else
 			{
-				CurrentPlayer.NumTurnsLeft = 0;
-				CurrentOpponent.NumTurnsLeft = 1;
+				currentPlayer.NumTurnsLeft = 0;
+				opponent.NumTurnsLeft = 1;
 				// set player for next turn ...
-				CurrentPlayer = CurrentOpponent;
+				CurrentPlayer = opponent;
 			}
 
 			// count next turn
@@ -1000,6 +991,8 @@ namespace SabberStoneCore.Model
 
 			// set next step
 			NextStep = Step.MAIN_READY;
+
+			return CurrentPlayer;
 		}
 
 		/// <summary>
@@ -1011,20 +1004,25 @@ namespace SabberStoneCore.Model
 			if (History)
 				PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, Id, "", -1, 0);
 
-			foreach (Controller player in _players)
+			bool ChangeState(Controller player)
 			{
 				if (player.PlayState == PlayState.TIED)
 				{
 					player.PlayState = PlayState.LOST;
 					player.Opponent.PlayState = PlayState.LOST;
-					break;
+					return false;
 				}
 
-				if (player.PlayState != PlayState.LOSING && player.PlayState != PlayState.CONCEDED) continue;
+				if (player.PlayState != PlayState.LOSING && player.PlayState != PlayState.CONCEDED) return true;
 
 				player.PlayState = PlayState.LOST;
 				player.Opponent.PlayState = PlayState.WON;
+
+				return true;
 			}
+
+			if (ChangeState(Player1))
+				ChangeState(Player2);
 
 			if (History)
 				PowerHistoryBuilder.BlockEnd();
@@ -1043,10 +1041,8 @@ namespace SabberStoneCore.Model
 			State = State.COMPLETE;
 			if (Logging)
 			{
-				_players.ToList().ForEach(p =>
-				{
-					Log(LogLevel.INFO, BlockType.PLAY, "Game", !Logging ? "" : $"{p.Name} has {p.PlayState} the Game!");
-				});
+				Log(LogLevel.INFO, BlockType.PLAY, "Game", !Logging ? "" : $"{Player1.Name} has {Player1.PlayState} the Game!");
+				Log(LogLevel.INFO, BlockType.PLAY, "Game", !Logging ? "" : $"{Player2.Name} has {Player2.PlayState} the Game!");
 			}
 		}
 		#endregion
@@ -1286,8 +1282,10 @@ namespace SabberStoneCore.Model
 		/// value will equal 1.</value>
 		public int Turn
 		{
-			get { return this[GameTag.TURN]; }
-			set { this[GameTag.TURN] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.Turn;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.Turn = value;
 		}
 
 		/// <summary>
@@ -1296,8 +1294,10 @@ namespace SabberStoneCore.Model
 		/// <value><see cref="State"/></value>
 		public State State
 		{
-			get { return (State)this[GameTag.STATE]; }
-			set { this[GameTag.STATE] = (int)value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => (State)_attrs.State;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.State = (int)value;
 		}
 
 		/// <summary>
@@ -1306,8 +1306,10 @@ namespace SabberStoneCore.Model
 		/// <value>The entityID of the card.</value>
 		public int FirstCardPlayedThisTurn
 		{
-			get { return this[GameTag.FIRST_CARD_PLAYED_THIS_TURN]; }
-			set { this[GameTag.FIRST_CARD_PLAYED_THIS_TURN] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.FirstCardPlayedThisTurn;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.FirstCardPlayedThisTurn = value;
 		}
 
 		/// <summary>
@@ -1326,6 +1328,7 @@ namespace SabberStoneCore.Model
 		/// <value><see cref="Controller"/></value>
 		public Controller CurrentPlayer
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _currentPlayer;
 			private set
 			{
@@ -1351,8 +1354,10 @@ namespace SabberStoneCore.Model
 		/// <value><see cref="Step"/></value>
 		public Step Step
 		{
-			get => (Step)_data[GameTag.STEP];
-			set => this[GameTag.STEP] = (int)value;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => (Step)_attrs.Step;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.Step = (int)value;
 		}
 
 		/// <summary>
@@ -1361,12 +1366,13 @@ namespace SabberStoneCore.Model
 		/// <value><see cref="Step"/></value>
 		public Step NextStep
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => (Step)_attrs.NextStep;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set
 			{
-				if (_gameConfig.History)
-				this[GameTag.NEXT_STEP] = (int)value;
+				_attrs.NextStep = (int)value;
 				Step = value;
-				//GamesEventManager.NextStepEvent(this, value);
 			}
 		}
 
@@ -1376,12 +1382,10 @@ namespace SabberStoneCore.Model
 		/// <value>The amount of killed minions.</value>
 		public int NumMinionsKilledThisTurn
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.NUM_MINIONS_KILLED_THIS_TURN, out int value);
-				return value;
-			}
-			set { this[GameTag.NUM_MINIONS_KILLED_THIS_TURN] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.NumMinionsKilledThisTurn;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.NumMinionsKilledThisTurn = value;
 		}
 
 		/// <summary>
@@ -1390,12 +1394,10 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		public int ProposedAttacker
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.PROPOSED_ATTACKER, out int value);
-				return value;
-			}
-			set => this[GameTag.PROPOSED_ATTACKER] = value;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.ProposedAttacker;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.ProposedAttacker = value;
 		}
 
 		/// <summary>
@@ -1404,12 +1406,10 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		public int ProposedDefender
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.PROPOSED_DEFENDER, out int value);
-				return value;
-			}
-			set => this[GameTag.PROPOSED_DEFENDER] = value;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.ProposedDefender;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.ProposedDefender = value;
 		}
 
 		/// <summary>Gets the heroes.</summary>
@@ -1441,5 +1441,15 @@ namespace SabberStoneCore.Model
 				return list;
 			}
 		}
+	}
+
+	public partial class Game
+	{
+		//private const int CHARACTERS_LENGTH = 16;
+		//// 0 : P1 Hero
+		//// 1 - 7 : P1 Minions
+		//// 8 - 14 : P2 Minions
+		//// 15 : P2 Hero
+		//internal readonly Character[] _characters;
 	}
 }

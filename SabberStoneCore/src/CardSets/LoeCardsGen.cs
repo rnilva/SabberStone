@@ -467,7 +467,7 @@ namespace SabberStoneCore.CardSets
 			//       Costs (1) less for each Murloc you control.
 			// --------------------------------------------------------
 			cards.Add("LOE_113", new Power {
-				Aura = new AdaptiveCostEffect(p => p.Controller.BoardZone.GetAll(q => q.Race == Race.MURLOC).Length),
+				Aura = new AdaptiveCostEffect(p => p.Controller.BoardZone.CountOf(m => m.Race == Race.MURLOC)),
 				PowerTask = new AddEnchantmentTask("LOE_113e", EntityType.ALLMINIONS)
 			});
 

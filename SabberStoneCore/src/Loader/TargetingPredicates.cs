@@ -198,7 +198,7 @@ namespace SabberStoneCore.Loader
 		private static unsafe bool CheckEntourages(Controller c, int* ent, int count)
 		{
 			int[] indices = new int[count];
-			ReadOnlySpan<Minion> span = c.BoardZone.GetSpan();
+			var span = c.BoardZone.GetSpan();
 			for (int i = 0, j = span.Length, k = 0; i < span.Length; i++)
 			{
 				int index = -1;

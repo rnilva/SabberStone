@@ -15,7 +15,22 @@ namespace SabberStoneCore.Model.Entities
 	/// </summary>
 	internal class EntityData : IDictionary<GameTag, int>
 	{
+		private unsafe struct Initialiser
+		{
+			public const int SIZE = 1024;
+			public fixed int Space[SIZE];
+
+			public static Initialiser Get;
+
+			static Initialiser()
+			{
+				for (int i = 0; i < SIZE; i++)
+					Get.Space[i] = -1;
+			}
+		}
+
 		private const int _initSize = 8;
+		private const int _initBucketSize = _initSize * 2;
 
 		private int[] _buckets;
 		private int _size = _initSize;
@@ -23,9 +38,12 @@ namespace SabberStoneCore.Model.Entities
 
 		public EntityData()
 		{
-			var buckets = new int[_initSize << 1];
-			for (int i = 0; i < buckets.Length; i += 2)
-				buckets[i] = -1;
+			var buckets = new int[_initBucketSize];
+			unsafe
+			{
+				fixed (int* init = Initialiser.Get.Space, data = buckets)
+					Buffer.MemoryCopy(init, data, _initBucketSize * sizeof(int), _initBucketSize * sizeof(int));
+			}
 			_buckets = buckets;
 		}
 
@@ -43,30 +61,29 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="entityData">Data to be copeid.</param>
 		public unsafe EntityData(in EntityData entityData)
 		{
-			int len = entityData._buckets.Length;
-			//int len = entityData._size << 1;
-			_buckets = new int[len];
+			int size = entityData._size;
+			_size = size;
+			_buckets = new int[size << 1];
 			fixed (int* srcPtr = entityData._buckets, dstPtr = _buckets)
 			{
-				int* srcEndPtr = srcPtr + len;
+				int i = 0;
 				long* s = (long*)srcPtr;
 				long* d = (long*)dstPtr;
-
 				do
 				{
-					*d = *s;
-					d++;
-					s++;
-					*d = *s;
-					d++;
-					s++;
-				} while (s + 2 <= srcEndPtr);
-
-				*d ^= *s;
+					d[i] = s[i];
+					i++;
+					d[i] = s[i];
+					i++;
+					d[i] = s[i];
+					i++;
+					d[i] = s[i];
+					i++;
+				} while (i + 4 <= size);
 			}
 
-			_size = len >> 1;
 			_count = entityData._count;
+
 		}
 
 		/// <summary>
@@ -161,13 +178,19 @@ namespace SabberStoneCore.Model.Entities
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void Initialise(int capacity)
 		{
-			int pow = 2;
+			int pow = 4;
 			while (pow < capacity)
-				pow *= 2;
+				pow <<= 1;
 
-			int[] buckets = new int[pow << 1];
-			for (int i = 0; i < buckets.Length; i +=2)
-				buckets[i] = -1;
+			int len = pow << 1;
+			int[] buckets = new int[len];
+			len *= sizeof(int);
+			unsafe
+			{
+				fixed (int* init = Initialiser.Get.Space, data = buckets)
+					Buffer.MemoryCopy(init, data, len, len);
+			}
+
 			_buckets = buckets;
 
 			_size = pow;
@@ -333,47 +356,52 @@ namespace SabberStoneCore.Model.Entities
 			return false;
 		}
 
-		private void Resize()
+		private unsafe void Resize()
 		{
 			int newSize = _size << 1;
 			_size = newSize;
-			int[] newbuckets = new int[newSize << 1];
-			for (int i = 0; i < newbuckets.Length; i += 2)
-				newbuckets[i] = -1;
-
-			int[] buckets = _buckets;
-			//ReadOnlySpan<int> buckets = _buckets;
-			for (int i = 0; i < buckets.Length; i += 2)
+			int len = newSize << 1;
+			int[] newBucketsArray = new int[len];
+			fixed (int* newBuckets = newBucketsArray)
 			{
-				bool flag = false;
-				int newHash = (buckets[i] & (newSize - 1)) << 1;
+				fixed (int* init = Initialiser.Get.Space)
+					Buffer.MemoryCopy(init, newBuckets, len * sizeof(int), len * sizeof(int));
 
-				for (int j = newHash; j < newbuckets.Length; j += 2)
+				//for (int i = 0; i < newbuckets.Length; i += 2)
+				//	newbuckets[i] = -1;
+				int[] buckets = _buckets;
+				//ReadOnlySpan<int> buckets = _buckets;
+				for (int i = 0; i < buckets.Length; i += 2)
 				{
-					if (newbuckets[j] > 0) continue;
-					newbuckets[j] = buckets[i];
-					newbuckets[j + 1] = buckets[i + 1];
-					flag = true;
-					break;
+					bool flag = false;
+					int newHash = (buckets[i] & (newSize - 1)) << 1;
+
+					for (int j = newHash; j < len; j += 2)
+					{
+						if (newBuckets[j] > 0) continue;
+						newBuckets[j] = buckets[i];
+						newBuckets[j + 1] = buckets[i + 1];
+						flag = true;
+						break;
+					}
+
+					if (flag)
+						continue;
+
+					for (int j = 0; j < newHash; j += 2)
+					{
+						if (newBuckets[j] > 0) continue;
+						newBuckets[j] = buckets[i];
+						newBuckets[j + 1] = buckets[i + 1];
+						flag = true;
+						break;
+					}
+
+					if (!flag)
+						throw new ArgumentOutOfRangeException();
 				}
-
-				if (flag)
-					continue;
-
-				for (int j = 0; j < newHash; j += 2)
-				{
-					if (newbuckets[j] > 0) continue;
-					newbuckets[j] = buckets[i];
-					newbuckets[j + 1] = buckets[i + 1];
-					flag = true;
-					break;
-				}
-
-				if (!flag)
-					throw new ArgumentOutOfRangeException();
 			}
-
-			_buckets = newbuckets;
+			_buckets = newBucketsArray;
 		}
 
 		#region IDictionary
@@ -463,15 +491,19 @@ namespace SabberStoneCore.Model.Entities
 		{
 			// Remove except entity_id and controller
 			int[] buckets = _buckets;
+			int count = 0;
 			for (int i = 0; i < buckets.Length; i += 2)
 			{
 				if (buckets[i] == (int)GameTag.ENTITY_ID || buckets[i] == (int)GameTag.CONTROLLER)
+				{
+					count++;
 					continue;
+				}
 
-				buckets[i] = 0;
+				buckets[i] = -1;
 			}
 
-			_count = 2;
+			_count = count;
 
 
 

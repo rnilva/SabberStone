@@ -283,12 +283,13 @@ namespace SabberStoneCore.Model.Zones
 		{
 			if (zonePosition > _count)
 				throw new ZoneException($"Zoneposition '{zonePosition}' isn't in a valid range.");
-			if (entity.Controller != Controller)
+			if (entity.Controller.PlayerId != Controller.PlayerId)
 				throw new ZoneException("Can't add an opponent's entity to own Zones");
 
-			MoveTo(entity, zonePosition < 0 ? _count : zonePosition);
+			MoveTo(entity, zonePosition);
 
-			Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}'.");
+			if (Game.Logging)
+				Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}'.");
 		}
 
 		public override void MoveTo(T entity, int zonePosition = -1)

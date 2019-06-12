@@ -77,7 +77,7 @@ namespace SabberStoneCore.Tasks.PlayerTasks
 
 		public override bool Process()
 		{
-			bool success = Generic.PlayCard(Controller, Source, Target, ZonePosition, ChooseOne, SkipPrePhase);
+			bool success = Generic.PlayCard(Game, Controller, Source, Target, ZonePosition, ChooseOne, SkipPrePhase);
 
 			return success;
 		}

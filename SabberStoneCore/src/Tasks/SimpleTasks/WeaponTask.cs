@@ -31,7 +31,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				? Entity.FromCard(c, _card) as Weapon
 				: stack?.Playables[0] as Weapon;
 
-			Generic.PlayWeapon.Invoke(c, weapon, null, 0);
+			Generic.PlayWeapon.Invoke(game, c, weapon, null, 0);
 
 			return TaskState.COMPLETE;
 		}
