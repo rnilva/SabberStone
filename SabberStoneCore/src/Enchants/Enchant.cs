@@ -57,13 +57,6 @@ namespace SabberStoneCore.Enchants
 		{
 			IEffect[] effects = Effects;
 
-			if (entity is PlayableSurrogate surrogate)
-			{
-				for (int i = 0; i < effects.Length; i++)
-					surrogate.ApplyEffect(effects[i]);
-				return;
-			}
-
 			if (!UseScriptTag)
 			{
 				for (int i = 0; i < effects.Length; i++)
@@ -99,6 +92,57 @@ namespace SabberStoneCore.Enchants
 			}
 		}
     }
+
+	internal class GenericEnchant<T> where T : Playable
+	{
+		private readonly GenericEffect<T>[] _effects;
+		private readonly bool _useScriptTag;
+		private readonly bool _isOneTurnEffect;
+
+		public GenericEnchant(params GenericEffect<T>[] effects)
+		{
+			_effects = effects;
+		}
+
+		public void ActivateTo(T playable, Enchantment enchantment, int num1 = -1, int num2 = - 1)
+		{
+			GenericEffect<T>[] effects = _effects;
+
+			if (!_useScriptTag)
+			{
+				for (int i = 0; i < effects.Length; i++)
+					effects[i].ApplyTo(playable, _isOneTurnEffect);
+			}
+			else if (enchantment != null)
+			{
+				effects[0].ChangeValue(enchantment[GameTag.TAG_SCRIPT_DATA_NUM_1]).ApplyTo(playable, _isOneTurnEffect);
+
+				if (effects.Length < 2) return;
+
+				if (enchantment[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
+					effects[1].ChangeValue(enchantment[GameTag.TAG_SCRIPT_DATA_NUM_2]).ApplyTo(playable, _isOneTurnEffect);
+				else
+					effects[1].ChangeValue(enchantment[GameTag.TAG_SCRIPT_DATA_NUM_1]).ApplyTo(playable, _isOneTurnEffect);
+
+				for (int i = 2; i < effects.Length; i++)
+					effects[i].ApplyTo(playable, _isOneTurnEffect);
+			}
+			else
+			{
+				effects[0].ChangeValue(num1).ApplyTo(playable, _isOneTurnEffect);
+
+				if (effects.Length < 2) return;
+
+				if (num2 > 0)
+					effects[1].ChangeValue(num2).ApplyTo(playable, _isOneTurnEffect);
+				else
+					effects[1].ChangeValue(num1).ApplyTo(playable, _isOneTurnEffect);
+
+				for (int i = 2; i < effects.Length; i++)
+					effects[i].ApplyTo(playable, _isOneTurnEffect);
+			}
+		}
+	}
 
 	/// <summary>
 	/// Implementation of a kind of enchantment that its effect gradually grows due to a trigger.

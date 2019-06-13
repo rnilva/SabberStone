@@ -2920,7 +2920,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_755e", new Power
 			{
-				Enchant = new Enchant(Effects.Attack_N(1), new Effect(GameTag.DURABILITY, EffectOperator.ADD, 1))
+				Enchant = new Enchant(
+					WeaponATK.Effect(EffectOperator.ADD, 1),
+					new Effect(GameTag.DURABILITY, EffectOperator.ADD, 1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

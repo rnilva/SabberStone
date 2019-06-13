@@ -11,8 +11,6 @@ namespace SabberStoneCore.Enchants
 	/// </summary>
 	public class AuraEffects
 	{
-		private static readonly int _int32Size = sizeof(int);
-
 		private const int PlayableLength = 2;
 		private const int WeaponLength = PlayableLength + 1;
 		private const int CharacterLength = PlayableLength + 2;
@@ -65,7 +63,7 @@ namespace SabberStoneCore.Enchants
 
 		private AuraEffects(AuraEffects original) : this (original.Type)
 		{
-			Buffer.BlockCopy(original._data, 0, _data, 0, _data.Length * _int32Size);
+			Buffer.BlockCopy(original._data, 0, _data, 0, _data.Length * sizeof(int));
 		}
 
 		public readonly CardType Type;

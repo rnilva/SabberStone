@@ -11,9 +11,9 @@ namespace SabberStoneCore.Model.Entities
 {
 	public class PlayableSurrogate : IPlayable
 	{
-		private int _cost;
-		private int _atk;
-		private int _health;
+		internal int _cost;
+		internal int _atk;
+		internal int _health;
 		private Card _card;
 		private int _id;
 		private bool _toBeDestroyed;
@@ -115,69 +115,70 @@ namespace SabberStoneCore.Model.Entities
 			return entity;
 		}
 
-		internal void ApplyEffect(IEffect iEffect)
+		internal void ApplyEffect<T>(GenericEffect<T> effect) where T : Playable
 		{
-			switch (iEffect)
+			// TODO:
+			switch (effect._attr)
 			{
-				case GenericEffect<ATK, Playable> atkEffect:
-					switch (atkEffect._operator)
+				case ATK _:
+					switch (effect._operator)
 					{
 						case EffectOperator.ADD:
-							_atk += atkEffect._value;
+							_atk += effect._value;
 							break;
 						case EffectOperator.SUB:
-							_atk -= atkEffect._value;
+							_atk -= effect._value;
 							break;
 						case EffectOperator.MUL:
-							_atk *= atkEffect._value;
+							_atk *= effect._value;
 							break;
 						case EffectOperator.SET:
-							_atk = atkEffect._value;
+							_atk = effect._value;
 							break;
 						default:
 							throw new ArgumentOutOfRangeException();
 					}
 					break;
-				case GenericEffect<Health, Character> healthEffect:
-					switch (healthEffect._operator)
+				case Health _:
+					switch (effect._operator)
 					{
 						case EffectOperator.ADD:
-							_health += healthEffect._value;
+							_health += effect._value;
 							break;
 						case EffectOperator.SUB:
-							_health -= healthEffect._value;
+							_health -= effect._value;
 							break;
 						case EffectOperator.MUL:
-							_health *= healthEffect._value;
+							_health *= effect._value;
 							break;
 						case EffectOperator.SET:
-							_health = healthEffect._value;
+							_health = effect._value;
 							break;
 						default:
 							throw new ArgumentOutOfRangeException();
 					}
 					break;
-				case GenericEffect<Cost, Playable> costEffect:
-					switch (costEffect._operator)
+				case Cost _:
+					switch (effect._operator)
 					{
 						case EffectOperator.ADD:
-							_cost += costEffect._value;
+							_cost += effect._value;
 							break;
 						case EffectOperator.SUB:
-							_cost -= costEffect._value;
+							_cost -= effect._value;
 							break;
 						case EffectOperator.MUL:
-							_cost *= costEffect._value;
+							_cost *= effect._value;
 							break;
 						case EffectOperator.SET:
-							_cost = costEffect._value;
+							_cost = effect._value;
 							break;
 						default:
 							throw new ArgumentOutOfRangeException();
 					}
 					break;
 				default:
-					throw new ArgumentOutOfRangeException($"Can't apply effect {iEffect.GetType()} {iEffect} to PlayableSurrogate entity.");
+					throw new ArgumentOutOfRangeException($"Can't apply effect {effect.GetType()} {effect} to PlayableSurrogate entity.");
 			}
 		}
 

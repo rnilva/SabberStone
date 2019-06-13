@@ -3199,7 +3199,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("EX1_409e", new Power {
 				Enchant = new Enchant(
-					new Effect(GameTag.ATK, EffectOperator.ADD, 1),
+					WeaponATK.Effect(EffectOperator.ADD, 1),
 					new Effect(GameTag.DURABILITY, EffectOperator.ADD, 1))
 			});
 
@@ -5028,7 +5028,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("CS2_221e", new Power {
 				//Aura = new EnrageEffect(AuraType.WEAPON, Effects.Attack_N(2))
-				Enchant = new Enchant(new Effect(GameTag.ATK, EffectOperator.ADD, 2))
+				//Enchant = new Enchant(new Effect(GameTag.ATK, EffectOperator.ADD, 2))
+				Enchant = new Enchant(WeaponATK.Effect(EffectOperator.ADD, 2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -5336,7 +5337,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("NEW1_024o", new Power {
 				Enchant = new Enchant(
-					Effects.Attack_N(1),
+					WeaponATK.Effect(EffectOperator.ADD, 1),
 					new Effect(GameTag.DURABILITY, EffectOperator.ADD, 1))
 			});
 

@@ -98,8 +98,9 @@ namespace SabberStoneCore.Auras
 
 					if (_tag == GameTag.ATK)
 					{
-						ATK.Effect(_operator, _lastValue).RemoveFrom(_owner);
-						ATK.Effect(_operator, value).ApplyTo(_owner);
+						Character c = (Character)_owner;
+						ATK.Effect(_operator, _lastValue).RemoveFrom(c);
+						ATK.Effect(_operator, value).ApplyTo(c);
 					}
 					else
 					{
@@ -148,14 +149,15 @@ namespace SabberStoneCore.Auras
 				if (_isSwitching)
 				{
 					if (_tag == GameTag.ATK)
-						ATK.Effect(_operator, _lastValue).RemoveFrom(_owner);
+						ATK.Effect(_operator, _lastValue).RemoveFrom((Character)_owner);
 					else
 						new Effect(_tag, _operator, _lastValue).RemoveFrom(_owner);
 				}
 				else
 				{
 					if (_tag == GameTag.ATK)
-						ATK.Effect(_operator, _lastValue).RemoveAuraFrom(_owner is Weapon ? _owner.Controller.Hero : _owner);
+						ATK.Effect(_operator, _lastValue)
+							.RemoveAuraFrom(_owner is Weapon ? _owner.Controller.Hero : (Character) _owner);
 					else
 						new Effect(_tag, _operator, _lastValue).RemoveAuraFrom(_owner);
 				}

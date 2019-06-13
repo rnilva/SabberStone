@@ -1,5 +1,6 @@
 ﻿using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 

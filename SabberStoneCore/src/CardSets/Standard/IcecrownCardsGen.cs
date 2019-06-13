@@ -3579,7 +3579,10 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: +1/+1.
 			// --------------------------------------------------------
 			cards.Add("ICC_851e", new Power {
-				Enchant = Enchants.Enchants.GetAutoEnchantFromText("ICC_851e")
+				//Enchant = Enchants.Enchants.GetAutoEnchantFromText("ICC_851e")
+				Enchant = new Enchant(
+					SurrogateATK.Effect(EffectOperator.ADD, 1),
+					SurrogateHealth.Effect(EffectOperator.ADD, 1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

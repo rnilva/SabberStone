@@ -1,5 +1,6 @@
 ﻿using SabberStoneCore.Enums;
 using System.Collections.Generic;
+using SabberStoneCore.Kettle;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -27,7 +28,10 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="controller">A target <see cref="Controller"/> instance.</param>
 		/// <param name="weapon">A source <see cref="Weapon"/>.</param>
-		private Weapon(in Controller controller, in Playable weapon) : base(in controller, in weapon) { }
+		private Weapon(in Controller controller, Weapon weapon) : base(in controller, weapon)
+		{
+			_atk = weapon._atk;
+		}
 
 		public override IPlayable Clone(in Controller controller)
 		{
@@ -38,10 +42,25 @@ namespace SabberStoneCore.Model.Entities
 	public partial class Weapon
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
+		internal int? _atk;
+
 		public int AttackDamage
 		{
-			get { return this[GameTag.ATK]; }
-			set { this[GameTag.ATK] = value; }
+			//get { return this[GameTag.ATK]; }
+			//set { this[GameTag.ATK] = value; }
+			get => _atk ?? (_atk = Card.ATK).Value;
+			set
+			{
+				if (_logging)
+					Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Entity", !Game.Logging ? "" : $"{this} set data {GameTag.ATK} to {value}");
+				if (_history && value + (AuraEffects?.ATK ?? 0) != AttackDamage)
+				{
+					Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.ATK, value));
+					_data[GameTag.ATK] = value;
+				}
+
+				_atk = value;
+			}
 		}
 
 		public int Damage

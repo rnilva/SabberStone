@@ -169,7 +169,7 @@ namespace SabberStoneCore.Model
 		/// When TRUE, detailed information each process step will be saved in <see cref="Logs"/>
 		/// in a form of <see cref="LogEntry"/>.
 		/// </summary>
-		public bool Logging => _gameConfig.Logging;
+		public bool Logging { get;}
 
 		/// <summary>Gets or sets the power history container. 
 		/// This object facilitates building POWER blocks to send to the hearthstone client.
@@ -181,7 +181,7 @@ namespace SabberStoneCore.Model
 		/// building enabled.
 		/// </summary>
 		/// <value><c>true</c> if history building is enabled; otherwise, <c>false</c>.</value>
-		public bool History => _gameConfig.History;
+		public bool History { get;}
 
 		/// <summary>
 		/// Gets the task queue.
@@ -253,6 +253,8 @@ namespace SabberStoneCore.Model
 			//IdEntityDic = new Dictionary<int, IPlayable>(75);
 			IdEntityDic = new EntityList(75);
 			_gameConfig = gameConfig;
+			History = gameConfig.History;
+			Logging = gameConfig.Logging;
 			_attrs = new GameAttributes();
 			Game = this;
 			Auras = new List<IAura>();
@@ -317,18 +319,6 @@ namespace SabberStoneCore.Model
 				_gameConfig.Player1Deck?.Reverse();
 				_gameConfig.Player2Deck?.Reverse();
 			}
-
-			// setting up the decks ...
-			//_gameConfig.Player1Deck?.ForEach(p =>
-			//{
-			//	Player1.DeckCards.Add(p);
-			//	FromCard(Player1, p, null, Player1.DeckZone);
-			//});
-			//_gameConfig.Player2Deck?.ForEach(p =>
-			//{
-			//	Player2.DeckCards.Add(p);
-			//	FromCard(Player2, p, null, Player2.DeckZone);
-			//});
 
 			if (_gameConfig.Player1Deck != null)
 			{
