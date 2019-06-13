@@ -3046,7 +3046,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: +1 Attack.
 			// --------------------------------------------------------
 			cards.Add("GIL_902e", new Power {
-				Enchant = Enchants.Enchants.GetAutoEnchantFromText("GIL_902e")
+				Enchant = new Enchant(WeaponATK.Effect(EffectOperator.ADD, 1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

@@ -139,7 +139,7 @@ namespace SabberStoneBasicAI
 				game.Process(ChooseTask.Mulligan(game.Player1, new List<int>()));
 				game.Process(ChooseTask.Mulligan(game.Player2, new List<int>()));
 
-				game.MainReady();
+				game.MainReady(game.CurrentPlayer);
 
 				while (game.State != State.COMPLETE)
 				{
@@ -190,7 +190,7 @@ namespace SabberStoneBasicAI
 			game.Process(ChooseTask.Mulligan(game.Player1, aiPlayer1.MulliganRule().Invoke(game.Player1.Choice.Choices.Select(p => game.IdEntityDic[p]).ToList())));
 			game.Process(ChooseTask.Mulligan(game.Player2, aiPlayer2.MulliganRule().Invoke(game.Player2.Choice.Choices.Select(p => game.IdEntityDic[p]).ToList())));
 
-			game.MainReady();
+			game.MainReady(game.CurrentPlayer);
 
 			while (game.CurrentPlayer == game.Player1)
 			{
@@ -245,7 +245,7 @@ namespace SabberStoneBasicAI
 			game.Process(ChooseTask.Mulligan(game.Player1, mulligan1));
 			game.Process(ChooseTask.Mulligan(game.Player2, mulligan2));
 
-			game.MainReady();
+			game.MainReady(game.CurrentPlayer);
 
 			while (game.State != State.COMPLETE)
 			{
@@ -404,7 +404,7 @@ namespace SabberStoneBasicAI
 				game.Process(ChooseTask.Mulligan(game.Player1, mulligan1));
 				game.Process(ChooseTask.Mulligan(game.Player2, mulligan2));
 
-				game.MainReady();
+				game.MainReady(game.CurrentPlayer);
 
 				while (game.State != State.COMPLETE)
 				{
