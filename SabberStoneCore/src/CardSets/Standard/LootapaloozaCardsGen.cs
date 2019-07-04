@@ -1749,7 +1749,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_062", new Power {
-				PowerTask = new DiscoverTask(DiscoverType.BASIC_TOTEM, null, 4)
+				PowerTask = new DiscoverTask(DiscoverType.BASIC_TOTEM, 4)
 			});
 
 			// ---------------------------------------- MINION - SHAMAN

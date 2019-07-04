@@ -16,7 +16,7 @@ namespace SabberStoneCore.Enchants
 
 	internal readonly struct GenericEffect<T> : IEffect where T : IPlayable
 	{
-		//private readonly TAttr _attr;
+		//private readonly Attr<T> _attr;
 		public readonly Attr<T> _attr;
 		public readonly EffectOperator _operator;
 		public readonly int _value;

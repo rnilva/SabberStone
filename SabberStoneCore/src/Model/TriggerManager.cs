@@ -1,11 +1,25 @@
-﻿using SabberStoneCore.Enums;
+﻿using System;
+using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Model
 {
     public class TriggerManager
     {
-	    public delegate void TriggerHandler(IEntity sender);
+	    internal TriggerManager(Game g)
+	    {
+		    StartEvent += g.TaskQueue.StartEvent;
+			EndEvent += g.TaskQueue.EndEvent;
+			DeathProcessingAndAuraUpdate += g.DeathProcessingAndAuraUpdate;
+			ProcessTasks += g.ProcessTasks;
+	    }
+
+	    private event Action StartEvent;
+	    private event Action EndEvent;
+	    private event Action DeathProcessingAndAuraUpdate;
+	    private event Action ProcessTasks;
+
+		public delegate void TriggerHandler(IEntity sender);
 
 	    public event TriggerHandler DealDamageTrigger;
 	    public event TriggerHandler DamageTrigger;
@@ -57,135 +71,244 @@ namespace SabberStoneCore.Model
 		public bool HasOnSummonTrigger => SummonTrigger != null;
 		public bool HasShuffleIntoDeckTrigger => ShuffleIntoDeckTrigger != null;
 
-	    internal void OnDealDamageTrigger(IEntity sender)
+		internal bool OnDealDamageTrigger(IEntity sender)
 	    {
-		    DealDamageTrigger?.Invoke(sender);
+	        if (DealDamageTrigger == null) return false;
+	        StartEvent();
+	        DealDamageTrigger.Invoke(sender);
+	        return true;
 	    }
-
-		internal void OnDamageTrigger(IEntity sender)
+	    internal bool OnDamageTrigger(IEntity sender)
 	    {
-		    DamageTrigger?.Invoke(sender);
+	        if (DamageTrigger == null) return false;
+	        StartEvent();
+	        DamageTrigger.Invoke(sender);
+	        return true;
 	    }
-
 	    internal void OnHealTrigger(IEntity sender)
 	    {
-			HealTrigger?.Invoke(sender);
+	        if (HealTrigger == null) return;
+	        StartEvent();
+	        HealTrigger.Invoke(sender);
+	        ProcessTasks();
+	        EndEvent();
+	        return;
 	    }
-
 	    internal void OnLoseDivineShield(IEntity sender)
 	    {
 		    LoseDivineShield?.Invoke(sender);
 	    }
-
 	    internal void OnEndTurnTrigger(IEntity sender)
 	    {
-			EndTurnTrigger?.Invoke(sender);
+	        if (EndTurnTrigger == null) return;
+	        StartEvent();
+	        EndTurnTrigger.Invoke(sender);
+	        EndEvent();
+	        DeathProcessingAndAuraUpdate();
 	    }
-
-	    internal void OnTurnStartTrigger(IEntity sender)
+	    internal bool OnTurnStartTrigger(IEntity sender)
 	    {
-			TurnStartTrigger?.Invoke(sender);
+	        if (TurnStartTrigger == null) return false;
+	        TurnStartTrigger.Invoke(sender);
+	        ProcessTasks();
+	        return true;
 	    }
-
-	    internal void OnSummonTrigger(IEntity sender)
+	    internal void OnSummonTrigger(IEntity sender, bool srs = false)
 	    {
-		    SummonTrigger?.Invoke(sender);
+	        if (SummonTrigger == null) return;
+	        if (!srs) StartEvent();
+	        SummonTrigger.Invoke(sender);
+	        ProcessTasks();
+	        if (!srs) EndEvent();
 	    }
-
 	    internal void OnAfterSummonTrigger(IEntity sender)
 	    {
-			AfterSummonTrigger?.Invoke(sender);
+		    if (AfterSummonTrigger == null)
+			    return;
+		    StartEvent();
+		    AfterSummonTrigger.Invoke(sender);
+		    ProcessTasks();
+		    EndEvent();
 	    }
-
 	    internal void OnAttackTrigger(IEntity sender)
 	    {
-		    AttackTrigger?.Invoke(sender);
+	        if (AttackTrigger == null) return;
+	        StartEvent();
+	        AttackTrigger.Invoke(sender);
+	        ProcessTasks();
+	        EndEvent();
 	    }
-
 	    internal void OnDeathTrigger(IEntity sender)
 	    {
-			DeathTrigger?.Invoke(sender);
+		    DeathTrigger?.Invoke(sender);
 	    }
 
 	    internal void OnPlayCardTrigger(IEntity sender)
 	    {
-			PlayCardTrigger?.Invoke(sender);
+			if (PlayCardTrigger == null) return;
+			StartEvent();
+			PlayCardTrigger.Invoke(sender);
+			return;
 	    }
-
 	    internal void OnAfterPlayCardTrigger(IEntity sender)
 	    {
-		    AfterPlayCardTrigger?.Invoke(sender);
+	        if (AfterPlayCardTrigger == null) return;
+	        StartEvent();
+	        AfterPlayCardTrigger.Invoke(sender);
+	        ProcessTasks();
+	        EndEvent();
+	        DeathProcessingAndAuraUpdate();
+	        return;
 	    }
-
 	    internal void OnPlayMinionTrigger(IEntity sender)
 	    {
-		    PlayMinionTrigger?.Invoke(sender);
-	    }
+		    if (PlayMinionTrigger == null)
+		    {
+			    if (PlayCardTrigger == null)
+				    return;
 
+				StartEvent();
+				PlayCardTrigger.Invoke(sender);
+		    }
+		    else
+		    {
+			    StartEvent();
+			    PlayMinionTrigger.Invoke(sender);
+			    PlayCardTrigger?.Invoke(sender);
+		    }
+
+		    ProcessTasks();
+		    DeathProcessingAndAuraUpdate();
+		    EndEvent();
+	    }
 	    internal void OnAfterPlayMinionTrigger(IEntity sender)
 	    {
-		    AfterPlayMinionTrigger?.Invoke(sender);
-	    }
+		    if (AfterPlayMinionTrigger == null)
+		    {
+			    if (AfterPlayCardTrigger == null)
+			    {
+					if (AfterSummonTrigger == null)
+						return;
 
+					StartEvent();
+					AfterSummonTrigger.Invoke(sender);
+			    }
+			    else
+			    {
+				    StartEvent();
+				    AfterPlayCardTrigger.Invoke(sender);
+				    AfterSummonTrigger?.Invoke(sender);
+			    }
+		    }
+		    else
+		    {
+			    StartEvent();
+			    AfterPlayMinionTrigger.Invoke(sender);
+			    AfterPlayCardTrigger?.Invoke(sender);
+			    AfterSummonTrigger?.Invoke(sender);
+		    }
+
+		    ProcessTasks();
+		    EndEvent();
+		    DeathProcessingAndAuraUpdate();
+	    }
 	    internal void OnCastSpellTrigger(IEntity sender)
 	    {
-		    CastSpellTrigger?.Invoke(sender);
-	    }
+		    if (CastSpellTrigger == null)
+		    {
+			    if (PlayCardTrigger == null)
+				    return;
+			    StartEvent();
+			    PlayCardTrigger.Invoke(sender);
+		    }
+		    else
+		    {
+			    StartEvent();
+				CastSpellTrigger.Invoke(sender);
+			    PlayCardTrigger?.Invoke(sender);
+		    }
 
+		    ProcessTasks();
+		    EndEvent();
+		    DeathProcessingAndAuraUpdate();
+	    }
 	    internal void OnAfterCastTrigger(IEntity sender)
 	    {
-		    AfterCastTrigger?.Invoke(sender);
-	    }
+		    if (AfterCastTrigger == null)
+		    {
+				if (AfterPlayCardTrigger == null)
+					return;
+				StartEvent();
+				AfterPlayCardTrigger.Invoke(sender);
+		    }
+		    else
+		    {
+			    StartEvent();
+			    AfterCastTrigger.Invoke(sender);
+			    AfterPlayCardTrigger?.Invoke(sender);
+		    }
 
+		    ProcessTasks();
+		    EndEvent();
+		    DeathProcessingAndAuraUpdate();
+	    }
 	    internal void OnSecretRevealedTrigger(IEntity sender)
 	    {
-			SecretRevealedTrigger?.Invoke(sender);
+		    SecretRevealedTrigger?.Invoke(sender);
 	    }
-
 	    internal void OnZoneTrigger(IEntity sender)
 	    {
 		    if (ZoneTrigger == null) return;
-		    sender.Game.TaskQueue.StartEvent();
+		    StartEvent();
 		    ZoneTrigger.Invoke(sender);
-		    sender.Game.ProcessTasks();
-		    sender.Game.TaskQueue.EndEvent();
-		}
-
-	    internal void OnDiscardTrigger(IEntity sender)
-	    {
-		    DiscardTrigger?.Invoke(sender);
+		    ProcessTasks();
+		    EndEvent();
 	    }
-
+	    internal bool OnDiscardTrigger(IEntity sender)
+	    {
+	        if (DiscardTrigger == null) return false;
+	        StartEvent();
+	        DiscardTrigger.Invoke(sender);
+	        return true;
+	    }
 	    internal void OnGameStartTrigger()
 	    {
 		    GameStartTrigger?.Invoke(null);
 	    }
-
 	    internal void OnDrawTrigger(IEntity sender)
 	    {
-		    DrawTrigger?.Invoke(sender);
+	        if (DrawTrigger == null) return;
+	        StartEvent();
+	        DrawTrigger.Invoke(sender);
+	        ProcessTasks();
+	        EndEvent();
 	    }
-
-	    internal void OnTargetTrigger(IEntity sender)
+	    internal bool OnTargetTrigger(IEntity sender)
 	    {
-		    TargetTrigger?.Invoke(sender);
+		    if (TargetTrigger == null) return false;
+		    StartEvent();
+		    TargetTrigger.Invoke(sender);
+		    ProcessTasks();
+		    EndEvent();
+			return true;
 	    }
-
 	    internal void OnInspireTrigger(IEntity sender)
 	    {
-		    InspireTrigger?.Invoke(sender);
+	        if (InspireTrigger == null) return;
+	        StartEvent();
+	        InspireTrigger.Invoke(sender);
+	        ProcessTasks();
+	        EndEvent();
+	        DeathProcessingAndAuraUpdate();
 	    }
-
 	    internal void OnFreezeTrigger(IEntity sender)
 	    {
 		    FreezeTrigger?.Invoke(sender);
 	    }
-
 	    internal void OnArmorTrigger(IEntity sender)
 	    {
 		    ArmorTrigger?.Invoke(sender);
 	    }
-
 	    internal void OnEquipWeaponTrigger(IEntity sender)
 	    {
 		    EquipWeaponTrigger?.Invoke(sender);

@@ -96,7 +96,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			while (c.Choice != null)
 			{
 				game.TaskQueue.StartEvent();
-				Generic.ChoicePick.Invoke(c, Util.Choose(c.Choice.Choices));
+				Generic.ChoicePick.Invoke(c, game, Util.Choose(c.Choice.Choices));
 				game.ProcessTasks();
 				game.TaskQueue.EndEvent();
 				game.DeathProcessingAndAuraUpdate();

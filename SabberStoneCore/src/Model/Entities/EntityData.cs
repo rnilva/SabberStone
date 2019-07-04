@@ -13,31 +13,18 @@ namespace SabberStoneCore.Model.Entities
 	/// Implements <see cref="IDictionary{TKey, TValue}"/>.
 	/// This only contains modified/added tags during runtime, rather than card's original tags.
 	/// </summary>
-	internal class EntityData : IDictionary<GameTag, int>
+	public class EntityData : IDictionary<GameTag, int>
 	{
-		private unsafe struct Initialiser
-		{
-			public const int SIZE = 1024;
-			public fixed int Space[SIZE];
-
-			public static Initialiser Get;
-
-			static Initialiser()
-			{
-				for (int i = 0; i < SIZE; i++)
-					Get.Space[i] = -1;
-			}
-		}
-
 		private const int _initSize = 8;
 		private const int _initBucketSize = _initSize * 2;
 
 		private int[] _buckets;
-		private int _size = _initSize;
+		private int _size;
 		private int _count;
 
 		public EntityData()
 		{
+			_size = _initSize;
 			var buckets = new int[_initBucketSize];
 			unsafe
 			{
@@ -66,20 +53,15 @@ namespace SabberStoneCore.Model.Entities
 			_buckets = new int[size << 1];
 			fixed (int* srcPtr = entityData._buckets, dstPtr = _buckets)
 			{
-				int i = 0;
-				long* s = (long*)srcPtr;
-				long* d = (long*)dstPtr;
+				int* srcEndPtr = srcPtr + (size << 1);
+				S256Bit* s = (S256Bit*)srcPtr;
+				S256Bit* d = (S256Bit*)dstPtr;
 				do
 				{
-					d[i] = s[i];
-					i++;
-					d[i] = s[i];
-					i++;
-					d[i] = s[i];
-					i++;
-					d[i] = s[i];
-					i++;
-				} while (i + 4 <= size);
+					*d = *s;
+					s++;
+					d++;
+				} while (s < srcEndPtr);
 			}
 
 			_count = entityData._count;
@@ -559,6 +541,31 @@ namespace SabberStoneCore.Model.Entities
 		{
 			return Hash();
 		}
+
+		private unsafe struct Initialiser
+		{
+			public const int SIZE = 1024;
+			public fixed int Space[SIZE];
+
+			public static Initialiser Get;
+
+			static Initialiser()
+			{
+				for (int i = 0; i < SIZE; i++)
+					Get.Space[i] = -1;
+			}
+		}
+
+		private struct S256Bit
+		{
+#pragma warning disable 169
+			private long a;
+			private long b;
+			private long c;
+			private long d;
+#pragma warning restore 169
+		}
+
 	}
 }
 

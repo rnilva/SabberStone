@@ -14,7 +14,7 @@ namespace SabberStoneCore.Actions
 			{
 				SummonPhase.Invoke(g, minion, zonePosition);
 
-				AfterSummonTrigger.Invoke(g, minion);
+				g.TriggerManager.OnAfterSummonTrigger(minion);
 
 				return true;
 			};
@@ -32,20 +32,6 @@ namespace SabberStoneCore.Actions
 				// add summon block show entity 
 				if (g.History)
 					g.PowerHistory.Add(PowerHistoryBuilder.ShowEntity(minion));
-			};
-
-		private static Action<Game, Minion> AfterSummonTrigger
-			=> delegate (Game g, Minion minion)
-			{
-				//minion.IsSummoned = true;
-
-				g.TaskQueue.StartEvent();
-				g.TriggerManager.OnAfterSummonTrigger(minion);
-				g.ProcessTasks();
-				g.TaskQueue.EndEvent();
-
-				if (minion.Race == Race.TOTEM)
-					minion.Controller.NumTotemSummonedThisGame++;
 			};
 	}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

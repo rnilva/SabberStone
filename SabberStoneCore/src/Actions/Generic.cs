@@ -129,16 +129,21 @@ namespace SabberStoneCore.Actions
 		public static Func<Controller, IPlayable, bool> DiscardBlock
 			=> delegate (Controller c, IPlayable playable)
 			{
-				c.Game.TaskQueue.StartEvent();
-				c.Game.TriggerManager.OnDiscardTrigger(playable);
+				bool triggered = c.Game.TriggerManager.OnDiscardTrigger(playable);
+
 				IPlayable discard = c.HandZone.Remove(playable);
 				c.Game.Log(LogLevel.INFO, BlockType.PLAY, "DiscardBlock", !c.Game.Logging ? "" : $"{discard} is beeing discarded.");
 				c.GraveyardZone.Add(discard);
 
 				c.DiscardedEntities.Add(discard.Id);
 				c.LastCardDiscarded = discard.Id;
-				c.Game.ProcessTasks();
-				c.Game.TaskQueue.EndEvent();
+
+				if (triggered)
+				{
+					c.Game.ProcessTasks();
+					c.Game.TaskQueue.EndEvent();
+				}
+
 				return true;
 			};
 
@@ -378,19 +383,20 @@ namespace SabberStoneCore.Actions
 				else
 				{
 					IPlayable entity;
+					EntityData data = (EntityData) p.NativeTags;
 					switch (newCard.Type)
 					{
 						case CardType.MINION:
-							entity = new Minion(c, newCard, p.NativeTags, p.Id);
+							entity = new Minion(c, newCard, data, p.Id);
 							break;
 						case CardType.SPELL:
-							entity = new Spell(c, newCard, p.NativeTags, p.Id);
+							entity = new Spell(c, newCard, data, p.Id);
 							break;
 						case CardType.HERO:
-							entity = new Hero(c, newCard, p.NativeTags, p.Id);
+							entity = new Hero(c, newCard, data, p.Id);
 							break;
 						case CardType.WEAPON:
-							entity = new Weapon(c, newCard, p.NativeTags, p.Id);
+							entity = new Weapon(c, newCard, data, p.Id);
 							break;
 						default:
 							throw new ArgumentNullException();

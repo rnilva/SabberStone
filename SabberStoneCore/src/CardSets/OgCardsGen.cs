@@ -734,7 +734,8 @@ namespace SabberStoneCore.CardSets
 			// - DISCOVER = 1
 			// --------------------------------------------------------
 			cards.Add("OG_311", new Power {
-				PowerTask = new DiscoverTask(DiscoverType.MINION, "OG_311e")
+				PowerTask = new DiscoverTask(DiscoverType.MINION,
+					afterDiscoverTask: new AddEnchantmentTask("OG_311e", EntityType.TARGET))
 			});
 
 			// --------------------------------------- WEAPON - PALADIN

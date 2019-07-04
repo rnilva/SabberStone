@@ -258,7 +258,8 @@ namespace SabberStoneCore.Tasks
 						result[i] = result[j];
 						result[j] = temp;
 					}
-					Generic.CreateChoiceCards.Invoke(controller, source, null, ChoiceType.GENERAL, ChoiceAction.GLIMMERROOT, result, null, null);
+					Generic.CreateChoiceCards.Invoke(controller, source, null, ChoiceType.GENERAL, ChoiceAction.GLIMMERROOT,
+						result, null);
 					controller.Game.OnRandomHappened(true);
 					return p;
 				}));
@@ -393,9 +394,9 @@ namespace SabberStoneCore.Tasks
 
 
 					Generic.CreateChoiceCards.Invoke(controller, p[0], null, ChoiceType.GENERAL,
-						ChoiceAction.BUILDABEAST, first, null, null);
+						ChoiceAction.BUILDABEAST, first, null);
 					Generic.CreateChoiceCards.Invoke(controller, p[0], null, ChoiceType.GENERAL,
-						ChoiceAction.BUILDABEAST, second, null, null);
+						ChoiceAction.BUILDABEAST, second, null);
 
 					return p;
 				}));
@@ -585,7 +586,7 @@ namespace SabberStoneCore.Tasks
 				{
 					Generic.CastSpell(c, (Spell)Entity.FromCard(c, spellCards[i].SourceCard), (ICharacter)p, spellCards[i].SubOption, true);
 					while (c.Choice != null)
-						Generic.ChoicePick(c, Util.Choose(c.Choice.Choices));
+						Generic.ChoicePick(c, c.Game, Util.Choose(c.Choice.Choices));
 					if (p.Zone?.Type != Zone.PLAY)
 						break;
 				}
@@ -632,6 +633,7 @@ namespace SabberStoneCore.Tasks
 				foreach (Card card in playedCards)
 				{
 					Controller c = p.Controller;
+					Game g = c.Game;
 					IPlayable entity = Entity.FromCard(c, card);
 					ICharacter randTarget = null;
 					if (card.TargetingType != TargetingType.None)
@@ -681,7 +683,7 @@ namespace SabberStoneCore.Tasks
 					while (c.Choice != null)
 					{
 						c.Game.TaskQueue.StartEvent();
-						Generic.ChoicePick.Invoke(c, Util.Choose(c.Choice.Choices));
+						Generic.ChoicePick.Invoke(c, c.Game, Util.Choose(c.Choice.Choices));
 						c.Game.ProcessTasks();
 						c.Game.TaskQueue.EndEvent();
 						c.Game.DeathProcessingAndAuraUpdate();
@@ -729,7 +731,7 @@ namespace SabberStoneCore.Tasks
 					while (c.Choice != null)
 					{
 						c.Game.TaskQueue.StartEvent();
-						Generic.ChoicePick.Invoke(c, Util.Choose(c.Choice.Choices));
+						Generic.ChoicePick.Invoke(c, game, Util.Choose(c.Choice.Choices));
 						c.Game.ProcessTasks();
 						c.Game.TaskQueue.EndEvent();
 						c.Game.DeathProcessingAndAuraUpdate();
@@ -778,7 +780,8 @@ namespace SabberStoneCore.Tasks
 
 				if (candidates.Length == 0) return 0;
 
-				Generic.CreateChoiceCards(source.Controller, source, null, ChoiceType.GENERAL, ChoiceAction.CAST, choices, null, null);
+				Generic.CreateChoiceCards(source.Controller, source, null, ChoiceType.GENERAL, ChoiceAction.CAST,
+					choices, null);
 				return 0;
 			});
 		private static Dictionary<CardClass, Card[]> _cachedSecrets;

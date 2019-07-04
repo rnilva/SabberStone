@@ -328,7 +328,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Branching Paths"));
 
 			Assert.Equal(3, game.CurrentPlayer.Choice.Choices.Count);
-			Assert.True(game.CurrentPlayer.Choice.ChoiceQueue.Count == 1);
+			//Assert.True(game.CurrentPlayer.Choice.ChoiceQueue.Count == 1);
+			Assert.NotNull(game.CurrentPlayer.Choice.NextChoice);
 
 			game.ChooseNthChoice(1);
 

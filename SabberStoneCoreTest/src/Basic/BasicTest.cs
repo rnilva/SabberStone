@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Xunit;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Config;
@@ -34,6 +35,25 @@ namespace SabberStoneCoreTest.Basic
 			Assert.True(dict["A"] > 300);
 			Assert.True(dict["B"] > 300);
 			Assert.True(dict["C"] > 300);
+		}
+
+		[Fact]
+		public void EntityDataTest()
+		{
+			var data = new EntityData();
+			var rnd = new Random();
+			var tags = (GameTag[])Enum.GetValues(typeof(GameTag));
+			for (int i = 0; i < 120; i++)
+			{
+				GameTag tag = tags[rnd.Next(tags.Length)];
+				data[tag] = rnd.Next();
+			}
+
+			var cloned = new EntityData(in data);
+
+			// Test if all entries are successfully cloned.
+			foreach (KeyValuePair<GameTag, int> item in data)
+				Assert.Contains(item, cloned);
 		}
 
 		[Fact]

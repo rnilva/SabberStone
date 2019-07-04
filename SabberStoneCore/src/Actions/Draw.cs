@@ -44,10 +44,7 @@ namespace SabberStoneCore.Actions
 
 					if (playable != null)
 					{
-						c.Game.TaskQueue.StartEvent();
 						c.Game.TriggerManager.OnDrawTrigger(playable);
-						c.Game.ProcessTasks();
-						c.Game.TaskQueue.EndEvent();
 					}
 
 					ISimpleTask task = playable.Power?.TopdeckTask;

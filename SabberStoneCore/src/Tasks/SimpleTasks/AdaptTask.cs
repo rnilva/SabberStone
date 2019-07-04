@@ -64,7 +64,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			Card[] results = TotalAdaptCards.ChooseNElements(3);
 
 			Generic.CreateChoiceCards.Invoke(controller, source, targets, ChoiceType.GENERAL, ChoiceAction.ADAPT,
-				results, null, null);
+				results, null);
 
 			return TaskState.COMPLETE;
 		}

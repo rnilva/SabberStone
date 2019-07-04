@@ -20,7 +20,7 @@ namespace SabberStonePowerLog.src.Sync
 		public void Sync()
 		{
 			Player1 = new Controller(this, _powerGame.Player1.Name, 1, Game.Player1.Id,
-				new Dictionary<GameTag, int>
+				new EntityData
 				{
 					//[GameTag.HERO_ENTITY] = heroId,
 					[GameTag.MAXHANDSIZE] = 10,
@@ -35,7 +35,7 @@ namespace SabberStonePowerLog.src.Sync
 
 				});
 			Player2 = new Controller(this, _powerGame.Player2.Name, 2, Game.Player2.Id,
-				new Dictionary<GameTag, int>
+				new EntityData
 				{
 					//[GameTag.HERO_ENTITY] = heroId,
 					[GameTag.MAXHANDSIZE] = 10,

@@ -24,9 +24,6 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			Controller c = _op ? controller.Opponent : controller;
 
-			if (c.Hero.Weapon != null)
-				c.Hero.Weapon.ToBeDestroyed = true;
-
 			Weapon weapon = _card != null
 				? Entity.FromCard(c, _card) as Weapon
 				: stack?.Playables[0] as Weapon;

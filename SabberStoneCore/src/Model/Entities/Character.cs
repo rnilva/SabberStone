@@ -95,7 +95,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="card">The card which this character embodies.</param>
 		/// <param name="tags">Properties of this entity.</param>
 		/// <param name="id">Integral id of this entity. </param>
-		protected Character(in Controller controller, in Card card, in IDictionary<GameTag, int> tags, in int id)
+		protected Character(in Controller controller, in Card card, in EntityData tags, in int id)
 			: base(in controller, in card, in tags, in id)
 		{
 
@@ -306,7 +306,7 @@ namespace SabberStoneCore.Model.Entities
 			// Death phase and aura update are not emerge here
 
 			// place event related data
-			game.TaskQueue.StartEvent();
+			//game.TaskQueue.StartEvent();
 			EventMetaData temp = game.CurrentEventData;
 			game.CurrentEventData = new EventMetaData(source, this, amount);
 
@@ -317,6 +317,7 @@ namespace SabberStoneCore.Model.Entities
 			// Predamage triggers (e.g. Ice Block)
 			if (PreDamageTrigger != null)
 			{
+				game.TaskQueue.StartEvent();
 				PreDamageTrigger.Invoke(this);
 				game.ProcessTasks();
 				amount = game.CurrentEventData.EventNumber;
@@ -324,12 +325,13 @@ namespace SabberStoneCore.Model.Entities
 				{
 					if (_history)
 						PreDamage = 0;
+					game.TaskQueue.EndEvent();
 					return 0;
 				}
 			}
 			if (IsImmune)
 			{
-				game.TaskQueue.EndEvent();
+				//game.TaskQueue.EndEvent();
 				game.CurrentEventData = temp;
 
 				game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !game.Logging ? "" : $"{this} is immune.");
@@ -354,6 +356,7 @@ namespace SabberStoneCore.Model.Entities
 			//LastAffectedBy = source.Id;	TODO
 
 			// on-damage triggers
+			game.TaskQueue.StartEvent();
 			TakeDamageTrigger?.Invoke(this);
 			game.TriggerManager.OnDamageTrigger(this);
 			game.TriggerManager.OnDealDamageTrigger(source);
@@ -428,12 +431,9 @@ namespace SabberStoneCore.Model.Entities
 
 			// Heal event created
 			// Process gathered tasks
-			Game.TaskQueue.StartEvent();
 			EventMetaData temp = Game.CurrentEventData;
 			Game.CurrentEventData = new EventMetaData(source, this, amount);
 			Game.TriggerManager.OnHealTrigger(this);
-			Game.ProcessTasks();
-			Game.TaskQueue.EndEvent();
 			Game.CurrentEventData = temp;
 
 			if (this is Hero)

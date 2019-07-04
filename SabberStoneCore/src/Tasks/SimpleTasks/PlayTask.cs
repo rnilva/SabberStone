@@ -75,7 +75,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 							Generic.CastSpell.Invoke(controller, spell, cardTarget, 0, true);
 
 						while (controller.Choice != null)
-							Generic.ChoicePick(controller, Util.Choose(controller.Choice.Choices));
+							Generic.ChoicePick(controller, game, Util.Choose(controller.Choice.Choices));
 					}
 
 					return TaskState.COMPLETE;

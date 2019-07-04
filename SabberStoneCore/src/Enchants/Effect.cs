@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 
@@ -331,6 +333,46 @@ namespace SabberStoneCore.Enchants
 		public override string ToString()
 		{
 			return $"[{Operator} {Tag} {Value}]";
+		}
+	}
+
+	[AttributeUsage(AttributeTargets.Property)]
+	public class EquivalentGameTag : Attribute
+	{
+		private readonly GameTag _tag;
+
+		public EquivalentGameTag(GameTag gameTag)
+		{
+			_tag = gameTag;
+		}
+
+		public GameTag Tag => _tag;
+	}
+
+	public static class PropertyEffectGenerator
+	{
+		public static readonly HashSet<GameTag> UsedTags = new HashSet<GameTag>();
+
+		public static void Generate()
+		{
+			PropertyInfo[] characterProperties = typeof(Character).GetProperties();
+			foreach (PropertyInfo property in characterProperties)
+			{
+				EquivalentGameTag tagAttr = property.GetCustomAttribute<EquivalentGameTag>();
+				if (tagAttr == null) continue;
+
+				if (!UsedTags.Contains(tagAttr.Tag)) continue;
+
+				string name = property.Name + "Effect";
+				var an = new AssemblyName(name);
+				//AssemblyBuilder
+			}
+
+			foreach (GameTag tag in UsedTags)
+			{
+				string name = Enum.GetName(typeof(GameTag), tag);
+
+			}
 		}
 	}
 }

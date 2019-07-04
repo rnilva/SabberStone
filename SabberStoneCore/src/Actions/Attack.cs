@@ -39,7 +39,7 @@ namespace SabberStoneCore.Actions
 					return false;
 				}
 				Trigger.ValidateTriggers(g, source, SequenceType.Target);
-				if (!AttackPhase.Invoke(c, source))
+				if (!AttackPhase.Invoke(c, source, target))
 				{
 					// end block
 					if (g.History)
@@ -107,20 +107,10 @@ namespace SabberStoneCore.Actions
 		private static Func<Game, ICharacter, ICharacter, bool> OnAttackTrigger
 			=> delegate (Game g, ICharacter source, ICharacter target)
 			{
-				//if (g.History)
-				//{
-
-				//}
-				//source.IsAttacking = true;
-				//target.IsDefending = true;
-
 				// Invoke onAttackTrigger
 				//Trigger.ValidateTriggers(g, source, SequenceType.Attack);
+				g.TriggerManager.OnAttackTrigger(source);
 
-				g.TaskQueue.StartEvent();
-				source.Game.TriggerManager.OnAttackTrigger(source);
-				g.ProcessTasks();
-				g.TaskQueue.EndEvent();
 				if (source.ToBeDestroyed || target.ToBeDestroyed || (source.Zone != null && source.Zone.Type != Zone.PLAY) ||
 				    (target.Zone != null && target.Zone.Type != Zone.PLAY))
 				{
@@ -132,18 +122,15 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		private static Func<Controller, ICharacter, bool> AttackPhase
-			=> delegate (Controller c, ICharacter source)
+		private static Func<Controller, ICharacter, ICharacter, bool> AttackPhase
+			=> delegate (Controller c, ICharacter source, ICharacter target)
 			{
 				Game game = c.Game;
-
-				game.TaskQueue.StartEvent();
-				game.TriggerManager.OnTargetTrigger(source);
-				game.ProcessTasks();
-				game.TaskQueue.EndEvent();
-
 				var hero = source as Hero;
 				var minion = source as Minion;
+
+				if (game.TriggerManager.OnTargetTrigger(source))
+					target = (ICharacter) game.CurrentEventData.EventTarget;
 				//if (!game.IdEntityDic.TryGetValue(game.ProposedDefender, out IPlayable proposedDefender))
 				//{
 				//	game.Log(LogLevel.INFO, BlockType.ATTACK, "AttackPhase", !game.Logging? "":"target wasn't found by proposed defender call.");
@@ -151,8 +138,6 @@ namespace SabberStoneCore.Actions
 				//	source.IsDefending = false;
 				//	return false;
 				//}
-
-				var target = (ICharacter) game.CurrentEventData.EventTarget;
 
 				// Force the game into MAIN_COMBAT step!
 				game.Step = Step.MAIN_COMBAT;
