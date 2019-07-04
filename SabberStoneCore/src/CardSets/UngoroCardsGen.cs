@@ -709,7 +709,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DISCOVER = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_941", new Power {
-				PowerTask = new DiscoverTask(DiscoverType.SPELL, "UNG_941e")
+				PowerTask = new DiscoverTask(DiscoverType.SPELL,
+					afterDiscoverTask: new AddEnchantmentTask("UNG_941e", EntityType.TARGET))
 			});
 
 			// ------------------------------------------- SPELL - MAGE

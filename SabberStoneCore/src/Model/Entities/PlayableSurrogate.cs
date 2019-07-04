@@ -17,6 +17,7 @@ namespace SabberStoneCore.Model.Entities
 		private Card _card;
 		private int _id;
 		private bool _toBeDestroyed;
+		//private int _creator;
 
 		internal PlayableSurrogate(in Game game, in Card card, int id = -1)
 		{

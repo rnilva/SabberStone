@@ -46,8 +46,6 @@ namespace SabberStoneCore.Actions
 					Trigger.ValidateTriggers(game, heroPower, SequenceType.Target);
 					game.TaskQueue.StartEvent();
 					game.TriggerManager.OnTargetTrigger(heroPower);
-					game.ProcessTasks();
-					game.TaskQueue.EndEvent();
 				}
 
 				// play block
@@ -60,7 +58,6 @@ namespace SabberStoneCore.Actions
 				heroPower.ActivateTask(PowerActivation.POWER, target, chooseOne);
 				game.ProcessTasks();
 				game.TaskQueue.EndEvent();
-
 				game.DeathProcessingAndAuraUpdate();
 
 				if (game.History)
@@ -70,12 +67,8 @@ namespace SabberStoneCore.Actions
 				c.HeroPowerActivationsThisTurn++;
 				c.NumTimesHeroPowerUsedThisGame++;
 
-				game.TaskQueue.StartEvent();
 				game.TriggerManager.OnInspireTrigger(heroPower);
-				game.ProcessTasks();
-				game.TaskQueue.EndEvent();
 
-				game.DeathProcessingAndAuraUpdate();
 				game.CurrentEventData = null;
 				return true;
 			};

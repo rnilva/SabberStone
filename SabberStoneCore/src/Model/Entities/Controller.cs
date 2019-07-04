@@ -173,7 +173,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="name">The name of the player.</param>
 		/// <param name="playerId">The player index; The first player will get assigned 1.</param>
 		/// <param name="id">Entity ID of this controller.</param>
-		public Controller(Game game, string name, int playerId, int id, IDictionary<GameTag, int> tags)
+		public Controller(Game game, string name, int playerId, int id, EntityData tags)
 			: base(in game, Card.CardPlayer, in tags, in id)
 		{
 			Name = name;
@@ -279,7 +279,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="powerCard">The heropower card to derive the hero power entity from.</param>
 		/// <param name="tags">The inherited tags</param>
 		/// <param name="id">The entity id to assign to the generated HERO entity</param>
-		public void AddHeroAndPower(in Card heroCard, in Card powerCard = null, in IDictionary<GameTag, int> tags = null, in int id = -1)
+		public void AddHeroAndPower(in Card heroCard, in Card powerCard = null, in EntityData tags = null, in int id = -1)
 		{
 			// remove hero and place it to the setaside zone
 			Weapon weapon = null;
@@ -1253,11 +1253,13 @@ namespace SabberStoneCore.Model.Entities
 		/// 
 		/// This value is limited to 1 turnand should be reset in the next turn.
 		/// </summary>
-		public unsafe int BaseMana
+		public int BaseMana
 		{
 			//get { return this[GameTag.RESOURCES]; }
 			//set { this[GameTag.RESOURCES] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.BaseMana;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.BaseMana = value;
 		}
 
@@ -1274,7 +1276,9 @@ namespace SabberStoneCore.Model.Entities
 			//	return value;
 			//}
 			//set { this[GameTag.RESOURCES_USED] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.UsedMana;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.UsedMana = value;
 		}
 
@@ -1289,7 +1293,9 @@ namespace SabberStoneCore.Model.Entities
 			//	return value;
 			//}
 			//set { this[GameTag.TEMP_RESOURCES] = value; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.TemporaryMana;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.TemporaryMana = value;
 		}
 
@@ -1306,7 +1312,9 @@ namespace SabberStoneCore.Model.Entities
 			//	return value == 1;
 			//}
 			//set { this[GameTag.COMBO_ACTIVE] =  value ? 1 : 0; }
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.IsComboActive > 0;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.IsComboActive = value ? 1 : 0;
 		}
 

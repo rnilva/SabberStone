@@ -206,7 +206,7 @@ namespace SabberStoneCore.Actions
 				game.TaskQueue.StartEvent();
 				OnPlayTrigger.Invoke(game, hero);
 
-				// - BattleCry Phase --> Battle Cry Resolves
+					// - BattleCry Phase --> Battle Cry Resolves
 				//   (death processing, aura updates)
 				g.TaskQueue.StartEvent();
 				hero.ActivateTask(PowerActivation.POWER, target, chooseOne);
@@ -225,12 +225,8 @@ namespace SabberStoneCore.Actions
 				// - After Play Phase --> After play Trigger / Secrets (Mirror Entity)
 				//   (death processing, aura updates)
 				//hero.JustPlayed = false;
-				g.TaskQueue.StartEvent();
-				g.TriggerManager.OnAfterPlayCardTrigger(hero);
-				g.ProcessTasks();
-				g.TaskQueue.EndEvent();
 
-				g.DeathProcessingAndAuraUpdate();
+				g.TriggerManager.OnAfterPlayCardTrigger(hero);
 
 				return true;
 			};
@@ -257,21 +253,11 @@ namespace SabberStoneCore.Actions
 				OnPlayTrigger.Invoke(game, minion);
 
 				// - Summon Resolution Step (Work in Process)
-				g.TaskQueue.StartEvent();
-				g.TriggerManager.OnSummonTrigger(minion);
-				g.ProcessTasks();
-				g.TaskQueue.EndEvent();
+				triggerManager.OnSummonTrigger(minion);
 
 				// Noggenfogger here
-				if (target != null)
-				{
-					g.TaskQueue.StartEvent();
-					g.TriggerManager.OnTargetTrigger(minion);
-					g.ProcessTasks();
-					g.TaskQueue.EndEvent();
-					if (minion.CardTarget != target.Id)
-						target = (ICharacter)g.IdEntityDic[minion.CardTarget];
-				}
+				if (target != null && g.TriggerManager.OnTargetTrigger(minion))
+					target = (ICharacter) g.IdEntityDic[minion.CardTarget];
 
 				// - BattleCry Phase --> Battle Cry Resolves
 				//   (death processing, aura updates)
@@ -302,12 +288,6 @@ namespace SabberStoneCore.Actions
 
 				// - After Play Phase --> After play Trigger / Secrets (Mirror Entity)
 				//   (death processing, aura updates)
-				//minion.JustPlayed = false;
-				g.TaskQueue.StartEvent();
-				g.TriggerManager.OnAfterPlayMinionTrigger(minion);
-				g.ProcessTasks();
-				g.TaskQueue.EndEvent();
-
 				// - After Summon Phase --> After Summon Trigger
 				//   (death processing, aura updates)
 				game.TaskQueue.StartEvent();
@@ -316,7 +296,6 @@ namespace SabberStoneCore.Actions
 				game.ProcessTasks();
 				game.TaskQueue.EndEvent();
 
-				g.DeathProcessingAndAuraUpdate();
 
 				if (minion.IsRace(Race.ELEMENTAL))
 					c.NumElementalsPlayedThisTurn++;
@@ -356,7 +335,7 @@ namespace SabberStoneCore.Actions
 				else
 				{
 					// check Spellbender and Mayor Noggenfogger
-					if (target != null)
+					if (target != null && triggerManager.OnTargetTrigger(spell))
 					{
 						game.TaskQueue.StartEvent();
 						int temp = game.CurrentEventData.EventNumber;
@@ -413,12 +392,8 @@ namespace SabberStoneCore.Actions
 				weapon.Card.Power?.Trigger?.Activate(g, weapon);
 
 
-				if (target != null)
+				if (target != null && g.TriggerManager.OnTargetTrigger(weapon))
 				{
-					g.TaskQueue.StartEvent();
-					g.TriggerManager.OnTargetTrigger(weapon);
-					g.ProcessTasks();
-					g.TaskQueue.EndEvent();
 					if (target.Id != weapon.CardTarget)
 						target = (ICharacter) g.IdEntityDic[weapon.CardTarget];
 				}

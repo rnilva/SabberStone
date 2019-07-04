@@ -16,6 +16,7 @@ using System.Text;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 using System;
+using SabberStoneCore.Model.Zones;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 

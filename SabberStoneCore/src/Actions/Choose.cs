@@ -325,7 +325,7 @@ namespace SabberStoneCore.Actions
 				//}
 
 				var choicesIds = new List<int>();
-				foreach (Card p in choices)
+				for (int i = 0; i < choices.Length; i++)
 				{
 					IPlayable choiceEntity = Entity.FromCard(c, p,
 						new EntityData
