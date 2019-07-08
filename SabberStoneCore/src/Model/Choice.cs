@@ -113,6 +113,18 @@ namespace SabberStoneCore.Model
 
 		private readonly Card[][] _cardSets;
 
+		internal void AppendNext(List<int> choices)
+		{
+			var choice = new Choice(Controller);
+			choice.ChoiceType = ChoiceType;
+			choice.ChoiceAction = ChoiceAction;
+			choice.SourceId = SourceId;
+			choice.NextChoice = NextChoice;
+			choice.EntityStack = EntityStack;
+			choice.Choices = choices;
+			NextChoice = choice;
+		}
+
 		internal void TryPrepare()
 		{
 			if (_cardSets == null) return;

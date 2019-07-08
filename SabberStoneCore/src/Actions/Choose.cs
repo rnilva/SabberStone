@@ -149,20 +149,12 @@ namespace SabberStoneCore.Actions
 						break;
 
 					case ChoiceAction.KAZAKUS:
-						c.Choice.Choices.Where(p => p != choice).ToList().ForEach(p =>
-						{
-							g.IdEntityDic[p][GameTag.TAG_SCRIPT_DATA_NUM_1] = 0;
-						});
-						//c.Setaside.Add(playable);
-						var kazakusPotions =
-							c.SetasideZone.Where(p => p.Card.Id.StartsWith("CFM_621"))
-								.Where(p => p[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
-								.Select(p => p[GameTag.TAG_SCRIPT_DATA_NUM_1])
-								.ToList();
-						if (kazakusPotions.Any())
-						{
-							g.TaskQueue.Enqueue(new PotionGenerating(kazakusPotions), in c, playable, playable);
-						}
+						if (playable.Power == null)
+							c.Choice.EntityStack = new List<int> {playable.Id};
+						else
+							c.Choice.AddToStack(playable.Id);
+
+						KazakusPower.Action(in g, in c, c.Choice.EntityStack);
 						break;
 
 					case ChoiceAction.GLIMMERROOT:
