@@ -298,9 +298,9 @@ namespace SabberStoneCore.Model.Zones
 		public int CountOf(Predicate<Minion> predicate)
 		{
 			int count = 0;
-			var span = new Span<Minion>(_entities);
-			for (int i = 0; i < span.Length; i++)
-				if (predicate(span[i]))
+			//var span = new Span<Minion>(_entities);
+			for (int i = 0; i < _count; i++)
+				if (predicate(_entities[i]))
 					count++;
 
 			return count;

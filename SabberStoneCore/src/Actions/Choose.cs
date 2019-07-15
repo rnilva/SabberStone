@@ -51,6 +51,7 @@ namespace SabberStoneCore.Actions
 						if (RemoveFromZone(c, playable))
 						{
 							AddHandPhase.Invoke(c, playable);
+							playable = g.IdEntityDic[choice];
 						}
 						//if (RemoveFromZone(c, playable))
 						//{
