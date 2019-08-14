@@ -10,7 +10,9 @@ namespace SabberStoneCore.Model
 		private unsafe struct GameAttributes
 		{
 			private const int COUNT = 8;
+#pragma warning disable 649
 			private fixed int _data[COUNT];
+#pragma warning restore 649
 
 			public GameAttributes(GameAttributes other)
 			{

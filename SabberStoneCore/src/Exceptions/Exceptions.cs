@@ -96,4 +96,9 @@ namespace SabberStoneCore.Exceptions
 		public EnchantException(string message, Exception innerException) : base(message, innerException) { }
 	}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+
+	public class SurrogateException : SabberStoneExceptions
+	{
+		public SurrogateException(string message) : base(message) { }
+	}
 }

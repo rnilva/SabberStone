@@ -366,6 +366,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			var clone = new PlayableSurrogate(this);
 			controller.Game.IdEntityDic[clone.Id] = clone;
+			ActivatedTrigger?.Activate(controller.Game, clone, cloning: true);
 			return clone;
 		}
 

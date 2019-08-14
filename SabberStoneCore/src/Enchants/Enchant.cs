@@ -57,13 +57,13 @@ namespace SabberStoneCore.Enchants
 		{
 			IEffect[] effects = Effects;
 
-			if (entity is PlayableSurrogate s)
-			{
-				for (int i = 0; i < effects.Length; i++)
-				{
-					var eff = effects[i];
-				}
-			}
+			//if (entity is PlayableSurrogate s)
+			//{
+			//	for (int i = 0; i < effects.Length; i++)
+			//	{
+			//		var eff = effects[i];
+			//	}
+			//}
 
 			if (!UseScriptTag)
 			{

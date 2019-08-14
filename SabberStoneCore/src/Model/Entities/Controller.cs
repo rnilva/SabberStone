@@ -120,8 +120,6 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public bool DragonInHand => HandZone.Any(p => p.Card.Race == Race.DRAGON);
 
-		public int NumTotemSummonedThisGame { get; set; }
-
 		public bool TemporusFlag { get; set; }
 
 		/// <summary>
@@ -1030,6 +1028,14 @@ namespace SabberStoneCore.Model.Entities
 		    get => _attrs.NumMurlocsPlayedThisGame;
 		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		    set => _attrs.NumMurlocsPlayedThisGame = value;
+	    }
+
+	    public int NumTotemSummonedThisGame
+	    {
+		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		    get => _attrs.NumTotemSummonedThisGame;
+		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		    set => _attrs.NumTotemSummonedThisGame = value;
 	    }
     
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
