@@ -563,9 +563,12 @@ namespace SabberStoneCore.Model.Entities
 		private unsafe struct Initialiser
 		{
 			public const int SIZE = 1024;
+#pragma warning disable 649
 			public fixed int Space[SIZE];
-
 			public static Initialiser Get;
+#pragma warning restore 649
+
+
 
 			static Initialiser()
 			{

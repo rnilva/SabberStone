@@ -788,7 +788,7 @@ namespace SabberStoneCore.CardSets.Standard
 					//}, p.Controller, legendaries);
 					Random rnd = Util.Random;
 					Controller c = p.Controller;
-					var deck = c.DeckZone;
+					DeckZone_new deck = c.DeckZone;
 
 					for (int i = 0; i < deck.Count; i++)
 					{
@@ -1032,7 +1032,7 @@ namespace SabberStoneCore.CardSets.Standard
 						IPlayable source = list[0];
 						Controller c = source.Controller;
 						Card enchantment = Cards.FromId("GIL_840e");
-						for (int i = 0; i < list.Count; i++)
+						for (int i = 1; i < list.Count; i++)
 							Generic.AddEnchantmentBlock(c, enchantment, source, list[i], list[i].Card.Health, 0, false);
 						return null;
 					}))
@@ -1102,7 +1102,13 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Has Attack equal to its Health.
 			// --------------------------------------------------------
 			cards.Add("GIL_840e", new Power {
-				Enchant = Enchants.Enchants.SetAttackScriptTag
+				//Enchant = Enchants.Enchants.SetAttackScriptTag
+				Enchant = new Enchant(
+					SurrogateATK.Effect(EffectOperator.SET, 0),
+					SurrogateHealth.Effect(EffectOperator.SET, 0))
+				{
+					UseScriptTag = true
+				}
 			});
 
 			// ---------------------------------------- MINION - PRIEST

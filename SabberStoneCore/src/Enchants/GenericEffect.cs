@@ -63,7 +63,12 @@ namespace SabberStoneCore.Enchants
 		void IEffect.ApplyTo(IEntity entity, bool oneTurnEffect)
 		{
 			if (!(entity is T playable))
+			{
+				if (typeof(T) == typeof(PlayableSurrogate))
+					throw new SurrogateException($"Cannot apply {this} to an entity of type {entity.GetType()}");
+
 				throw new Exception($"Cannot apply {this} to an entity of type {entity.GetType()}");
+			}
 
 			ApplyTo(playable, oneTurnEffect);
 		}

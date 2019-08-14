@@ -11,7 +11,9 @@ namespace SabberStoneCore.Model.Entities
 			private const int TURN_STATISTICS_OFFSET = 17;
 			private const int TURN_STATISTICS_COUNT = 7;
 
+#pragma warning disable 649
 			private fixed int _data[COUNT];
+#pragma warning restore 649
 
 			public ControllerAttributes(ControllerAttributes other)
 			{
