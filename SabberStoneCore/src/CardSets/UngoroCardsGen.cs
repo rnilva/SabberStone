@@ -431,8 +431,8 @@ namespace SabberStoneCore.CardSets.Standard
 						new FuncPlayablesTask(plist =>
 						{
 							if (plist.Count < 2) return null;
-							var source = (ICharacter)plist[0];
-							var target = (ICharacter)plist[1];
+							var source = (Character)plist[0];
+							var target = (Character)plist[1];
 							if (target.Card.Untouchable)
 								return null;
 							EventMetaData temp = source.Game.CurrentEventData;
@@ -1315,7 +1315,8 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("UNG_063", new Power {
 				InfoCardId = "UNG_063e",
 				ComboTask = ComplexTask.Create(
-					new GetGameTagControllerTask(GameTag.NUM_CARDS_PLAYED_THIS_TURN),
+					//new GetGameTagControllerTask(GameTag.NUM_CARDS_PLAYED_THIS_TURN),
+					new GetPropertyTask(EntityType.CONTROLLER, "NumCardsPlayedThisTurn"),
 					new MathSubstractionTask(1),
 					new AddEnchantmentTask("UNG_063e", EntityType.SOURCE, true))
 			});
@@ -1872,17 +1873,17 @@ namespace SabberStoneCore.CardSets.Standard
 					{
 						Controller c = p[0].Controller;
 						if (c.DiscardedEntities.Count == 0)
-							return new List<IPlayable>(0);
-						var minions = new List<IPlayable>(c.DiscardedEntities.Count);
+							return new List<Playable>(0);
+						var minions = new List<Playable>(c.DiscardedEntities.Count);
 						c.DiscardedEntities.ForEach(q =>
 						{
-							IPlayable pp = c.Game.IdEntityDic[q];
+							Playable pp = c.Game.IdEntityDic[q];
 							if (pp.Card.Type == CardType.MINION)
 								minions.Add(pp);
 						});
 						return minions.Count > 0
-							? new List<IPlayable>{Entity.FromCard(c, Util.Choose(list: minions).Card)}
-							: new List<IPlayable>(0);
+							? new List<Playable>{Entity.FromCard(c, Util.Choose(list: minions).Card)}
+							: new List<Playable>(0);
 					}),
 					new SummonTask())
 			});
@@ -2887,8 +2888,8 @@ namespace SabberStoneCore.CardSets.Standard
 						new IncludeTask(EntityType.TARGET, null, true),
 						new FuncPlayablesTask(list =>
 						{
-							//Generic.CastSpell(list[1].Controller, (Spell)list[1], (ICharacter)list[0], 0);
-							list[1].ActivateTask(PowerActivation.POWER, (ICharacter)list[0]);
+							//Generic.CastSpell(list[1].Controller, (Spell)list[1], (Character)list[0], 0);
+							list[1].ActivateTask(PowerActivation.POWER, (Character)list[0]);
 							return null;
 						}))
 				}
@@ -3004,7 +3005,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("UNG_907", new Power {
 				PowerTask = ComplexTask.Create(
-					new GetGameTagControllerTask(GameTag.NUM_ELEMENTAL_PLAYED_LAST_TURN),
+					//new GetGameTagControllerTask(GameTag.NUM_ELEMENTAL_PLAYED_LAST_TURN),
+					new GetPropertyTask(EntityType.CONTROLLER, "NumElementalsPlayedLastTurn"),
 					new EnqueueNumberTask(new AddEnchantmentTask("UNG_907e", EntityType.SOURCE)))
 			});
 

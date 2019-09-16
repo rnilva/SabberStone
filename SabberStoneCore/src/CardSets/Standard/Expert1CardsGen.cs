@@ -993,7 +993,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Increased Durability.
 			// --------------------------------------------------------
 			cards.Add("EX1_536e", new Power {
-				Enchant = new OngoingEnchant(new Effect(GameTag.DURABILITY, EffectOperator.ADD, 1))
+				Enchant = new OngoingEnchant(Effects.Durability_N(1))
 			});
 
 			// ----------------------------------- ENCHANTMENT - HUNTER
@@ -1482,7 +1482,8 @@ namespace SabberStoneCore.CardSets.Standard
 							var target = list[0] as Minion;
 							if (target == null)
 								return list;
-							target._damage = target.Card.Health - 1;
+							//target._damage = target.Card.Health - 1;
+							target.Damage = target.BaseHealth - 1;
 							return list;
 						})),
 					RemoveAfterTriggered = true,
@@ -2073,7 +2074,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("EX1_613", new Power {
 				ComboTask = ComplexTask.Create(
-					new GetGameTagControllerTask(GameTag.NUM_CARDS_PLAYED_THIS_TURN),
+					//new GetGameTagControllerTask(GameTag.NUM_CARDS_PLAYED_THIS_TURN),
+					new GetPropertyTask(EntityType.CONTROLLER, "NumCardsPlayedThisTurn"),
 					new MathSubstractionTask(1),
 					new MathMultiplyTask(2),
 					new AddEnchantmentTask("EX1_613e", EntityType.SOURCE, true))
@@ -2209,7 +2211,7 @@ namespace SabberStoneCore.CardSets.Standard
 							new IncludeTask(EntityType.SOURCE),
 							new FuncPlayablesTask(p =>
 							{
-								IPlayable source = p[0];
+								Playable source = p[0];
 								source.Zone.Remove(source);
 								source[GameTag.HEADCRACK_COMBO] = 0;
 								return p;
@@ -3098,7 +3100,7 @@ namespace SabberStoneCore.CardSets.Standard
 			});
 
 			// ---------------------------------------- SPELL - WARRIOR
-			// [EX1_409] Upgrade! - COST:1 
+			// [EX1_409] Upgrade! - COST:1 e
 			// - Fac: neutral, Set: expert1, Rarity: rare
 			// --------------------------------------------------------
 			// Text: If you have a weapon, give it +1/+1. Otherwise equip a 1/3 weapon.
@@ -3125,7 +3127,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("EX1_410", new Power {
 				PowerTask = ComplexTask.Create(
-					new GetGameTagTask(GameTag.ARMOR, EntityType.HERO),
+					//new GetGameTagTask(GameTag.ARMOR, EntityType.HERO),
+					new GetPropertyTask(EntityType.HERO, "Armor"),
 					new DamageNumberTask(EntityType.TARGET, true))
 			});
 
@@ -3199,8 +3202,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("EX1_409e", new Power {
 				Enchant = new Enchant(
-					WeaponATK.Effect(EffectOperator.ADD, 1),
-					new Effect(GameTag.DURABILITY, EffectOperator.ADD, 1))
+					ATK.Effect(EffectOperator.ADD, 1),
+					Effects.Durability_N(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - WARRIOR
@@ -3228,8 +3231,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Decreased Attack.
 			// --------------------------------------------------------
 			cards.Add("EX1_411e2", new Power {
-				Enchant = new OngoingEnchant(new Effect(GameTag.ATK, EffectOperator.SUB, 1))
-				//Enchant = new OngoingEnchant(ATK.Effect(EffectOperator.SUB, 1))
+				//Enchant = new OngoingEnchant(new Effect(GameTag.ATK, EffectOperator.SUB, 1))
+				Enchant = new OngoingEnchant(ATK.Effect(EffectOperator.SUB, 1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - WARRIOR
@@ -3647,14 +3650,16 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.TURN_START)
 				{
 					Condition = SelfCondition.HasMinionInHand,
-					SingleTask = ComplexTask.Create(
-						new IncludeTask(EntityType.HAND),
-						new FilterStackTask(SelfCondition.IsMinion),
-						new RandomTask(1, EntityType.STACK),
-						new RemoveFromHand(EntityType.STACK),
-						new GetGameTagTask(GameTag.ZONE_POSITION, EntityType.SOURCE),
-						new ReturnHandTask(EntityType.SOURCE),
-						new SummonTask(SummonSide.NUMBER))
+					SingleTask = ComplexTask.Conditional(EntityType.SOURCE,
+						SelfCondition.IsNotDead,
+							ComplexTask.Create(
+							new IncludeTask(EntityType.HAND),
+							new FilterStackTask(SelfCondition.IsMinion),
+							new RandomTask(1, EntityType.STACK),
+							new RemoveFromHand(EntityType.STACK),
+							new GetGameTagTask(GameTag.ZONE_POSITION, EntityType.SOURCE),
+							new ReturnHandTask(EntityType.SOURCE),
+							new SummonTask(SummonSide.NUMBER)))
 				}
 			});
 
@@ -4092,7 +4097,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("EX1_085", new Power {
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.OP_MINIONS),
-					new FuncPlayablesTask(p => p.Count > 3 ? p : new List<IPlayable>()),
+					new FuncPlayablesTask(p => p.Count > 3 ? p : new List<Playable>()),
 					new RandomTask(1, EntityType.STACK),
 					new ConditionTask(EntityType.SOURCE, SelfCondition.IsBoardFull),
 					new FlagTask(false, new ControlTask(EntityType.STACK)),
@@ -5029,7 +5034,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("CS2_221e", new Power {
 				//Aura = new EnrageEffect(AuraType.WEAPON, Effects.Attack_N(2))
 				//Enchant = new Enchant(new Effect(GameTag.ATK, EffectOperator.ADD, 2))
-				Enchant = new Enchant(WeaponATK.Effect(EffectOperator.ADD, 2))
+				Enchant = new Enchant(ATK.Effect(EffectOperator.ADD, 2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -5337,8 +5342,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("NEW1_024o", new Power {
 				Enchant = new Enchant(
-					WeaponATK.Effect(EffectOperator.ADD, 1),
-					new Effect(GameTag.DURABILITY, EffectOperator.ADD, 1))
+					ATK.Effect(EffectOperator.ADD, 1),
+					Effects.Durability_N(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

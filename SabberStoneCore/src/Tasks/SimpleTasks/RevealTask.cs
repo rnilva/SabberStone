@@ -33,13 +33,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_type = type;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (game.History)
 				game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.JOUST, source.Id, "", 0, 0));
-			IPlayable playable = Generic.JoustBlock.Invoke(controller, _type);
+			Playable playable = Generic.JoustBlock.Invoke(controller, _type);
 			if (game.History)
 				game.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
 			if (playable != null)

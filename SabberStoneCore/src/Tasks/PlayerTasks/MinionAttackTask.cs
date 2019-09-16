@@ -18,13 +18,13 @@ namespace SabberStoneCore.Tasks.PlayerTasks
 {
 	public class MinionAttackTask : PlayerTask
 	{
-		public static MinionAttackTask Any(Controller controller, IPlayable source, ICharacter target,
+		public static MinionAttackTask Any(Controller controller, Playable source, Character target,
 			bool skipPrePhase = false)
 		{
 			return new MinionAttackTask(controller, source, target, skipPrePhase);
 		}
 
-		private MinionAttackTask(Controller controller, IPlayable source, ICharacter target, bool skipPrePhase)
+		private MinionAttackTask(Controller controller, Playable source, Character target, bool skipPrePhase)
 		{
 			PlayerTaskType = PlayerTaskType.MINION_ATTACK;
 			Game = controller.Game;

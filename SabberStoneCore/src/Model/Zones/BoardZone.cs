@@ -19,7 +19,7 @@ using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Model.Zones
 {
-	public class BoardZone : PositioningZone<Minion>
+	public class BoardZone : PositioningZone<MinionInPlay>
 	{
 		private int _untouchableCount;
 		private bool _hasUntouchables;
@@ -41,7 +41,7 @@ namespace SabberStoneCore.Model.Zones
 
 		public override int MaxSize => Game.MAX_MINIONS_ON_BOARD;
 
-		public override void Add(Minion entity, int zonePosition = -1)
+		public override void Add(MinionInPlay entity, int zonePosition = -1)
 		{
 			base.Add(entity, zonePosition);
 
@@ -75,20 +75,7 @@ namespace SabberStoneCore.Model.Zones
 			}
 		}
 
-		internal static void InitialiseMinion(Minion entity)
-		{
-			if (entity.Game.CurrentPlayer != entity.Controller) return;
-			if (entity.HasCharge) return;
-			if (entity.IsRush)
-			{
-				entity.AttackableByRush = true;
-				entity.Game.RushMinions.Add(entity.Id);
-			}
-			else
-				entity.IsExhausted = true;
-		}
-
-		public override Minion Remove(Minion entity)
+		public override MinionInPlay Remove(MinionInPlay entity)
 		{
 			RemoveAura(entity);
 			for (int i = 0; i < AdjacentAuras.Count; i++)
@@ -98,14 +85,10 @@ namespace SabberStoneCore.Model.Zones
 			return base.Remove(entity);
 		}
 
-		//internal override void ChangeEntity(Minion oldEntity, Minion newEntity)
-		//{
-		//	if (oldEntity.Untouchable)
-		//		if (!newEntity.Untouchable && --_untouchableCount == 0)
-		//			_hasUntouchables = false;
-
-		//	base.ChangeEntity(oldEntity, newEntity);
-		//}
+		public void Add(ref Minion entity, int zonePosition = -1)
+		{
+			Add(MinionInPlay.FromMinion(ref entity), zonePosition);
+		}
 
 		/// <summary>
 		/// Replaces an entity in this zone to new entity and returns the old entity.
@@ -114,7 +97,7 @@ namespace SabberStoneCore.Model.Zones
 		/// <param name="oldEntity">The entity to be replaced.</param>
 		/// <param name="newEntity">The new entity.</param>
 		/// <returns></returns>
-		public void Replace(Minion oldEntity, Minion newEntity)
+		public void Replace(MinionInPlay oldEntity, MinionInPlay newEntity)
 		{
 			int pos = oldEntity.ZonePosition;
 
@@ -164,17 +147,17 @@ namespace SabberStoneCore.Model.Zones
 		}
 
 		/// <summary>
-		/// Activates a <see cref="Minion"/>'s <see cref="Triggers.Trigger"/> and <see cref="Aura"/> and
+		/// Activates a <see cref="MinionInPlay"/>'s <see cref="Trigger"/> and <see cref="Aura"/> and
 		/// applies it's Spell Power increment.
 		/// </summary>
 		/// <param name="entity"></param>
-		public static void ActivateAura(Minion entity)
+		public static void ActivateAura(MinionInPlay entity)
 		{
 			entity.Power?.Trigger?.Activate(entity.Game, entity);
 			entity.Power?.Aura?.Activate(entity);
 		}
 
-		private static void RemoveAura(Minion entity)
+		private static void RemoveAura(MinionInPlay entity)
 		{
 			entity.OngoingEffect?.Remove();
 		}
@@ -183,7 +166,7 @@ namespace SabberStoneCore.Model.Zones
 		/// Gets all board minions except untouchables(dormant).
 		/// </summary>
 		/// <returns></returns>
-		public override Minion[] GetAll()
+		public override MinionInPlay[] GetAll()
 		{
 			return HasUntouchables ? GetAll(null) : base.GetAll();
 		}
@@ -193,7 +176,7 @@ namespace SabberStoneCore.Model.Zones
 		/// </summary>
 		/// <param name="predicate"></param>
 		/// <returns></returns>
-		public override Minion[] GetAll(Func<Minion, bool> predicate)
+		public override MinionInPlay[] GetAll(Func<MinionInPlay, bool> predicate)
 		{
 			if (_hasUntouchables)
 			{
@@ -201,7 +184,7 @@ namespace SabberStoneCore.Model.Zones
 					predicate = p => !p.Card.Untouchable;
 				else
 				{
-					Func<Minion, bool> predicate1 = predicate;
+					Func<MinionInPlay, bool> predicate1 = predicate;
 					predicate = p => predicate1(p) && !p.Card.Untouchable;
 				}
 			}
@@ -216,29 +199,29 @@ namespace SabberStoneCore.Model.Zones
 		///// <param name="buffer">The target buffer.</param>
 		///// <param name="offset">The offset of the buffer.</param>
 		///// <param name="targets">True: exclude stealth/immune minions.</param>
-		//public void GetAll<T>(Span<T> buffer, int offset, bool targets = false) where T: ICharacter
+		//public void GetAll<T>(Span<T> buffer, int offset, bool targets = false) where T: Character
 		//{
-		//	Span<Minion> entities = _entities.AsSpan(0, _count);
+		//	Span<MinionInPlay> entities = _entities.AsSpan(0, _count);
 		//	if (targets)
 		//	{
 		//		if (_hasUntouchables)
 		//		{
 		//			for (int i = 0; i < entities.Length; i++)
 		//			{
-		//				Minion m = entities[i];
+		//				MinionInPlay m = entities[i];
 		//				if (m.HasStealth || m.IsImmune || m.Untouchable)
 		//					continue;
-		//				buffer[offset++] = (T)(ICharacter)m;
+		//				buffer[offset++] = (T)(Character)m;
 		//			}
 		//		}
 		//		else
 		//		{
 		//			for (int i = 0; i < entities.Length; i++)
 		//			{
-		//				Minion m = entities[i];
+		//				MinionInPlay m = entities[i];
 		//				if (m.HasStealth || m.IsImmune)
 		//					continue;
-		//				buffer[offset++] = (T) (ICharacter) m;
+		//				buffer[offset++] = (T) (Character) m;
 		//			}
 		//		}
 		//	}
@@ -248,10 +231,10 @@ namespace SabberStoneCore.Model.Zones
 		//		{
 		//			for (int i = 0; i < entities.Length; i++)
 		//			{
-		//				Minion m = entities[i];
+		//				MinionInPlay m = entities[i];
 		//				if (m.Untouchable)
 		//					continue;
-		//				buffer[offset++] = (T) (ICharacter) m;
+		//				buffer[offset++] = (T) (Character) m;
 		//			}
 		//		}
 		//		else
@@ -285,20 +268,20 @@ namespace SabberStoneCore.Model.Zones
 			zone._untouchableCount = _untouchableCount;
 			zone._count = _count;
 
-			Minion[] entities = _entities;
-			Minion[] src = zone._entities;
+			MinionInPlay[] entities = _entities;
+			MinionInPlay[] src = zone._entities;
 			for (int i = 0; i < _count; ++i)
 			{
-				Minion copy = (Minion) entities[i].Clone(zone.Controller);
+				MinionInPlay copy = (MinionInPlay) entities[i].Clone(zone.Controller);
 				copy.Zone = zone;
 				src[i] = copy;
 			}
 		}
 
-		public int CountOf(Predicate<Minion> predicate)
+		public int CountOf(Predicate<MinionInPlay> predicate)
 		{
 			int count = 0;
-			//var span = new Span<Minion>(_entities);
+			//var span = new Span<MinionInPlay>(_entities);
 			for (int i = 0; i < _count; i++)
 				if (predicate(_entities[i]))
 					count++;

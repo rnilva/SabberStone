@@ -23,13 +23,13 @@ namespace SabberStoneCore.Actions
 	public static partial class Generic
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public static bool HeroPower(Controller c, ICharacter target = null, int chooseOne = 0, bool skipPrePhase = false)
+		public static bool HeroPower(Controller c, Character target = null, int chooseOne = 0, bool skipPrePhase = false)
 		{
 			return HeroPowerBlock.Invoke(c, target, chooseOne, skipPrePhase);
 		}
 
-		public static Func<Controller, ICharacter, int, bool, bool> HeroPowerBlock
-			=> delegate (Controller c, ICharacter target, int chooseOne, bool skipPrePhase)
+		public static Func<Controller, Character, int, bool, bool> HeroPowerBlock
+			=> delegate (Controller c, Character target, int chooseOne, bool skipPrePhase)
 			{
 				HeroPower heroPower = c.Hero.HeroPower;
 				Game game = c.Game;

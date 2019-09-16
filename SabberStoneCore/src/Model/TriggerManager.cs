@@ -31,7 +31,7 @@ namespace SabberStoneCore.Model
 	    private event Action DeathProcessingAndAuraUpdate;
 	    private event Action ProcessTasks;
 
-		public delegate void TriggerHandler(IEntity sender);
+		public delegate void TriggerHandler(Entity sender);
 
 	    public event TriggerHandler DealDamageTrigger;
 	    public event TriggerHandler DamageTrigger;
@@ -85,21 +85,21 @@ namespace SabberStoneCore.Model
 		public bool HasOnSummonTrigger => SummonTrigger != null;
 		public bool HasShuffleIntoDeckTrigger => ShuffleIntoDeckTrigger != null;
 
-		internal bool OnDealDamageTrigger(IEntity sender)
+		internal bool OnDealDamageTrigger(Entity sender)
 	    {
 	        if (DealDamageTrigger == null) return false;
 	        StartEvent();
 	        DealDamageTrigger.Invoke(sender);
 	        return true;
 	    }
-	    internal bool OnDamageTrigger(IEntity sender)
+	    internal bool OnDamageTrigger(Entity sender)
 	    {
 	        if (DamageTrigger == null) return false;
 	        StartEvent();
 	        DamageTrigger.Invoke(sender);
 	        return true;
 	    }
-	    internal void OnHealTrigger(IEntity sender)
+	    internal void OnHealTrigger(Entity sender)
 	    {
 	        if (HealTrigger == null) return;
 	        StartEvent();
@@ -108,11 +108,11 @@ namespace SabberStoneCore.Model
 	        EndEvent();
 	        return;
 	    }
-	    internal void OnLoseDivineShield(IEntity sender)
+	    internal void OnLoseDivineShield(Entity sender)
 	    {
 		    LoseDivineShield?.Invoke(sender);
 	    }
-	    internal void OnEndTurnTrigger(IEntity sender)
+	    internal void OnEndTurnTrigger(Entity sender)
 	    {
 	        if (EndTurnTrigger == null) return;
 	        StartEvent();
@@ -120,14 +120,14 @@ namespace SabberStoneCore.Model
 	        EndEvent();
 	        DeathProcessingAndAuraUpdate();
 	    }
-	    internal bool OnTurnStartTrigger(IEntity sender)
+	    internal bool OnTurnStartTrigger(Entity sender)
 	    {
 	        if (TurnStartTrigger == null) return false;
 	        TurnStartTrigger.Invoke(sender);
 	        ProcessTasks();
 	        return true;
 	    }
-	    internal void OnSummonTrigger(IEntity sender, bool srs = false)
+	    internal void OnSummonTrigger(Entity sender, bool srs = false)
 	    {
 	        if (SummonTrigger == null) return;
 	        if (!srs) StartEvent();
@@ -135,7 +135,7 @@ namespace SabberStoneCore.Model
 	        ProcessTasks();
 	        if (!srs) EndEvent();
 	    }
-	    internal void OnAfterSummonTrigger(IEntity sender)
+	    internal void OnAfterSummonTrigger(Entity sender)
 	    {
 		    if (AfterSummonTrigger == null)
 			    return;
@@ -144,7 +144,7 @@ namespace SabberStoneCore.Model
 		    ProcessTasks();
 		    EndEvent();
 	    }
-	    internal void OnAttackTrigger(IEntity sender)
+	    internal void OnAttackTrigger(Entity sender)
 	    {
 	        if (AttackTrigger == null) return;
 	        StartEvent();
@@ -152,19 +152,19 @@ namespace SabberStoneCore.Model
 	        ProcessTasks();
 	        EndEvent();
 	    }
-	    internal void OnDeathTrigger(IEntity sender)
+	    internal void OnDeathTrigger(Entity sender)
 	    {
 		    DeathTrigger?.Invoke(sender);
 	    }
 
-	    internal void OnPlayCardTrigger(IEntity sender)
+	    internal void OnPlayCardTrigger(Entity sender)
 	    {
 			if (PlayCardTrigger == null) return;
 			StartEvent();
 			PlayCardTrigger.Invoke(sender);
 			return;
 	    }
-	    internal void OnAfterPlayCardTrigger(IEntity sender)
+	    internal void OnAfterPlayCardTrigger(Entity sender)
 	    {
 	        if (AfterPlayCardTrigger == null) return;
 	        StartEvent();
@@ -174,7 +174,7 @@ namespace SabberStoneCore.Model
 	        DeathProcessingAndAuraUpdate();
 	        return;
 	    }
-	    internal void OnPlayMinionTrigger(IEntity sender)
+	    internal void OnPlayMinionTrigger(Entity sender)
 	    {
 		    if (PlayMinionTrigger == null)
 		    {
@@ -195,7 +195,7 @@ namespace SabberStoneCore.Model
 		    DeathProcessingAndAuraUpdate();
 		    EndEvent();
 	    }
-	    internal void OnAfterPlayMinionTrigger(IEntity sender)
+	    internal void OnAfterPlayMinionTrigger(Entity sender)
 	    {
 		    if (AfterPlayMinionTrigger == null)
 		    {
@@ -226,7 +226,7 @@ namespace SabberStoneCore.Model
 		    EndEvent();
 		    DeathProcessingAndAuraUpdate();
 	    }
-	    internal void OnCastSpellTrigger(IEntity sender)
+	    internal void OnCastSpellTrigger(Entity sender)
 	    {
 		    if (CastSpellTrigger == null)
 		    {
@@ -246,7 +246,7 @@ namespace SabberStoneCore.Model
 		    EndEvent();
 		    DeathProcessingAndAuraUpdate();
 	    }
-	    internal void OnAfterCastTrigger(IEntity sender)
+	    internal void OnAfterCastTrigger(Entity sender)
 	    {
 		    if (AfterCastTrigger == null)
 		    {
@@ -266,11 +266,11 @@ namespace SabberStoneCore.Model
 		    EndEvent();
 		    DeathProcessingAndAuraUpdate();
 	    }
-	    internal void OnSecretRevealedTrigger(IEntity sender)
+	    internal void OnSecretRevealedTrigger(Entity sender)
 	    {
 		    SecretRevealedTrigger?.Invoke(sender);
 	    }
-	    internal void OnZoneTrigger(IEntity sender)
+	    internal void OnZoneTrigger(Entity sender)
 	    {
 		    if (ZoneTrigger == null) return;
 		    StartEvent();
@@ -278,7 +278,7 @@ namespace SabberStoneCore.Model
 		    ProcessTasks();
 		    EndEvent();
 	    }
-	    internal bool OnDiscardTrigger(IEntity sender)
+	    internal bool OnDiscardTrigger(Entity sender)
 	    {
 	        if (DiscardTrigger == null) return false;
 	        StartEvent();
@@ -289,7 +289,7 @@ namespace SabberStoneCore.Model
 	    {
 		    GameStartTrigger?.Invoke(null);
 	    }
-	    internal void OnDrawTrigger(IEntity sender)
+	    internal void OnDrawTrigger(Entity sender)
 	    {
 	        if (DrawTrigger == null) return;
 	        StartEvent();
@@ -297,7 +297,7 @@ namespace SabberStoneCore.Model
 	        ProcessTasks();
 	        EndEvent();
 	    }
-	    internal bool OnTargetTrigger(IEntity sender)
+	    internal bool OnTargetTrigger(Entity sender)
 	    {
 		    if (TargetTrigger == null) return false;
 		    StartEvent();
@@ -306,7 +306,7 @@ namespace SabberStoneCore.Model
 		    EndEvent();
 			return true;
 	    }
-	    internal void OnInspireTrigger(IEntity sender)
+	    internal void OnInspireTrigger(Entity sender)
 	    {
 	        if (InspireTrigger == null) return;
 	        StartEvent();
@@ -315,20 +315,20 @@ namespace SabberStoneCore.Model
 	        EndEvent();
 	        DeathProcessingAndAuraUpdate();
 	    }
-	    internal void OnFreezeTrigger(IEntity sender)
+	    internal void OnFreezeTrigger(Entity sender)
 	    {
 		    FreezeTrigger?.Invoke(sender);
 	    }
-	    internal void OnArmorTrigger(IEntity sender)
+	    internal void OnArmorTrigger(Entity sender)
 	    {
 		    ArmorTrigger?.Invoke(sender);
 	    }
-	    internal void OnEquipWeaponTrigger(IEntity sender)
+	    internal void OnEquipWeaponTrigger(Entity sender)
 	    {
 		    EquipWeaponTrigger?.Invoke(sender);
 	    }
 
-	    internal void OnShuffleIntoDeckTrigger(IEntity sender)
+	    internal void OnShuffleIntoDeckTrigger(Entity sender)
 	    {
 		    ShuffleIntoDeckTrigger?.Invoke(sender);
 	    }

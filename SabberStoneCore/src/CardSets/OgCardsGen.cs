@@ -1842,7 +1842,8 @@ namespace SabberStoneCore.CardSets
 			cards.Add("OG_134", new Power {
 				// TODO [OG_134] Yogg-Saron, Hope's End && Test: Yogg-Saron, Hope's End_OG_134
 				PowerTask = ComplexTask.Create(
-					new GetGameTagControllerTask(GameTag.NUM_SPELLS_PLAYED_THIS_GAME),
+					//new GetGameTagControllerTask(GameTag.NUM_SPELLS_PLAYED_THIS_GAME),
+					new GetPropertyTask(EntityType.CONTROLLER, "NumSpellsPlayedThisGame"),
 					new EnqueueNumberTask(ComplexTask.Create(
 						new ConditionTask(EntityType.SOURCE, SelfCondition.IsInZone(Zone.PLAY), SelfCondition.IsNotSilenced),
 						new FlagTask(true, new CastRandomSpellTask()))))
@@ -2041,7 +2042,7 @@ namespace SabberStoneCore.CardSets
 								p[i].Destroy();
 							c.Game.GraveYard();	// forced death phase
 							var ancientOne = (Minion) Entity.FromCard(c, Cards.FromId("OG_173a"));
-							Generic.SummonBlock.Invoke(c.Game, ancientOne, c.BoardZone.Count);
+							Generic.SummonBlock(c.Game, ancientOne, c.BoardZone.Count);
 							return p;
 						}))
 
@@ -2915,8 +2916,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("OG_315e", new Power {
 				Enchant = new Enchant(
-					WeaponATK.Effect(EffectOperator.ADD, 1),
-					new Effect(GameTag.DURABILITY, EffectOperator.ADD, 1))
+					ATK.Effect(EffectOperator.ADD, 1),
+					Effects.Durability_N(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

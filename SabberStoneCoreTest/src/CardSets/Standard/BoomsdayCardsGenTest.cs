@@ -63,7 +63,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dr. Boom, Mad Genius"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dr. Boom, Mad Genius"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Dr. Boom, Mad Genius"));
 
 			string[] powers = Cards.FromId("BOT_238p").Entourage;
@@ -446,7 +446,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.ProcessCard("Dreampetal Florist", null, true);
 			game.EndTurn();
 
-			foreach (IPlayable item in game.CurrentOpponent.HandZone)
+			foreach (Playable item in game.CurrentOpponent.HandZone)
 			{
 				if (item.Card.Type != CardType.MINION || (item.Card.Cost != 0 && item.Cost >= item.Card.Cost) ||
 				    item.OngoingEffect is AdaptiveCostEffect) continue;
@@ -597,7 +597,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mulchmuncher"));
 			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Mulchmuncher"));
 
-			IPlayable testCard = game.CurrentPlayer.HandZone[0];
+			Playable testCard = game.CurrentPlayer.HandZone[0];
 
 
 		}
@@ -2208,9 +2208,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Reckless Experimenter"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Reckless Experimenter"));
 
-			foreach (IPlayable handCard in game.CurrentPlayer.HandZone)
+			foreach (Playable handCard in game.CurrentPlayer.HandZone)
 			{
-				if (handCard.HasDeathrattle && handCard.Card.Type == CardType.MINION)
+				if (handCard.Card.Deathrattle && handCard.Card.Type == CardType.MINION)
 				{
 					int expected = handCard.Card.Cost - 3;
 					expected = expected < 0 ? 0 : expected;
@@ -2500,7 +2500,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.NotNull(choice);
 
 			// Fix first option 
-			IPlayable firstChoice = game.IdEntityDic[choice.Choices.First()];
+			Playable firstChoice = game.IdEntityDic[choice.Choices.First()];
 			Generic.ChangeEntityBlock.Invoke(game.CurrentPlayer, firstChoice, Cards.FromName("Blightnozzle Crawler"), false);
 
 			game.ChooseNthChoice(1);
@@ -2604,7 +2604,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			// Should not maintain enchantments when copied into Deck
 			for (int i = 0; i < 3; i++)
-				Assert.Equal(1, ((PlayableSurrogate)game.CurrentPlayer.DeckZone[i]).AttackDamage);
+				Assert.Equal(1, ((Minion)game.CurrentPlayer.DeckZone[i]).AttackDamage);
 		}
 
 		// ----------------------------------------- MINION - ROGUE
@@ -3386,7 +3386,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dr. Morrigan"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Dr. Morrigan"));
 
-			DeckZone_new deck = game.CurrentPlayer.DeckZone;
+			DeckZone deck = game.CurrentPlayer.DeckZone;
 			BoardZone board = game.CurrentPlayer.BoardZone;
 			Assert.Single(deck);
 

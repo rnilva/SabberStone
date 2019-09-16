@@ -25,7 +25,7 @@ namespace SabberStoneCore.Model
 		public readonly int SubOption;
 		public readonly int SourceId;
 
-		public PlayHistoryEntry(in IPlayable source, in ICharacter target = null, in int chooseOne = -1)
+		public PlayHistoryEntry(in Playable source, in Character target = null, in int chooseOne = -1)
 		{
 			SourceController = source.Controller.PlayerId;
 			TargetController = target?.Controller.PlayerId ?? 0;

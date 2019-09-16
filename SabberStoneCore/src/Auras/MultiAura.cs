@@ -13,7 +13,7 @@ namespace SabberStoneCore.Auras
 	{
 		private readonly IReadOnlyList<IAura> _auras;
 
-		public IPlayable Owner { get; set; }
+		public Playable Owner { get; set; }
 		public bool On { get; set; } = true;
 
 		public MultiAura(params IAura[] auras)
@@ -38,12 +38,12 @@ namespace SabberStoneCore.Auras
 				_auras[i].Remove();
 		}
 
-		void IAura.Activate(IPlayable owner)
+		void IAura.Activate(Playable owner)
 		{
 			ActivateInternal(owner);
 		}
 
-		public void Clone(IPlayable clone)
+		public void Clone(Playable clone)
 		{
 			ActivateInternal(clone, true);
 		}
@@ -71,7 +71,7 @@ namespace SabberStoneCore.Auras
 			return sb.ToString();
 		}
 
-		private void ActivateInternal(IPlayable owner, bool cloning = false)
+		private void ActivateInternal(Playable owner, bool cloning = false)
 		{
 			IAura[] auras = new IAura[_auras.Count];
 

@@ -23,8 +23,8 @@ namespace SabberStoneCore.Actions
 	public static partial class Generic
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public static Func<Controller, ICharacter, ICharacter, bool, bool, bool> AttackBlock
-			=> delegate (Controller c, ICharacter source, ICharacter target, bool skipPrePhase, bool skipDeathPhase)
+		public static Func<Controller, Character, Character, bool, bool, bool> AttackBlock
+			=> delegate (Controller c, Character source, Character target, bool skipPrePhase, bool skipDeathPhase)
 			{
 				Game g = c.Game;
 
@@ -80,28 +80,34 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		private static Func<Controller, ICharacter, ICharacter, bool> PreAttackPhase
-			=> delegate (Controller c, ICharacter source, ICharacter target)
+		private static Func<Controller, Character, Character, bool> PreAttackPhase
+			=> delegate (Controller c, Character source, Character target)
 			{
 				if (c != source.Controller || c == target.Controller)
 				{
-					if (source[GameTag.AUTOATTACK] == 1)
+					if (source.AutoAttack)
 						return true;
 					c.Game.Log(LogLevel.ERROR, BlockType.ATTACK, "PreAttackPhase", !c.Game.Logging? "":"wrong controller in phase.");
 					return false;
 				}
 				if (!source.CanAttack || !source.IsValidAttackTarget(target))
 				{
-					if (source[GameTag.AUTOATTACK] == 1)
+					if (source.AutoAttack)
 						return true;
 					c.Game.Log(LogLevel.ERROR, BlockType.ATTACK, "PreAttackPhase", !c.Game.Logging? "":"can't attack with this card.");
 					return false;
 				}
-				var hero = source as Hero;
 
-				c.Game.Log(LogLevel.INFO, BlockType.ATTACK, "PreAttackPhase", !c.Game.Logging? "":$"[PreAttackPhase]{source}[ATK:{source.AttackDamage}/HP:{source.Health}{(hero != null ? $"/ARM:{hero.Armor}" : "")}] " +
+				if (c.Game.Logging)
+				{
+					var hero = source as HeroInPlay;
+
+					c.Game.Log(LogLevel.INFO, BlockType.ATTACK, "PreAttackPhase",
+						$"[PreAttackPhase]{source}[ATK:{source.AttackDamage}/HP:{source.Health}{(hero != null ? $"/ARM:{hero.Armor}" : "")}] " +
 						$"{(hero?.Weapon != null ? $"[{hero.Weapon}[A:{hero.Weapon.AttackDamage}/D:{hero.Weapon.Durability}]] " : "")}is attacking " +
-						$"{target}[ATK:{target.AttackDamage}/HP:{target.Health}].");
+					    $"{target}[ATK:{target.AttackDamage}/HP:{target.Health}].");
+				}
+
 
 				// attack block
 				if (c.Game.History)
@@ -119,8 +125,8 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		private static Func<Game, ICharacter, ICharacter, bool> OnAttackTrigger
-			=> delegate (Game g, ICharacter source, ICharacter target)
+		private static Func<Game, Character, Character, bool> OnAttackTrigger
+			=> delegate (Game g, Character source, Character target)
 			{
 				// Invoke onAttackTrigger
 				//Trigger.ValidateTriggers(g, source, SequenceType.Attack);
@@ -140,22 +146,23 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		private static Func<Controller, ICharacter, bool, bool> AttackPhase
-			=> delegate (Controller c, ICharacter source, bool noExhaustion)
+		private static Func<Controller, Character, bool, bool> AttackPhase
+			=> delegate (Controller c, Character source, bool noExhaustion)
 			{
 				Game game = c.Game;
-				var hero = source as Hero;
-				var minion = source as Minion;
+				var hero = source as HeroInPlay;
+				var minion = source as MinionInPlay;
 
-				if (game.TriggerManager.OnTargetTrigger(source))
-					target = (ICharacter) game.CurrentEventData.EventTarget;
-				//if (!game.IdEntityDic.TryGetValue(game.ProposedDefender, out IPlayable proposedDefender))
+				game.TriggerManager.OnTargetTrigger(source);
+				target = (Character) game.CurrentEventData.EventTarget;
+				//if (!game.IdEntityDic.TryGetValue(game.ProposedDefender, out Playable proposedDefender))
 				//{
 				//	game.Log(LogLevel.INFO, BlockType.ATTACK, "AttackPhase", !game.Logging? "":"target wasn't found by proposed defender call.");
 				//	source.IsAttacking = false;
 				//	source.IsDefending = false;
 				//	return false;
 				//}
+
 
 				// Force the game into MAIN_COMBAT step!
 				game.Step = Step.MAIN_COMBAT;
@@ -189,14 +196,14 @@ namespace SabberStoneCore.Actions
 					bool sourceDamaged = sourceRealDamage > 0;
 
 					// freeze source if defender is freezer
-					var targetMinion = target as Minion;
+					var targetMinion = target as MinionInPlay;
 					if (sourceDamaged && targetMinion != null && targetMinion.Freeze)
 					{
 						source.IsFrozen = true;
 					}
 
 					// destroy source if defender is poisonous
-					if (sourceDamaged && targetMinion != null && targetMinion.Poisonous && !source.ToBeDestroyed)
+					if (hero == null && sourceDamaged && targetMinion != null && targetMinion.Poisonous && !source.ToBeDestroyed)
 					{
 						source.Destroy();
 					}

@@ -30,8 +30,10 @@ namespace SabberStoneCore.Model.Zones
 
 		public override Zone Type => Zone.GRAVEYARD;
 
-		public override void Add(IPlayable entity, int zonePosition = -1)
+		public override void Add(Playable entity, int zonePosition = -1)
 		{
+			base.Add(entity);
+
 			entity.Zone = this;
 
 			// Add enchantments here.
@@ -58,15 +60,15 @@ namespace SabberStoneCore.Model.Zones
 	//	private Zone _type;
 	//	private int _count;
 	//	private bool _full;
-	//	private List<IPlayable> _getAll;
+	//	private List<Playable> _getAll;
 
 	//	private class GraveyardEntityNode
 	//	{
 	//		private GraveyardEntityNode _prev;
 	//		private GraveyardEntityNode _next;
-	//		private PlayableSurrogate _entity;
+	//		private Entity _entity;
 
-	//		public GraveyardEntityNode(PlayableSurrogate entity)
+	//		public GraveyardEntityNode(Entity entity)
 	//		{
 	//			_entity = entity;
 	//		}
@@ -83,7 +85,7 @@ namespace SabberStoneCore.Model.Zones
 	//			set => _prev = value;
 	//		}
 
-	//		public PlayableSurrogate Entity
+	//		public Entity Entity
 	//		{
 	//			get => _entity;
 	//		}
@@ -100,7 +102,7 @@ namespace SabberStoneCore.Model.Zones
 	//		private struct Enumerator
 	//		{
 	//			private Container _container;
-	//			private PlayableSurrogate _current;
+	//			private Entity _current;
 	//			private int _index;
 
 	//			public Enumerator(Container container)
@@ -120,12 +122,12 @@ namespace SabberStoneCore.Model.Zones
 	//		private readonly int _prevCount;
 
 	//		private int _currentCount;
-	//		private PlayableSurrogate[] _entities;
+	//		private Entity[] _entities;
 
 	//		public int Count { get; set; }
 			
 
-	//		public bool Any(Predicate<PlayableSurrogate> predicate)
+	//		public bool Any(Predicate<Entity> predicate)
 	//		{
 	//			int c = _prevCount;
 				
@@ -144,7 +146,7 @@ namespace SabberStoneCore.Model.Zones
 	//		_head = newHead;
 	//	}
 
-	//	public void Add(IPlayable entity)
+	//	public void Add(Playable entity)
 	//	{
 	//		entity.Zone = this;
 
@@ -152,7 +154,7 @@ namespace SabberStoneCore.Model.Zones
 	//			for (int i = entity.AppliedEnchantments.Count - 1; i >= 0; i--)
 	//				entity.AppliedEnchantments[i].Remove();
 
-	//		PlayableSurrogate ps = PlayableSurrogate.CastFromPlayable(entity);
+	//		Entity ps = Entity.CastFromPlayable(entity);
 	//		if (entity.ToBeDestroyed)
 	//			ps.ToBeDestroyed = true;
 
@@ -162,7 +164,7 @@ namespace SabberStoneCore.Model.Zones
 	//			_head.Next = new GraveyardEntityNode(ps);
 	//	}
 
-	//	public bool Any(Predicate<PlayableSurrogate> predicate)
+	//	public bool Any(Predicate<Entity> predicate)
 	//	{
 	//		GraveyardEntityNode ptr = _head;
 	//		while (ptr != null)
@@ -190,14 +192,14 @@ namespace SabberStoneCore.Model.Zones
 
 	//	bool IZone.IsFull => _full;
 
-	//	List<IPlayable> IZone.GetAll => _getAll;
+	//	List<Playable> IZone.GetAll => _getAll;
 
-	//	void IZone.Add(IPlayable entity, int zonePosition)
+	//	void IZone.Add(Playable entity, int zonePosition)
 	//	{
 	//		throw new System.NotImplementedException();
 	//	}
 
-	//	IPlayable IZone.Remove(IPlayable entity)
+	//	Playable IZone.Remove(Playable entity)
 	//	{
 	//		throw new System.NotImplementedException();
 	//	}

@@ -29,8 +29,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_card = Cards.FromId(questRewardId);
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			var spell = source as Spell;

@@ -30,11 +30,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_weaponCard = Cards.FromId(cardIdWeapon);
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			if (!(source is IPlayable))
+			if (!(source is Playable))
 				return TaskState.STOP;
 
 			controller.Hero.AddWeapon(Entity.FromCard(in controller, in _weaponCard) as Weapon);

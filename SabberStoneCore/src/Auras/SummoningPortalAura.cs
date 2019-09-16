@@ -6,12 +6,12 @@ namespace SabberStoneCore.Auras
 	{
 		public SummoningPortalAura() : base(AuraType.HAND) { }
 		
-		private SummoningPortalAura(SummoningPortalAura prototype, IPlayable owner) : base(prototype, owner)
+		private SummoningPortalAura(SummoningPortalAura prototype, Playable owner) : base(prototype, owner)
 		{
 			
 		}
 
-		public override void Activate(IPlayable owner, bool cloning = false)
+		public override void Activate(Playable owner, bool cloning = false)
 		{
 			var instance = new SummoningPortalAura(this, owner);
 			owner.OngoingEffect = instance;
@@ -66,9 +66,10 @@ namespace SabberStoneCore.Auras
 			Game.Auras.Remove(this);
 		}
 
-		private static void Apply(IPlayable playable)
+		private static void Apply(Playable playable)
 		{
-			if (!(playable is Minion m)) return;
+			// The effect of Summoning Portal is always applied before any other effects.
+			Playable p = playable;
 
 			// The effect of Summoning Portal is always applied before any other effects.
 
@@ -82,27 +83,22 @@ namespace SabberStoneCore.Auras
 			m._costManager?.QueueUpdate();
 		}
 
-		private new static void DeApply(IPlayable playable)
+		private new static void DeApply(Playable playable)
 		{
-			if (playable is PlayableSurrogate)
-				return;
+			if (playable._modifiedCost == null) return;
 
-			Playable p = (Playable)playable;
-
-			if (p._modifiedCost == null) return;
-
-			int cardValue = p.Card.Cost;
+			int cardValue = playable.Card.Cost;
 			int delta = cardValue > 2 ? 2 : cardValue > 1 ? 1 : 0;
 
-			p.Cost = p._modifiedCost.Value + delta;
+			playable.Cost = playable._modifiedCost.Value + delta;
 
-			p._costManager?.QueueUpdate();
+			playable._costManager?.QueueUpdate();
 
 			//playable[GameTag.COST] += delta;
 			//playable.AuraEffects.ToBeUpdated = true;
 		}
 		
-		public override void Clone(IPlayable clone)
+		public override void Clone(Playable clone)
 		{
 			Activate(clone, true);
 		}

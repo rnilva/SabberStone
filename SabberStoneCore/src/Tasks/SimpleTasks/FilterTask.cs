@@ -44,20 +44,19 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_relaConditions = relaConditions;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (_relaConditions != null)
 			{
-				IList<IPlayable> entities =
+				IList<Playable> entities =
 					IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables);
 
 				if (entities.Count != 1)
 					return TaskState.STOP;
 				
-				var filtered = new List<IPlayable>(stack.Playables.Count);
-				foreach (IPlayable p in stack.Playables)
+				var filtered = new List<Playable>(stack.Playables.Count);
+				foreach (Playable p in stack.Playables)
 				{
 					bool flag = true;
 					for (int i = 0; i < _relaConditions.Length; i++)
@@ -71,8 +70,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			if (_selfConditions != null)
 			{
-				var filtered = new List<IPlayable>(stack.Playables.Count);
-				foreach (IPlayable p in stack?.Playables)
+				var filtered = new List<Playable>(stack.Playables.Count);
+				foreach (Playable p in stack?.Playables)
 				{
 					bool flag = true;
 					for (int i = 0; i < _selfConditions.Length; i++)

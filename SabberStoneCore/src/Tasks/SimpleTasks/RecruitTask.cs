@@ -41,21 +41,20 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_addToStack = addToStack;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			int amount = Math.Min(_amount, controller.BoardZone.FreeSpace);
 
 			if (amount == 0) return TaskState.STOP;
 
-			var deck = controller.DeckZone.GetSpan();
+			ReadOnlySpan<Playable> deck = controller.DeckZone.GetSpan();
 			SelfCondition[] conditions = _conditions;
 			var indices = new List<int>();
 
 			for (int i = 0; i < deck.Length; i++)
 			{
-				if (!(deck[i].IsMinion)) continue;
+				if (!(deck[i] is Minion)) continue;
 
 				bool flag = true;
 				for (int j = 0; j < conditions?.Length; j++)
@@ -69,21 +68,24 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			int[] results = indices.ChooseNElements(amount, game.Random);
 
-			PlayableSurrogate[] entities = new PlayableSurrogate[results.Length];
+			Playable[] entities = new Playable[results.Length];
 			for (int i = 0; i < entities.Length; i++)
 				entities[i] = deck[results[i]];
 
 			if (indices.Count > amount)
 				game.OnRandomHappened(true);
 
-			List<IPlayable> playables = null;
+			List<Playable> playables = null;
 			if (_addToStack)
-				playables = new List<IPlayable>(entities.Length);
+				playables = new List<Playable>(entities.Length);
 
 			for (int i = 0; i < entities.Length; i++)
 			{
-				Generic.RemoveFromZone.Invoke(controller, entities[i]);
-				Generic.SummonBlock.Invoke(game, (Minion)entities[i], -1, source);
+				Playable p = entities[i];
+				Generic.RemoveFromZone.Invoke(controller, p);
+				Generic.SummonBlock(game, ref p, -1);
+
+				playables?.Add(p);
 
 				if (controller.BoardZone.IsFull)
 					break;

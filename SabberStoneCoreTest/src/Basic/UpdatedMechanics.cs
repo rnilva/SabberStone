@@ -36,7 +36,7 @@ namespace SabberStoneCoreTest.Basic
 			// If you copy a card from a deck to a deck,
 			// the copy retains enchantments. (eg.Archbishop Benedictus)
 
-			IPlayable barnabus = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("UNG_116t"));
+			Playable barnabus = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("UNG_116t"));
 			game.ProcessCard(barnabus, null, true);
 			List<Minion> deckMinions = game.CurrentPlayer.DeckZone
 				.Where(p => p is Minion)
@@ -48,7 +48,7 @@ namespace SabberStoneCoreTest.Basic
 			game.EndTurn();
 
 			int countBefore = game.CurrentPlayer.DeckZone.Count;
-			IPlayable benedictus = game.ProcessCard("Archbishop Benedictus", null, true);
+			Playable benedictus = game.ProcessCard("Archbishop Benedictus", null, true);
 
 			List<Minion> copiedMinions = game.CurrentPlayer.DeckZone
 				.Where(p => p.Id > benedictus.Id && p is Minion)
@@ -93,7 +93,7 @@ namespace SabberStoneCoreTest.Basic
 			for (int i = 0; i < 5; i++)
 			{
 				game.ProcessCard("Mind Vision", asZeroCost: true);
-				IPlayable copied = game.CurrentPlayer.HandZone.Last();
+				Playable copied = game.CurrentPlayer.HandZone.Last();
 				Assert.Equal(copied.Card.Cost - 1, copied.Cost);
 				if (copied is Minion m)
 				{
@@ -124,12 +124,12 @@ namespace SabberStoneCoreTest.Basic
 			game.ProcessCard("Luna's Pocket Galaxy", asZeroCost: true);
 			game.ProcessCard("Prince Keleseth", asZeroCost: true);
 
-			//Minion[] minions = game.CurrentPlayer.DeckZone
-			//	.Where(p => p.Card.Type == CardType.MINION)
-			//	.Cast<Minion>()
-			//	.ToArray();
+			Minion[] minions = game.CurrentPlayer.DeckZone
+				.Where(p => p.Card.Type == CardType.MINION)
+				.Cast<Minion>()
+				.ToArray();
 
-			PlayableSurrogate[] minions = game.CurrentPlayer.DeckZone.GetAll();
+			//PlayableSurrogate[] minions = game.CurrentPlayer.DeckZone.GetAll();
 
 			for (int i = 0; i < minions.Length; i++)
 			{
@@ -144,7 +144,7 @@ namespace SabberStoneCoreTest.Basic
 
 			for (int i = 1; i < 3; i++)
 			{
-				IPlayable copied = game.CurrentPlayer.HandZone[game.CurrentPlayer.HandZone.Count - i];
+				Playable copied = game.CurrentPlayer.HandZone[game.CurrentPlayer.HandZone.Count - i];
 				if (!(copied.OngoingEffect is AdaptiveCostEffect))
 					Assert.Equal(1, copied.Cost);
 

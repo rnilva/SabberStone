@@ -42,11 +42,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_powerCard = Cards.FromId(cardIdPower);
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			var playable = source as IPlayable;
+			var playable = source as Playable;
 			if (playable == null || controller == null) return TaskState.STOP;
 
 			playable.Controller.SetasideZone.Add(playable.Zone.Remove(playable));

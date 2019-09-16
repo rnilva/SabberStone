@@ -7,7 +7,7 @@ using SabberStoneCore.Kettle;
 
 namespace SabberStoneCore.Model.Entities
 {
-	public partial class Playable
+	public abstract partial class Playable
 	{
 		internal class CostManager
 		{
@@ -132,6 +132,7 @@ namespace SabberStoneCore.Model.Entities
 
 			public void DeactivateAdaptiveEffect()
 			{
+				_adaptiveCostEffect?.Remove();
 				_adaptiveCostEffect = null;
 			}
 
@@ -278,10 +279,12 @@ namespace SabberStoneCore.Model.Entities
 
 		internal void ResetCost()
 		{
-			_costManager = null;
+			if (_costManager != null)
+			{
+				_costManager.DeactivateAdaptiveEffect();
+				_costManager = null;
+			}
 			_modifiedCost = null;
-			if (OngoingEffect is AdaptiveCostEffect ace)
-				ace.Remove();
 
 			if (_history)
 				Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.COST, Card.Cost));

@@ -186,14 +186,14 @@
 
 //		public bool IsFull => _count == 7;
 
-//		List<IPlayable> IZone.GetAll => throw new NotImplementedException();
+//		List<Playable> IZone.GetAll => throw new NotImplementedException();
 
-//		public void Add(IPlayable entity, int zonePosition = -1)
+//		public void Add(Playable entity, int zonePosition = -1)
 //		{
 //			throw new NotImplementedException();
 //		}
 
-//		public IPlayable Remove(IPlayable entity)
+//		public Playable Remove(Playable entity)
 //		{
 //			throw new NotImplementedException();
 //		}

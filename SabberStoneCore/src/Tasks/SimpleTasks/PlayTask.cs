@@ -50,8 +50,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_targetType = targetType;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			switch (_playType)
@@ -59,36 +58,26 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				case PlayType.SPELL:
 					for (int i = 0; i < (stack?.Playables).Count; i++)
 					{
-						if (!(p is Spell spell)) throw new Exception();
-						Controller c = spell.Controller;
-
-						ICharacter cardTarget = null;
-						if (_randTarget)
+						Playable p = (stack?.Playables)[i];
+						Character cardTarget = null;
+						if (_randTarget && p.Card.MustHaveTargetToPlay)
 						{
-							game.OnRandomHappened(true);
-							if (spell.Card.MustHaveTargetToPlay)
-							{
-								cardTarget = spell.GetRandomValidTarget();
-								if (cardTarget == null)
-								{
-									//throw new Exception($"{source} cannot play {p}; there is no valid target.");
-									if (spell.Zone != null)
-										Generic.RemoveFromZone(c, p);
+							var targets = (List<Character>) p.ValidPlayTargets;
 
-									return TaskState.STOP;
-								}
-							}
+							cardTarget = targets.Count > 0
+								? Util.RandomElement(targets)
+								: throw new InvalidOperationException();
+
+							p.CardTarget = cardTarget?.Id ?? -1;
+
+							game.Log(LogLevel.INFO, BlockType.POWER, "PlayTask",
+								!game.Logging ? "" : $"{p}'s target is randomly selected to {cardTarget}");
 						}
 						else if
 							(_targetType != EntityType.INVALID)
 						{
-							IList<IPlayable> targets = IncludeTask.GetEntities(_targetType, in controller, source, target,
-								stack?.Playables);
-
-							if (targets.Count == 0)
-								return TaskState.STOP;
-
-							cardTarget = (ICharacter)targets[0];
+							cardTarget = (Character) IncludeTask.GetEntities(_targetType, in controller, source,
+								target, stack?.Playables)[0];
 						}
 
 						if (spell.Zone == null || Generic.RemoveFromZone(c, p))

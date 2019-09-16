@@ -19,7 +19,7 @@ namespace SabberStoneCore.Model
 {
 	public class TaskStack
 	{
-		public IList<IPlayable> Playables { get; set; }
+		public IList<Playable> Playables { get; set; }
 		public bool Flag { get; set; }
 		public int Number { get; set; } = -1;
 		public int Number1 { get; set; } = -1;
@@ -27,9 +27,9 @@ namespace SabberStoneCore.Model
 		public int Number3 { get; set; }
 		public int Number4 { get; set; }
 
-		public void AddPlayables(IEnumerable<IPlayable> playables)
+		public void AddPlayables(IEnumerable<Playable> playables)
 		{
-			if (Playables is List<IPlayable> list)
+			if (Playables is List<Playable> list)
 				list.AddRange(playables);
 			else
 			{
@@ -39,17 +39,17 @@ namespace SabberStoneCore.Model
 			}
 		}
 		
-		public void AddPlayable(IPlayable playable)
+		public void AddPlayable(Playable playable)
 		{
-			if (Playables is List<IPlayable> list)
+			if (Playables is List<Playable> list)
 				list.Add(playable);
 			else
 			{
 				if (Playables == null)
-					Playables = new List<IPlayable> {playable};
+					Playables = new List<Playable> {playable};
 				else
 				{
-					List<IPlayable> toList = Playables.ToList();
+					List<Playable> toList = Playables.ToList();
 					toList.Add(playable);
 					Playables = toList;
 				}
@@ -61,7 +61,7 @@ namespace SabberStoneCore.Model
 
 			var clone = new TaskStack()
 			{
-				Playables = new List<IPlayable>(),
+				Playables = new List<Playable>(),
 				Flag = Flag,
 				Number = Number,
 				Number1 = Number1,

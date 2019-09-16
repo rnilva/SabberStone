@@ -40,8 +40,8 @@ namespace SabberStoneCore.Model.Entities
 		/// The deck of this player.
 		/// This zone contains cards which are not yet drawn. Can be empty.
 		/// </summary>
-		//public DeckZone DeckZone;
-		public DeckZone_new DeckZone;
+		public DeckZone DeckZone;
+		//public DeckZone_new DeckZone;
 
 		/// <summary>
 		/// The hand of this player.
@@ -103,7 +103,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// The hero entity representing this player.
 		/// </summary>
-		public Hero Hero { get; set; }
+		public HeroInPlay Hero { get; set; }
 
 		/// <summary>
 		/// The cardclass of the deck.
@@ -177,8 +177,7 @@ namespace SabberStoneCore.Model.Entities
 			Name = name;
 			Controller = this;
 
-			//DeckZone = new DeckZone(this);
-			DeckZone = new DeckZone_new(this);
+			DeckZone = new DeckZone(this);
 			BoardZone = new BoardZone(this);
 			HandZone = new HandZone(this);
 			SecretZone = new SecretZone(this);
@@ -210,7 +209,7 @@ namespace SabberStoneCore.Model.Entities
 
 			Controller = this;
 
-			Hero = (Hero)controller.Hero.Clone(this);
+			Hero = (HeroInPlay)controller.Hero.Clone(this);
 
 			Hero.HeroPower = (HeroPower)controller.Hero.HeroPower.Clone(this);
 
@@ -247,16 +246,19 @@ namespace SabberStoneCore.Model.Entities
 					var enchantments = new List<Enchantment>(originalEnchantments.Count);
 					foreach (Enchantment p in originalEnchantments)
 					{
-						enchantments.Add(p.Clone(this));
+						enchantments.Add((Enchantment) p.Clone(this));
 					}
 					AppliedEnchantments = enchantments;
 				}
 			}
 
 			// non-tag attributes
-			_playerId = controller._playerId;
-			NumTotemSummonedThisGame = controller.NumTotemSummonedThisGame;
-			TemporusFlag = controller.TemporusFlag;
+			//_playerId = controller._playerId;
+			//_currentSpellPower = controller._currentSpellPower;
+			//NumTotemSummonedThisGame = controller.NumTotemSummonedThisGame;
+			//TemporusFlag = controller.TemporusFlag;
+
+			_attrs = controller._attrs;
 		}
 
 		/// <summary>
@@ -299,7 +301,8 @@ namespace SabberStoneCore.Model.Entities
 			}
 
 
-			Hero = (Hero) FromCard(this, in heroCard, tags, null, id);
+			//Hero = (Hero) FromCard(this, in heroCard, tags, null, id);
+			Hero = HeroInPlay.FromCard(this, in heroCard);
 			Hero[GameTag.ZONE] = (int) Enums.Zone.PLAY;
 			HeroId = Hero.Id;
 			Hero.HeroPower = FromCard(this, powerCard ?? Cards.FromAssetId(Hero[GameTag.HERO_POWER]),
@@ -377,429 +380,14 @@ namespace SabberStoneCore.Model.Entities
 			Character[] allFriendly = null;
 			Character[] allEnemies = null;
 
-			var handSpan = HandZone.GetSpan();
+			ReadOnlySpan<Playable> handSpan = HandZone.GetSpan();
 			for (int i = 0; i < handSpan.Length; i++)
 			{
 				if (!handSpan[i].ChooseOne || ChooseBoth)
 					GetPlayCardTasks(handSpan[i]);
 				else
 				{
-					IPlayable[] playables = handSpan[i].ChooseOnePlayables;
-					for (int j = 1; j < 3; j++)
-						GetPlayCardTasks(handSpan[i], playables[j - 1], j);
-				}
-			}
-			#endregion
-
-			#region HeroPowerTask
-			HeroPower power = Hero.HeroPower;
-			Card heroPowerCard = power.Card;
-			if (!power.IsExhausted && mana >= power.Cost &&
-			    !HeroPowerDisabled && !heroPowerCard.HideStat)
-			{
-				if (heroPowerCard.ChooseOne)
-				{
-					if (ChooseBoth)
-						allOptions.Add(HeroPowerTask.Any(this, skipPrePhase: true));
-					else
-					{
-						allOptions.Add(HeroPowerTask.Any(this, null, 1, true));
-						allOptions.Add(HeroPowerTask.Any(this, null, 2, true));
-					}
-				}
-				else
-				{
-					if (heroPowerCard.IsPlayableByCardReq(this))
-					{
-						Character[] targets = GetTargets(heroPowerCard);
-						if (targets != null)
-							for (int i = 0; i < targets.Length; i++)
-								allOptions.Add(HeroPowerTask.Any(this, targets[i], skipPrePhase: true));
-						else
-							allOptions.Add(HeroPowerTask.Any(this, skipPrePhase: true));
-					}
-				}
-			}
-			#endregion
-
-			#region MinionAttackTasks
-			Minion[] attackTargets = null;
-			bool isOpHeroValidAttackTarget = false;
-			var boardSpan = BoardZone.GetSpan();
-			for (int j = 0; j < boardSpan.Length; j++)
-			{
-				Minion minion = boardSpan[j];
-
-				if (minion.IsExhausted && (!minion.HasCharge || minion.NumAttacksThisTurn != 0))
-					continue;
-				if (minion.IsFrozen || minion.AttackDamage == 0 || minion.CantAttack || minion.Untouchable)
-					continue;
-
-				GenerateAttackTargets();
-
-				for (int i = 0; i < attackTargets.Length; i++)
-					allOptions.Add(MinionAttackTask.Any(this, minion, attackTargets[i], skipPrePhase));
-
-				if (isOpHeroValidAttackTarget && !(minion.CantAttackHeroes || minion.AttackableByRush))
-					allOptions.Add(MinionAttackTask.Any(this, minion, Opponent.Hero, skipPrePhase));
-			}
-			#endregion
-
-			#region HeroAttackTaskts
-			Hero hero = Hero;
-
-			if ((!hero.IsExhausted || (hero.ExtraAttacksThisTurn > 0 && hero.ExtraAttacksThisTurn >= hero.NumAttacksThisTurn))
-			    && hero.AttackDamage > 0 && !hero.IsFrozen)
-			{
-				GenerateAttackTargets();
-
-				for (int i = 0; i < attackTargets.Length; i++)
-					allOptions.Add(HeroAttackTask.Any(this, attackTargets[i], skipPrePhase));
-
-				if (isOpHeroValidAttackTarget && !hero.CantAttackHeroes)
-					allOptions.Add(HeroAttackTask.Any(this, Opponent.Hero, skipPrePhase));
-			}
-			#endregion
-
-			return allOptions;
-
-			#region local functions
-			void GetPlayCardTasks(in IPlayable playable, in IPlayable chooseOnePlayable = null, int subOption = -1)
-			{
-				Card card = chooseOnePlayable?.Card ?? playable.Card;
-
-				if (!spellCostHealth.HasValue)
-					spellCostHealth = ControllerAuraEffects[GameTag.SPELLS_COST_HEALTH] == 1;
-
-				bool healthCost = (playable.AuraEffects?.CardCostHealth ?? false) ||
-				                  (spellCostHealth.Value && playable.Card.Type == CardType.SPELL);
-
-				if (!healthCost && (playable.Cost > mana || playable.Card.HideStat))
-					return;
-
-				// check PlayableByPlayer
-				switch (playable.Card.Type)
-				{
-					//	REQ_MINION_CAP
-					case CardType.MINION when BoardZone.IsFull:
-						return;
-					case CardType.SPELL:
-					{
-						if (card.IsSecret)
-						{
-							if (SecretZone.IsFull) // REQ_SECRET_CAP
-								return;
-							if (SecretZone.Any(p => p.Card.AssetId == card.AssetId)) // REQ_UNIQUE_SECRET
-								return;
-						}
-
-						if (card.IsQuest && SecretZone.Quest != null)
-							return;
-						break;
-					}
-				}
-
-				{
-					if (!card.IsPlayableByCardReq(this))
-						return;
-
-					Character[] targets = GetTargets(card);
-
-					// Card doesn't require any targets
-					if (targets == null)
-					{
-						if (playable is Minion)
-							for (int i = 0; i <= zonePosRange; i++)
-								allOptions.Add(PlayCardTask.Any(this, playable, null, i, subOption, skipPrePhase));
-						else
-							allOptions.Add(PlayCardTask.Any(this, playable, null, -1, subOption, skipPrePhase));
-					}
-					else
-					{
-						if (targets.Length == 0)
-						{
-							if (card.MustHaveTargetToPlay)
-								return;
-
-							if (playable is Minion)
-								for (int i = 0; i <= zonePosRange; i++)
-									allOptions.Add(PlayCardTask.Any(this, playable, null, i, subOption, skipPrePhase));
-							else
-								allOptions.Add(PlayCardTask.Any(this, playable, null, -1, subOption, skipPrePhase));
-						}
-						else
-						{
-							for (int j = 0; j < targets.Length; j++)
-							{
-								ICharacter target = targets[j];
-								if (playable is Minion)
-									for (int i = 0; i <= zonePosRange; i++)
-										allOptions.Add(PlayCardTask.Any(this, playable, target, i, subOption,
-											true));
-								else
-									allOptions.Add(PlayCardTask.Any(this, playable, target, -1, subOption, skipPrePhase));
-
-							}
-						}
-					}
-				}
-			}
-
-			// Returns null if targeting is not required
-			// Returns 0 Array if there is no available target
-			Character[] GetTargets(Card card)
-			{
-				// Check it needs additional validation
-				if (!card.TargetingAvailabilityPredicate?.Invoke(this, card) ?? false)
-					return null;
-
-				Character[] targets;
-
-				switch (card.TargetingType)
-				{
-					case TargetingType.None:
-						return null;
-					case TargetingType.All:
-						if (allTargets == null)
-						{
-							if (Opponent.Hero.HasStealth)
-							{
-								allTargets = new Character[GetFriendlyMinions().Length + GetEnemyMinions().Length + 1];
-								allTargets[0] = Hero;
-								Array.Copy(GetAllMinions(), 0, allTargets, 1, allMinions.Length);
-							}
-							else
-							{
-								allTargets = new Character[GetFriendlyMinions().Length + GetEnemyMinions().Length + 2];
-								allTargets[0] = Hero;
-								allTargets[1] = Opponent.Hero;
-								Array.Copy(GetAllMinions(), 0, allTargets, 2, allMinions.Length);
-							}
-						}
-						targets = allTargets;
-						break;
-					case TargetingType.FriendlyCharacters:
-						if (allFriendly == null)
-						{
-							allFriendly = new Character[GetFriendlyMinions().Length + 1];
-							allFriendly[0] = Hero;
-							Array.Copy(friendlyMinions, 0, allFriendly, 1, friendlyMinions.Length);
-						}
-						targets = allFriendly;
-						break;
-					case TargetingType.EnemyCharacters:
-						if (allEnemies == null)
-						{
-							if (!Opponent.Hero.HasStealth)
-							{
-								allEnemies = new Character[GetEnemyMinions().Length + 1];
-								allEnemies[0] = Opponent.Hero;
-								Array.Copy(enemyMinions, 0, allEnemies, 1, enemyMinions.Length);
-							}
-							else
-								allEnemies = GetEnemyMinions();
-						}
-						targets = allEnemies;
-						break;
-					case TargetingType.AllMinions:
-						targets = GetAllMinions();
-						break;
-					case TargetingType.FriendlyMinions:
-						targets = GetFriendlyMinions();
-						break;
-					case TargetingType.EnemyMinions:
-						targets = GetEnemyMinions();
-						break;
-					case TargetingType.Heroes:
-						targets = !Opponent.Hero.HasStealth
-							? new[] { Hero, Opponent.Hero }
-							: new[] { Hero };
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-
-				// Filtering for target_if_available
-				TargetingPredicate p = card.TargetingPredicate;
-				if (p != null)
-				{
-					if (card.Type == CardType.SPELL || card.Type == CardType.HERO_POWER)
-					{
-						Character[] buffer = new Character[targets.Length];
-						int i = 0;
-						for (int j = 0; j < targets.Length; ++j)
-						{
-							if (!p(targets[j]) || targets[j].CantBeTargetedBySpells) continue;
-							buffer[i] = targets[j];
-							i++;
-						}
-
-						if (i != targets.Length)
-						{
-							Character[] result = new Character[i];
-							Array.Copy(buffer, result, i);
-							return result;
-						}
-						return buffer;
-					}
-					else
-					{
-						if (!card.TargetingAvailabilityPredicate?.Invoke(this, card) ?? false)
-							return null;
-
-						Character[] buffer = new Character[targets.Length];
-						int i = 0;
-						for (int j = 0; j < targets.Length; ++j)
-						{
-							if (!p(targets[j])) continue;
-							buffer[i] = targets[j];
-							i++;
-						}
-
-						if (i != targets.Length)
-						{
-							Character[] result = new Character[i];
-							Array.Copy(buffer, result, i);
-							return result;
-						}
-						return buffer;
-					}
-				}
-				else if (card.Type == CardType.SPELL || card.Type == CardType.HERO_POWER)
-				{
-					Character[] buffer = new Character[targets.Length];
-					int i = 0;
-					for (int j = 0; j < targets.Length; ++j)
-					{
-						if (targets[j].CantBeTargetedBySpells) continue;
-						buffer[i] = targets[j];
-						i++;
-					}
-
-					if (i != targets.Length)
-					{
-						Character[] result = new Character[i];
-						Array.Copy(buffer, result, i);
-						return result;
-					}
-					return buffer;
-				}
-
-				return targets;
-
-				Minion[] GetFriendlyMinions()
-				{
-					return friendlyMinions ?? (friendlyMinions = BoardZone.GetAll());
-				}
-
-				Minion[] GetAllMinions()
-				{
-					if (allMinions != null)
-						return allMinions;
-
-					allMinions = new Minion[GetEnemyMinions().Length + GetFriendlyMinions().Length];
-					Array.Copy(enemyMinions, allMinions, enemyMinions.Length);
-					Array.Copy(friendlyMinions, 0, allMinions, enemyMinions.Length, friendlyMinions.Length);
-
-					return allMinions;
-				}
-			}
-
-			void GenerateAttackTargets()
-			{
-				if (attackTargets != null) return;
-
-				Minion[] eMinions = GetEnemyMinions();
-				//var taunts = new Minion[eMinions.Length];
-				Minion[] taunts = null;
-				int tCount = 0;
-				for (int i = 0; i < eMinions.Length; i++)
-					if (eMinions[i].HasTaunt)
-					{
-						if (taunts == null)
-							taunts = new Minion[eMinions.Length];
-						taunts[tCount] = eMinions[i];
-						tCount++;
-					}
-
-				if (tCount > 0)
-				{
-					var targets = new Minion[tCount];
-					Array.Copy(taunts, targets, tCount);
-					attackTargets = targets;
-					isOpHeroValidAttackTarget = false;  // some brawls allow taunt heros and this should be fixed
-					return;
-				}
-				attackTargets = eMinions;
-
-				isOpHeroValidAttackTarget =
-					!Opponent.Hero.IsImmune && !Opponent.Hero.HasStealth;
-			}
-
-			Minion[] GetEnemyMinions()
-			{
-				return enemyMinions ?? (enemyMinions = Opponent.BoardZone.GetAll(p => !p.HasStealth && !p.IsImmune));
-			}
-			#endregion
-		}
-
-		#region newOptions
-		/// <summary>
-		/// Returns a set of all options this player can perform execute at the moment.
-		/// From this set one option is picked and executed by the game.
-		/// </summary>
-		/// <param name="skipPrePhase">Doesn't check validity of the options generated from this when it is processed.</param>
-		/// <returns></returns>
-		public List<PlayerTask> Options(bool skipPrePhase = true)
-		{
-			// No options for the opponent player.
-			if (this != Game.CurrentPlayer)
-				return new List<PlayerTask>(0);
-
-			//	ChooseTasks
-			if (Choice != null)
-			{
-				switch (Choice.ChoiceType)
-				{
-					case ChoiceType.GENERAL:
-						return Choice.Choices.Select(p => (PlayerTask)ChooseTask.Pick(this, p)).ToList();
-
-					case ChoiceType.MULLIGAN:
-						IEnumerable<IEnumerable<int>> choices = Util.GetPowerSet(Choice.Choices);
-						return choices.Select(p => (PlayerTask) ChooseTask.Mulligan(this, p.ToList())).ToList();
-
-					default:
-						throw new NotImplementedException();
-				}
-			}
-
-			// no options till mulligan is done for both players
-			if (Game.Step != Step.MAIN_ACTION)
-				return new List<PlayerTask>(0);
-
-			//	EndTurnTask
-			var allOptions = new List<PlayerTask>(20) { EndTurnTask.Any(this) };
-
-			#region PlayCardTasks
-			int mana = RemainingMana;
-			int zonePosRange = BoardZone.Count;
-			bool? spellCostHealth = null;
-
-			Character[] allTargets = null;
-			Minion[] friendlyMinions = null;
-			Minion[] enemyMinions = null;
-			Minion[] allMinions = null;
-			Character[] allFriendly = null;
-			Character[] allEnemies = null;
-
-			ReadOnlySpan<IPlayable> handSpan = HandZone.GetSpan();
-			for (int i = 0; i < handSpan.Length; i++)
-			{
-				if (!handSpan[i].ChooseOne || ChooseBoth)
-					GetPlayCardTasks(handSpan[i]);
-				else
-				{
-					IPlayable[] playables = handSpan[i].ChooseOnePlayables;
+					Playable[] playables = handSpan[i].ChooseOnePlayables;
 					for (int j = 1; j < 3; j++)
 						GetPlayCardTasks(handSpan[i], playables[j - 1], j);
 				}
@@ -878,7 +466,7 @@ namespace SabberStoneCore.Model.Entities
 			return allOptions;
 
 			#region local functions
-			void GetPlayCardTasks(in IPlayable playable, in IPlayable chooseOnePlayable = null, int subOption = -1)
+			void GetPlayCardTasks(in Playable playable, in Playable chooseOnePlayable = null, int subOption = -1)
 			{
 				Card card = chooseOnePlayable?.Card ?? playable.Card;
 
@@ -945,7 +533,7 @@ namespace SabberStoneCore.Model.Entities
 						{
 							for (int j = 0; j < targets.Length; j++)
 							{
-								ICharacter target = targets[j];
+								Character target = targets[j];
 								if (playable is Minion)
 									for (int i = 0; i <= zonePosRange; i++)
 										allOptions.Add(PlayCardTask.Any(this, playable, target, i, subOption,

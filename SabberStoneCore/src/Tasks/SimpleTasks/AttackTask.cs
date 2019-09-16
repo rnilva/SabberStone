@@ -28,14 +28,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_dType = defender;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			var attacker =
-				(ICharacter) IncludeTask.GetEntities(_aType, in controller, source, target, stack?.Playables)[0];
+				(Character) IncludeTask.GetEntities(_aType, in controller, source, target, stack?.Playables)[0];
 			var defender =
-				(ICharacter) IncludeTask.GetEntities(_dType, in controller, source, target, stack?.Playables)[0];
+				(Character) IncludeTask.GetEntities(_dType, in controller, source, target, stack?.Playables)[0];
 
 			if (defender.Card.Untouchable) return TaskState.STOP;
 

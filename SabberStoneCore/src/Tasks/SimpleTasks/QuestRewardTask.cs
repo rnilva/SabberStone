@@ -27,18 +27,17 @@
 
 //		public Card Card { get; set; }
 
-//		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-//			in IPlayable target,
-//			in TaskStack stack = null)
-//		{
-//			var spell = source as Spell;
-//			if (spell == null) return TaskState.STOP;
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+			in TaskStack stack = null)
+		{
+			var spell = source as Spell;
+			if (spell == null) return TaskState.STOP;
 
-//			// creating reward card ...
-//			IPlayable reward = Entity.FromCard(controller, Card);
-//			reward[GameTag.DISPLAYED_CREATOR] = spell.Id;
-//			game.Log(LogLevel.INFO, BlockType.PLAY, "QuestRewardTask",
-//				!game.Logging ? "" : $"{controller} Quest finished, reward {reward}!");
+			// creating reward card ...
+			Playable reward = Entity.FromCard(controller, Card);
+			reward[GameTag.DISPLAYED_CREATOR] = spell.Id;
+			game.Log(LogLevel.INFO, BlockType.PLAY, "QuestRewardTask",
+				!game.Logging ? "" : $"{controller} Quest finished, reward {reward}!");
 
 //			// adding reward to hand
 //			Generic.AddHandPhase.Invoke(controller, reward);

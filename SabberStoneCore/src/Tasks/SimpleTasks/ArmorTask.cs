@@ -44,16 +44,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (source == null) return TaskState.STOP;
 
 			if (_op)
-				controller.Opponent.Hero.GainArmor((IPlayable)source, _useNumber ? stack.Number : _amount);
+				controller.Opponent.Hero.GainArmor((Playable)source, _useNumber ? stack.Number : _amount);
 			else
-				controller.Hero.GainArmor((IPlayable)source, _useNumber ? stack.Number : _amount);
+				controller.Hero.GainArmor((Playable)source, _useNumber ? stack.Number : _amount);
 
 			return TaskState.COMPLETE;
 		}

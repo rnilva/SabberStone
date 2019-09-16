@@ -63,7 +63,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.ProcessCard("Stonetusk Boar");
 
 			Assert.Single(game.CurrentPlayer.HandZone);
-			IPlayable card = game.CurrentPlayer.HandZone[0];
+			Playable card = game.CurrentPlayer.HandZone[0];
 			Assert.Equal(CardClass.SHAMAN, card.Card.Class);
 			Assert.Equal(CardType.SPELL, card.Card.Type);
 		}
@@ -706,23 +706,23 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player2.BaseMana = 10;
 
 			game.EndTurn();
-			IPlayable target = game.ProcessCard("Stonetusk Boar");
+			Playable target = game.ProcessCard("Stonetusk Boar");
 			game.EndTurn();
 			
 			// Echo Test
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Hunting Mastiff"));
 
-			IPlayable echo = game.CurrentPlayer.HandZone.Last();
+			Playable echo = game.CurrentPlayer.HandZone.Last();
 			Assert.Equal("GIL_607t", echo.Card.Id);
 			Assert.Equal(1, echo[GameTag.GHOSTLY]);
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, echo));
-			IPlayable echo2 = game.CurrentPlayer.HandZone.Last();
+			Playable echo2 = game.CurrentPlayer.HandZone.Last();
 			Assert.Equal("GIL_607t", echo2.Card.Id);
 			Assert.Equal(1, echo2[GameTag.GHOSTLY]);
 
 			// Rush Test
-			var rush = echo as Minion;
+			MinionInPlay rush = (MinionInPlay) game.IdEntityDic[echo.Id];
 			Assert.NotNull(rush);
 			Assert.False(rush.IsExhausted);
 			Assert.True(rush.AttackableByRush);
@@ -855,7 +855,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wing Blast"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wing Blast"));
 			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Wing Blast"));
 
 			Assert.Equal(testCard.Card.Cost, testCard.Cost);
@@ -959,12 +959,14 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(4, target.Health);
 
 			Assert.Equal(3, game.CurrentPlayer.DeckZone.Count);
-			foreach (PlayableSurrogate card in game.CurrentPlayer.DeckZone)
+			foreach (Playable card in game.CurrentPlayer.DeckZone)
 			{
 				Assert.NotNull(card);
-				Assert.Equal("Stonetusk Boar", card.Card.Name);
-				Assert.Equal(4, card.AttackDamage);
-				Assert.Equal(4, card.Health);
+				Assert.IsType(typeof(Minion), card);
+				Minion m = (Minion) card;
+				Assert.Equal("Stonetusk Boar", m.Card.Name);
+				Assert.Equal(4, m.AttackDamage);
+				Assert.Equal(4, m.Health);
 			}
 		}
 
@@ -1011,7 +1013,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.True(game.CurrentPlayer.Choice.Choices.Select(p => game.IdEntityDic[p]).ToList()
 				.TrueForAll(p => p.Card.IsSecret && p.Card.Class == CardClass.MAGE));
 
-			IPlayable pick = game.IdEntityDic[game.CurrentPlayer.Choice.Choices[0]];
+			Playable pick = game.IdEntityDic[game.CurrentPlayer.Choice.Choices[0]];
 			game.ChooseNthChoice(1);
 			Assert.Single(game.CurrentPlayer.SecretZone);
 			Assert.Equal(pick.Card.Name, game.CurrentPlayer.SecretZone[0].Card.Name);
@@ -1051,7 +1053,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Toki, Time-Tinker"));
 
-			IPlayable test = game.CurrentPlayer.HandZone.Last();
+			Playable test = game.CurrentPlayer.HandZone.Last();
 			Assert.Equal(Rarity.LEGENDARY, test.Card.Rarity);
 			Assert.DoesNotContain(test.Card.Set, Cards.StandardSets);
 			Assert.Equal(CardType.MINION, test.Card.Type);
@@ -1345,7 +1347,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Snap Freeze"));
 			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Snap Freeze"));
 
-			IPlayable target = game.ProcessCard("Stonetusk Boar");
+			Minion target = game.ProcessCard<Minion>("Stonetusk Boar");
 			game.ProcessCard("Snap Freeze", target);
 			Assert.Equal(1, target[GameTag.FROZEN]);
 
@@ -1505,12 +1507,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Minion testCard = game.CurrentPlayer.BoardZone[0];
 
 			Assert.False(testCard.HasTaunt);
-			Assert.False(testCard.HasLifeSteal);
+			Assert.False(testCard.HasLifesteal);
 
 			game.ProcessCard("Blessing of Might", testCard);
 
 			Assert.True(testCard.HasTaunt);
-			Assert.True(testCard.HasLifeSteal);
+			Assert.True(testCard.HasLifesteal);
 
 			var clone = game.Clone();
 		}
@@ -1776,7 +1778,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable test = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Chameleos"));
+			Playable test = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Chameleos"));
 			Assert.Equal("GIL_142", test.Card.Id);
 
 			int testId = test.Id;
@@ -1793,7 +1795,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			for (int i = game.CurrentOpponent.HandZone.Count - 1; i >= 0; i--)
 			{
-				IPlayable handCard = game.CurrentOpponent.HandZone[i];
+				Playable handCard = game.CurrentOpponent.HandZone[i];
 				Generic.DiscardBlock(game.CurrentOpponent, handCard);
 			}
 
@@ -1810,7 +1812,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Single(game.CurrentPlayer.BoardZone);
 			Assert.Empty(test.AppliedEnchantments);
 
-			foreach (IPlayable handCard in game.CurrentOpponent.HandZone)
+			foreach (Playable handCard in game.CurrentOpponent.HandZone)
 				Generic.DiscardBlock(game.CurrentOpponent, handCard);
 
 			for (int i = 0; i < 10; i++)
@@ -2067,11 +2069,11 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Holy Water"));
 			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Holy Water"));
 
-			IPlayable target = game.ProcessCard("Stonetusk Boar");
+			Playable target = game.ProcessCard("Stonetusk Boar");
 			game.ProcessCard("Holy Water", target);
 			Assert.Equal("Stonetusk Boar", game.CurrentPlayer.HandZone.Last().Card.Name);
 
-			IPlayable target2 = game.ProcessCard("Ysera", null, true);
+			Playable target2 = game.ProcessCard("Ysera", null, true);
 			game.ProcessCard("Holy Water", target2, true);
 			Assert.Equal("Stonetusk Boar", game.CurrentPlayer.HandZone.Last().Card.Name);
 		}
@@ -2146,7 +2148,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Vivid Nightmare"));
 			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Vivid Nightmare"));
 
-			IPlayable target = game.ProcessCard("Ysera", null, true);
+			Playable target = game.ProcessCard("Ysera", null, true);
 			game.ProcessCard("Vivid Nightmare", target, true);
 
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
@@ -2943,8 +2945,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ratcatcher"));
 			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Ratcatcher"));
 
-			IPlayable target2 = game.ProcessCard("Summoning Portal");
-			IPlayable target = game.ProcessCard("Chillwind Yeti");
+			Minion target2 = game.ProcessCard<Minion>("Summoning Portal");
+			Minion target = game.ProcessCard<Minion>("Chillwind Yeti");
 			Minion test = game.ProcessCard<Minion>("Ratcatcher", target);
 			Minion test2 = game.ProcessCard<Minion>("Ratcatcher", target2);
 
@@ -3063,12 +3065,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player2.BaseMana = 10;
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Glinda Crowskin"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Glinda Crowskin"));
-			IPlayable wisp = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
+			Playable wisp = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
 			game.AuraUpdate();
 			Assert.True(wisp.IsEcho);
 
 			game.ProcessCard(wisp);
-			IPlayable ghost = game.CurrentPlayer.HandZone.Last();
+			Playable ghost = game.CurrentPlayer.HandZone.Last();
 			Assert.Equal("Wisp", ghost.Card.Name);
 			Assert.Equal(1, ghost[GameTag.GHOSTLY]);
 			Assert.True(ghost.IsEcho);
@@ -3481,8 +3483,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player2.BaseMana = 10;
 
 			Minion test = game.ProcessCard<Minion>("Festeroot Hulk");
-			IPlayable m1 = game.ProcessCard("Stonetusk Boar");
-			IPlayable m2 = game.ProcessCard("Stonetusk Boar");
+			Playable m1 = game.ProcessCard("Stonetusk Boar");
+			Playable m2 = game.ProcessCard("Stonetusk Boar");
 
 			game.Process(MinionAttackTask.Any(game.CurrentPlayer, m1, game.CurrentOpponent.Hero));
 			Assert.Equal(3, test.AttackDamage);
@@ -3995,7 +3997,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player2.BaseMana = 10;
 
 			// Drakkari Enchanter + Worgen test
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pumpkin Peasant"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pumpkin Peasant"));
 			game.ProcessCard("Drakkari Enchanter");
 			game.EndTurn();
 			Assert.Equal("GIL_201t", testCard.Card.Id);
@@ -4604,7 +4606,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Voodoo Doll"));
 
 			Minion target = game.ProcessCard<Minion>("Stonetusk Boar");
-			Minion test = game.ProcessCard<Minion>("Voodoo Doll", target);
+			MinionInPlay test = game.ProcessCard<MinionInPlay>("Voodoo Doll", target);
 
 			test.Kill();
 
@@ -4617,7 +4619,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			// will not be killed when Voodoo Doll dies.
 			// Silencing the cursed minion will also break the curse,
 			// in addition to silencing the Voodoo Doll.
-			test = game.ProcessCard<Minion>("Wisp");
+			test = game.ProcessCard<MinionInPlay>("Wisp");
 
 			Minion silenceTest = game.ProcessCard<Minion>("Voodoo Doll", test, asZeroCost: true);
 			test.Silence();
@@ -4627,7 +4629,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Minion transformTest = game.ProcessCard<Minion>("Voodoo Doll", test, asZeroCost: true);
 			game.ProcessCard<Minion>("Master of Evolution", test, asZeroCost: true);
 			transformTest.Kill();
-			test = (Minion) game.IdEntityDic[test.Id];
+			test = (MinionInPlay) game.IdEntityDic[test.Id];
 			Assert.False(test.ToBeDestroyed);
 
 			Minion returnToHandTest = game.ProcessCard<Minion>("Voodoo Doll", test, asZeroCost: true);

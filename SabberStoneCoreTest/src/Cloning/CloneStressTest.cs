@@ -83,18 +83,18 @@ namespace SabberStoneCoreTest.Cloning
 			Game clone = game.Clone();
 			Assert.Equal(game.Hash(), clone.Hash());
 
-			SabberStoneCore.Model.Entities.IPlayable spell1 =
+			SabberStoneCore.Model.Entities.Playable spell1 =
 				Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lightning Bolt"));
-			SabberStoneCore.Model.Entities.IPlayable minion1 =
+			SabberStoneCore.Model.Entities.Playable minion1 =
 				Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
-			SabberStoneCore.Model.Entities.IPlayable spell2 =
+			SabberStoneCore.Model.Entities.Playable spell2 =
 				Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lightning Bolt"));
 
-			SabberStoneCore.Model.Entities.IPlayable cSpell1 =
+			SabberStoneCore.Model.Entities.Playable cSpell1 =
 				Generic.DrawCard(clone.CurrentPlayer, Cards.FromName("Lightning Bolt"));
-			SabberStoneCore.Model.Entities.IPlayable cSpell2 =
+			SabberStoneCore.Model.Entities.Playable cSpell2 =
 				Generic.DrawCard(clone.CurrentPlayer, Cards.FromName("Lightning Bolt"));
-			SabberStoneCore.Model.Entities.IPlayable cMinion1 =
+			SabberStoneCore.Model.Entities.Playable cMinion1 =
 				Generic.DrawCard(clone.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell1, game.CurrentOpponent.Hero));

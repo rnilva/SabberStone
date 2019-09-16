@@ -23,13 +23,13 @@ namespace SabberStoneCore.Actions
 	public static partial class Generic
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public static bool PlayCard(Game g, Controller c, IPlayable source, ICharacter target = null, int zonePosition = -1, int chooseOne = 0, bool skipPrePhase = false)
+		public static bool PlayCard(Game g, Controller c, Playable source, Character target = null, int zonePosition = -1, int chooseOne = 0, bool skipPrePhase = false)
 		{
 			return PlayCardBlock.Invoke(g, c, source, target, zonePosition, chooseOne, skipPrePhase);
 		}
 
-		public static Func<Game, Controller, IPlayable, ICharacter, int, int, bool, bool> PlayCardBlock
-			=> delegate (Game g, Controller c, IPlayable source, ICharacter target, int zonePosition, int chooseOne, bool skipPrePhase)
+		public static Func<Game, Controller, Playable, Character, int, int, bool, bool> PlayCardBlock
+			=> delegate (Game g, Controller c, Playable source, Character target, int zonePosition, int chooseOne, bool skipPrePhase)
 			{
 				// Preplay Phase : check the given source is playable
 				if (!skipPrePhase)
@@ -98,7 +98,7 @@ namespace SabberStoneCore.Actions
 					{
 						{GameTag.GHOSTLY, 1}
 					};
-					IPlayable echoPlayable = Entity.FromCard(c, source.Card, echoTags, c.HandZone);
+					Playable echoPlayable = Entity.FromCard(c, source.Card, echoTags, c.HandZone);
 					echoPlayable[GameTag.DISPLAYED_CREATOR] = source.Id;
 
 					g.AuraUpdate();
@@ -123,8 +123,8 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Game, Controller, IPlayable, ICharacter, int, int, bool> PrePlayPhase
-			=> delegate (Game g, Controller c, IPlayable source, ICharacter target, int zonePosition, int chooseOne)
+		public static Func<Game, Controller, Playable, Character, int, int, bool> PrePlayPhase
+			=> delegate (Game g, Controller c, Playable source, Character target, int zonePosition, int chooseOne)
 			{
 				// can't play because we got already board full
 				if (source is Minion && c.BoardZone.IsFull)
@@ -134,7 +134,7 @@ namespace SabberStoneCore.Actions
 				}
 
 				// set choose one option
-				IPlayable subSource = chooseOne > 0 ? source.ChooseOnePlayables[chooseOne - 1] : source;
+				Playable subSource = chooseOne > 0 ? source.ChooseOnePlayables[chooseOne - 1] : source;
 
 				// check if we can play this card and the target is valid
 				if (!source.IsPlayableByPlayer || !subSource.IsPlayableByCardReq || !subSource.IsValidPlayTarget(target))
@@ -145,8 +145,8 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Game, Controller, IPlayable, bool> PayPhase
-			=> delegate (Game g, Controller c, IPlayable source)
+		public static Func<Game, Controller, Playable, bool> PayPhase
+			=> delegate (Game g, Controller c, Playable source)
 			{
 				int cost = source.Cost;
 				if (cost > 0)
@@ -174,49 +174,50 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Controller, Game, Hero, ICharacter, int, bool> PlayHero
-			=> delegate (Controller c, Game game, Hero hero, ICharacter target, int chooseOne)
-			{ 
-				game.Log(LogLevel.INFO, BlockType.ACTION, "PlayHero", !game.Logging? "":$"{c.Name} plays Hero {hero} {(target != null ? "with target " + target : "to board")}.");
+		public static Func<Game, Controller, Hero, Character, int, bool> PlayHero
+			=> delegate (Game g, Controller c, Hero hero, Character target, int chooseOne)
+			{
+				g.Log(LogLevel.INFO, BlockType.ACTION, "PlayHero", !g.Logging? "":$"{c.Name} plays Hero {hero} {(target != null ? "with target " + target : "to board")}.");
 
 
-				Hero oldHero = c.Hero;
+				HeroInPlay oldHero = c.Hero;
+				HeroInPlay heroInPlay = HeroInPlay.FromHero(ref hero);
 				hero[GameTag.ZONE] = (int)Zone.PLAY;
 				//hero[GameTag.LINKED_ENTITY] = c.Hero.Id;
 				//hero[GameTag.HEALTH] = oldHero[GameTag.HEALTH];
-				hero.BaseHealth = oldHero.BaseHealth;
-				//hero[GameTag.DAMAGE] = oldHero[GameTag.DAMAGE];
-				hero.Damage = oldHero.Damage;
-				hero[GameTag.ARMOR] = oldHero[GameTag.ARMOR] + hero.Card[GameTag.ARMOR];
-				hero.IsExhausted = oldHero.IsExhausted;
+				heroInPlay.BaseHealth = oldHero.BaseHealth;
+				//heroInPlay[GameTag.DAMAGE] = oldHero[GameTag.DAMAGE];
+				heroInPlay.Damage = oldHero.Damage;
+				//heroInPlay[GameTag.ARMOR] = oldHero[GameTag.ARMOR] + heroInPlay.Card[GameTag.ARMOR];
+				heroInPlay.Armor = oldHero.Armor + heroInPlay.Card[GameTag.ARMOR];
+				heroInPlay.IsExhausted = oldHero.IsExhausted;
 
 				c.SetasideZone.Add(oldHero);
 				//oldHero[GameTag.REVEALED] = 1;
-				//c[GameTag.HERO_ENTITY] = hero.Id;
-				hero.Weapon = oldHero.Weapon;
+				//c[GameTag.HERO_ENTITY] = heroInPlay.Id;
+				heroInPlay.Weapon = oldHero.Weapon;
 				c.SetasideZone.Add(oldHero.HeroPower);
-				hero.HeroPower = (HeroPower) Entity.FromCard(c, Cards.GetHeroPower(hero.Card[GameTag.HERO_POWER]));
-				hero.HeroPower.Power?.Trigger?.Activate(g, hero.HeroPower);
+				heroInPlay.HeroPower = (HeroPower) Entity.FromCard(c, Cards.GetHeroPower(heroInPlay.Card[GameTag.HERO_POWER]));
+				heroInPlay.HeroPower.Power?.Trigger?.Activate(g, heroInPlay.HeroPower);
 
-				c.Hero = hero;
-				hero.Power?.Trigger?.Activate(g, hero);
+				c.Hero = heroInPlay;
+				heroInPlay.Power?.Trigger?.Activate(g, heroInPlay);
 
 				// - OnPlay Phase --> OnPlay Trigger (Illidan)
 				//   (death processing, aura updates)
-				game.TaskQueue.StartEvent();
-				OnPlayTrigger.Invoke(game, hero);
+				g.TriggerManager.OnPlayCardTrigger(heroInPlay);
 
 					// - BattleCry Phase --> Battle Cry Resolves
 				//   (death processing, aura updates)
 				g.TaskQueue.StartEvent();
-				hero.ActivateTask(PowerActivation.POWER, target, chooseOne);
+				heroInPlay.ActivateTask(PowerActivation.POWER, target, chooseOne);
 				// check if [LOE_077] Brann Bronzebeard aura is active
 				if (c.ExtraBattlecry)
 				{
-					hero.ActivateTask(PowerActivation.POWER, target);
+					heroInPlay.ActivateTask(PowerActivation.POWER, target);
 				}
-				if (hero.HeroPower.IsPassiveHeroPower)  // Valeera, ad hoc for now; Maybe revisit here for Bosses
-					hero.HeroPower.ActivateTask();
+				if (heroInPlay.HeroPower.IsPassiveHeroPower)  // Valeera, ad hoc for now; Maybe revisit here for Bosses
+					heroInPlay.HeroPower.ActivateTask();
 				g.ProcessTasks();
 				g.TaskQueue.EndEvent();
 
@@ -224,15 +225,15 @@ namespace SabberStoneCore.Actions
 
 				// - After Play Phase --> After play Trigger / Secrets (Mirror Entity)
 				//   (death processing, aura updates)
-				//hero.JustPlayed = false;
+				//heroInPlay.JustPlayed = false;
 
-				g.TriggerManager.OnAfterPlayCardTrigger(hero);
+				g.TriggerManager.OnAfterPlayCardTrigger(heroInPlay);
 
 				return true;
 			};
 
-		public static Func<Controller, Game, Minion, ICharacter, int, int, bool> PlayMinion
-			=> delegate (Controller c, Game game, Minion minion, ICharacter target, int zonePosition, int chooseOne)
+		public static Func<Game, Controller, Minion, Character, int, int, bool> PlayMinion
+			=> delegate (Game g, Controller c, Minion minion, Character target, int zonePosition, int chooseOne)
 			{
 				Trigger.ValidateTriggers(game, minion, SequenceType.PlayMinion);
 
@@ -240,7 +241,9 @@ namespace SabberStoneCore.Actions
 						 $"{(zonePosition > -1 ? "position " + zonePosition : "")}.");
 
 				c.NumMinionsPlayedThisTurn++;
-				c.BoardZone.Add(minion, zonePosition);
+
+				c.BoardZone.Add(ref minion, zonePosition);
+				g.CurrentEventData.EventSource = minion;
 
 				// - PreSummon Phase --> PreSummon Phase Trigger (Tidecaller)
 				//   (death processing, aura updates)
@@ -257,7 +260,7 @@ namespace SabberStoneCore.Actions
 
 				// Noggenfogger here
 				if (target != null && g.TriggerManager.OnTargetTrigger(minion))
-					target = (ICharacter) g.IdEntityDic[minion.CardTarget];
+					target = (Character) g.IdEntityDic[minion.CardTarget];
 
 				// - BattleCry Phase --> Battle Cry Resolves
 				//   (death processing, aura updates)
@@ -305,8 +308,8 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Controller, Game, Spell, ICharacter, int, bool> PlaySpell
-			=> delegate (Controller c, Game game, Spell spell, ICharacter target, int chooseOne)
+		public static Func<Game, Controller, Spell, Character, int, bool> PlaySpell
+			=> delegate (Game g, Controller c, Spell spell, Character target, int chooseOne)
 			{
 				Trigger.ValidateTriggers(game, spell, SequenceType.PlaySpell);
 
@@ -337,18 +340,8 @@ namespace SabberStoneCore.Actions
 					// check Spellbender and Mayor Noggenfogger
 					if (target != null && triggerManager.OnTargetTrigger(spell))
 					{
-						game.TaskQueue.StartEvent();
-						int temp = game.CurrentEventData.EventNumber;
-						game.CurrentEventData.EventNumber = chooseOne;
-						game.TriggerManager.OnTargetTrigger(spell);
-						game.ProcessTasks();
-						game.CurrentEventData.EventNumber = temp;
-						game.TaskQueue.EndEvent();
-						if (target.Id != spell.CardTarget)
-						{
-							target = (ICharacter)g.IdEntityDic[spell.CardTarget];
-							g.Log(LogLevel.DEBUG, BlockType.ACTION, "PlaySpell", !g.Logging ? "" : $"trigger Spellbender Phase. Target of {spell} is changed to {target}.");
-						}
+						target = (Character)g.IdEntityDic[spell.CardTarget];
+						g.Log(LogLevel.DEBUG, BlockType.ACTION, "PlaySpell", !g.Logging ? "" : $"trigger Spellbender Phase. Target of {spell} is changed to {target}.");
 					}
 
 					CastSpell.Invoke(c, game, spell, target, chooseOne);
@@ -372,8 +365,8 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Controller, Game, Weapon, ICharacter, int, bool> PlayWeapon
-			=> delegate (Controller c, Game game, Weapon weapon, ICharacter target, int chooseOne)
+		public static Func<Game, Controller, Weapon, Character, int, bool> PlayWeapon
+			=> delegate (Game g, Controller c, Weapon weapon, Character target, int chooseOne)
 			{
 				game.Log(LogLevel.INFO, BlockType.ACTION, "PlayWeapon", !game.Logging ? "" : $"{c.Hero} gets Weapon {c.Hero.Weapon}.");
 
@@ -395,7 +388,7 @@ namespace SabberStoneCore.Actions
 				if (target != null && g.TriggerManager.OnTargetTrigger(weapon))
 				{
 					if (target.Id != weapon.CardTarget)
-						target = (ICharacter) g.IdEntityDic[weapon.CardTarget];
+						target = (Character) g.IdEntityDic[weapon.CardTarget];
 				}
 
 				OverloadBlock(c, weapon, game.History);

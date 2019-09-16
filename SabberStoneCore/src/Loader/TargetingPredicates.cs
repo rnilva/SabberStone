@@ -1,11 +1,12 @@
 ﻿using System;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Loader
 {
 	public delegate bool AvailabilityPredicate(Controller controller, Card card);
-	public delegate bool TargetingPredicate(ICharacter target);
+	public delegate bool TargetingPredicate(Character target);
 
 	public static class TargetingPredicates
 	{
@@ -37,7 +38,7 @@ namespace SabberStoneCore.Loader
 		public static readonly TargetingPredicate ReqStealthedTarget
 			= t => t.HasStealth;
 		public static readonly TargetingPredicate ReqTargetWithDeathrattle
-			= t => t.HasDeathrattle;
+			= t => t is MinionInPlay m && m.HasDeathrattle;
 		public static readonly TargetingPredicate ReqLegendaryTarget
 			= t => t.Card.Rarity == Rarity.LEGENDARY;
 
@@ -116,10 +117,10 @@ namespace SabberStoneCore.Loader
 			return (c, card) =>
 			{
 				int num = c.NumFriendlyMinionsThatDiedThisTurn;
-				ReadOnlySpan<IPlayable> span = c.GraveyardZone.GetSpan();
+				ReadOnlySpan<Playable> span = c.GraveyardZone.GetSpan();
 				for (int i = span.Length - 1, k = 0; k < num; --i)
 				{
-					if (span[i].Card.Type != CardType.MINION || !span[i].ToBeDestroyed)
+					if (!(span[i] is Minion m && m.ToBeDestroyed))
 						continue;
 					k++;
 					if (span[i].Card.IsRace(race))

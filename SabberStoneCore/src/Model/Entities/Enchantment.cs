@@ -24,94 +24,51 @@ using SabberStoneCore.Triggers;
 
 namespace SabberStoneCore.Model.Entities
 {
-	public partial class Enchantment : IPlayable
+	public partial class Enchantment : Playable
 	{
-		private readonly EntityData _tags;
 		private int _creatorId;
 		private int _targetId;
 		private int _controllerId;
-		private IPlayable _creator;
-		private IEntity _target;
-		private Controller _controller;
+		private Playable _creator;
 		private Card _capturedCard;
+		//private IAura _ongoingEffect;
 
 		private Enchantment(in Controller controller, in Card card, in EntityData tags, in int id)
+			: base(in controller, in card, in tags, in id)
 		{
-			_history = controller.Game.History;
-			_logging = controller.Game.Logging;
-
-			Game = controller.Game;
-			Controller = controller;
-			Card = card;
-			_tags = tags;
-			Id = id;
 		}
 
 		private Enchantment(in Controller c, in Enchantment e)
+			: base(in c, e)
 		{
-			_history = c.Game.History;
-			_logging = c.Game.Logging;
+			//Game = c.Game;
+			//Card = e.Card;
+			//Id = e.Id;
 
-			Game = c.Game;
-			Card = e.Card;
-			Id = e.Id;
-			//Target = e.Target is IPlayable ? (IEntity) Game.IdEntityDic[e.Target.Id] : c;
-			_targetId = e._targetId;
-			if (e.Target is Controller)
-				_target = c;
+			Target = e.Target is Playable ? (Entity) Game.IdEntityDic[e.Target.Id] : c;
 			_controllerId = e._controllerId;
 			_creatorId = e._creatorId;
 			_capturedCard = e._capturedCard;
-			//e.OngoingEffect?.Clone(this);
-			e.ActivatedTrigger?.Activate(Game, this);
-			//Game.IdEntityDic.Add(Id, this);
-			Game.IdEntityDic[Id] = this;
+
 			if (e.IsOneTurnActive)
 			{
 				c.Game.OneTurnEffectEnchantments.Add(this);
 				IsOneTurnActive = true;
 			}
 
-			//if (c.Game.History)
-			//{
-				Zone = c.BoardZone;
-				_tags = new EntityData(entityData: e._tags);
-			//}
+			Zone = c.BoardZone;
 
 			if (Power.Enchant?.RemoveWhenPlayed ?? false)
-			{
 				Enchant.RemoveWhenPlayedTrigger.Activate(Game, this);
-			}
 
 			if (e.Creator is Enchantment eCreator)
 				_creator = eCreator.Clone(in c);
 		}
 
-		public int this[GameTag t]
-		{
-			get => _tags.TryGetValue(t, out int value) ? value : 0;
-			set
-			{
-				if (_history && (int)t < 1000)
-					if (value != this[t])
-						Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, t, value));
-				_tags[t] = value;
-			}
-		}
-
 		/// <summary>
 		/// The entity that this enchantment is attached to.
 		/// </summary>
-		//public IEntity Target { get; private set; }
-		public IEntity Target
-		{
-			get => _target ?? (_target = Game.IdEntityDic[_targetId]);
-			private set
-			{
-				_targetId = value.Id;
-				_target = value;
-			}
-		}
+		public Entity Target { get; private set; }
 
 		/// <summary>
 		/// <see cref="SabberStoneCore.Model.Card"/> information captured in this instance.
@@ -131,25 +88,7 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		/// <summary>
-		/// <see cref="SabberStoneCore.Model.Card"/> information captured in this instance.
-		/// </summary>
-		public Card CapturedCard
-		{
-			get => _capturedCard;
-			set
-			{
-				_capturedCard = value;
-				if (value != null && Game.History && (Card.Text?.Contains("{0}") ?? false))
-				{
-					Card c = Card.Clone();
-					c.Text = String.Format(c.Text, value.Name);
-					Card = c;
-				}
-			}
-		}
-
-		public IPlayable Creator
+		public Playable Creator
 		{
 			get => _creator ?? (_creator = Game.IdEntityDic[_creatorId]);
 			private set
@@ -159,15 +98,21 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		public Controller Controller
-		{
-			get => _controller ?? (_controller = Game.ControllerById(_controllerId));
-			set
-			{
-				_controllerId = value.Id;
-				_controller = value;
-			}
-		}
+		//public new Controller Controller
+		//{
+		//	get => _controller ?? (_controller = Game.ControllerById(_controllerId));
+		//	set
+		//	{
+		//		_controllerId = value.Id;
+		//		_controller = value;
+		//	}
+		//}
+
+		//public IAura OngoingEffect
+		//{
+		//	get => _ongoingEffect;
+		//	set => _ongoingEffect = value;
+		//}
 
 		public bool IsOneTurnActive { get; private set; }
 
@@ -182,8 +127,12 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="creator">The entity who creates the enchantment.</param>
 		/// <param name="target">The entity who is subjected to the enchantment.</param>
 		/// <param name="card">The card from which the enchantment must be derived.</param>
+		/// <param name="num1">The value of script tag 1.</param>
+		/// <param name="num2">The value of script tag 2.</param>
 		/// <returns>The resulting enchantment entity.</returns>
-		public static Enchantment GetInstance(in Controller controller, in IPlayable creator, in IEntity target, in Card card, int num1 = 0, int num2 = 0)
+		public static Enchantment GetInstance(in Controller controller, in Playable creator,
+											  in Entity target, in Card card,
+											  int? num1 = default, int? num2 = default)
 		{
 			int id = controller.Game.NextId;
 
@@ -205,9 +154,9 @@ namespace SabberStoneCore.Model.Entities
 
 			if (controller.Game.History)
 			{
-				tags.Add(GameTag.ENTITY_ID, id);
+				//tags.Add(GameTag.ENTITY_ID, id);
+				//tags.Add(GameTag.CONTROLLER, controller.PlayerId);
 				tags.Add(GameTag.ZONE, (int)Enums.Zone.SETASIDE);
-				tags.Add(GameTag.CONTROLLER, controller.PlayerId);
 
 				controller.Game.PowerHistory.Add(new PowerHistoryFullEntity
 				{
@@ -262,8 +211,8 @@ namespace SabberStoneCore.Model.Entities
 			instance.OrderOfPlay = controller.Game.NextOop;
 			//	323 = 1
 
-			if (card.Power.DeathrattleTask != null)
-				((IPlayable)target).HasDeathrattle = true;
+			if (card.Power.DeathrattleTask != null && target is MinionInPlay m)
+				m.HasDeathrattle = true;
 
 			controller.Game.Log(LogLevel.VERBOSE, BlockType.ACTION, "Enchantment",
 				!controller.Game.Logging ? "" : $"Enchantment {card} created by {creator} is added to {target}.");
@@ -278,7 +227,12 @@ namespace SabberStoneCore.Model.Entities
 			return instance;
 		}
 
-		public Enchantment Clone(in Controller controller)
+		public override void Destroy()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override Playable Clone(in Controller controller)
 		{
 			return new Enchantment(in controller, this);
 		}
@@ -311,14 +265,6 @@ namespace SabberStoneCore.Model.Entities
 				!Game.Logging ? "" : $"Enchantment {this} is removed from {Target}.");
 		}
 
-		public Power Power => Card.Power;
-		public Trigger ActivatedTrigger { get; set; }
-
-		public void Reset()
-		{
-			_tags.Clear();
-		}
-
 		public override string ToString()
 		{
 			return $"'{Card.Name}[{Id}]'";
@@ -327,55 +273,6 @@ namespace SabberStoneCore.Model.Entities
 
 	public partial class Enchantment
 	{
-		protected readonly bool _history;
-		protected readonly bool _logging;
-
-		public int Id { get; }
 		public int OrderOfPlay { get; set; }
-		public Game Game { get; set; }
-		public Card Card { get; set; }
-		public IZone Zone { get; set; }
-		public IAura OngoingEffect { get; set; }
-		public int CardTarget { get; set; }
-		public bool HasDeathrattle { get; set; }
-		public bool HasLifeSteal { get; set; }
-		public bool IsEcho => false;
-		public bool HasOverkill => false;
-		public IPlayable[] ChooseOnePlayables { get; set; }
-		public AuraEffects AuraEffects { get; set; }
-		public IDictionary<GameTag, int> NativeTags => _tags;
-		public List<Enchantment> AppliedEnchantments { get; set; }
-		public bool HasAnyValidPlayTargets { get; }
-
-		public string Hash(params GameTag[] ignore)
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool IsValidPlayTarget(ICharacter target)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Destroy()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void ActivateTask(in PowerActivation activation, in ICharacter target = null, in int chooseOne = 0, in IPlayable source = null)
-		{
-			throw new NotImplementedException();
-		}
-
-		public IEnumerator<KeyValuePair<GameTag, int>> GetEnumerator()
-		{
-			throw new NotImplementedException();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-		#endregion
 	}
 }

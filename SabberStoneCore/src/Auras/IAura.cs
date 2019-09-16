@@ -8,7 +8,7 @@ namespace SabberStoneCore.Auras
 	public interface IAura
 	{
 		/// <summary> The entity who owns this effect. </summary>
-		IPlayable Owner { get; }
+		Playable Owner { get; }
 
 		/// <summary> Refreshes this effect. </summary>
 		void Update();
@@ -20,13 +20,13 @@ namespace SabberStoneCore.Auras
 		/// Activates this effect and add an instance to the game of the given entity.
 		/// </summary>
 		/// <param name="owner">The entity who owns this effect.</param>
-		void Activate(IPlayable owner);
+		void Activate(Playable owner);
 
 		/// <summary>
 		/// Performs a deep copy of this object.
 		/// The resulting cloned instance will be added to the given clone entity's game.
 		/// </summary>
 		/// <param name="clone">The (might be cloned)owner of the cloned instance.</param>
-		void Clone(IPlayable clone);
+		void Clone(Playable clone);
 	}
 }

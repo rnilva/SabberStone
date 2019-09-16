@@ -577,15 +577,14 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("DS1_184", new CardDef(new Power
 			{
 				PowerTask = ComplexTask.Create(
-					new FuncNumberTask(p =>
+					new FuncNumberTask((Playable p) =>
 					{
 						var deck = p.Controller.DeckZone;
 						if (deck.IsEmpty) return 0;
 						List<int> ids = new List<int>(3);
 						for (int i = 0; i < 3 && deck.Count != 0; i++)
 						{
-							//IPlayable entity = deck.Remove(deck.TopCard);
-							var entity = deck.Pop();
+							Playable entity = deck.Remove(deck.TopCard);
 							ids.Add(entity.Id);
 							p.Controller.SetasideZone.Add(entity);
 						}
@@ -2661,8 +2660,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("CS2_074e", new CardDef(new Power
 			{
-				Enchant = new Enchant(GameTag.ATK, EffectOperator.ADD, 2)
-			}));
+				Enchant = new Enchant(ATK.Effect(EffectOperator.ADD, 2))
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [CS2_122e] Enhanced (*) - COST:0

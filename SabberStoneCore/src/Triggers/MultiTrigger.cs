@@ -30,12 +30,12 @@ namespace SabberStoneCore.Triggers
 			_triggers = triggers;
 		}
 
-		private MultiTrigger(Trigger[] triggers, MultiTrigger protoType, IPlayable owner) : base(protoType, owner)
+		private MultiTrigger(Trigger[] triggers, MultiTrigger protoType, Playable owner) : base(protoType, owner)
 		{
 			_triggers = triggers;
 		}
 
-		public override Trigger Activate(Game game, IPlayable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
+		public override Trigger Activate(Game game, Playable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
 		{
 			if (source.ActivatedTrigger != null && !IsAncillaryTrigger)
 				throw new Exceptions.EntityException($"{source} already has an activated trigger.");

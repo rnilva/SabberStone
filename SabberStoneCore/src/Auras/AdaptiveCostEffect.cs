@@ -35,7 +35,7 @@ namespace SabberStoneCore.Auras
 		private readonly Playable _owner;
 		private readonly int _value;
 		private readonly EffectOperator _operator;
-		private readonly Func<IPlayable, int> _costFunction;
+		private readonly Func<Playable, int> _costFunction;
 
 		private readonly TriggerType _triggerType;
 		private readonly TriggerSource _triggerSource;
@@ -57,7 +57,7 @@ namespace SabberStoneCore.Auras
 		/// <param name="costFunc">The cost function to calculate the amount the owner costs varies.</param>
 		/// <param name="operator">This determines how cost varies.</param>
 		/// <param name="condition">The necessary condition for this effect.</param>
-		public AdaptiveCostEffect(Func<IPlayable, int> costFunc, EffectOperator @operator = EffectOperator.SUB,
+		public AdaptiveCostEffect(Func<Playable, int> costFunc, EffectOperator @operator = EffectOperator.SUB,
 			SelfCondition condition = null)
 		{
 			_type = Type.Variable;
@@ -93,7 +93,7 @@ namespace SabberStoneCore.Auras
 		/// <param name="trigger">A type of trigger that affects this effect.</param>
 		/// <param name="triggerSource">The source constraint for the trigger.</param>
 		/// <param name="triggerCondition">An additional condition for the trigger.</param>
-		public AdaptiveCostEffect(Func<Playable, int> initialisationFunction, Func<IPlayable, int> triggerValueFunction, TriggerType trigger,
+		public AdaptiveCostEffect(Func<Playable, int> initialisationFunction, Func<Playable, int> triggerValueFunction, TriggerType trigger,
 			TriggerSource triggerSource = TriggerSource.ALL, SelfCondition triggerCondition = null)
 		{
 			_type = Type.TriggeredWithInitialisation;
@@ -104,7 +104,7 @@ namespace SabberStoneCore.Auras
 			_condition = triggerCondition;
 		}
 
-		private AdaptiveCostEffect(AdaptiveCostEffect prototype, IPlayable owner)
+		private AdaptiveCostEffect(AdaptiveCostEffect prototype, Playable owner)
 		{
 			if (!(owner is Playable p))
 				throw new Exception($"Can't activate {this} to non-playable {owner}");
@@ -142,7 +142,7 @@ namespace SabberStoneCore.Auras
 			_isAppliedThisTurn = prototype._isAppliedThisTurn;
 		}
 
-		public IPlayable Owner => _owner;
+		public Playable Owner => _owner;
 
 		public void Activate(Playable owner, bool cloning = false)
 		{
@@ -154,7 +154,7 @@ namespace SabberStoneCore.Auras
 				owner._costManager = new Playable.CostManager();
 
 			owner._costManager.ActivateAdaptiveEffect(instance);
-			owner.OngoingEffect = instance;
+			//owner.OngoingEffect = instance;
 
 			switch (_triggerType)
 			{
@@ -213,43 +213,12 @@ namespace SabberStoneCore.Auras
 
 		public void Remove()
 		{
-			_owner.OngoingEffect = null;
 			_owner.Game.Auras.Remove(this);
-			_owner._costManager?.DeactivateAdaptiveEffect();
-
-			switch (_triggerType)
-			{
-				case TriggerType.NONE:
-					break;
-				case TriggerType.HEAL:
-					_owner.Game.TriggerManager.HealTrigger -= _updateHandler;
-					break;
-				case TriggerType.DEATH:
-					_owner.Game.TriggerManager.DeathTrigger -= _updateHandler;
-					break;
-				case TriggerType.CAST_SPELL:
-					_owner.Game.TriggerManager.CastSpellTrigger -= _updateHandler;
-					break;
-				case TriggerType.AFTER_CAST:
-					_owner.Game.TriggerManager.AfterCastTrigger -= _updateHandler;
-					break;
-				case TriggerType.TURN_START:
-					_owner.Game.TriggerManager.TurnStartTrigger -= _updateHandler;
-					break;
-				case TriggerType.ZONE:
-					_owner.Game.TriggerManager.ZoneTrigger -= _updateHandler;
-					break;
-				case TriggerType.OVERLOAD:
-					_owner.Game.TriggerManager.OverloadTrigger -= _updateHandler;
-					break;
-				default:
-					throw new NotImplementedException();
-			}
 		}
 
-		void IAura.Activate(IPlayable owner)
+		void IAura.Activate(Playable owner)
 		{
-			Activate((Playable)owner, false);
+			Activate(owner, false);
 		}
 
 		public void Update()
@@ -276,10 +245,45 @@ namespace SabberStoneCore.Auras
 				_owner.Game.PowerHistory.Add(PowerHistoryBuilder
 					.TagChange(_owner.Id, GameTag.COST, _owner.Cost));
 		}
-
-		public void Clone(IPlayable clone)
+		private void Trigger(Entity sender)
 		{
-			Activate((Playable)clone, true);
+			if (_isTriggered)
+				return;
+
+			switch (_triggerSource)
+			{
+				case TriggerSource.ALL:
+					break;
+				case TriggerSource.FRIENDLY:
+					if (sender.Controller != Owner.Controller)
+						return;
+					break;
+				default:
+					throw new NotImplementedException();
+			}
+
+			if (_condition != null)
+			{
+				if (!(sender is Playable p)) return;
+
+				if (!(_condition.Eval(p))) return;
+			}
+
+			_owner.Game.TriggerManager.EndTurnTrigger += _removedHandler;
+
+			_isTriggered = true;
+		}
+
+		private void RemoveAtEnd(Entity sender)
+		{
+			_owner._costManager?.UpdateAdaptiveEffect();
+			_isTriggered = false;
+			_isAppliedThisTurn = false;
+		}
+
+		public void Clone(Playable clone)
+		{
+			Activate(clone, true);
 		}
 
 		public override string ToString()

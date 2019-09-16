@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Exceptions;
 using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Enchants
@@ -13,7 +16,7 @@ namespace SabberStoneCore.Enchants
 		IEffect<T> ChangeValue(int newValue);
 	}
 
-	internal readonly struct GenericEffect<T> : IEffect where T : IPlayable
+	internal readonly struct GenericEffect<T> : IEffect where T : Playable
 	{
 		//private readonly Attr<T> _attr;
 		public readonly Attr<T> _attr;
@@ -60,11 +63,11 @@ namespace SabberStoneCore.Enchants
 			_attr.RemoveAura(playable, _operator, _value);
 		}
 
-		void IEffect.ApplyTo(IEntity entity, bool oneTurnEffect)
+		void IEffect.ApplyTo(Entity entity, bool oneTurnEffect)
 		{
 			if (!(entity is T playable))
 			{
-				if (typeof(T) == typeof(PlayableSurrogate))
+				if (typeof(T) == typeof(Entity))
 					throw new SurrogateException($"Cannot apply {this} to an entity of type {entity.GetType()}");
 
 				throw new Exception($"Cannot apply {this} to an entity of type {entity.GetType()}");
@@ -73,7 +76,7 @@ namespace SabberStoneCore.Enchants
 			ApplyTo(playable, oneTurnEffect);
 		}
 
-		void IEffect.ApplyAuraTo(IPlayable playable)
+		void IEffect.ApplyAuraTo(Playable playable)
 		{
 			if (!(playable is T p))
 				throw new Exception($"Cannot apply AuraEffect {this} to an entity of type {playable.GetType()}");
@@ -81,7 +84,7 @@ namespace SabberStoneCore.Enchants
 			ApplyAuraTo(p);
 		}
 
-		void IEffect.RemoveFrom(IEntity entity)
+		void IEffect.RemoveFrom(Entity entity)
 		{
 			if (!(entity is T playable))
 				throw new Exception($"Cannot remove {this} from an entity of type {entity.GetType()}");
@@ -89,7 +92,7 @@ namespace SabberStoneCore.Enchants
 			RemoveFrom(playable);
 		}
 
-		void IEffect.RemoveAuraFrom(IPlayable playable)
+		void IEffect.RemoveAuraFrom(Playable playable)
 		{
 			if (!(playable is T p))
 				throw new Exception($"Cannot remove AuraEffect {this} from an entity of type {playable.GetType()}");
@@ -112,12 +115,13 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
-	internal abstract class Attr<T> where T : IPlayable
+	internal abstract class Attr<T> where T : Playable
 	{
 		public abstract void Apply(T entity, EffectOperator @operator, int value);
 		public abstract void ApplyAura(T entity, EffectOperator @operator, int value);
 		public abstract void Remove(T entity, EffectOperator @operator, int value);
 		public abstract void RemoveAura(T entity, EffectOperator @operator, int value);
+		//public abstract ApplyingEffect GetFunction(EffectOperator @operator, int value);
 		public abstract GameTag Tag { get; }
 
 		protected abstract ref int GetAuraRef(AuraEffects auraEffects);
@@ -176,7 +180,7 @@ namespace SabberStoneCore.Enchants
 	//}
 
 	internal abstract class IntAttr<TSelf, TPlayable> : Attr<TPlayable>
-		where TPlayable : IPlayable
+		where TPlayable : Playable
 		where TSelf : IntAttr<TSelf, TPlayable>, new()
 	{
 		private static readonly TSelf _singleton = new TSelf();
@@ -302,11 +306,11 @@ namespace SabberStoneCore.Enchants
 			return new GenericEffect<TPlayable>(_singleton, EffectOperator.SET, value ? 1 : 0);
 		}
 
-		protected abstract ref bool? GetRef(TPlayable entity);
+		protected abstract ref bool GetRef(TPlayable entity);
 
 		public override void Apply(TPlayable entity, EffectOperator @operator, int value)
 		{
-			ref bool? target = ref GetRef(entity);
+			ref bool target = ref GetRef(entity);
 
 			if (@operator != EffectOperator.SET)
 				throw new ArgumentOutOfRangeException(nameof(@operator), @operator, null);
@@ -316,7 +320,7 @@ namespace SabberStoneCore.Enchants
 
 		public override void Remove(TPlayable entity, EffectOperator @operator, int value)
 		{
-			ref bool? target = ref GetRef(entity);
+			ref bool target = ref GetRef(entity);
 
 			target = false;
 		}
@@ -403,18 +407,23 @@ namespace SabberStoneCore.Enchants
 		{
 			entity._costManager?.RemoveCostAura(@operator, value);
 		}
+
+		//public override ApplyingEffect GetFunction(EffectOperator @operator, int value)
+		//{
+		//	return Playable.GetFunction(Enums.GameTag.COST, @operator, value);
+		//}
 	}
 
-	internal class ATK : IntAttr<ATK, Character>
+	internal class ATK : IntAttr<ATK, Playable>
 	{
 		public override GameTag Tag => GameTag.ATK;
 
 		protected override ref int? GetRef(Playable entity)
 		{
-			return ref entity._modifiedATK;
+			return ref entity._v1;
 		}
 
-		protected override int GetCardValue(Character entity)
+		protected override int GetCardValue(Playable entity)
 		{
 			return entity.Card.ATK;
 		}
@@ -424,7 +433,7 @@ namespace SabberStoneCore.Enchants
 			return ref auraEffects._data[3];
 		}
 
-		public override void Apply(Character entity, EffectOperator @operator, int value)
+		public override void Apply(Playable entity, EffectOperator @operator, int value)
 		{
 			if (@operator == EffectOperator.SET)
 			{
@@ -432,7 +441,7 @@ namespace SabberStoneCore.Enchants
 				for (int i = entity.Game.OneTurnEffects.Count - 1; i >= 0; i--)
 				{
 					(int id, IEffect eff) = entity.Game.OneTurnEffects[i];
-					if (id != entity.Id || !(eff is GenericEffect<Character>)) continue;
+					if (id != entity.Id || !(eff is GenericEffect<Playable>)) continue;
 					entity.Game.OneTurnEffects.RemoveAt(i);
 				}
 			}
@@ -440,6 +449,11 @@ namespace SabberStoneCore.Enchants
 
 			base.Apply(entity, @operator, value);
 		}
+
+		//public override ApplyingEffect GetFunction(EffectOperator @operator, int value)
+		//{
+		//	return Playable.GetFunction(Enums.GameTag.ATK, @operator, value);
+		//}
 
 		//public override void ApplyAura(Playable entity, EffectOperator @operator, int value)
 		//{
@@ -458,42 +472,16 @@ namespace SabberStoneCore.Enchants
 		//}
 	}
 
-	internal class WeaponATK : IntAttr<WeaponATK, Weapon>
-	{
-		#region Overrides of Attr<Weapon>
-
-		protected override ref int GetAuraRef(AuraEffects auraEffects)
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
-
-		#region Overrides of IntAttr<WeaponATK,Weapon>
-
-		protected override ref int? GetRef(Weapon entity)
-		{
-			return ref entity._atk;
-		}
-
-		protected override int GetCardValue(Weapon entity)
-		{
-			return entity.Card.ATK;
-		}
-
-		#endregion
-	}
-
-	internal class Health : IntAttr<Health, Character>
+	internal class Health : IntAttr<Health, Playable>
 	{
 		public override GameTag Tag => GameTag.HEALTH;
 
-		protected override ref int? GetRef(Character entity)
+		protected override ref int? GetRef(Playable entity)
 		{
-			return ref entity._modifiedHealth;
+			return ref entity._v2;
 		}
 
-		protected override int GetCardValue(Character entity)
+		protected override int GetCardValue(Playable entity)
 		{
 			return entity.Card.Health;
 		}
@@ -503,7 +491,7 @@ namespace SabberStoneCore.Enchants
 			return ref auraEffects._data[4];
 		}
 
-		public override void Apply(Character entity, EffectOperator @operator, int value)
+		public override void Apply(Playable entity, EffectOperator @operator, int value)
 		{
 			if (@operator == EffectOperator.SET)
 			{
@@ -527,37 +515,47 @@ namespace SabberStoneCore.Enchants
 			base.Apply(entity, @operator, value);
 		}
 
-		public override void RemoveAura(Character entity, EffectOperator @operator, int value)
+		public override void RemoveAura(Playable entity, EffectOperator @operator, int value)
 		{
 			base.RemoveAura(entity, @operator, value);
 
 			if (@operator == EffectOperator.ADD)
-				entity.Damage -= value;
+				((Character)entity).Damage -= value;
 		}
+
+		//public override ApplyingEffect GetFunction(EffectOperator @operator, int value)
+		//{
+		//	return Playable.GetFunction(Enums.GameTag.HEALTH, @operator, value);
+		//}
 	}
 
 	internal class Stealth : BoolAttr<Stealth, Character>
 	{
 		public override GameTag Tag => GameTag.STEALTH;
 
-		protected override ref bool? GetRef(Character entity)
+		protected override ref bool GetRef(Character entity)
 		{
-			return ref entity._modifiedStealth;
+			return ref entity.GetRef((int)(Attributes.Stealth));
 		}
 
 		protected override ref int GetAuraRef(AuraEffects auraEffects)
 		{
 			throw new NotImplementedException();
 		}
+
+		public override void Apply(Character entity, EffectOperator @operator, int value)
+		{
+			entity.HasStealth = true;
+		}
 	}
 
-	internal class Taunt : BoolAttr<Taunt, Minion>
+	internal class Taunt : BoolAttr<Taunt, MinionInPlay>
 	{
 		public override GameTag Tag => GameTag.TAUNT;
 
-		protected override ref bool? GetRef(Minion entity)
+		protected override ref bool GetRef(MinionInPlay entity)
 		{
-			return ref entity._modifiedTaunt;
+			return ref entity.GetRef((int)Attributes.Taunt);
 		}
 
 		protected override ref int GetAuraRef(AuraEffects auraEffects)
@@ -575,170 +573,9 @@ namespace SabberStoneCore.Enchants
 			return ref auraEffects._data[2];
 		}
 
-		protected override ref bool? GetRef(Character entity)
+		protected override ref bool GetRef(Character entity)
 		{
-			return ref entity._modifiedCantBeTargetedBySpells;
+			return ref entity.GetRef(4);
 		}
-	}
-
-
-	internal abstract class SurrogateAttr<TSelf> : Attr<PlayableSurrogate> where TSelf : SurrogateAttr<TSelf>, new()
-	{
-		private static readonly TSelf _singleton = new TSelf();
-
-		public static GenericEffect<PlayableSurrogate> Effect(EffectOperator @operator, int value)
-		{
-			return new GenericEffect<PlayableSurrogate>(_singleton, @operator, value);
-		}
-	}
-
-	internal class SurrogateATK : SurrogateAttr<SurrogateATK>
-	{
-		#region Overrides of Attr<PlayableSurrogate>
-
-		public override void Apply(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			ref int val = ref entity._atk;
-
-			switch (@operator)
-			{
-				case EffectOperator.ADD:
-					val += value;
-					break;
-				case EffectOperator.SUB:
-					val -= value;
-					break;
-				case EffectOperator.MUL:
-					val *= value;
-					break;
-				case EffectOperator.SET:
-					val = value;
-					break;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(@operator), @operator, null);
-			}
-		}
-
-		public override void ApplyAura(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void Remove(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void RemoveAura(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		protected override ref int GetAuraRef(AuraEffects auraEffects)
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
-	}
-
-	internal class SurrogateHealth : SurrogateAttr<SurrogateHealth>
-	{
-		#region Overrides of Attr<PlayableSurrogate>
-
-		public override void Apply(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			ref int val = ref entity._health;
-
-			switch (@operator)
-			{
-				case EffectOperator.ADD:
-					val += value;
-					break;
-				case EffectOperator.SUB:
-					val -= value;
-					break;
-				case EffectOperator.MUL:
-					val *= value;
-					break;
-				case EffectOperator.SET:
-					val = value;
-					break;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(@operator), @operator, null);
-			}
-		}
-
-		public override void ApplyAura(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void Remove(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void RemoveAura(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		protected override ref int GetAuraRef(AuraEffects auraEffects)
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
-	}
-
-	internal class SurrogateCost : SurrogateAttr<SurrogateCost>
-	{
-		#region Overrides of Attr<PlayableSurrogate>
-
-		public override void Apply(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			ref int val = ref entity._cost;
-
-			switch (@operator)
-			{
-				case EffectOperator.ADD:
-					val += value;
-					break;
-				case EffectOperator.SUB:
-					val -= value;
-					break;
-				case EffectOperator.MUL:
-					val *= value;
-					break;
-				case EffectOperator.SET:
-					val = value;
-					break;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(@operator), @operator, null);
-			}
-		}
-
-		public override void ApplyAura(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void Remove(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void RemoveAura(PlayableSurrogate entity, EffectOperator @operator, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		protected override ref int GetAuraRef(AuraEffects auraEffects)
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
 	}
 }

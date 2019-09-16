@@ -154,7 +154,7 @@ namespace SabberStoneCore.Model
 			CurrentQueue = _eventStack.Pop();
 		}
 
-		public void Enqueue(in ISimpleTask task, in Controller controller, in IEntity source, in IPlayable target)
+		public void Enqueue(in ISimpleTask task, in Controller controller, in Entity source, in Entity target)
 		{
 			//if (_eventFlag)	// flag = true means Event starts and no tasks queue yet
 			//{
@@ -181,7 +181,7 @@ namespace SabberStoneCore.Model
 #endif
 		}
 
-		public void EnqueueBase(in ISimpleTask task, in Controller controller, in IEntity source, in IPlayable target)
+		public void EnqueueBase(in ISimpleTask task, in Controller controller, in Entity source, in Entity target)
 		{
 			//_baseQueue.Enqueue((task, controller, source, target));
 			//if (!_eventFlag && _eventStack.Count == 0)
@@ -219,8 +219,7 @@ namespace SabberStoneCore.Model
 
 		public TaskState Process()
 		{
-			(ISimpleTask task, Controller controller, IEntity source, IPlayable target) = CurrentQueue.Peek();
-			ISimpleTask temp = CurrentTask;
+			(ISimpleTask task, Controller controller, Entity source, Entity target) = CurrentQueue.Dequeue();
 			CurrentTask = task;
 
 			//if (currentTask is StateTaskList tasks)
@@ -258,7 +257,7 @@ namespace SabberStoneCore.Model
 			return success;
 		}
 
-		public void Execute(in ISimpleTask task, in Controller controller, in IPlayable source, in IPlayable target, int number = 0)
+		public void Execute(in ISimpleTask task, in Controller controller, in Playable source, in Playable target, int number = 0)
 		{
 
 			_game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TaskQueue", !_game.Logging ? "" : $"PriorityTask[{source}]: '{task.GetType().Name}' is processed!" +
@@ -290,11 +289,11 @@ namespace SabberStoneCore.Model
 
 	internal class EventMetaData
 	{
-		public IPlayable EventSource { get; set; }
-		public IPlayable EventTarget { get; set; }
+		public Playable EventSource { get; set; }
+		public Playable EventTarget { get; set; }
 		public int EventNumber { get; set; }
 
-		public EventMetaData(IPlayable source, IPlayable target, int number = 0)
+		public EventMetaData(Playable source, Playable target, int number = 0)
 		{
 			EventSource = source;
 			EventTarget = target;

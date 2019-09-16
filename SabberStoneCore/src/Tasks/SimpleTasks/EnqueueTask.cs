@@ -32,8 +32,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_spellDmg = spellDmg;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			int times = _spellDmg ? _amount + controller.CurrentSpellPower : _amount;
@@ -45,8 +44,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//	{
 			//		Game = controller.Game,
 			//		Controller = in controller,
-			//		source = source as IPlayable,
-			//		target = target as IPlayable
+			//		source = source as Playable,
+			//		target = target as Playable
 			//	});
 
 			return TaskState.COMPLETE;

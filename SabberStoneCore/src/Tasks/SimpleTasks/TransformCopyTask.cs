@@ -31,40 +31,22 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_addToStack = addToStack;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			var minionTarget = (Minion) target;
+			var minionTarget = (MinionInPlay) target;
 			if (minionTarget == null)
 				return TaskState.STOP;
 
-			var minionSource = (Minion) source;
-			if (minionSource.Zone?.Type != Zone.PLAY)
+			var sourceTarget = (MinionInPlay) source;
+			if (sourceTarget.Zone?.Type != Zone.PLAY)
 				return TaskState.STOP;
 
 
-			//if (game.History)
-			//	tags.Add(GameTag.PREMIUM, minionTarget[GameTag.PREMIUM]);
-
 			//var copy = (Minion) Entity.FromCard(in controller, minionTarget.Card, tags);
-
-			// Copy tags
-			{
-				EntityData sourceTags = minionSource._data;
-				sourceTags.CopyFrom(in minionTarget._data);
-				if (game.History)
-				{
-					sourceTags[GameTag.ENTITY_ID] = minionSource.Id;
-					sourceTags[GameTag.CONTROLLER] = minionSource.Controller.PlayerId;
-					sourceTags[GameTag.ZONE_POSITION] = minionSource.ZonePosition + 1;
-				}
-			}
-
-			
-			minionSource = (Minion) Generic.ChangeEntityBlock(controller, minionSource, minionTarget.Card, true);
-
-			minionTarget.CopyInternalAttributes(minionSource);
+			var copy = MinionInPlay.FromCard(in controller, minionTarget.Card, tags);
+			//minionTarget.CopyInternalAttributes(copy);
+			copy.CopyAttributesFrom(minionTarget);
 
 			//Trigger trigger = minionTarget.ActivatedTrigger;
 			IAura aura = minionTarget.OngoingEffect;

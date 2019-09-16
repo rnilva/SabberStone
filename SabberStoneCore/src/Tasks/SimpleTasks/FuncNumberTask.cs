@@ -20,15 +20,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class FuncNumberTask : SimpleTask
 	{
-		private readonly Action<IPlayable, int> _action;
-		private readonly Func<IPlayable, int> _function;
-		private readonly Func<IList<IPlayable>, int> _stackFunction;
+		private readonly Action<Playable, int> _action;
+		private readonly Func<Playable, int> _function;
+		private readonly Func<IList<Playable>, int> _stackFunction;
 
 		/// <summary>
 		///     Process a custom delegate which takes <see cref="ISimpleTask.source" /> entity as a parameter and save the
 		///     returning <see cref="Int32" /> to <see cref="TaskStack.Number" />.
 		/// </summary>
-		public FuncNumberTask(Func<IPlayable, int> function)
+		public FuncNumberTask(Func<Playable, int> function)
 		{
 			_function = function;
 		}
@@ -37,7 +37,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		///     Process a custom delegate which takes the source of this task as the first parameter and
 		///     <see cref="TaskStack.Number" /> as the second parameter.
 		/// </summary>
-		public FuncNumberTask(Action<IPlayable, int> function)
+		public FuncNumberTask(Action<Playable, int> function)
 		{
 			_action = function;
 		}
@@ -47,22 +47,21 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		/// save the returning <see cref="Int32"/> to <see cref="TaskStack.Number"/>.
 		/// </summary>
 		/// <param name="function"></param>
-		public FuncNumberTask(Func<IList<IPlayable>, int> stackFunction)
+		public FuncNumberTask(Func<IList<Playable>, int> stackFunction)
 		{
 			_stackFunction = stackFunction;
 		}
 
-		private FuncNumberTask(Func<IPlayable, int> function, Action<IPlayable, int> action)
+		private FuncNumberTask(Func<Playable, int> function, Action<Playable, int> action)
 		{
 			_function = function;
 			_action = action;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			if (!(source is IPlayable playable)) return TaskState.STOP;
+			if (!(source is Playable playable)) return TaskState.STOP;
 
 			if (_action != null)
 			{

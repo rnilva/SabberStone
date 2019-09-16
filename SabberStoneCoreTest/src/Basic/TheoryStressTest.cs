@@ -111,8 +111,8 @@ namespace SabberStoneCoreTest.Basic
 			Generic.Draw(game.CurrentPlayer);
 			Generic.Draw(game.CurrentPlayer);
 
-			IPlayable eviscerate1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Eviscerate"));
-			IPlayable eviscerate2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Eviscerate"));
+			Playable eviscerate1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Eviscerate"));
+			Playable eviscerate2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Eviscerate"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Sorcerer's Apprentice"));
 			Assert.Equal(1, eviscerate1.Cost);
 			Assert.Equal(1, eviscerate2.Cost);
@@ -356,9 +356,9 @@ namespace SabberStoneCoreTest.Basic
 			});
 			game.StartGame();
 
-			IPlayable blade = Generic.DrawCard(game.Player1, Cards.FromName("Molten Blade"));
-			IPlayable scroll = Generic.DrawCard(game.Player1, Cards.FromName("Shifting Scroll"));
-			IPlayable zerus = Generic.DrawCard(game.Player1, Cards.FromName("Shifter Zerus"));
+			Playable blade = Generic.DrawCard(game.Player1, Cards.FromName("Molten Blade"));
+			Playable scroll = Generic.DrawCard(game.Player1, Cards.FromName("Shifting Scroll"));
+			Playable zerus = Generic.DrawCard(game.Player1, Cards.FromName("Shifter Zerus"));
 
 			game.EndTurn();
 			game.EndTurn();

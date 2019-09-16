@@ -108,7 +108,7 @@ namespace SabberStoneCore.Model
 		/// <summary>Gets or sets the next consecutive choice.</summary>
 		public Choice NextChoice { get; set;}
 
-		//internal IList<IPlayable> EntityStack { get; set; }
+		//internal IList<Playable> EntityStack { get; set; }
 		internal List<int> EntityStack { get; set; }
 
 		private readonly Card[][] _cardSets;
@@ -132,11 +132,11 @@ namespace SabberStoneCore.Model
 			Card[] cards = DiscoverTask.GetChoices(_cardSets, 3, Controller.Game.Random);
 			var choices = new List<int>(3);
 			foreach (Card card in cards)
-				choices.Add(Entity.FromCard(Controller, card,  new EntityData
+				choices.Add(Entity.FromCard(Controller, card, new EntityData
 				{
 					{GameTag.CREATOR, SourceId},
 					{GameTag.DISPLAYED_CREATOR, SourceId}
-				},Controller.SetasideZone).Id);
+				}, Controller.SetasideZone).Id);
 
 			Choices = choices;
 		}

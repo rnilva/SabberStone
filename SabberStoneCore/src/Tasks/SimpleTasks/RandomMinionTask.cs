@@ -61,8 +61,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public bool MaxInDeckFlag { get; set; }
 		public RelaSign RelaSign { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			List<Card> cardsList = null;
@@ -70,7 +69,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			{
 				if (Type == EntityType.TARGET && Tag == GameTag.COST)
 				{
-					Value = ((IPlayable) target).Cost;
+					Value = ((Playable) target).Cost;
 					cardsList = Cards.CostMinionCards(game.FormatType)[Value];
 				}
 				else
@@ -108,7 +107,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			if (cardsList.Count == 0) return TaskState.STOP;
 
-			var randomMinions = new List<IPlayable>(Amount);
+			var randomMinions = new List<Playable>(Amount);
 			if (Amount > 1)
 			{
 				var list = new List<Card>(cardsList);

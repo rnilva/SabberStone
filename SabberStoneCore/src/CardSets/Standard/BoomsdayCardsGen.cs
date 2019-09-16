@@ -237,8 +237,8 @@ namespace SabberStoneCore.CardSets.Standard
 						new IncludeTask(EntityType.TARGET, addFlag: true),
 						new FuncPlayablesTask(list =>
 						{
-							IPlayable s = list[0];
-							IPlayable t = list[1];
+							Playable s = list[0];
+							Playable t = list[1];
 							Generic.ChangeEntityBlock.Invoke(s.Controller, s, t.Card, false);
 							return null;
 						}),
@@ -278,7 +278,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("BOT_523", new Power {
 				Aura = new AdaptiveCostEffect(
-					p => p.Controller.GraveyardZone.Count(q => q.Card.Id == "EX1_158t" && q.ToBeDestroyed))
+					p => p.Controller.GraveyardZone.Count(q => q.Card.Id == "EX1_158t" && ((Minion)q).ToBeDestroyed))
 			});
 
 			// ------------------------------------------ SPELL - DRUID
@@ -366,8 +366,8 @@ namespace SabberStoneCore.CardSets.Standard
 						new IncludeTask(EntityType.TARGET, addFlag: true),
 						new FuncPlayablesTask(list =>
 						{
-							IPlayable t = (IPlayable)((Enchantment) list[0]).Target;
-							IPlayable s = list[1];
+							Playable t = (Playable)((Enchantment) list[0]).Target;
+							Playable s = list[1];
 							Generic.ChangeEntityBlock.Invoke(s.Controller, t, s.Card, false);
 							return null;
 						}))
@@ -573,7 +573,7 @@ namespace SabberStoneCore.CardSets.Standard
 
 							if (defender == null) break;
 							EventMetaData temp = c.Game.CurrentEventData;
-							Generic.AttackBlock.Invoke(c, (ICharacter)list[i], defender, true);
+							Generic.AttackBlock.Invoke(c, (Character)list[i], defender, true);
 							c.NumOptionsPlayedThisTurn--;
 							c.Game.CurrentEventData = temp;
 						}
@@ -764,7 +764,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("BOT_254", new Power {
 				PowerTask = ComplexTask.Create(
-					new GetGameTagControllerTask(GameTag.CURRENT_SPELLPOWER),
+					//new GetGameTagControllerTask(GameTag.CURRENT_SPELLPOWER),
+					new GetPropertyTask(EntityType.CONTROLLER, "CurrentSpellPower"),
 					new MathAddTask(2),
 					new EnqueueNumberTask(
 						ComplexTask.Create(
@@ -828,7 +829,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Costs (1).
 			// --------------------------------------------------------
 			cards.Add("BOT_257e", new Power {
-				Enchant = new Enchant(SurrogateCost.Effect(EffectOperator.SET, 1))
+				Enchant = new Enchant(Cost.Effect(EffectOperator.SET, 1))
 			});
 
 			// ------------------------------------- ENCHANTMENT - MAGE
@@ -1307,8 +1308,8 @@ namespace SabberStoneCore.CardSets.Standard
 				//	new IncludeTask(EntityType.TARGET),
 				//	new FuncPlayablesTask(list =>
 				//	{
-				//		IPlayable t = list[0];
-				//		return new List<IPlayable>
+				//		Playable t = list[0];
+				//		return new List<Playable>
 				//		{
 				//			Entity.FromCard(t.Controller,
 				//				t.Game.IdEntityDic[t[GameTag.TAG_SCRIPT_DATA_NUM_1]]
@@ -1573,8 +1574,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Costs (1).
 			// --------------------------------------------------------
 			cards.Add("BOT_087e", new Power {
-				//Enchant = new Enchant(Effects.SetCost(1))
-				Enchant = new Enchant(SurrogateCost.Effect(EffectOperator.SET, 1))
+				Enchant = new Enchant(Effects.SetCost(1))
 			});
 
 			// ------------------------------------ ENCHANTMENT - ROGUE
@@ -1772,8 +1772,8 @@ namespace SabberStoneCore.CardSets.Standard
 
 						IReadOnlyList<Card> legendaries = RandomCardTask.GetCardList(minions[0], CardType.MINION,
 							rarity: Rarity.LEGENDARY);
-						foreach (IPlayable p in minions)
-							Generic.TransformBlock.Invoke(p.Controller, Util.Choose(legendaries), (Minion)p);
+						foreach (Playable p in minions)
+							Generic.TransformBlock.Invoke(p.Controller, Util.Choose(legendaries), (MinionInPlay)p);
 
 						minions[0].Game.OnRandomHappened(true);
 
@@ -1983,13 +1983,13 @@ namespace SabberStoneCore.CardSets.Standard
 					new IncludeTask(EntityType.SOURCE),
 					new FuncPlayablesTask(sourceArray =>
 					{
-						ReadOnlySpan<IPlayable> hand = sourceArray[0].Controller.HandZone.GetSpan();
+						ReadOnlySpan<Playable> hand = sourceArray[0].Controller.HandZone.GetSpan();
 
 						for (int i = 0; i < hand.Length; i++)
 							if (hand[i].Card.Type == CardType.MINION)
 								return new [] {hand[i]};
 
-						return new IPlayable[0];
+						return new Playable[0];
 					}),
 					new AddEnchantmentTask("BOT_263e", EntityType.STACK))
 			});
@@ -2949,10 +2949,10 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_573", new Power {
-				PowerTask = new FuncNumberTask(source =>
+				PowerTask = new FuncNumberTask((Playable source) =>
 				{
 					//Dictionary<int, Spell> secrets = new Dictionary<int, Spell>();
-					//ReadOnlySpan<IPlayable> deck = source.Controller.DeckZone.GetSpan();
+					//ReadOnlySpan<Playable> deck = source.Controller.DeckZone.GetSpan();
 					//for (int i = 0; i < deck.Length; i++)
 					//	if (deck[i] is Spell s && s.IsSecret && !secrets.ContainsKey(s.Card.AssetId))
 					//		secrets.Add(s.Card.AssetId, s);
@@ -2960,7 +2960,7 @@ namespace SabberStoneCore.CardSets.Standard
 					//	Generic.DrawBlock.Invoke(source.Controller, item.Value);
 
 					Dictionary<int, int> secrets = new Dictionary<int, int>();
-					ReadOnlySpan<PlayableSurrogate> deck = source.Controller.DeckZone.GetSpan();
+					ReadOnlySpan<Playable> deck = source.Controller.DeckZone.GetSpan();
 					for (int i = 0; i < deck.Length; i++)
 					{
 						var deckCard = deck[i].Card;
@@ -3106,7 +3106,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: +1 Attack.
 			// --------------------------------------------------------
 			cards.Add("BOT_083e", new Power {
-				Enchant = new Enchant(WeaponATK.Effect(EffectOperator.ADD, 1))
+				Enchant = new Enchant(ATK.Effect(EffectOperator.ADD, 1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

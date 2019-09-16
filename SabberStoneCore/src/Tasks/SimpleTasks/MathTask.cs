@@ -41,8 +41,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_mathOperation = mathOperation;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			int numberA = GetNumber(in _indexA, in stack);
@@ -121,8 +120,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public int Min { get; set; }
 		public int Max { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			stack.Number = game.Random.Next(Min, Max + 1);
@@ -139,8 +137,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public int Amount { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			stack.Number *= Amount;
@@ -157,8 +154,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public int Amount { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			stack.Number += Amount;
@@ -185,8 +181,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public EntityType Type { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (Amount == 0)

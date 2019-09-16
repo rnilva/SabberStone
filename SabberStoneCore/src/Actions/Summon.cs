@@ -22,46 +22,40 @@ namespace SabberStoneCore.Actions
 	public static partial class Generic
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public static Action<Game, Minion, int, IEntity> SummonBlock
-			=> delegate (Game g, Minion minion, int zonePosition, IEntity summoner)
-			{
-				SummonPhase.Invoke(g, minion, zonePosition);
+		public static bool SummonBlock(Game g, ref Minion minion, int zonePosition)
+		{
+			SummonPhase(g, ref minion, zonePosition);
 
-				AfterSummonTrigger.Invoke(g, minion, summoner);
-			};
+			g.TriggerManager.OnAfterSummonTrigger(minion);
 
-		private static Action<Game, Minion, int> SummonPhase
-			=> delegate (Game g, Minion minion, int zonePosition)
-			{
-				g.Log(LogLevel.INFO, BlockType.PLAY, "SummonPhase", !g.Logging? "":$"Summon Minion {minion} to Board of {minion.Controller.Name}.");
-				minion.Controller.BoardZone.Add(minion, zonePosition);
+			return true;
+		}
 
-				g.AuraUpdate();
+		public static bool SummonBlock(Game g, ref Playable playable, int zonePosition)
+		{
+			var m = (Minion) playable;
+			bool flag = SummonBlock(g, ref m, zonePosition);
+			playable = m;
+			return flag;
+		}
 
-				g.SummonedMinions.Add(minion);
+		public static bool SummonBlock(Game g, Minion minion, int zonePosition)
+		{
+			return SummonBlock(g, ref minion, zonePosition);
+		}
+		private static void SummonPhase(Game g, ref Minion minion, int zonePosition)
+		{
+			g.Log(LogLevel.INFO, BlockType.PLAY, "SummonPhase", !g.Logging? "":$"Summon Minion {minion} to Board of {minion.Controller.Name}.");
+			minion.Controller.BoardZone.Add(ref minion, zonePosition);
 
-				// add summon block show entity 
-				if (g.History)
-					g.PowerHistory.Add(PowerHistoryBuilder.ShowEntity(minion));
-			};
+			g.AuraUpdate();
 
-		private static Action<Game, Minion, IEntity> AfterSummonTrigger
-			=> delegate (Game g, Minion minion, IEntity summoner)
-			{
-				//minion.IsSummoned = true;
+			g.SummonedMinions.Add((MinionInPlay) minion);
 
-				g.TaskQueue.StartEvent();
-				EventMetaData temp = g.CurrentEventData;
-				if (summoner != null)
-					g.CurrentEventData = new EventMetaData(summoner as IPlayable, minion);
-				g.TriggerManager.OnAfterSummonTrigger(minion);
-				g.ProcessTasks();
-				g.CurrentEventData = temp;
-				g.TaskQueue.EndEvent();
-
-				if (minion.IsRace(Race.TOTEM))
-					minion.Controller.NumTotemSummonedThisGame++;
-			};
+			// add summon block show entity 
+			if (g.History)
+				g.PowerHistory.Add(PowerHistoryBuilder.ShowEntity(minion));
+		}
 	}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

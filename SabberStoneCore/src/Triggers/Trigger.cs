@@ -30,7 +30,7 @@ namespace SabberStoneCore.Triggers
 		private readonly bool _isSecret;
 		private bool _removed;
 
-		protected readonly IPlayable _owner;
+		protected readonly Playable _owner;
 
 	    internal bool IsAncillaryTrigger;
 
@@ -90,11 +90,11 @@ namespace SabberStoneCore.Triggers
 		    }
 	    }
 
-	    protected Trigger(Trigger prototype, Game game, IEntity owner)
+	    protected Trigger(Trigger prototype, Game game, Entity owner)
 	    {
 			Game = game;
 			_sourceId = owner.Id;
-		    _owner = (IPlayable)owner;
+		    _owner = (Playable)owner;
 		    _triggerType = prototype._triggerType;
 		    _sequenceType = prototype._sequenceType;
 		    TriggerSource = prototype.TriggerSource;
@@ -114,9 +114,9 @@ namespace SabberStoneCore.Triggers
 		public bool Validated { get; set; }
 
 		/// <summary>
-		/// Create a new instance of <see cref="Trigger"/> object in source's Game. During activation, the instance's <see cref="Process(IEntity)"/> subscribes to the events in <see cref="TriggerManager"/>.
+		/// Create a new instance of <see cref="Trigger"/> object in source's Game. During activation, the instance's <see cref="Process(Entity)"/> subscribes to the events in <see cref="TriggerManager"/>.
 		/// </summary>
-		public virtual Trigger Activate(Game game, IPlayable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
+		public virtual Trigger Activate(Game game, Playable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
 		{
 			if (source.ActivatedTrigger != null && !IsAncillaryTrigger && !asAncillary)
 				throw new Exceptions.EntityException($"{source} already has an activated trigger.");
@@ -278,7 +278,7 @@ namespace SabberStoneCore.Triggers
 			return instance;
 		}
 
-		private void Process(IEntity source)
+		private void Process(Entity source)
 		{
 			// TODO: Report debug log here;
 
@@ -297,7 +297,7 @@ namespace SabberStoneCore.Triggers
 				ProcessInternal(source);
 		}
 
-	    private void ProcessInternal(IEntity source)
+	    private void ProcessInternal(Entity source)
 	    {
 		    Validated = false;
 
@@ -313,16 +313,16 @@ namespace SabberStoneCore.Triggers
 			//			if the owner is Enchantment, the target of the enchantment.
 			if (FastExecution)
 			    Game.TaskQueue.Execute(SingleTask, _owner.Controller, _owner,
-				    source is IPlayable playable ? playable
-										: _owner is Enchantment ew && ew.Target is IPlayable p ? p
+				    source is Playable playable ? playable
+										: _owner is Enchantment ew && ew.Target is Playable p ? p
 										: null);
 		    else
 		    {
 			    Game.TaskQueue.Enqueue(SingleTask, _owner.Controller,
 				    /*_owner is Enchantment ec ? ec : */_owner,
-				    source is IPlayable pSource?
-					    pSource :
-					    _owner is Enchantment ew && ew.Target is IPlayable p ?
+				    source is Playable ?
+					    source :
+					    _owner is Enchantment ew && ew.Target is Playable p ?
 						    p :
 						    null);
 		    }
@@ -489,7 +489,7 @@ namespace SabberStoneCore.Triggers
 		/// <summary>
 		/// Checks triggers related to the current Sequence at once before the Sequence starts.
 		/// </summary>
-	    public static void ValidateTriggers(Game game, IEntity source, SequenceType type)
+	    public static void ValidateTriggers(Game game, Entity source, SequenceType type)
 	    {
 			List<Trigger> triggers = game.Triggers;
 			for (int i = 0; i < triggers.Count; i++)
@@ -497,7 +497,7 @@ namespace SabberStoneCore.Triggers
 					triggers[i].Validate(source);
 	    }
 
-	    public static void ValidateTriggers(Game game, IEntity source, TriggerType type)
+	    public static void ValidateTriggers(Game game, Entity source, TriggerType type)
 	    {
 		    List<Trigger> triggers = game.Triggers;
 			for (int i = 0; i < triggers.Count; i++)
@@ -531,7 +531,7 @@ namespace SabberStoneCore.Triggers
 			game.TaskQueue.ClearCurrentEvent();
 	    }
 
-	    private void Validate(IEntity source)
+	    private void Validate(Entity source)
 	    {
 		    if (_isSecret && _owner.IsExhausted && _triggerType != TriggerType.TURN_START)
 			    return;
@@ -594,7 +594,7 @@ namespace SabberStoneCore.Triggers
 				case TriggerType.SUMMON when source == _owner:
 			    case TriggerType.AFTER_SUMMON when source.Id == _owner.Id:
 			    case TriggerType.TURN_START when !EitherTurn && source != _owner.Controller:
-			    case TriggerType.DEATH when _owner.ToBeDestroyed:
+			    case TriggerType.DEATH when _owner is MinionInPlay m && m.ToBeDestroyed:
 			    case TriggerType.INSPIRE when !EitherTurn && Game.CurrentPlayer != _owner.Controller:
 				case TriggerType.SHUFFLE_INTO_DECK when Game.CurrentEventData?.EventSource.Card.AssetId == 49269:
 					return;
@@ -608,7 +608,7 @@ namespace SabberStoneCore.Triggers
 
 		    if (Condition != null)
 		    {
-			    IPlayable s = source as IPlayable ?? _owner;
+			    Playable s = source as Playable ?? _owner;
 			    if (!Condition.Eval(s))
 				    return;
 		    }

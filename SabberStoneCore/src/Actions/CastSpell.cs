@@ -21,8 +21,8 @@ namespace SabberStoneCore.Actions
 {
     public static partial class Generic
     {
-	    public static Action<Controller, Game, Spell, ICharacter, int> CastSpell
-		    => delegate(Controller c, Game game, Spell spell, ICharacter target, int chooseOne)
+	    public static Action<Controller, Game, Spell, Character, int> CastSpell
+		    => delegate(Controller c, Game game, Spell spell, Character target, int chooseOne)
 		    {
 				if (game.Logging)
 				{

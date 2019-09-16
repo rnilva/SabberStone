@@ -29,11 +29,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_opponent = opponent;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			var playable = source as IPlayable;
+			var playable = source as Playable;
 			if (playable == null || playable.Card.Entourage.Length < 1) return TaskState.STOP;
 
 			if (_count > 1)
@@ -53,7 +52,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					i++;
 				} while (i != _count);
 
-				var list = new List<IPlayable>(_count);
+				var list = new List<Playable>(_count);
 				for (int j = 0; j < _count; j++)
 					list.Add(Entity.FromCard(_opponent ? controller.Opponent : controller, Cards.FromId(ids[j])));
 
@@ -61,9 +60,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			}
 			else
 			{
-				IPlayable randomCard = Entity.FromCard(_opponent ? controller.Opponent : controller,
-					Cards.FromId(playable.Card.Entourage.Choose(game.Random)));
-				stack.Playables = new List<IPlayable> {randomCard};
+				Playable randomCard = Entity.FromCard(_opponent ? controller.Opponent : controller,
+					Cards.FromId(Util.Choose(playable.Card.Entourage)));
+				stack.Playables = new List<Playable> {randomCard};
 			}
 
 			game.OnRandomHappened(true);

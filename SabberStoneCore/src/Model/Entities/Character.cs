@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.CompilerServices;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Tasks;
@@ -22,81 +23,11 @@ using SabberStoneCore.Tasks;
 namespace SabberStoneCore.Model.Entities
 {
 	/// <summary>
-	/// Represents an entity in game which behaves as an actor. 
-	/// The actions it can perform, as well as actions it undergoes,
-	/// are defined by this interface.
-	/// 
-	/// The properties defined by this type are non complex, they have a
-	/// very superficial meaning.
-	/// </summary>
-	public partial interface ICharacter : IPlayable
-	{
-		/// <summary>
-		/// Indicates if this character can continue performing actions.
-		/// </summary>
-		bool IsDead { get; }
-
-		/// <summary>
-		/// Indicates if this character has the possibility to attack.
-		/// </summary>
-		bool CanAttack { get; }
-
-		/// <summary>
-		/// Contains a sequence of valid targets, also Characters, which
-		/// can be attacked.
-		/// </summary>
-		IEnumerable<ICharacter> ValidAttackTargets { get; }
-
-		/// <summary>
-		/// Indicates if the provided target is attackable.
-		/// 
-		/// A quick solution would be to test if there are no taunt minions
-		/// present and the target is not immune.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <returns></returns>
-		bool IsValidAttackTarget(ICharacter target);
-
-		/// <summary>
-		/// This character takes damage from a certain other entity.
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="damage"></param>
-		/// <returns></returns>
-		int TakeDamage(IPlayable source, int damage);
-
-		/// <summary>
-		/// This character gets healed by a certain other entity.
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="heal"></param>
-		void TakeHeal(IPlayable source, int heal);
-
-		/// <summary>
-		/// This character receives a heal for it's maximum health.
-		/// </summary>
-		/// <param name="source"></param>
-		void TakeFullHeal(IPlayable source);
-
-		/// <summary>
-		/// This character receives a specified amount of armor.
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="armor"></param>
-		void GainArmor(IPlayable source, int armor);
-
-		event TriggerManager.TriggerHandler AfterAttackTrigger;
-		void OnAfterAttackTrigger();
-
-		bool HasAnyValidAttackTargets { get; }
-	}
-
-	/// <summary>
-	/// Base implementation of ICharacter.
-	/// <seealso cref="ICharacter"/>
+	/// Base implementation of Character.
+	/// <seealso cref="Character"/>
 	/// <seealso cref="Playable"/>
 	/// </summary>
-	public abstract partial class Character : Playable, ICharacter
+	public abstract partial class Character : Playable
 	{
 		public event TriggerManager.TriggerHandler PreDamageTrigger;
 		public event TriggerManager.TriggerHandler TakeDamageTrigger;
@@ -121,7 +52,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="character">The source <see cref="T:SabberStoneCore.Model.Entities.Character`1" />.</param>
 		protected Character(in Controller controller, in Character character) : base(in controller, character)
 		{
-			character.CopyInternalAttributes(this);
+			//character.CopyInternalAttributes(this);
 		}
 
 		/// <summary>
@@ -151,7 +82,11 @@ namespace SabberStoneCore.Model.Entities
 					case GameTag.CANT_BE_TARGETED_BY_HERO_POWERS:
 						return CantBeTargetedBySpells ? 1 : 0;
 					case GameTag.NUM_ATTACKS_THIS_TURN:
-						return _numAttackThisTurn;
+						return NumAttacksThisTurn;
+					case GameTag.WINDFURY:
+						return HasWindfury ? 1 : 0;
+					case GameTag.POISONOUS:
+						return Poisonous ? 1 : 0;
 					default:
 						return base[t];
 				}
@@ -183,7 +118,7 @@ namespace SabberStoneCore.Model.Entities
 						CantBeTargetedBySpells = value > 0;
 						return;
 					case GameTag.NUM_ATTACKS_THIS_TURN:
-						_numAttackThisTurn = value;
+						NumAttacksThisTurn = value;
 						return;
 					default:
 						base[t] = value;
@@ -202,7 +137,7 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		public virtual bool IsValidAttackTarget(ICharacter target)
+		public virtual bool IsValidAttackTarget(Character target)
 		{
 			// got target but isn't contained in valid targets
 			if (!ValidAttackTargets.Contains(target))
@@ -211,9 +146,9 @@ namespace SabberStoneCore.Model.Entities
 				return false;
 			}
 
-			if (target is Hero)
+			if (target is HeroInPlay)
 			{
-				if (CantAttackHeroes || (this is Minion m && m.AttackableByRush))
+				if (CantAttackHeroes || (this is MinionInPlay m && m.AttackableByRush))
 				{
 					Game.Log(LogLevel.WARNING, BlockType.ACTION, "Character", !Game.Logging ? "" : $"Can't attack Heroes!");
 					return false;
@@ -226,13 +161,13 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// Returns a sequence of characters which are attackable.
 		/// </summary>
-		public IEnumerable<ICharacter> ValidAttackTargets
+		public IEnumerable<Character> ValidAttackTargets
 		{
 			get
 			{
 				bool tauntFlag = false;
-				var allTargets = new List<ICharacter>(4);
-				var allTargetsTaunt = new List<ICharacter>(2);
+				var allTargets = new List<Character>(4);
+				var allTargetsTaunt = new List<Character>(2);
 				foreach (Minion minion in Controller.Opponent.BoardZone.GetAll())
 				{
 					if (!minion.HasStealth)
@@ -252,7 +187,7 @@ namespace SabberStoneCore.Model.Entities
 
 				Hero opHero = Controller.Opponent.Hero;
 
-				if (!(this is Minion m && m.AttackableByRush) && !CantAttackHeroes && !opHero.IsImmune && !opHero.HasStealth)
+				if (!(this is MinionInPlay m && m.AttackableByRush) && !CantAttackHeroes && !opHero.IsImmune && !opHero.HasStealth)
 					allTargets.Add(opHero);
 
 				return allTargets;
@@ -273,7 +208,7 @@ namespace SabberStoneCore.Model.Entities
 				bool isOpHeroValidPlayTarget =
 					!Controller.Opponent.Hero.HasStealth && !Controller.Opponent.Hero.IsImmune;
 
-				if (isOpHeroValidPlayTarget && (!CantAttackHeroes || this is Minion m && m.AttackableByRush))
+				if (isOpHeroValidPlayTarget && (!CantAttackHeroes || this is MinionInPlay m && m.AttackableByRush))
 					return true; // Op Hero is a valid attack target
 
 				return false;
@@ -289,11 +224,11 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="source"></param>
 		/// <param name="damage"></param>
 		/// <returns></returns>
-		public int TakeDamage(IPlayable source, int damage)
+		public int TakeDamage(Playable source, int damage)
 		{
 			Game game = Game;
-			var hero = this as Hero;
-			var minion = this as Minion;
+			var hero = this as HeroInPlay;
+			var minion = this as MinionInPlay;
 
 			if (minion != null && minion.Zone.Type != Enums.Zone.PLAY)
 				return 0;
@@ -323,9 +258,9 @@ namespace SabberStoneCore.Model.Entities
 			EventMetaData temp = game.CurrentEventData;
 			game.CurrentEventData = new EventMetaData(source, this, amount);
 
-			// added pre damage
-			if (_history)
-				PreDamage = amount;
+			//// added pre damage
+			//if (_history)
+			//	PreDamage = amount;
 
 			// Predamage triggers (e.g. Ice Block)
 			if (PreDamageTrigger != null)
@@ -336,9 +271,8 @@ namespace SabberStoneCore.Model.Entities
 				amount = game.CurrentEventData.EventNumber;
 				if (amount == 0 && armor == 0)
 				{
-					if (_history)
-						PreDamage = 0;
-
+					//if (_history)
+					//	PreDamage = 0;
 					game.TaskQueue.EndEvent();
 					game.CurrentEventData = temp;
 					return 0;
@@ -350,14 +284,14 @@ namespace SabberStoneCore.Model.Entities
 				game.CurrentEventData = temp;
 
 				game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !game.Logging ? "" : $"{this} is immune.");
-				if (_history)
-					PreDamage = 0;
+				//if (_history)
+				//	PreDamage = 0;
 				return 0;
 			}
 
 			// reset predamage
-			if (_history)
-				PreDamage = 0;
+			//if (_history)
+			//	PreDamage = 0;
 
 			// remove armor first from hero ....
 			if (armor > 0)
@@ -390,7 +324,7 @@ namespace SabberStoneCore.Model.Entities
 			game.CurrentEventData = temp;
 
 			// Check if the source is lifesteal
-			if (source.HasLifeSteal && !_lifestealChecker)
+			if (source.HasLifesteal && !_lifestealChecker)
 			{
 				if (_history)
 					game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, source.Id, source.Card.Id, -1, 0)); // TriggerKeyword=LIFESTEAL
@@ -416,7 +350,7 @@ namespace SabberStoneCore.Model.Entities
 		/// Heal up all taken damage.
 		/// </summary>
 		/// <param name="source"></param>
-		public void TakeFullHeal(IPlayable source)
+		public void TakeFullHeal(Playable source)
 		{
 			TakeHeal(source, Damage);
 		}
@@ -426,7 +360,7 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="heal"></param>
-		public void TakeHeal(IPlayable source, int heal)
+		public void TakeHeal(Playable source, int heal)
 		{
 			if ((source is Spell || source is HeroPower) && source.Controller.ControllerAuraEffects[GameTag.SPELL_HEALING_DOUBLE] > 0)
 			{
@@ -468,22 +402,6 @@ namespace SabberStoneCore.Model.Entities
 				Controller.AmountHeroHealedThisTurn += amount;
 		}
 
-		/// <summary>
-		/// Gain the specified amount of armor.
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="armor"></param>
-		public void GainArmor(IPlayable source, int armor)
-		{
-			Game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !Game.Logging? "":$"{this} gaining armor for {armor}.");
-			Armor += armor;
-			EventMetaData temp = Game.CurrentEventData;
-			Game.CurrentEventData = new EventMetaData(source, this, armor);
-			Game.TriggerManager.OnArmorTrigger(this);
-			//Game.ProcessTasks();
-			Game.CurrentEventData = temp;
-		}
-
 		public void OnAfterAttackTrigger()
 		{
 			AfterAttackTrigger?.Invoke(this);
@@ -492,307 +410,119 @@ namespace SabberStoneCore.Model.Entities
 		public override string Hash(params GameTag[] ignore)
 		{
 			var sb = new StringBuilder(base.Hash(ignore));
-			sb.Append($"[A:{_modifiedATK}, ");
-			sb.Append($"H:{_modifiedHealth}, ");
-			sb.Append($"D:{_damage}]");
+			//sb.Append($"[A:{_modifiedATK}, ");
+			//sb.Append($"H:{_modifiedHealth}, ");
+			//sb.Append($"D:{_damage}]");
 			return sb.ToString();
 		}
 	}
-
-	public partial interface ICharacter
-	{
-		/// <summary>
-		/// The amount of damage this character can output.
-		/// </summary>
-		int AttackDamage { get; set; }
-
-		/// <summary>
-		/// The amount of damage taken during the evaluation of one phase.
-		/// </summary>
-		int Damage { get; set; }
-
-		/// <summary>
-		/// The amount of damage this character is about to take.
-		/// </summary>
-		int PreDamage { get; set; }
-
-		/// <summary>
-		/// The amount of health this character has remaing. This value is returned
-		/// AFTER SUBTRACTING the pending damage for this entity.
-		/// </summary>
-		int Health { get; set; }
-
-		/// <summary>
-		/// The starting amount of health of this character.
-		/// </summary>
-		int BaseHealth { get; }
-
-		/// <summary>
-		/// This character is currently attacking another character.
-		/// </summary>
-		bool IsAttacking { get; set; }
-
-		/// <summary>
-		/// This character is currently defending against another character.
-		/// </summary>
-		bool IsDefending { get; set; }
-
-		/// <summary>
-		/// Amount of attacks this character has executed during this turn.
-		/// </summary>
-		int NumAttacksThisTurn { get; set; }
-
-		/// <summary>
-		/// Character is member of Race.
-		/// Characters of Race.ALL.  IE Amalgam.IsRace(Race.MULROC/Race.DRAGON/...) => true
-		/// </summary>
-		bool IsRace(Race race);
-
-		///// <summary>
-		///// Character should exit combat.
-		///// </summary>
-		//bool ShouldExitCombat { get; set; }
-
-		/// <summary>
-		/// Character is frozen.
-		/// </summary>
-		bool IsFrozen { get; set; }
-
-		/// <summary>
-		/// Character is silenced.
-		/// </summary>
-		bool IsSilenced { get; set; }
-
-		/// <summary>
-		/// Character is immune.
-		/// </summary>
-		bool IsImmune { get; set; }
-
-		/// <summary>
-		/// Character has taunt.
-		/// </summary>
-		bool HasTaunt { get; set; }
-
-		/// <summary>
-		/// Character has windfury.
-		/// </summary>
-		bool HasWindfury { get; }
-
-		/// <summary>
-		/// Character has stealth.
-		/// </summary>
-		bool HasStealth { get; }
-
-		/// <summary>
-		/// Character can't be targeted by spells.
-		/// </summary>
-		bool CantBeTargetedBySpells { get; set; }
-
-		/// <summary>
-		/// Character can't be targeted by opponents.
-		/// </summary>
-		bool CantBeTargetedByOpponents { get; set; }
-
-		/// <summary>
-		/// Character can't be targeted by heropowers.
-		/// </summary>
-		bool CantBeTargetedByHeroPowers { get; }
-
-	}
-
 	public abstract partial class Character
 	{
 		private bool _lifestealChecker;
 
-		internal int? _modifiedATK;
-		internal int? _modifiedHealth;
-		internal bool? _modifiedStealth;
-		internal bool? _modifiedImmune;
-		internal bool? _modifiedTaunt;
-		internal bool? _modifiedCantBeTargetedBySpells;
-
-		internal int _damage;
-		internal int _numAttackThisTurn;
-
-		internal void CopyInternalAttributes(in Character copy)
-		{
-			copy._modifiedATK = _modifiedATK;
-			copy._modifiedHealth = _modifiedHealth;
-			copy._damage = _damage;
-			copy._numAttackThisTurn = _numAttackThisTurn;
-			copy._modifiedStealth = _modifiedStealth;
-			copy._modifiedImmune = _modifiedImmune;
-			copy._modifiedTaunt = _modifiedTaunt;
-			copy._modifiedCantBeTargetedBySpells = _modifiedCantBeTargetedBySpells;
-		}
+		//internal void CopyInternalAttributes(in Character copy)
+		//{
+		//	copy._modifiedATK = _modifiedATK;
+		//	copy._modifiedHealth = _modifiedHealth;
+		//	copy._damage = _damage;
+		//	copy._numAttackThisTurn = _numAttackThisTurn;
+		//	copy._modifiedStealth = _modifiedStealth;
+		//	copy._modifiedImmune = _modifiedImmune;
+		//	copy._modifiedTaunt = _modifiedTaunt;
+		//	copy._modifiedCantBeTargetedBySpells = _modifiedCantBeTargetedBySpells;
+		//}
 
 #pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
 
 		public virtual int AttackDamage
 		{
-			get
-			{
-				int value = _modifiedATK ?? (_modifiedATK = Card.ATK).Value;
-
-				value += AuraEffects?.ATK ?? 0;
-
-				return value < 0 ? 0 : value;
-			}
-			set
-			{
-				if (_logging)
-					Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Entity", !Game.Logging ? "" : $"{this} set data {GameTag.ATK} to {value}");
-				if (_history && value + (AuraEffects?.ATK ?? 0) != AttackDamage)
-				{
-					Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.ATK, value));
-					_data[GameTag.ATK] = value;
-				}
-
-				_modifiedATK = value;
-			}
+			get => _v1 ?? (_v1 = Card.ATK).Value;
+			set => _v1 = value;
 		}
-
-		public int BaseHealth
+		public virtual int BaseHealth
 		{
-			get
-			{
-				int value = _modifiedHealth ?? (_modifiedHealth = Card.Health).Value;
-
-				return value + (AuraEffects?.Health ?? 0);
-			}
-			set
-			{
-				if (_logging)
-					Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Entity", !Game.Logging ? "" : $"{this} set data {GameTag.HEALTH} to {value}");
-				if (_history && value + (AuraEffects?.Health ?? 0) != AttackDamage)
-				{
-					Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.HEALTH, value));
-					_data[GameTag.HEALTH] = value;
-				}
-
-				_modifiedHealth = value;
-			}
+			get => _v2 ?? (_v2 = Card.Health).Value;
+			set => _v2 = value;
 		}
-
-		public int Damage
+		public virtual int Damage
 		{
-			get => _damage;
-			set
-			{
-				// don't allow negative values
-				if (value < 0)
-					value = 0;
-				else if (BaseHealth <= value)
-					ToBeDestroyed = true;
-
-				if (_logging)
-					Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Entity", !Game.Logging ? "" : $"{this} set data {GameTag.DAMAGE} to {value}");
-				if (_history && value != _damage)
-				{
-					Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.DAMAGE, value));
-					_data[GameTag.DAMAGE] = value;
-				}
-
-				_damage = value;
-			}
+			get => default;
+			set{ return; }
 		}
 
 		public int Health
 		{
-			get => BaseHealth - _damage;
+			get => BaseHealth - Damage;
 			set
 			{
 				if (value == 0)
 				{
 					ToBeDestroyed = true;
 				}
-
-				_modifiedHealth = value;
-				_damage = 0;
-
-				if (_logging)
-				{
-					Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Entity", !Game.Logging ? "" : $"{this} set data {GameTag.HEALTH} to {value}");
-					Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Entity", !Game.Logging ? "" : $"{this} set data {GameTag.DAMAGE} to {value}");
-				}
-
-				if (_history)
-				{
-					Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.HEALTH, value));
-					_data[GameTag.HEALTH] = value;
-					Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.DAMAGE, 0));
-					_data[GameTag.DAMAGE] = 0;
-				}
+				BaseHealth = value;
+				Damage = 0;
 			}
 		}
-
-		public bool CantAttack
+		public virtual bool CantAttack
 		{
-			get
-			{
-				if (!_data.TryGetValue(GameTag.CANT_ATTACK, out int value))
-					return Card.CantAttack;
-				
-				return value > 0;
-			}
-			set => this[GameTag.CANT_ATTACK] = value ? 1 : 0;
+			get => Card.CantAttack;
+			set => throw new NotImplementedException();
 		}
-
 		public virtual bool CantAttackHeroes
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.CANNOT_ATTACK_HEROES, out int value);
-				return value > 0;
-			}
-			set => this[GameTag.CANNOT_ATTACK_HEROES] = value ? 1 : 0;
+			get => Card[GameTag.CANNOT_ATTACK_HEROES] == 1;
+			set => throw new NotImplementedException();
 		}
-
-		public bool CantBeTargetedBySpells
+		public virtual bool CantBeTargetedBySpells
 		{
-			get => (AuraEffects?.CantBeTargetedBySpells ?? false) ||
-			       (_modifiedCantBeTargetedBySpells ??
-			        (_modifiedCantBeTargetedBySpells = Card.CantBeTargetedBySpells).Value);
-			set
-			{
-				_modifiedCantBeTargetedBySpells = value;
-				if (_history)
-				{
-					base[GameTag.CANT_BE_TARGETED_BY_SPELLS] = value ? 1 : 0;
-					base[GameTag.CANT_BE_TARGETED_BY_HERO_POWERS] = value ? 1 : 0;
-				}
-			}
+			get => Card.CantBeTargetedBySpells;
+			set => throw new NotImplementedException();
 		}
-
-		public bool CantBeTargetedByHeroPowers
+		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
+		public virtual bool IsImmune
 		{
-			get => CantBeTargetedBySpells;
+			get => default;
+			set => throw new NotImplementedException();
 		}
-
-		public int Armor
+		public virtual bool IsFrozen
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.ARMOR, out int value);
-				return value;
-			}
-			set { this[GameTag.ARMOR] = value; }
+			get => default;
+			set => throw new NotImplementedException();
 		}
-
-		public int LastAffectedBy
+		public virtual bool HasTaunt
 		{
-			get
-			{
-				_data.TryGetValue(GameTag.LAST_AFFECTED_BY, out int value);
-				return value;
-			}
-			set { this[GameTag.LAST_AFFECTED_BY] = value; }
+			get => Card.Taunt;
+			set => throw new NotImplementedException();
 		}
-
-		public bool CantBeTargetedByOpponents
+		public virtual bool HasWindfury
 		{
-			get { return this[GameTag.CANT_BE_TARGETED_BY_OPPONENTS] == 1; }
-			set { this[GameTag.CANT_BE_TARGETED_BY_OPPONENTS] = value ? 1 : 0; }
+			get => Card.Windfury;
+			set => throw new NotImplementedException();
+		}
+		public virtual bool Poisonous
+		{
+			get => Card.Poisonous;
+			set => throw new NotImplementedException();
+		}
+		public virtual bool HasStealth
+		{
+			get => Card.Stealth;
+			set => throw new NotImplementedException();
+		}
+		public virtual int NumAttacksThisTurn
+		{
+			get => default;
+			set => throw new NotImplementedException();
+		}
+		public virtual bool AutoAttack
+		{
+			get => Card[GameTag.AUTOATTACK] == 1;
+			set => throw new NotImplementedException();
+		}
+		public virtual bool ToBeDestroyed
+		{
+			get => default;
+			set => throw new NotImplementedException();
 		}
 
 		public bool IsAttacking
@@ -806,93 +536,12 @@ namespace SabberStoneCore.Model.Entities
 			get { return this[GameTag.DEFENDING] == 1; }
 			set { this[GameTag.DEFENDING] = value ? 1 : 0; }
 		}
-
-		public virtual bool IsImmune
-		{
-			get => _modifiedImmune == true;
-			set
-			{
-				_modifiedImmune = value;
-				base[GameTag.IMMUNE] = value ? 1 : 0;
-			}
-		}
-
-		public bool IsFrozen
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.FROZEN, out int value);
-				return value == 1;
-			}
-			set
-			{
-				if (value)
-				{
-					Game.TriggerManager.OnFreezeTrigger(this);
-					base[GameTag.FROZEN] = 1;
-				}
-				else
-				{
-					base[GameTag.FROZEN] = 0;
-				}
-			}
-		}
-
-		public bool IsSilenced
-		{
-			get { return _data.ContainsKey(GameTag.SILENCED); }
-			set { this[GameTag.SILENCED] = value ? 1 : 0; }
-		}
-
-		public bool HasTaunt
-		{
-			get => (AuraEffects?.Taunt ?? false) || (_modifiedTaunt ?? (_modifiedTaunt = Card.Taunt).Value);
-			set
-			{
-				_modifiedTaunt = value;
-				base[GameTag.TAUNT] = value ? 1 : 0;
-			}
-		}
-
-		public abstract bool HasWindfury { get; set; }
-
-		public bool HasStealth
-		{
-			get => _modifiedStealth ?? (_modifiedStealth = Card.Stealth).Value;
-			}
-			set
-				_modifiedStealth = value;
-				base[GameTag.STEALTH] = value ? 1 : 0;
-				if (_history)
-					this[GameTag.STEALTH] = value ? 1 : 0;
-			}
-		}
-
-		public int NumAttacksThisTurn
-		{
-			get => _numAttackThisTurn;
-			set
-			{
-				_numAttackThisTurn = value;
-				if (_history)
-					base[GameTag.NUM_ATTACKS_THIS_TURN] = value;
-			}
-		}
-
-		public int PreDamage
-		{
-			get => _data[GameTag.PREDAMAGE];
-			set => this[GameTag.PREDAMAGE] = value;
-		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool IsRace(Race race) => Card.IsRace(race);
 
-		public bool ShouldExitCombat
-		{
-			get { return this[GameTag.SHOULDEXITCOMBAT] == 1; }
-			set { this[GameTag.SHOULDEXITCOMBAT] = value ? 1 : 0; }
-		}
+		internal abstract ref bool GetRef(int index);
+		internal abstract bool GetAttribute(Attributes attr);
+		internal abstract void SetAttribute(Attributes attr, bool value);
 #pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
-
 	}
 }

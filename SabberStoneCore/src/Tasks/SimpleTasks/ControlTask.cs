@@ -29,12 +29,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public bool Opposite { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			//IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables).ForEach(p =>
-			foreach (IPlayable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
+			foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
 			{
 				if (p.Zone.Type != Zone.PLAY)
 					continue; //return;
@@ -45,7 +44,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					continue; //return;
 				}
 
-				Minion removedEntity = (Minion) p.Zone.Remove(p);
+				MinionInPlay removedEntity = (MinionInPlay) p.Zone.Remove(p);
 				game.AuraUpdate();
 				removedEntity.Controller = Opposite ? controller.Opponent : controller;
 				removedEntity[GameTag.CONTROLLER] = removedEntity.Controller.PlayerId;

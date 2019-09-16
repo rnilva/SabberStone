@@ -29,15 +29,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public bool SpellDmg { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (stack.Number < 1) return TaskState.STOP;
 
 
-			foreach (IPlayable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
-				Generic.DamageCharFunc.Invoke(source as IPlayable, p as ICharacter, stack.Number, SpellDmg);
+			foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
+				Generic.DamageCharFunc.Invoke(source as Playable, p as Character, stack.Number, SpellDmg);
 
 			return TaskState.COMPLETE;
 		}

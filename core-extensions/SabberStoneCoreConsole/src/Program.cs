@@ -238,7 +238,7 @@ namespace SabberStoneCoreConsole
 			game.Player2.BaseMana = 10;
 			game.StartGame();
 
-			IPlayable molten = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Molten Blade"));
+			Playable molten = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Molten Blade"));
 			for (int i = 0; i < 5; i++)
 			{
 				game.Process(EndTurnTask.Any(game.CurrentPlayer));
@@ -323,7 +323,7 @@ namespace SabberStoneCoreConsole
 			game.Player2.BaseMana = 10;
 			game.StartGame();
 
-			IPlayable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elder Longneck"));
+			Playable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elder Longneck"));
 			Game clone1 = game.Clone();
 			Game clone2 = game.Clone();
 			Game clone3 = game.Clone();
@@ -964,12 +964,12 @@ namespace SabberStoneCoreConsole
 			game.Player2.BaseMana = 10;
 			game.StartGame();
 
-			var minion = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			var minion = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
-			IPlayable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Power Word: Shield"));
+			Playable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Power Word: Shield"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell1, minion));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			IPlayable spell2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hunter's Mark"));
+			Playable spell2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hunter's Mark"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell2, minion));
 
 			ShowLog(game, LogLevel.VERBOSE);
@@ -1023,7 +1023,7 @@ namespace SabberStoneCoreConsole
 				game.StartGame();
 				game.Player1.BaseMana = 10;
 				game.Player2.BaseMana = 10;
-				IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dirty Rat"));
+				Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dirty Rat"));
 				bool hasMinion = game.CurrentOpponent.HandZone.Any(p => p is Minion);
 				game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 
@@ -1062,9 +1062,9 @@ namespace SabberStoneCoreConsole
 			Minion grim = game.CurrentPlayer.BoardZone[0];
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, "Stonetusk Boar"));
-			IPlayable boar = game.CurrentPlayer.BoardZone[0] as Minion;
+			Playable boar = game.CurrentPlayer.BoardZone[0] as Minion;
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, "Reckless Rocketeer"));
-			IPlayable rocke = game.CurrentPlayer.BoardZone[1] as Minion;
+			Playable rocke = game.CurrentPlayer.BoardZone[1] as Minion;
 			game.Process(MinionAttackTask.Any(game.CurrentPlayer, boar, grim));
 			game.Process(MinionAttackTask.Any(game.CurrentPlayer, rocke, grim));
 
@@ -1089,7 +1089,7 @@ namespace SabberStoneCoreConsole
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Kazakus"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Kazakus"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			game.Process(ChooseTask.Pick(game.CurrentPlayer, game.CurrentPlayer.Choice.Choices[0]));
 			game.Process(ChooseTask.Pick(game.CurrentPlayer, game.CurrentPlayer.Choice.Choices[0]));
@@ -1113,7 +1113,7 @@ namespace SabberStoneCoreConsole
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tortollan Primalist"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tortollan Primalist"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 			game.Process(ChooseTask.Pick(game.CurrentPlayer, game.CurrentPlayer.Choice.Choices[0]));
 			ShowLog(game, LogLevel.VERBOSE);
@@ -1136,7 +1136,7 @@ namespace SabberStoneCoreConsole
 
 				game.CurrentPlayer.NumSpellsPlayedThisGame = 30;
 
-				IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName(@"Yogg-Saron, Hope's End"));
+				Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName(@"Yogg-Saron, Hope's End"));
 				game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 
 				ShowLog(game, LogLevel.VERBOSE);
@@ -1173,7 +1173,7 @@ namespace SabberStoneCoreConsole
 					game.CurrentPlayer.PlayHistory.Add(new PlayHistoryEntry(card));
 				}
 
-				IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tess Greymane"));
+				Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tess Greymane"));
 				game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 
 				ShowLog(game, LogLevel.VERBOSE);
@@ -1210,7 +1210,7 @@ namespace SabberStoneCoreConsole
 					game.CurrentPlayer.PlayHistory.Add(new PlayHistoryEntry(card));
 				}
 
-				IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shudderwock"));
+				Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shudderwock"));
 				game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 
 				ShowLog(game, LogLevel.DEBUG);

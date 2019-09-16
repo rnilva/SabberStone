@@ -49,18 +49,17 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public RelaCondition[] RelaConditions { get; set; }
 		public EntityType Type { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			IList<IPlayable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
+			IList<Playable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 			if (entities.Count == 0)
 				return TaskState.STOP;
 
-			var playableSource = (IPlayable) source;
+			var playableSource = (Playable) source;
 
 			bool flag = true;
-			foreach (IPlayable p in entities)
+			foreach (Playable p in entities)
 			{
 				int i;
 				for (i = 0; i < SelfConditions.Length; i++)
@@ -100,9 +99,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_reference = Int32.MinValue;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
-			in TaskStack stack = null)
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+			in TaskStack stack)
 		{
 			if (_reference == Int32.MinValue)
 			{

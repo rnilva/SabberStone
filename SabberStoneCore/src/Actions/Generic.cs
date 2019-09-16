@@ -31,7 +31,7 @@ namespace SabberStoneCore.Actions
 	public static partial class Generic
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public static Func<IPlayable, ICharacter, int, bool, int> DamageCharFunc
+		public static Func<Playable, Character, int, bool, int> DamageCharFunc
 			=> (source, target, amount, applySpellDmg) =>
 			{
 				if (applySpellDmg)
@@ -107,21 +107,16 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Controller, IPlayable, bool> RemoveFromZone
-			=> delegate (Controller c, IPlayable playable)
+		public static Func<Controller, Playable, bool> RemoveFromZone
+			=> delegate (Controller c, Playable playable)
 			{
 				playable.Zone.Remove(playable);
 				return true;
 			};
 
-		public static Func<Controller, IPlayable, bool> AddHandPhase
-			=> delegate (Controller c, IPlayable playable)
+		public static Func<Controller, Playable, bool> AddHandPhase
+			=> delegate (Controller c, Playable playable)
 			{
-				if (playable is PlayableSurrogate ps)
-				{
-					playable = ps.CastToPlayable(in c);
-				}
-
 				if (c.HandZone.IsFull)
 				{
 					c.Game.Log(LogLevel.INFO, BlockType.PLAY, "AddHandPhase", !c.Game.Logging ? "" : $"Hand ist full. Card {playable} drawn is burnt to graveyard.");
@@ -139,12 +134,12 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Controller, IPlayable, bool> DiscardBlock
-			=> delegate (Controller c, IPlayable playable)
+		public static Func<Controller, Playable, bool> DiscardBlock
+			=> delegate (Controller c, Playable playable)
 			{
 				bool triggered = c.Game.TriggerManager.OnDiscardTrigger(playable);
 
-				IPlayable discard = c.HandZone.Remove(playable);
+				Playable discard = c.HandZone.Remove(playable);
 				c.Game.Log(LogLevel.INFO, BlockType.PLAY, "DiscardBlock", !c.Game.Logging ? "" : $"{discard} is beeing discarded.");
 				c.GraveyardZone.Add(discard);
 
@@ -160,10 +155,10 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Controller, CardType, IPlayable> JoustBlock
+		public static Func<Controller, CardType, Playable> JoustBlock
 			=> delegate (Controller c, CardType type)
 			{
-				IPlayable card, cardOp;
+				Playable card, cardOp;
 				{
 					var rnd = c.Game.Random;
 					var span = c.DeckZone.GetSpan();
@@ -237,8 +232,8 @@ namespace SabberStoneCore.Actions
 				return success ? card : null;
 			};
 
-		public static Func<Controller, IEntity, IPlayable, bool> ShuffleIntoDeck
-			=> delegate (Controller c, IEntity sender, IPlayable playable)
+		public static Func<Controller, Entity, Playable, bool> ShuffleIntoDeck
+			=> delegate (Controller c, Entity sender, Playable playable)
 			{
 				if (c.DeckZone.IsFull)
 				{
@@ -253,18 +248,7 @@ namespace SabberStoneCore.Actions
 				//c.DeckZone.Add(playable, c.DeckZone.Count == 0 ? -1 : Util.Random.Next(c.DeckZone.Count + 1));
 				c.DeckZone.AddAtRandomPosition(playable);
 
-				if (sender is IPlayable p && c.Game.TriggerManager.HasShuffleIntoDeckTrigger)
-				{
-					EventMetaData temp = c.Game.CurrentEventData;
-
-					c.Game.CurrentEventData = new EventMetaData(p, playable);
-
-					c.Game.TriggerManager.OnShuffleIntoDeckTrigger(playable);
-
-					c.Game.CurrentEventData = temp;
-				}
-
-				if (sender is IPlayable p && c.Game.TriggerManager.HasShuffleIntoDeckTrigger)
+				if (sender is Playable p && c.Game.TriggerManager.HasShuffleIntoDeckTrigger)
 				{
 					EventMetaData temp = c.Game.CurrentEventData;
 
@@ -282,17 +266,20 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Controller, Card, Minion, bool> TransformBlock
-			=> delegate (Controller c, Card card, Minion oldMinion)
+		public static Func<Controller, Card, MinionInPlay, bool> TransformBlock
+			=> delegate (Controller c, Card card, MinionInPlay oldMinion)
 			{
 				if (oldMinion.Zone?.Type != Zone.PLAY)
 					return false;
 
-				if (!(Entity.FromCard(c, card) is Minion newMinion))
-				{
-					c.Game.Log(LogLevel.WARNING, BlockType.PLAY, "TransformBlock", !c.Game.Logging ? "" : $"missing final tranformation.");
-					return false;
-				}
+				//if (!(Entity.FromCard(c, card) is Minion newMinion))
+				//{
+				//	c.Game.Log(LogLevel.WARNING, BlockType.PLAY, "TransformBlock", !c.Game.Logging ? "" : $"missing final tranformation.");
+				//	return false;
+				//}
+
+				MinionInPlay newMinion = MinionInPlay.FromCard(in c, in card);
+
 
 				//oldMinion[GameTag.LINKED_ENTITY] = newMinion.Id;
 				//newMinion[GameTag.LINKED_ENTITY] = oldMinion.Id;
@@ -315,12 +302,12 @@ namespace SabberStoneCore.Actions
 		/// <param name="num1">ScriptTag1</param>
 		/// <param name="num2">ScriptTag2</param>
 		/// <param name="entityId">The entity ID to be stored in the enchantment. (e.g. carnivorous Cube)</param>
-		public static void AddEnchantmentBlock(in Game g, in Card enchantmentCard, in IPlayable creator, IEntity target, int num1 = -1, int num2 = -1, int entityId = 0)
+		public static void AddEnchantmentBlock(in Game g, in Card enchantmentCard, in Playable creator, IEntity target, int num1 = -1, int num2 = -1, int entityId = 0)
 		{
 			Power power = enchantmentCard.Power;
 
 			if (power.Enchant is OngoingEnchant &&
-			    target is IPlayable entity &&
+			    target is Playable entity &&
 			    entity.OngoingEffect is OngoingEnchant ongoingEnchant)
 			{	// Increment the count of existing OngoingEnchant
 				ongoingEnchant.Count++;
@@ -334,10 +321,10 @@ namespace SabberStoneCore.Actions
 				Enchantment enchantment = Enchantment.GetInstance(creator.Controller, in creator, in target, in enchantmentCard, num1, num2);
 
 				power.Aura?.Activate(enchantment);
-				power.Trigger?.Activate(enchantment);
+				power.Trigger?.Activate(g, enchantment);
 
 				if (power.Enchant?.RemoveWhenPlayed ?? false)
-					Enchant.RemoveWhenPlayedTrigger.Activate(enchantment);
+					Enchant.RemoveWhenPlayedTrigger.Activate(g, enchantment);
 
 				if (entityId > 0)
 				{
@@ -352,8 +339,8 @@ namespace SabberStoneCore.Actions
 			power.Enchant?.ActivateTo(target, num1, num2);
 		}
 
-		public static Func<Controller, IPlayable, Card, bool, IPlayable> ChangeEntityBlock
-			=> delegate (Controller c, IPlayable p, Card newCard, bool removeEnchantments)
+		public static Func<Controller, Playable, Card, bool, Playable> ChangeEntityBlock
+			=> delegate (Controller c, Playable p, Card newCard, bool removeEnchantments)
 			{
 				c.Game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "ChangeEntityBlock",
 					!c.Game.Logging ? "" : $"{p} is changed into {newCard}.");
@@ -432,6 +419,7 @@ namespace SabberStoneCore.Actions
 				else
 				{
 					Playable entity;
+					EntityData data = (EntityData) p.NativeTags;
 					switch (newCard.Type)
 					{
 						case CardType.MINION:
@@ -477,9 +465,9 @@ namespace SabberStoneCore.Actions
 
 					if (hand != null)
 						hand.ChangeEntity(p, entity);
-					else if
-						(board != null)
-						board.ChangeEntity((Minion)p, (Minion)entity);
+					//else if
+					//	(board != null)
+					//	board.ChangeEntity((MinionInPlay)p, (Minion)entity);
 					else if (p.Zone is DeckZone deck)
 						deck.ChangeEntity(p, entity);
 
@@ -506,7 +494,7 @@ namespace SabberStoneCore.Actions
 
 					if (newCard.AssetId == 43310)
 					{
-						var chooseOnes = new IPlayable[4];
+						var chooseOnes = new Playable[4];
 						chooseOnes[0] = Entity.FromCard(in c, Cards.FromId("TRL_343at1"), tags, c.SetasideZone);
 						chooseOnes[1] = Entity.FromCard(in c, Cards.FromId("TRL_343ct1"), tags, c.SetasideZone);
 						chooseOnes[2] = Entity.FromCard(in c, Cards.FromId("TRL_343dt1"), tags, c.SetasideZone);
@@ -517,7 +505,7 @@ namespace SabberStoneCore.Actions
 					else
 					{
 						if (p.ChooseOnePlayables == null)
-							p.ChooseOnePlayables = new IPlayable[2];
+							p.ChooseOnePlayables = new Playable[2];
 
 
 						p.ChooseOnePlayables[0] = Entity.FromCard(c, Cards.FromId(newCard.Id + "a"), tags, c.SetasideZone);
@@ -615,7 +603,7 @@ namespace SabberStoneCore.Actions
 		}
 
 		// Work in progress
-		public static void RevealCardBlock(IPlayable source, IPlayable target)
+		public static void RevealCardBlock(Playable source, Playable target)
 		{
 			Game game = source.Game;
 			if (!game.History) return;
@@ -629,8 +617,8 @@ namespace SabberStoneCore.Actions
 		}
 
 		// TODO: Posionous Block
-		public static Func<bool, ICharacter, ICharacter, bool> PoisonousBlock
-			=> delegate (bool history, ICharacter source, ICharacter target)
+		public static Func<bool, Character, Character, bool> PoisonousBlock
+			=> delegate(bool history, Character source, Character target)
 			{
 				if (source[GameTag.POISONOUS] != 1)
 					return false;

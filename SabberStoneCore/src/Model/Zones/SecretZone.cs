@@ -57,7 +57,7 @@ namespace SabberStoneCore.Model.Zones
 
 				Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Quest {entity} has been added to zone '{Type}'.");
 
-				entity.OrderOfPlay = Game.NextOop;
+				//entity.OrderOfPlay = Game.NextOop;
 
 				return;
 			}
@@ -66,7 +66,7 @@ namespace SabberStoneCore.Model.Zones
 			Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? ""
 				: $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}' in position '{entity.ZonePosition}'."); 
 
-			entity.OrderOfPlay = Game.NextOop;
+			//entity.OrderOfPlay = Game.NextOop;
 		}
 
 		public override void ChangeEntity(Spell oldEntity, Spell newEntity)

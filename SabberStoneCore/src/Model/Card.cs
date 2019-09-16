@@ -31,7 +31,7 @@ namespace SabberStoneCore.Model
 	public sealed class Card
 	{
 		/// <summary>
-		/// Constraint condition based on the state of a target <see cref="ICharacter"/>.
+		/// Constraint condition based on the state of a target <see cref="Character"/>.
 		/// Returns true if the target is valid for this card.
 		/// The result of this predicate is independent of <see cref="TargetingType"/> of this card.
 		/// null if there is no such a condtion for this card.
@@ -58,28 +58,30 @@ namespace SabberStoneCore.Model
 		public int ATK { get; private set; }
 		public int Health { get; private set; }
 		public int SpellPower { get; private set; }
+
 		public bool Taunt { get; private set; }
-		public bool Charge { get; private set; }
-		public bool Stealth { get; private set; }
-		public bool Poisonous { get; private set; }
 		public bool DivineShield { get; private set; }
-		public bool Windfury { get; private set; }
-		public bool LifeSteal { get; private set; }
-		public bool Echo { get; private set; }
-		public bool Rush { get; private set; }
+		public bool Stealth { get; private set; }
 		public bool CantBeTargetedBySpells { get; private set; }
-		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
+		public bool Windfury { get; private set; }
+		public bool Charge { get; private set; }
+		public bool Poisonous { get; private set; }
+		public bool LifeSteal { get; private set; }
+		public bool Rush { get; private set; }
+		public bool Deathrattle { get; }
 		public bool CantAttack { get; private set; }
+
+		public bool Echo { get; private set; }
 		public bool Modular { get; private set; }
 		public bool ChooseOne { get; private set; }
 		public bool Combo { get; private set; }
 		public bool IsSecret { get; private set; }
 		public bool IsQuest { get; private set; }
-		public bool Deathrattle { get; }
 		public bool Untouchable { get; private set; }
 		public bool HideStat { get; private set; }
 		public bool ReceivesDoubleSpelldamageBonus { get; private set; }
 		public bool Freeze { get; }
+		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
 
 
 		private Card()
@@ -379,509 +381,25 @@ namespace SabberStoneCore.Model
 				Text += " @spelldmg";
 				IsAffectedBySpellDamage = true;
 			}
-		}
 
-		/// <summary>
-		/// Constraint condition based on the state of a target <see cref="ICharacter"/>.
-		/// Returns true if the target is valid for this card.
-		/// The result of this predicate is independent of <see cref="TargetingType"/> of this card.
-		/// null if there is no such a condtion for this card.
-		/// </summary>
-		public TargetingPredicate TargetingPredicate { get; private set; }
-		/// <summary>
-		/// Returns true if playing this card requires targeting, based on the given state of a <see cref="Controller"/>.
-		/// Can be null.
-		/// </summary>
-		public AvailabilityPredicate TargetingAvailabilityPredicate { get; private set; }
-		/// <summary>
-		/// Returns false if this card cannot be played with respect to the given state of a <see cref="Controller"/>.
-		/// </summary>
-		public AvailabilityPredicate PlayAvailabilityPredicate { get; private set; }
-		/// <summary>
-		/// True if playing this card requires at least one valid target.
-		/// </summary>
-		public bool MustHaveTargetToPlay { get; private set; }
-		/// <summary>
-		/// Represents the range of characters in which a card can target.
-		/// </summary>
-		public TargetingType TargetingType { get; private set; }
-
-		public int ATK { get; private set; }
-		public int Health { get; private set; }
-		public int SpellPower { get; private set; }
-		public bool Taunt { get; private set; }
-		public bool Charge { get; private set; }
-		public bool Stealth { get; internal set; }
-		public bool Poisonous { get; private set; }
-		public bool DivineShield { get; private set; }
-		public bool Windfury { get; private set; }
-		public bool LifeSteal { get; private set; }
-		public bool Echo { get; private set; }
-		public bool Rush { get; private set; }
-		public bool CantBeTargetedBySpells { get; private set; }
-		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
-		public bool CantAttack { get; private set; }
-		public bool Modular { get; private set; }
-		public bool ChooseOne { get; private set; }
-		public bool Combo { get; private set; }
-		public bool IsSecret { get; private set; }
-		public bool IsQuest { get; private set; }
-		public bool Deathrattle { get; }
-		public bool Untouchable { get; private set; }
-		public bool HideStat { get; private set; }
-		public bool ReceivesDoubleSpelldamageBonus { get; private set; }
-		public bool Freeze { get; }
-		public bool Overkill { get; }
-
-		public bool TwinSpell { get; }
-		private Card()
-		{
-
-		}
-
-		internal Card(string id, int assetId, Tag[] tags,
-			Dictionary<PlayReq, int> playRequirements, string[] entourage, Tag[] refTags)
-		{
-			Id = id;
-			AssetId = assetId;
-			Entourage = entourage;
-			PlayRequirements = playRequirements;
-			var tagDict = new Dictionary<GameTag, int>();
-			var refTagDict = new Dictionary<GameTag, int>();
-
-			#region Preprocessing tags.
-			foreach (Tag tag in tags)
+			#region Temporary: Minion Attributes
+			unsafe
 			{
-				if (tag.TagValue.HasIntValue)
-				{
-					tagDict.Add(tag.GameTag, tag.TagValue);
-					switch (tag.GameTag)
-					{
-						case GameTag.COST:
-							Cost = tag.TagValue;
-							break;
-						case GameTag.ATK:
-							ATK = tag.TagValue;
-							break;
-						case GameTag.HEALTH:
-							Health = tag.TagValue;
-							break;
-						case GameTag.OVERLOAD:
-							HasOverload = true;
-							Overload = tag.TagValue;
-							break;
-						case GameTag.SPELLPOWER:
-							SpellPower = tag.TagValue;
-							break;
-						case GameTag.CHOOSE_ONE:
-							ChooseOne = true;
-							break;
-						case GameTag.COMBO:
-							Combo = true;
-							break;
-						case GameTag.TAUNT:
-							Taunt = true;
-							break;
-						case GameTag.CHARGE:
-							Charge = true;
-							break;
-						case GameTag.STEALTH:
-							Stealth = true;
-							break;
-						case GameTag.POISONOUS:
-							Poisonous = true;
-							break;
-						case GameTag.DIVINE_SHIELD:
-							DivineShield = true;
-							break;
-						case GameTag.WINDFURY:
-							Windfury = true;
-							break;
-						case GameTag.LIFESTEAL:
-							LifeSteal = true;
-							break;
-						case GameTag.ECHO:
-							Echo = true;
-							break;
-						case GameTag.RUSH:
-							Rush = true;
-							break;
-						case GameTag.OVERKILL:
-							Overkill = true;
-							break;
-						case GameTag.TWINSPELL:
-							TwinSpell = true;
-							break;
-						case GameTag.CANT_BE_TARGETED_BY_SPELLS:
-							CantBeTargetedBySpells = true;
-							break;
-						case GameTag.CANT_ATTACK:
-							CantAttack = true;
-							break;
-						case GameTag.MODULAR:
-							Modular = true;
-							break;
-						case GameTag.SECRET:
-							IsSecret = true;
-							break;
-						case GameTag.QUEST:
-							IsQuest = true;
-							break;
-						case GameTag.DEATHRATTLE:
-							Deathrattle = true;
-							break;
-						case GameTag.UNTOUCHABLE:
-							Untouchable = true;
-							break;
-						case GameTag.HIDE_STATS:
-							HideStat = true;
-							break;
-						case GameTag.RECEIVES_DOUBLE_SPELLDAMAGE_BONUS:
-							ReceivesDoubleSpelldamageBonus = true;
-							break;
-						case GameTag.FREEZE:
-							Freeze = true;
-							break;
-						case GameTag.CARDRACE:
-							Race = (Race)(int)tag.TagValue;
-							break;
-						case GameTag.CLASS:
-							Class = (CardClass)(int)tag.TagValue;
-							break;
-						case GameTag.CARDTYPE:
-							Type = (CardType)(int)tag.TagValue;
-							break;
-					}
-				}
-				else if
-					(tag.TagValue.HasBoolValue)
-				{
-					tagDict.Add(tag.GameTag, tag.TagValue ? 1 : 0);
-				}
-				else if
-					(tag.TagValue.HasStringValue)
-				{
-					switch (tag.GameTag)
-					{
-						case GameTag.CARDNAME:
-							Name = tag.TagValue;
-							break;
-						case GameTag.CARDTEXT:
-							Text = tag.TagValue;
-							break;
-					}
-				}
-			}
-			foreach (Tag tag in refTags)
-			{
-				if (refTagDict.ContainsKey(tag.GameTag))
-					continue;
+				_minionAttrs.intAttrs[0] = SpellPower;
 
-				if (tag.TagValue.HasIntValue)
-				{
-					refTagDict.Add(tag.GameTag, tag.TagValue);
-				}
-				else if (tag.TagValue.HasBoolValue)
-				{
-					refTagDict.Add(tag.GameTag, tag.TagValue ? 1 : 0);
-				}
+				_minionAttrs.boolAttrs[0] = Stealth;
+				_minionAttrs.boolAttrs[1] = CantBeTargetedBySpells;
+				_minionAttrs.boolAttrs[2] = Taunt;
+				_minionAttrs.boolAttrs[3] = DivineShield;
+				_minionAttrs.boolAttrs[4] = Windfury;
+				_minionAttrs.boolAttrs[5] = Charge;
+				_minionAttrs.boolAttrs[6] = Poisonous;
+				_minionAttrs.boolAttrs[7] = LifeSteal;
+				_minionAttrs.boolAttrs[8] = Rush;
+				_minionAttrs.boolAttrs[9] = CantAttack;
+				_minionAttrs.boolAttrs[10] = Deathrattle;
 			}
 			#endregion
-
-			#region Preprocessing requirements
-			int characterType = 0;
-			int friendlyCheck = 0;
-			bool needsTarget = false;
-			foreach (KeyValuePair<PlayReq, int> requirement in playRequirements)
-			{
-				switch (requirement.Key)
-				{
-					case PlayReq.REQ_TARGET_TO_PLAY:
-						MustHaveTargetToPlay = true;
-						needsTarget = true;
-						break;
-					case PlayReq.REQ_DRAG_TO_PLAY:  // TODO
-					case PlayReq.REQ_NONSELF_TARGET:
-					case PlayReq.REQ_TARGET_IF_AVAILABLE:
-						needsTarget = true;
-						break;
-					case PlayReq.REQ_MINION_TARGET:
-						characterType = 1;
-						break;
-					case PlayReq.REQ_FRIENDLY_TARGET:
-						friendlyCheck = 1;
-						break;
-					case PlayReq.REQ_ENEMY_TARGET:
-						friendlyCheck = -1;
-						break;
-					case PlayReq.REQ_HERO_TARGET:
-						characterType = -1;
-						break;
-					case PlayReq.REQ_TARGET_WITH_RACE:
-						TargetingPredicate += TargetingPredicates.ReqTargetWithRace(requirement.Value);
-						break;
-					case PlayReq.REQ_FROZEN_TARGET:
-						TargetingPredicate += TargetingPredicates.ReqFrozenTarget;
-						break;
-					case PlayReq.REQ_DAMAGED_TARGET:
-						TargetingPredicate += TargetingPredicates.ReqDamagedTarget;
-						break;
-					case PlayReq.REQ_UNDAMAGED_TARGET:
-						TargetingPredicate += TargetingPredicates.ReqUndamagedTarget;
-						break;
-					case PlayReq.REQ_TARGET_MAX_ATTACK:
-						TargetingPredicate += TargetingPredicates.ReqTargetMaxAttack(requirement.Value);
-						break;
-					case PlayReq.REQ_TARGET_MIN_ATTACK:
-						TargetingPredicate += TargetingPredicates.ReqTargetMinAttack(requirement.Value);
-						break;
-					case PlayReq.REQ_MUST_TARGET_TAUNTER:
-						TargetingPredicate += TargetingPredicates.ReqMustTargetTaunter;
-						break;
-					case PlayReq.REQ_STEALTHED_TARGET:
-						TargetingPredicate += TargetingPredicates.ReqStealthedTarget;
-						break;
-					case PlayReq.REQ_TARGET_WITH_DEATHRATTLE:
-						TargetingPredicate += TargetingPredicates.ReqTargetWithDeathrattle;
-						break;
-					case PlayReq.REQ_LEGENDARY_TARGET:
-						TargetingPredicate += TargetingPredicates.ReqLegendaryTarget;
-						break;
-					case PlayReq.REQ_TARGET_FOR_COMBO:
-						needsTarget = true;
-						TargetingAvailabilityPredicate += TargetingPredicates.ReqTargetForCombo;
-						break;
-					case PlayReq.REQ_TARGET_IF_AVAILABE_AND_ELEMENTAL_PLAYED_LAST_TURN:
-						needsTarget = true;
-						TargetingAvailabilityPredicate += TargetingPredicates.ElementalPlayedLastTurn;
-						break;
-					case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_DRAGON_IN_HAND:
-						needsTarget = true;
-						TargetingAvailabilityPredicate += TargetingPredicates.DragonInHand;
-						break;
-					case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_MINIMUM_FRIENDLY_MINIONS:
-						needsTarget = true;
-						TargetingAvailabilityPredicate += TargetingPredicates.MinimumFriendlyMinions(requirement.Value);
-						break;
-					case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_MINIMUM_FRIENDLY_SECRETS:
-						needsTarget = true;
-						TargetingAvailabilityPredicate += TargetingPredicates.MinimumFriendlySecrets(requirement.Value);
-						break;
-					case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_NO_3_COST_CARD_IN_DECK:
-						// TODO
-						TargetingType = TargetingType.AllMinions;
-						break;
-					case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_HERO_HAS_ATTACK:
-						needsTarget = true;
-						TargetingAvailabilityPredicate += TargetingPredicates.ReqHeroHasAttack;
-						break;
-					case PlayReq.REQ_NUM_MINION_SLOTS:
-						PlayAvailabilityPredicate += TargetingPredicates.ReqNumMinionSlots;
-						break;
-					case PlayReq.REQ_MINIMUM_ENEMY_MINIONS:
-						PlayAvailabilityPredicate += TargetingPredicates.ReqMinimumEnemyMinions(requirement.Value);
-						break;
-					case PlayReq.REQ_MINIMUM_TOTAL_MINIONS:
-						PlayAvailabilityPredicate += TargetingPredicates.ReqMinimumTotalMinions(requirement.Value);
-						break;
-					case PlayReq.REQ_HAND_NOT_FULL:
-						PlayAvailabilityPredicate += TargetingPredicates.ReqHandNotFull;
-						break;
-					case PlayReq.REQ_WEAPON_EQUIPPED:
-						PlayAvailabilityPredicate += TargetingPredicates.ReqWeaponEquipped;
-						break;
-					case PlayReq.REQ_ENTIRE_ENTOURAGE_NOT_IN_PLAY:
-						PlayAvailabilityPredicate += TargetingPredicates.ReqEntireEntourageNotInPlay(assetId);
-						break;
-					case PlayReq.REQ_FRIENDLY_MINION_DIED_THIS_GAME:
-						PlayAvailabilityPredicate += TargetingPredicates.ReqFriendlyMinionDiedThisGame;
-						break;
-					case PlayReq.REQ_FRIENDLY_MINION_OF_RACE_DIED_THIS_TURN:
-						PlayAvailabilityPredicate +=
-							TargetingPredicates.ReqFriendlyMinionOfRaceDiedThisTurn((Race) requirement.Value);
-						break;
-					case PlayReq.REQ_MUST_PLAY_OTHER_CARD_FIRST:
-						PlayAvailabilityPredicate += (c, card) => false;
-						break;
-					//	REQ_STEADY_SHOT
-					//	REQ_MINION_OR_ENEMY_HERO	//	Steady Shot
-					//	REQ_MINION_SLOT_OR_MANA_CRYSTAL_SLOT	//	Jade Blossom
-					case PlayReq.REQ_SECRET_ZONE_CAP_FOR_NON_SECRET:
-						PlayAvailabilityPredicate += TargetingPredicates.ReqSecretZoneCapForNonSecret;
-						break;
-				}
-			}
-
-			if (needsTarget)
-			{
-				if (characterType > 0)
-				{
-					if (friendlyCheck == 0)
-						TargetingType = TargetingType.AllMinions;
-					else if (friendlyCheck == 1)
-						TargetingType = TargetingType.FriendlyMinions;
-					else
-						TargetingType = TargetingType.EnemyMinions;
-				}
-				else if (characterType == 0)
-				{
-					if (friendlyCheck == 0)
-						TargetingType = TargetingType.All;
-					else if (friendlyCheck == 1)
-						TargetingType = TargetingType.FriendlyCharacters;
-					else
-						TargetingType = TargetingType.EnemyCharacters;
-				}
-				else
-					TargetingType = TargetingType.Heroes;
-			}
-			#endregion
-
-			Tags = tagDict;
-			RefTags = refTagDict;
-			// spell damage information add ... 
-			if (Text != null && (Text.Contains("$") || tagDict.ContainsKey(GameTag.AFFECTED_BY_SPELL_POWER)))
-			{
-				Text += " @spelldmg";
-				IsAffectedBySpellDamage = true;
-			}
-		}
-
-		internal void SetPlayRequirements(Dictionary<PlayReq, int> playReqs)
-		{
-			PlayRequirements = playReqs;
-			bool needsTarget = false;
-			TargetingType type = TargetingType.All;
-			foreach (KeyValuePair<PlayReq, int> requirement in playReqs)
-			{
-				switch (requirement.Key)
-			{
-				case PlayReq.REQ_TARGET_TO_PLAY:
-					MustHaveTargetToPlay = true;
-					needsTarget = true;
-					break;
-				case PlayReq.REQ_DRAG_TO_PLAY:  // TODO
-				case PlayReq.REQ_NONSELF_TARGET:
-				case PlayReq.REQ_TARGET_IF_AVAILABLE:
-					needsTarget = true;
-					break;
-				case PlayReq.REQ_MINION_TARGET:
-					type &= ~TargetingType.Hero;
-					break;
-				case PlayReq.REQ_FRIENDLY_TARGET:
-					type &= ~TargetingType.Enemy;
-					break;
-				case PlayReq.REQ_ENEMY_TARGET:
-					type &= ~TargetingType.Friendly;
-					break;
-				case PlayReq.REQ_HERO_TARGET:
-					type &= ~TargetingType.Minion;
-					break;
-				case PlayReq.REQ_TARGET_WITH_RACE:
-					TargetingPredicate += TargetingPredicates.ReqTargetWithRace(requirement.Value);
-					break;
-				case PlayReq.REQ_FROZEN_TARGET:
-					TargetingPredicate += TargetingPredicates.ReqFrozenTarget;
-					break;
-				case PlayReq.REQ_DAMAGED_TARGET:
-					TargetingPredicate += TargetingPredicates.ReqDamagedTarget;
-					break;
-				case PlayReq.REQ_UNDAMAGED_TARGET:
-					TargetingPredicate += TargetingPredicates.ReqUndamagedTarget;
-					break;
-				case PlayReq.REQ_TARGET_MAX_ATTACK:
-					TargetingPredicate += TargetingPredicates.ReqTargetMaxAttack(requirement.Value);
-					break;
-				case PlayReq.REQ_TARGET_MIN_ATTACK:
-					TargetingPredicate += TargetingPredicates.ReqTargetMinAttack(requirement.Value);
-					break;
-				case PlayReq.REQ_MUST_TARGET_TAUNTER:
-					TargetingPredicate += TargetingPredicates.ReqMustTargetTaunter;
-					break;
-				case PlayReq.REQ_STEALTHED_TARGET:
-					TargetingPredicate += TargetingPredicates.ReqStealthedTarget;
-					break;
-				case PlayReq.REQ_TARGET_WITH_DEATHRATTLE:
-					TargetingPredicate += TargetingPredicates.ReqTargetWithDeathrattle;
-					break;
-				case PlayReq.REQ_LEGENDARY_TARGET:
-					TargetingPredicate += TargetingPredicates.ReqLegendaryTarget;
-					break;
-				case PlayReq.REQ_TARGET_FOR_COMBO:
-					needsTarget = true;
-					TargetingAvailabilityPredicate += TargetingPredicates.ReqTargetForCombo;
-					break;
-				case PlayReq.REQ_TARGET_IF_AVAILABE_AND_ELEMENTAL_PLAYED_LAST_TURN:
-					needsTarget = true;
-					TargetingAvailabilityPredicate += TargetingPredicates.ElementalPlayedLastTurn;
-					break;
-				case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_DRAGON_IN_HAND:
-					needsTarget = true;
-					TargetingAvailabilityPredicate += TargetingPredicates.DragonInHand;
-					break;
-				case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_MINIMUM_FRIENDLY_MINIONS:
-					needsTarget = true;
-					TargetingAvailabilityPredicate += TargetingPredicates.MinimumFriendlyMinions(requirement.Value);
-					break;
-				case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_MINIMUM_FRIENDLY_SECRETS:
-					needsTarget = true;
-					TargetingAvailabilityPredicate += TargetingPredicates.MinimumFriendlySecrets(requirement.Value);
-					break;
-				case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_NO_3_COST_CARD_IN_DECK:
-					// TODO
-					TargetingType = TargetingType.AllMinions;
-					break;
-				case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_HERO_HAS_ATTACK:
-					needsTarget = true;
-					TargetingAvailabilityPredicate += TargetingPredicates.ReqHeroHasAttack;
-					break;
-				case PlayReq.REQ_NUM_MINION_SLOTS:
-					PlayAvailabilityPredicate += TargetingPredicates.ReqNumMinionSlots;
-					break;
-				case PlayReq.REQ_MINIMUM_ENEMY_MINIONS:
-					PlayAvailabilityPredicate += TargetingPredicates.ReqMinimumEnemyMinions(requirement.Value);
-					break;
-				case PlayReq.REQ_MINIMUM_TOTAL_MINIONS:
-					PlayAvailabilityPredicate += TargetingPredicates.ReqMinimumTotalMinions(requirement.Value);
-					break;
-				case PlayReq.REQ_HAND_NOT_FULL:
-					PlayAvailabilityPredicate += TargetingPredicates.ReqHandNotFull;
-					break;
-				case PlayReq.REQ_WEAPON_EQUIPPED:
-					PlayAvailabilityPredicate += TargetingPredicates.ReqWeaponEquipped;
-					break;
-				case PlayReq.REQ_ENTIRE_ENTOURAGE_NOT_IN_PLAY:
-					PlayAvailabilityPredicate += TargetingPredicates.ReqEntireEntourageNotInPlay(AssetId);
-					break;
-				case PlayReq.REQ_FRIENDLY_MINION_DIED_THIS_GAME:
-					PlayAvailabilityPredicate += TargetingPredicates.ReqFriendlyMinionDiedThisGame;
-					break;
-				case PlayReq.REQ_FRIENDLY_MINION_OF_RACE_DIED_THIS_TURN:
-					PlayAvailabilityPredicate +=
-						TargetingPredicates.ReqFriendlyMinionOfRaceDiedThisTurn((Race) requirement.Value);
-					break;
-				case PlayReq.REQ_MUST_PLAY_OTHER_CARD_FIRST:
-					PlayAvailabilityPredicate += (c, card) => false;
-					break;
-				//	REQ_STEADY_SHOT
-				//	REQ_MINION_OR_ENEMY_HERO	//	Steady Shot
-				//	REQ_MINION_SLOT_OR_MANA_CRYSTAL_SLOT	//	Jade Blossom
-				case PlayReq.REQ_SECRET_ZONE_CAP_FOR_NON_SECRET:
-					PlayAvailabilityPredicate += TargetingPredicates.ReqSecretZoneCapForNonSecret;
-					break;
-			}
-			}
-
-			if (needsTarget)
-			{
-				//if ((type & TargetingType.Enemy) != TargetingType.Enemy &&
-				//    (type & TargetingType.Friendly) != TargetingType.Friendly)
-				//{
-				//	type |= TargetingType.Enemy;
-				//	type |= TargetingType.Friendly;
-				//}
-				TargetingType = type;
-			}
 		}
 
 		/// <summary>
@@ -1286,39 +804,6 @@ namespace SabberStoneCore.Model
 			return clone;
 		}
 
-		private int GetTagValue(GameTag gameTag)
-		{
-			switch (gameTag)
-			{
-				case GameTag.ATK: return ATK;
-				case GameTag.HEALTH: return Health;
-				case GameTag.SPELLPOWER: return SpellPower;
-				case GameTag.TAUNT: return Taunt ? 1 : 0;
-				case GameTag.CHARGE: return Charge ? 1 : 0;
-				case GameTag.STEALTH: return Stealth ? 1 : 0;
-				case GameTag.POISONOUS: return Poisonous ? 1 : 0;
-				case GameTag.DIVINE_SHIELD: return DivineShield ? 1 : 0;
-				case GameTag.WINDFURY: return Windfury ? 1 : 0;
-				case GameTag.LIFESTEAL: return LifeSteal ? 1 : 0;
-				case GameTag.ECHO: return Echo ? 1 : 0;
-				case GameTag.RUSH: return Rush ? 1 : 0;
-				case GameTag.CANT_BE_TARGETED_BY_SPELLS:
-				case GameTag.CANT_BE_TARGETED_BY_HERO_POWERS: return CantBeTargetedBySpells ? 1 : 0;
-				case GameTag.CANT_ATTACK: return CantAttack ? 1 : 0;
-				case GameTag.MODULAR: return Modular ? 1 : 0;
-				case GameTag.CHOOSE_ONE: return ChooseOne ? 1 : 0;
-				case GameTag.COMBO: return Combo ? 1 : 0;
-				case GameTag.SECRET: return IsSecret ? 1 : 0;
-				case GameTag.QUEST: return IsQuest ? 1 : 0;
-				case GameTag.DEATHRATTLE: return Deathrattle ? 1 : 0;
-				case GameTag.UNTOUCHABLE: return Untouchable ? 1 : 0;
-				case GameTag.HIDE_STATS: return HideStat ? 1 : 0;
-				case GameTag.RECEIVES_DOUBLE_SPELLDAMAGE_BONUS: return ReceivesDoubleSpelldamageBonus ? 1 : 0;
-				case GameTag.FREEZE: return Freeze? 1 : 0;
-				default: return -1;
-			}
-		}
-
 		public static Card CreateZombeastCard(in Card firstCard, in Card secondCard, bool modifyTags)
 		{
 			Card zombeast = firstCard.Clone();
@@ -1406,6 +891,74 @@ namespace SabberStoneCore.Model
 			}
 
 			return instance;
+		}
+
+		private int GetTagValue(GameTag gameTag)
+		{
+			switch (gameTag)
+			{
+				case GameTag.ATK: return ATK;
+				case GameTag.HEALTH: return Health;
+				case GameTag.SPELLPOWER: return SpellPower;
+				case GameTag.TAUNT: return Taunt ? 1 : 0;
+				case GameTag.CHARGE: return Charge ? 1 : 0;
+				case GameTag.STEALTH: return Stealth ? 1 : 0;
+				case GameTag.POISONOUS: return Poisonous ? 1 : 0;
+				case GameTag.DIVINE_SHIELD: return DivineShield ? 1 : 0;
+				case GameTag.WINDFURY: return Windfury ? 1 : 0;
+				case GameTag.LIFESTEAL: return LifeSteal ? 1 : 0;
+				case GameTag.ECHO: return Echo ? 1 : 0;
+				case GameTag.RUSH: return Rush ? 1 : 0;
+				case GameTag.CANT_BE_TARGETED_BY_SPELLS:
+				case GameTag.CANT_BE_TARGETED_BY_HERO_POWERS: return CantBeTargetedBySpells ? 1 : 0;
+				case GameTag.CANT_ATTACK: return CantAttack ? 1 : 0;
+				case GameTag.MODULAR: return Modular ? 1 : 0;
+				case GameTag.CHOOSE_ONE: return ChooseOne ? 1 : 0;
+				case GameTag.COMBO: return Combo ? 1 : 0;
+				case GameTag.SECRET: return IsSecret ? 1 : 0;
+				case GameTag.QUEST: return IsQuest ? 1 : 0;
+				case GameTag.DEATHRATTLE: return Deathrattle ? 1 : 0;
+				case GameTag.UNTOUCHABLE: return Untouchable ? 1 : 0;
+				case GameTag.HIDE_STATS: return HideStat ? 1 : 0;
+				case GameTag.RECEIVES_DOUBLE_SPELLDAMAGE_BONUS: return ReceivesDoubleSpelldamageBonus ? 1 : 0;
+				case GameTag.FREEZE: return Freeze? 1 : 0;
+				default: return -1;
+			}
+		}
+
+		private unsafe struct MinionAttributes
+		{
+			public const int NUM_INT_ATTRS = 1;
+			public const int NUM_BOOL_ATTRS = 11;
+#pragma warning disable 649
+			public fixed int intAttrs[NUM_INT_ATTRS];
+			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
+		}
+		private MinionAttributes _minionAttrs;
+#pragma warning restore 649
+
+		internal unsafe void CopyMinionAttributes(int* intAttrs, bool* boolAttrs)
+		{
+			const int INT_SIZE = sizeof(int) * MinionAttributes.NUM_INT_ATTRS;
+			const int BOOL_SIZE = sizeof(bool) * MinionAttributes.NUM_BOOL_ATTRS;
+			fixed (void* src = _minionAttrs.intAttrs)
+				Buffer.MemoryCopy(src, intAttrs, INT_SIZE, INT_SIZE);
+			fixed (void* src = _minionAttrs.boolAttrs)
+				Buffer.MemoryCopy(src, boolAttrs, BOOL_SIZE, BOOL_SIZE);
+		}
+
+		private unsafe int[] _minionAttrsDebuggerView
+		{
+			get
+			{
+				var array = new int[MinionAttributes.NUM_INT_ATTRS + MinionAttributes.NUM_BOOL_ATTRS];
+				for (int i = 0; i < MinionAttributes.NUM_INT_ATTRS; i++)
+					array[i] = _minionAttrs.intAttrs[i];
+				for (int j = MinionAttributes.NUM_INT_ATTRS, i = 0; i < MinionAttributes.NUM_BOOL_ATTRS; i++, j++)
+					array[j] = _minionAttrs.boolAttrs[i] ? 1 : 0;
+
+				return array;
+			}
 		}
 	}
 }

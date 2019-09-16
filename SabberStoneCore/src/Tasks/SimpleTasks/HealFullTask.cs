@@ -25,18 +25,17 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public EntityType Type { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			var playable = source as IPlayable;
+			var playable = source as Playable;
 			if (playable == null) return TaskState.STOP;
 
-			//System.Collections.Generic.List<IPlayable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
+			//System.Collections.Generic.List<Playable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 			//entities.ForEach(p =>
-			foreach (IPlayable p in IncludeTask.GetEntities(Type, in controller, playable, target, stack?.Playables))
+			foreach (Playable p in IncludeTask.GetEntities(Type, in controller, playable, target, stack?.Playables))
 			{
-				var character = p as ICharacter;
+				var character = p as Character;
 				character?.TakeFullHeal(playable);
 			}
 			return TaskState.COMPLETE;
