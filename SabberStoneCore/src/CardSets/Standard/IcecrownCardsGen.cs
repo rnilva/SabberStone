@@ -606,7 +606,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("ICC_835", new Power {
 				DeathrattleTask = ComplexTask.Create(
 					new IncludeTask(EntityType.GRAVEYARD),
-					new FilterStackTask(SelfCondition.IsTagValue(GameTag.TAUNT, 1), SelfCondition.IsTagValue(GameTag.TO_BE_DESTROYED, 1)),
+					new FilterStackTask(SelfCondition.IsTagValue(GameTag.TAUNT, 1), SelfCondition.IsDead),
 					new SummonCopyTask(EntityType.STACK, true))
 			});
 

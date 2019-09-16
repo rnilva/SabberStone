@@ -13,11 +13,13 @@ namespace SabberStoneCore.Model.Entities
 	/// <seealso cref="Character"/>
 	/// <seealso cref="Playable"/>
 	/// </summary>
-	public abstract partial class Character : Playable
+	public abstract class Character : Playable
 	{
 		public event TriggerManager.TriggerHandler PreDamageTrigger;
 		public event TriggerManager.TriggerHandler TakeDamageTrigger;
 		public event TriggerManager.TriggerHandler AfterAttackTrigger;
+
+		protected bool _toBeDestroyed;
 
 		/// <summary>
 		/// Build a new character from the provided data.
@@ -39,7 +41,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="character">The source <see cref="T:SabberStoneCore.Model.Entities.Character`1" />.</param>
 		protected Character(in Controller controller, in Character character) : base(in controller, character)
 		{
-			//character.CopyInternalAttributes(this);
+			_toBeDestroyed = character._toBeDestroyed;
 		}
 
 		/// <summary>
@@ -310,7 +312,10 @@ namespace SabberStoneCore.Model.Entities
 					game.PowerHistory.Add(new PowerHistoryBlockEnd());
 
 				if (source.Controller.Hero.ToBeDestroyed && source.Controller.Hero.Health > 0)
-					source.Controller.Hero.ToBeDestroyed = false;
+				{
+					source.Controller.Hero._toBeDestroyed = false;
+					Game.ResolveDeadHeroes -= source.Controller.Hero.DisposeHero;
+				}
 			}
 
 			if (hero != null)
@@ -388,22 +393,8 @@ namespace SabberStoneCore.Model.Entities
 			//sb.Append($"D:{_damage}]");
 			return sb.ToString();
 		}
-	}
-	public abstract partial class Character
-	{
-		private bool _lifestealChecker;
 
-		//internal void CopyInternalAttributes(in Character copy)
-		//{
-		//	copy._modifiedATK = _modifiedATK;
-		//	copy._modifiedHealth = _modifiedHealth;
-		//	copy._damage = _damage;
-		//	copy._numAttackThisTurn = _numAttackThisTurn;
-		//	copy._modifiedStealth = _modifiedStealth;
-		//	copy._modifiedImmune = _modifiedImmune;
-		//	copy._modifiedTaunt = _modifiedTaunt;
-		//	copy._modifiedCantBeTargetedBySpells = _modifiedCantBeTargetedBySpells;
-		//}
+		private bool _lifestealChecker;
 
 #pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
 
@@ -428,10 +419,7 @@ namespace SabberStoneCore.Model.Entities
 			get => BaseHealth - Damage;
 			set
 			{
-				if (value == 0)
-				{
-					ToBeDestroyed = true;
-				}
+				if (value == 0) Destroy();
 				BaseHealth = value;
 				Damage = 0;
 			}
@@ -492,11 +480,7 @@ namespace SabberStoneCore.Model.Entities
 			get => Card[GameTag.AUTOATTACK] == 1;
 			set => throw new NotImplementedException();
 		}
-		public virtual bool ToBeDestroyed
-		{
-			get => default;
-			set => throw new NotImplementedException();
-		}
+		public bool ToBeDestroyed => _toBeDestroyed;
 
 		public bool IsAttacking
 		{

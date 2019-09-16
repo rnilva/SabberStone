@@ -115,7 +115,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					//if (minion.Controller != controller)
 					//	tags[GameTag.CONTROLLER] = controller.PlayerId;
 
-					//int zonePosition = SummonTask.GetPosition(in source, _side, stack?.Number ?? 0, ref alternateCount);
+					int zonePosition = SummonTask.GetPosition(in source, _side, stack?.Number ?? 0, ref alternateCount);
 
 					//var copy = (Minion)Entity.FromCard(in controller, minion.Card, tags, controller.BoardZone,
 					//	zonePos: in zonePosition);
@@ -141,7 +141,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					//if (minion.OngoingEffect != null && copy.OngoingEffect == null)
 					//	minion.OngoingEffect.Clone(copy);
 
-					Playable copy = Generic.Copy(in controller, in source, minion, Zone.PLAY);
+					Playable copy = Generic.Copy(in controller, in source, minion, Zone.PLAY, zonePosition);
 
 					if (_addToStack)
 						stack.AddPlayable(copy);

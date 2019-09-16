@@ -575,7 +575,7 @@ namespace SabberStoneCore.Enchants
 
 		protected override ref bool GetRef(Character entity)
 		{
-			return ref entity.GetRef(4);
+			return ref entity.GetRef((int) Attributes.Elusive);
 		}
 	}
 }

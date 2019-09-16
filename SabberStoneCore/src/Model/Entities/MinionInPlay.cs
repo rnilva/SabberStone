@@ -144,7 +144,7 @@ namespace SabberStoneCore.Model.Entities
 				if (value < 0)
 					value = 0;
 				else if (BaseHealth <= value)
-					ToBeDestroyed = true;
+					Destroy();
 
 				_attrs.intAttrs[1] = value;
 			}
@@ -174,107 +174,92 @@ namespace SabberStoneCore.Model.Entities
 				_attrs.boolAttrs[1] = value;
 			}
 		}
-		public override unsafe bool ToBeDestroyed
-		{
-			get => _attrs.boolAttrs[2];
-			set
-			{
-				if (value == ToBeDestroyed) return;
-				if (value)
-				{
-					// TODO: FIX
-					if (Zone?.Type != Enums.Zone.PLAY)
-						return;
-					Game.DeadMinions.Add(this);
-				}
-				_attrs.boolAttrs[2] = value;
-			}
-		}
+
 		public override unsafe bool HasStealth
 		{
-			get => _attrs.boolAttrs[3];
-			set => _attrs.boolAttrs[3] = value;
+			get => _attrs.boolAttrs[2];
+			set => _attrs.boolAttrs[2] = value;
 		}
 		public override unsafe bool CantBeTargetedBySpells
 		{
 			get => (AuraEffects?.CantBeTargetedBySpells ?? false) ||
-			       _attrs.boolAttrs[4];
-			set => _attrs.boolAttrs[4] = value;
+			       _attrs.boolAttrs[3];
+			set => _attrs.boolAttrs[3] = value;
 		}
 		public override unsafe bool HasTaunt
 		{
 			get => (AuraEffects?.Taunt ?? false) ||
-			       _attrs.boolAttrs[5];
-			set => _attrs.boolAttrs[5] = value;
+			       _attrs.boolAttrs[4];
+			set => _attrs.boolAttrs[4] = value;
 		}
 		public override unsafe bool HasDivineShield
 		{
-			get => _attrs.boolAttrs[6];
+			get => _attrs.boolAttrs[5];
 			set
 			{
 				bool oldValue = HasDivineShield;
-				_attrs.boolAttrs[6] = value;
+				_attrs.boolAttrs[5] = value;
 				if (oldValue && !value)
 					Game.TriggerManager.OnLoseDivineShield(this);
 			}
 		}
 		public override unsafe bool HasWindfury
 		{
-			get => _attrs.boolAttrs[7];
-			set => _attrs.boolAttrs[7] = value;
+			get => _attrs.boolAttrs[6];
+			set => _attrs.boolAttrs[6] = value;
 		}
 		public override unsafe bool HasCharge
 		{
 			get => (AuraEffects?.Charge ?? 0) > 0 ||
-			       _attrs.boolAttrs[8];
+			       _attrs.boolAttrs[7];
 			set
 			{
 				if (value && IsExhausted && NumAttacksThisTurn == 0)
 					IsExhausted = false;
-				_attrs.boolAttrs[8] = value;
+				_attrs.boolAttrs[7] = value;
 			}
 		}
 		public override unsafe bool Poisonous
 		{
-			get => _attrs.boolAttrs[9];
-			set => _attrs.boolAttrs[9] = value;
+			get => _attrs.boolAttrs[8];
+			set => _attrs.boolAttrs[8] = value;
 		}
 		public override unsafe bool HasLifesteal
 		{
 			get => (AuraEffects?.Lifesteal ?? false) ||
-			       _attrs.boolAttrs[10];
-			set => _attrs.boolAttrs[10] = value;
+			       _attrs.boolAttrs[9];
+			set => _attrs.boolAttrs[9] = value;
 		}
 		public override unsafe bool IsRush
 		{
 			get => (AuraEffects?.Rush ?? false) ||
-			       _attrs.boolAttrs[11];
-			set => _attrs.boolAttrs[11] = value;
+			       _attrs.boolAttrs[10];
+			set => _attrs.boolAttrs[10] = value;
 		}
 		public override unsafe bool CantAttack
+		{
+			get => _attrs.boolAttrs[11];
+			set => _attrs.boolAttrs[11] = value;
+		}
+		public override unsafe bool HasDeathrattle
 		{
 			get => _attrs.boolAttrs[12];
 			set => _attrs.boolAttrs[12] = value;
 		}
-		public override unsafe bool HasDeathrattle
+		public unsafe bool IsSilenced
 		{
 			get => _attrs.boolAttrs[13];
 			set => _attrs.boolAttrs[13] = value;
 		}
-		public unsafe bool IsSilenced
+		public unsafe bool AttackableByRush
 		{
 			get => _attrs.boolAttrs[14];
 			set => _attrs.boolAttrs[14] = value;
 		}
-		public unsafe bool AttackableByRush
+		public override unsafe bool CantAttackHeroes
 		{
 			get => _attrs.boolAttrs[15];
 			set => _attrs.boolAttrs[15] = value;
-		}
-		public override unsafe bool CantAttackHeroes
-		{
-			get => _attrs.boolAttrs[16];
-			set => _attrs.boolAttrs[16] = value;
 		}
 		#endregion
 
@@ -355,7 +340,9 @@ namespace SabberStoneCore.Model.Entities
 
 		public override void Destroy()
 		{
-			ToBeDestroyed = true;
+			if (_toBeDestroyed) return;
+			_toBeDestroyed = true;
+			Game.DeadMinions.Add(this);
 		}
 		public override void Reset()
 		{
@@ -376,7 +363,7 @@ namespace SabberStoneCore.Model.Entities
 			{
 				//Game.DeadMinions.Remove(OrderOfPlay);
 				Game.DeadMinions.Remove(this);
-				ToBeDestroyed = false;
+				_toBeDestroyed = false;
 			}
 		}
 
@@ -390,34 +377,32 @@ namespace SabberStoneCore.Model.Entities
 		private unsafe struct Attributes
 		{
 			// 0 : SpellPower
-
 			// 1 : Damage
 			// 2 : NumAttacksThisTurn
 			// 3 : OrderOfPlay
 
-			// 0 : Immune
+			// 0 : IsImmune
 			// 1 : Frozen
-			// 2 : ToBeDestroyed
 
-			// 3 : Stealth
-			// 4 : CantBeTargetedBySpells
-			// 5 : Taunt
-			// 6 : DivineShield
-			// 7 : Windfury
-			// 8 : Charge
-			// 9 : Poisonous
-			// 10 : Lifesteal
-			// 11 : Rush
-			// 12 : CantAttack
-			// 13 : Deathrattle
+			// 2 : Stealth
+			// 3 : CantBeTargetedBySpells
+			// 4 : Taunt
+			// 5 : DivineShield
+			// 6 : Windfury
+			// 7 : Charge
+			// 8 : Poisonous
+			// 9 : Lifesteal
+			// 10 : Rush
+			// 11 : CantAttack
+			// 12 : Deathrattle
 
-			// 14 : Silenced
-			// 15 : AttackableByRush
-			// 16 : CannotAttackHeroes
+			// 13 : Silenced
+			// 14 : AttackableByRush
+			// 15 : CannotAttackHeroes
 
 			public const int NUM_INT_ATTRS = 4;
-			public const int NUM_BOOL_ATTRS = 17;
-			private const int CARD_ATTR_OFFSET = 3;
+			public const int NUM_BOOL_ATTRS = 16;
+			private const int CARD_ATTR_OFFSET = 2;
 #pragma warning disable 649
 			public fixed int intAttrs[NUM_INT_ATTRS];
 			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
@@ -425,8 +410,8 @@ namespace SabberStoneCore.Model.Entities
 
 			public Attributes(in Card card)
 			{
-				fixed(int* ints = intAttrs)
-				fixed(bool* bools = boolAttrs)
+				fixed (int* ints = intAttrs)
+				fixed (bool* bools = boolAttrs)
 					card.CopyMinionAttributes(ints, bools + CARD_ATTR_OFFSET);
 			}
 		}
@@ -450,31 +435,31 @@ namespace SabberStoneCore.Model.Entities
 			switch (tag)
 			{
 				case GameTag.SPELLPOWER:
-					return 2;
-				case GameTag.TAUNT:
 					return 0;
-				case GameTag.DIVINE_SHIELD:
-					return 1;
+				case GameTag.IMMUNE:
+					return 0;
 				case GameTag.STEALTH:
 					return 2;
 				case GameTag.CANT_BE_TARGETED_BY_SPELLS:
 					return 3;
-				case GameTag.WINDFURY:
+				case GameTag.TAUNT:
 					return 4;
-				case GameTag.CHARGE:
+				case GameTag.DIVINE_SHIELD:
 					return 5;
-				case GameTag.POISONOUS:
+				case GameTag.WINDFURY:
 					return 6;
-				case GameTag.LIFESTEAL:
+				case GameTag.CHARGE:
 					return 7;
-				case GameTag.RUSH:
+				case GameTag.POISONOUS:
 					return 8;
-				case GameTag.CANT_ATTACK:
+				case GameTag.LIFESTEAL:
+					return 9;
+				case GameTag.RUSH:
 					return 10;
-				case GameTag.IMMUNE:
+				case GameTag.CANT_ATTACK:
 					return 11;
 				case GameTag.CANNOT_ATTACK_HEROES:
-					return 16;
+					return 15;
 				default:
 					throw new NotImplementedException($"There is no matching attribute for GameTag {tag}");
 			}
@@ -514,6 +499,30 @@ namespace SabberStoneCore.Model.Entities
 			_v1 = other._v1;
 			_v2 = other._v2;
 			_attrs = other._attrs;
+		}
+
+		public const int NUM_TOTAL_ATTRIBUTES = Attributes.NUM_INT_ATTRS + Attributes.NUM_BOOL_ATTRS;
+
+		public unsafe void ExportAttributes(Span<float> destination)
+		{
+			if (destination.Length < NUM_TOTAL_ATTRIBUTES)
+			{
+				throw new Exception();
+			}
+
+			fixed (void* src = _attrs.intAttrs)
+			{
+				var intAttrs = new ReadOnlySpan<float>(src, Attributes.NUM_INT_ATTRS);
+				intAttrs.CopyTo(destination);
+			}
+
+			Span<float> slice = destination.Slice(Attributes.NUM_INT_ATTRS);
+			fixed (bool* src = _attrs.boolAttrs)
+			{
+				byte* ptr = (byte*) src;
+				for (int i = 0; i < Attributes.NUM_BOOL_ATTRS; i++)
+					slice[i] = ptr[i];
+			}
 		}
 	}
 }

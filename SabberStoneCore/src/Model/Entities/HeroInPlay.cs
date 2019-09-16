@@ -115,7 +115,8 @@ namespace SabberStoneCore.Model.Entities
 
 		public override void Destroy()
 		{
-			ToBeDestroyed = true;
+			_toBeDestroyed = true;
+			Game.ResolveDeadHeroes += DisposeHero;
 		}
 
 		public static HeroInPlay FromHero(ref Hero hero)
@@ -208,7 +209,7 @@ namespace SabberStoneCore.Model.Entities
 			return str.ToString();
 		}
 
-		private void DisposeHero()
+		public void DisposeHero()
 		{
 			if (Controller.Opponent.PlayState == PlayState.LOSING)
 			{
@@ -256,12 +257,11 @@ namespace SabberStoneCore.Model.Entities
 
 			// 0 : Immune
 			// 1 : Frozen
-			// 2 : ToBeDestroyed
-			// 3 : Stealth
-			// 4 : CantBeTargetedBySpells
+			// 2 : Stealth
+			// 3 : CantBeTargetedBySpells
 
 			private const int NUM_INT_ATTRS = 6;
-			private const int NUM_BOOL_ATTRS = 5;
+			private const int NUM_BOOL_ATTRS = 4;
 #pragma warning disable 649
 			public fixed int intAttrs[NUM_INT_ATTRS];
 			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
@@ -281,7 +281,7 @@ namespace SabberStoneCore.Model.Entities
 				if (value < 0)
 					value = 0;
 				else if (BaseHealth <= value)
-					ToBeDestroyed = true;
+					Destroy();
 
 				_attrs.intAttrs[1] = value;
 			}
@@ -316,25 +316,16 @@ namespace SabberStoneCore.Model.Entities
 			get => _attrs.boolAttrs[1];
 			set => _attrs.boolAttrs[1] = value;
 		}
-		public override unsafe bool ToBeDestroyed
-		{
-			get => _attrs.boolAttrs[2];
-			set
-			{
-				if (value)
-					Game.ResolveDeadHeroes += DisposeHero;
-				_attrs.boolAttrs[2] = value;
-			}
-		}
 		public override unsafe bool HasStealth
 		{
-			get => _attrs.boolAttrs[3];
-			set => _attrs.boolAttrs[3] = value;
+			get => _attrs.boolAttrs[2];
+			set => _attrs.boolAttrs[2] = value;
 		}
 		public override unsafe bool CantBeTargetedBySpells
 		{
-			get => (AuraEffects?.CantBeTargetedBySpells ?? false) || _attrs.boolAttrs[4];
-			set => _attrs.boolAttrs[4] = value;
+			get => (AuraEffects?.CantBeTargetedBySpells ?? false) ||
+			       _attrs.boolAttrs[3];
+			set => _attrs.boolAttrs[3] = value;
 		}
 		internal override unsafe ref bool GetRef(int index)
 		{

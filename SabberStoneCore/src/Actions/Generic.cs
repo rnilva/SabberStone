@@ -491,7 +491,7 @@ namespace SabberStoneCore.Actions
 					//[DebugPrintPower] Info[0] = [entityName=Goldshire Footman id=47 zone=PLAY zonePos=1 cardId=CS1_042 player=2]
 				}
 
-				target.ToBeDestroyed = true;
+				target.Destroy();
 
 
 				if (history)
