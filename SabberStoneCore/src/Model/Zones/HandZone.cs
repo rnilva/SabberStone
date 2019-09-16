@@ -7,7 +7,7 @@ namespace SabberStoneCore.Model.Zones
 	/// <summary>
 	/// Zone for all entities which are held 'in hand'.
 	/// </summary>
-	public class HandZone : PositioningZone<IPlayable>
+	public class HandZone : PositioningZone<Playable>
 	{
 		public HandZone(Controller controller)
 		{
@@ -25,20 +25,20 @@ namespace SabberStoneCore.Model.Zones
 
 		public override Zone Type => Zone.HAND;
 
-		public override void Add(IPlayable entity, int zonePosition = -1)
+		public override void Add(Playable entity, int zonePosition = -1)
 		{
 			base.Add(entity, zonePosition);
 
 			 if (entity.Power?.Aura is AdaptiveCostEffect e)
-				e.Activate((Playable)entity);
+				e.Activate(entity);
 			entity.Power?.Trigger?.Activate(Game, entity, TriggerActivation.HAND);
 
 			Game.TriggerManager.OnZoneTrigger(entity);
 		}
 
-		public override IPlayable Remove(IPlayable entity)
+		public override Playable Remove(Playable entity)
 		{
-			((Playable)entity).ResetCost();
+			entity.ResetCost();
 			entity.AppliedEnchantments?.ForEach(p => p.ActivatedTrigger?.Remove());
 			return base.Remove(entity);
 		}

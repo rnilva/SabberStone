@@ -21,12 +21,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public EntityType Type { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			IEnumerable<IPlayable> entities =
+			IEnumerable<Playable> entities =
 				IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
-			foreach (IPlayable p in entities)
+			foreach (Playable p in entities)
 			{
 				if (!(p is Minion m))
 					return TaskState.STOP;
@@ -37,7 +37,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				if (game.History)
 				{
 					Enchantment instance =
-						Enchantment.GetInstance(controller, (IPlayable) source, p, in _enchantmentCard);
+						Enchantment.GetInstance(controller, (Playable) source, p, in _enchantmentCard);
 					instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = atk;
 					instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = health;
 				}

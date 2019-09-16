@@ -412,12 +412,12 @@ namespace SabberStoneCore.CardSets.Standard
 					new FuncPlayablesTask(p =>
 					{
 						if (p.Count == 0)
-							return new IPlayable[0];
+							return new Playable[0];
 
 						Controller c = p[0].Controller;
 						// reveal ?
 						c.DeckZone.Remove(p[0]);
-						//p[0].Controller = p[0].Controller.Opponent;
+						p[0].Controller = p[0].Controller.Opponent;
 						p[0][GameTag.CONTROLLER] = c.Opponent.PlayerId;
 						return new [] { p[0] };
 					}),
@@ -1046,7 +1046,7 @@ namespace SabberStoneCore.CardSets.Standard
 				{
 					//Condition = new SelfCondition(p =>
 					//{
-					//	IPlayable target = p.Game.IdEntityDic[p.Game.ProposedDefender];
+					//	Playable target = p.Game.IdEntityDic[p.Game.ProposedDefender];
 					//	return target is Minion && target.Controller != p.Controller;
 					//}),
 					Condition = SelfCondition.IsEventTargetIs(CardType.MINION),
@@ -1155,7 +1155,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("ICC_252", new Power {
 				PowerTask = ComplexTask.Create(
-					new ConditionTask(EntityType.SOURCE, SelfCondition.HasOp(GameTag.FROZEN, 1)),
+					new ConditionTask(EntityType.SOURCE, SelfCondition.IfAnyEnemyFrozen),
 					new FlagTask(true, new DrawTask()))
 			});
 
@@ -1213,9 +1213,9 @@ namespace SabberStoneCore.CardSets.Standard
 					{
 						Controller c = p.Controller;
 						if (c.SecretZone.IsFull) return 0;
-						//IPlayable[] entities = c.DeckZone.GetAll(x => x.Card.IsSecret);
+						//Playable[] entities = c.DeckZone.GetAll(x => x.Card.IsSecret);
 						List<int> ids = c.SecretZone.Select(x => x.Card.AssetId).ToList();
-						ReadOnlySpan<PlayableSurrogate> deck = c.DeckZone.GetSpan();
+						ReadOnlySpan<Playable> deck = c.DeckZone.GetSpan();
 						for (int i = 0; i < deck.Length; i++)
 						{
 							if (!deck[i].Card.IsSecret) continue;
@@ -1228,7 +1228,7 @@ namespace SabberStoneCore.CardSets.Standard
 						}
 						//for (int i = 0; i < entities.Length; i++)
 						//{
-						//	IPlayable e = entities[i];
+						//	Playable e = entities[i];
 						//	if (ids.Contains(e.Card.AssetId)) continue;
 
 						//	var spell = c.DeckZone.Remove(e).
@@ -1778,7 +1778,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("ICC_910", new Power {
 				ComboTask = ComplexTask.Create(
-					new GetGameTagControllerTask(GameTag.NUM_CARDS_PLAYED_THIS_TURN),
+					//new GetGameTagControllerTask(GameTag.NUM_CARDS_PLAYED_THIS_TURN),
+					new GetPropertyTask(EntityType.CONTROLLER, "NumCardsPlayedThisTurn"),
 					new MathSubstractionTask(1),
 					new DamageNumberTask(EntityType.TARGET))
 			});
@@ -2135,13 +2136,13 @@ namespace SabberStoneCore.CardSets.Standard
 				//	// Don't like this condtion too... should make fields for proposed entities?
 				//	Condition = new SelfCondition(p =>
 				//	{
-				//		IPlayable target = p.Game.IdEntityDic[p.Game.ProposedDefender];
+				//		Playable target = p.Game.IdEntityDic[p.Game.ProposedDefender];
 				//		return target[GameTag.FROZEN] > 0;
 				//	}),
 				//	SingleTask = ComplexTask.Create(
 				//		new IncludeTask(EntityType.SOURCE),
 				//		new FuncPlayablesTask(p =>
-				//			new List<IPlayable> { p[0].Game.IdEntityDic[p[0].Game.ProposedDefender]}),
+				//			new List<Playable> { p[0].Game.IdEntityDic[p[0].Game.ProposedDefender]}),
 				//		new DestroyTask(EntityType.STACK))
 				//}
 				Trigger = new Trigger(TriggerType.DEAL_DAMAGE)
@@ -2503,8 +2504,6 @@ namespace SabberStoneCore.CardSets.Standard
 				PowerTask = ComplexTask.Create(
 					new GetGameTagTask(GameTag.ATK, EntityType.WEAPON),
 					new GetGameTagTask(GameTag.DURABILITY, EntityType.WEAPON, 0, 1),
-					new GetGameTagTask(GameTag.DAMAGE, EntityType.WEAPON, 0, 2),
-					new MathNumberIndexTask(1, 2, MathOperation.SUB, 1),
 					new AddEnchantmentTask("ICC_018e", EntityType.SOURCE))
 			});
 
@@ -2721,10 +2720,7 @@ namespace SabberStoneCore.CardSets.Standard
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.HAND),
 					new FilterStackTask(SelfCondition.IsWeapon),
-					new FuncNumberTask(p =>
-					{
-						return p.Sum(w => w[GameTag.DURABILITY]);
-					}),
+					new FuncNumberTask(p => p.Sum(w => ((Weapon) w).Durability)),
 					new MathNumberIndexTask(1, 0, MathOperation.ADD, 1),
 					new FuncNumberTask(p =>
 					{
@@ -3020,18 +3016,9 @@ namespace SabberStoneCore.CardSets.Standard
 					new IncludeTask(EntityType.DECK, null, true),
 					new FuncPlayablesTask(list =>
 					{
-						var result = new List<IPlayable>();
+						var result = new List<Playable>();
 						int atk = ((Character)list[0]).AttackDamage;
-						//return list.Where(p => p is Minion m && m.AttackDamage < atk).ToList();
-						for (int i = 1; i < list.Count; i++)
-						{
-							var ps = (PlayableSurrogate) list[i];
-							if (ps.IsMinion && ps.AttackDamage < atk)
-								result.Add(ps);
-						}
-
-						return result;
-
+						return list.Where(p => p is Minion m && m.AttackDamage < atk).ToList();
 					}),
 					new RandomTask(1, EntityType.STACK),
 					new RemoveFromDeck(EntityType.STACK),
@@ -3579,10 +3566,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: +1/+1.
 			// --------------------------------------------------------
 			cards.Add("ICC_851e", new Power {
-				//Enchant = Enchants.Enchants.GetAutoEnchantFromText("ICC_851e")
-				Enchant = new Enchant(
-					SurrogateATK.Effect(EffectOperator.ADD, 1),
-					SurrogateHealth.Effect(EffectOperator.ADD, 1))
+				Enchant = Enchants.Enchants.GetAutoEnchantFromText("ICC_851e")
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

@@ -7,17 +7,17 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class FuncPlayablesTask : SimpleTask
 	{
-		public FuncPlayablesTask(Func<IList<IPlayable>, IList<IPlayable>> function)
+		public FuncPlayablesTask(Func<IList<Playable>, IList<Playable>> function)
 		{
 			Function = function;
 		}
 
-		public Func<IList<IPlayable>, IList<IPlayable>> Function { get; set; }
+		public Func<IList<Playable>, IList<Playable>> Function { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			IList<IPlayable> results = Function(stack?.Playables);
+			IList<Playable> results = Function(stack?.Playables);
 
 			if (stack != null)
 				stack.Playables = results;

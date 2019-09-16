@@ -14,10 +14,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_forcedDeathPhase = forcedDeathPhase;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			foreach (IPlayable p in IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables))
+			foreach (Playable p in IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables))
 				p.Destroy();
 
 			if (_forcedDeathPhase) game.DeathProcessingAndAuraUpdate();

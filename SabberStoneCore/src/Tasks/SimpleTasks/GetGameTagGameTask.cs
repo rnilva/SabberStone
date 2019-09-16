@@ -13,7 +13,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public GameTag Tag { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			stack.Number = game[Tag];

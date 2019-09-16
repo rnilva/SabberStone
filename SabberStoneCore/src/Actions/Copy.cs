@@ -7,7 +7,7 @@ namespace SabberStoneCore.Actions
 {
 	public partial class Generic
 	{
-		public static IPlayable Copy(in Controller controller, in IEntity creator, in IPlayable source, Zone targetZone, bool deathrattle = false)
+		public static Playable Copy(in Controller controller, in Entity creator, in Playable source, Zone targetZone, bool deathrattle = false)
 		{
 			// Determine whether enchantments should be also copied.
 			// Whenever a card moves forward in that flow (Deck -> Hand, Hand -> Play, Deck -> Play),
@@ -34,7 +34,7 @@ namespace SabberStoneCore.Actions
 			else
 				copyEnchantments = false;
 
-			IPlayable copiedEntity;
+			Playable copiedEntity;
 
 			if (copyEnchantments)
 			{
@@ -43,88 +43,84 @@ namespace SabberStoneCore.Actions
 					[GameTag.DISPLAYED_CREATOR] = creator.Id
 				};
 
-				copiedEntity = targetZone == Zone.DECK ?
-					new PlayableSurrogate(controller.Game, source.Card) :
-					Entity.FromCard(in controller, source.Card, tags);
-
-				if (source is PlayableSurrogate ps)
+				if (targetZone == Zone.PLAY)
 				{
-					copiedEntity.Cost = ps.Cost;
-
-					if (copiedEntity is Character c)
-					{
-						c._modifiedATK = ps.AttackDamage;
-						c._modifiedHealth = ps.Health;
-					}
+					MinionInPlay mip = MinionInPlay.FromCard(in controller, source.Card, tags);
+					if (sourceZone == Zone.PLAY)
+						mip.CopyAttributesFrom((MinionInPlay) source);
+					copiedEntity = mip;
 				}
 				else
 				{
+					copiedEntity = Entity.FromCard(in controller, source.Card, tags);
 
-					int? modifiedCost = ((Playable)source)._modifiedCost;
+					copiedEntity._v1 = source._v1;
+					copiedEntity._v2 = source._v2;
+					int? modifiedCost = source._modifiedCost;
 
 					if (modifiedCost.HasValue)
 						copiedEntity.Cost = modifiedCost.Value;
+				}
 
-					if (copiedEntity is Character c)
-						((Character)source).CopyInternalAttributes(in c);
+				//if (copiedEntity is Character c)
+				//	((Character) source).CopyInternalAttributes(in c);
 
-					if (source.AppliedEnchantments != null)
+				if (source.AppliedEnchantments != null)
+				{
+					foreach (Enchantment e in source.AppliedEnchantments)
 					{
-						foreach (Enchantment e in source.AppliedEnchantments)
+						Enchantment instance = Enchantment.GetInstance(in controller, e.Creator, copiedEntity, e.Card);
+						if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
 						{
-							Enchantment instance = Enchantment.GetInstance(in controller, e.Creator, copiedEntity, e.Card);
-							if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
-							{
-								instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
-								if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
-									instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
+							instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
+							if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
+								instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
 
-								instance.CapturedCard = e.CapturedCard;
-							}
-
-							if (e.IsOneTurnActive)
-								instance.Game.OneTurnEffectEnchantments.Add(instance);
+							instance.CapturedCard = e.CapturedCard;
 						}
 
+						if (e.IsOneTurnActive)
+							instance.Game.OneTurnEffectEnchantments.Add(instance);
 					}
 
-					var kvps = new KeyValuePair<GameTag, int>[source.NativeTags.Count];
-					source.NativeTags.CopyTo(kvps, 0);
+				}
 
-					//for (int i = 0; i < kvps.Length; i++)
-					//{
-					//	switch (kvps[i].Key)
-					//	{
-					//		case GameTag.ENTITY_ID:
-					//		case GameTag.CONTROLLER:
-					//		case GameTag.ZONE:
-					//		case GameTag.ZONE_POSITION:
-					//		case GameTag.CREATOR:
-					//		case GameTag.DISPLAYED_CREATOR:
-					//		case GameTag.EXHAUSTED:
-					//			continue;
-					//		case GameTag.COST:
-					//			copiedEntity.AuraEffects.ToBeUpdated = true;
-					//			goto default;
-					//		default:
-					//			tags.Add(kvps[i]);
-					//			break;
-					//	}
-					//}
+				var kvps = new KeyValuePair<GameTag, int>[source.NativeTags.Count];
+				source.NativeTags.CopyTo(kvps, 0);
 
-					List<(int entityId, IEffect effect)> oneTurnEffects = controller.Game.OneTurnEffects;
-					for (int i = oneTurnEffects.Count - 1; i >= 0; i--)
-					{
-						(int id, IEffect effect) = oneTurnEffects[i];
-						if (id == source.Id)
-							oneTurnEffects.Add((copiedEntity.Id, effect));
-					}
+				//for (int i = 0; i < kvps.Length; i++)
+				//{
+				//	switch (kvps[i].Key)
+				//	{
+				//		case GameTag.ENTITY_ID:
+				//		case GameTag.CONTROLLER:
+				//		case GameTag.ZONE:
+				//		case GameTag.ZONE_POSITION:
+				//		case GameTag.CREATOR:
+				//		case GameTag.DISPLAYED_CREATOR:
+				//		case GameTag.EXHAUSTED:
+				//			continue;
+				//		case GameTag.COST:
+				//			copiedEntity.AuraEffects.ToBeUpdated = true;
+				//			goto default;
+				//		default:
+				//			tags.Add(kvps[i]);
+				//			break;
+				//	}
+				//}
+
+				List<(int entityId, IEffect effect)> oneTurnEffects = controller.Game.OneTurnEffects;
+				for (int i = oneTurnEffects.Count - 1; i >= 0; i--)
+				{
+					(int id, IEffect effect) = oneTurnEffects[i];
+					if (id == source.Id)
+						oneTurnEffects.Add((copiedEntity.Id, effect));
 				}
 			}
 			else if
 				(targetZone == Zone.DECK)
 			{
-				copiedEntity = new PlayableSurrogate(controller.Game, source.Card);
+				copiedEntity = Entity.FromCard(in controller, source.Card);
 				ShuffleIntoDeck(controller, creator, copiedEntity);
 				return copiedEntity;
 				// TODO: Add tag
@@ -151,14 +147,14 @@ namespace SabberStoneCore.Actions
 						if (position > controller.BoardZone.Count)
 							position = controller.BoardZone.Count;
 					}
-					Generic.SummonBlock.Invoke(controller.Game, (Minion) copiedEntity, position);
+					Generic.SummonBlock(controller.Game, ref copiedEntity, position);
 					break;
 				case Zone.SETASIDE:
 					controller.SetasideZone.Add(copiedEntity);
 					break;
 			}
 
-			if (copyEnchantments && source.OngoingEffect != null && copiedEntity.OngoingEffect == null)
+			if (copyEnchantments && source is MinionInPlay m && m.OngoingEffect != null && copiedEntity.OngoingEffect == null)
 				source.OngoingEffect.Clone(copiedEntity);
 
 			return copiedEntity;

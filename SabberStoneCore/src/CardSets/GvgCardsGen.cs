@@ -797,10 +797,10 @@ namespace SabberStoneCore.CardSets
 					new IncludeTask(EntityType.ALLMINIONS, addFlag: true),
 					new FuncPlayablesTask(list =>
 					{
-						IPlayable source = list[0];
+						Playable source = list[0];
 						for (int i = 1; i < list.Count; i++)
 						{
-							var c = (ICharacter) list[i];
+							var c = (Character) list[i];
 							Generic.DamageCharFunc(source, c, c.AttackDamage, true);
 						}
 

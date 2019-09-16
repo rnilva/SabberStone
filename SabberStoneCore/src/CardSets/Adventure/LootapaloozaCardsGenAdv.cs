@@ -856,7 +856,7 @@ namespace SabberStoneCore.CardSets.Adventure
 					new CopyTask(EntityType.TARGET, Zone.PLAY, addToStack: true),
 					new FuncPlayablesTask(list =>
 					{
-						var target = list[0] as ICharacter;
+						var target = list[0] as Character;
 						if (target == null)
 							return list;
 						target.Health = 1;
@@ -1089,8 +1089,8 @@ namespace SabberStoneCore.CardSets.Adventure
 					new FuncPlayablesTask(p =>
 					{
 						if (!p.Any())
-							return new IPlayable[0];
-						IPlayable max = p.OrderByDescending(x => ((Minion)x).AttackDamage)
+							return new Playable[0];
+						Playable max = p.OrderByDescending(x => ((Minion)x).AttackDamage)
 							.FirstOrDefault();
 						return new[] {max};
 					}),
@@ -1304,7 +1304,7 @@ namespace SabberStoneCore.CardSets.Adventure
 			// --------------------------------------------------------
 			cards.Add("LOOTA_BOSS_34p", new Power {
 				// TODO [LOOTA_BOSS_34p] Devour && Test: Devour_LOOTA_BOSS_34p
-				PowerTask = new EnqueueTask(2, new DestroyTask(EntityType.TOPCARDFROMDECK))
+				PowerTask = new EnqueueTask(2, new RemoveFromDeck(EntityType.TOPCARDFROMDECK))
 			});
 
 			// ----------------------------------- HERO_POWER - NEUTRAL

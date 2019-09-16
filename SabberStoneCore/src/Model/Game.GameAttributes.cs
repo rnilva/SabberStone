@@ -2,11 +2,41 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using SabberStoneCore.Enums;
 
 namespace SabberStoneCore.Model
 {
 	public partial class Game
 	{
+		public override int this[GameTag t]
+		{
+			get
+			{
+				switch (t)
+				{
+					case GameTag.TURN:
+						return Turn;
+					case GameTag.STATE:
+						return (int) State;
+					case GameTag.STEP:
+						return (int) Step;
+					case GameTag.NEXT_STEP:
+						return (int) NextStep;
+					case GameTag.PROPOSED_ATTACKER:
+						return ProposedAttacker;
+					case GameTag.PROPOSED_DEFENDER:
+						return ProposedDefender;
+					case GameTag.FIRST_CARD_PLAYED_THIS_TURN:
+						return FirstCardPlayedThisTurn;
+					case GameTag.NUM_MINIONS_KILLED_THIS_TURN:
+						return NumMinionsKilledThisTurn;
+					default:
+						return base[t];
+				}
+			}
+			set => base[t] = value;
+		}
+
 		private unsafe struct GameAttributes
 		{
 			private const int COUNT = 8;
@@ -14,12 +44,12 @@ namespace SabberStoneCore.Model
 			private fixed int _data[COUNT];
 #pragma warning restore 649
 
-			public GameAttributes(GameAttributes other)
-			{
-				fixed (void* ptr = _data)
-					Buffer.MemoryCopy(other._data, ptr,
-						COUNT * sizeof(int), COUNT * sizeof(int));
-			}
+			//public GameAttributes(GameAttributes other)
+			//{
+			//	fixed (void* ptr = _data)
+			//		Buffer.MemoryCopy(other._data, ptr,
+			//			COUNT * sizeof(int), COUNT * sizeof(int));
+			//}
 
 			public int Turn
 			{
@@ -77,7 +107,6 @@ namespace SabberStoneCore.Model
 				[MethodImpl(MethodImplOptions.AggressiveInlining)]
 				set => _data[7] = value;
 			}
-
 		}
 	}
 }

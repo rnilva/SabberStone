@@ -39,13 +39,13 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Thrall, Deathseer"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Thrall, Deathseer"));
 
-			IPlayable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion1));
-			IPlayable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion2));
-			IPlayable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion3));
 
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Sum(p => p.Card.Cost));
@@ -86,7 +86,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Valeera the Hollow"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Valeera the Hollow"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 			Assert.Equal("ICC_827", game.CurrentPlayer.Hero.Card.Id);
 			Assert.Equal("ICC_827p", game.CurrentPlayer.Hero.HeroPower.Card.Id);
@@ -176,7 +176,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(Race.BEAST, zomBeast.Race);
 			Assert.Equal(firstCard.Cost + secondCard.Cost, zomBeast.Cost);
 			Assert.Equal(secondCard.Taunt, zomBeast.HasTaunt);
-			Assert.Equal(secondCard.LifeSteal, zomBeast.HasLifeSteal);
+			Assert.Equal(secondCard.LifeSteal, zomBeast.HasLifesteal);
 			Assert.Equal(secondCard.Rush, zomBeast.IsRush);
 		}
 
@@ -342,7 +342,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, game.CurrentOpponent.Hero));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			Generic.SummonBlock.Invoke(game,
+			Generic.SummonBlock(game,
 				(Minion) Entity.FromCard(game.CurrentPlayer, Cards.FromName("Doomguard")), -1);
 			Assert.Single(game.CurrentPlayer.BoardZone);
 			game.CurrentPlayer.BoardZone[0].Kill();
@@ -451,27 +451,27 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frost Lich Jaina"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frost Lich Jaina"));
 			var tarCreeper = (Minion)Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tar Creeper"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			Assert.Equal(1, game.CurrentPlayer.BoardZone.Count);
-			Assert.True(game.CurrentPlayer.BoardZone.First().HasLifeSteal);
+			Assert.True(game.CurrentPlayer.BoardZone.First().HasLifesteal);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			var opponentWisp = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
+			var opponentWisp = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, opponentWisp));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, tarCreeper));
-			Assert.True(tarCreeper.HasLifeSteal);
+			Assert.True(tarCreeper.HasLifesteal);
 
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, opponentWisp));
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
 
 			var playerWisp = (Minion)Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, playerWisp));
-			Assert.False(playerWisp.HasLifeSteal);
+			Assert.False(playerWisp.HasLifesteal);
 		}
 
 		// ----------------------------------------- HERO - WARRIOR
@@ -548,10 +548,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Thrall, Deathseer"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Thrall, Deathseer"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 
-			IPlayable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion1));
 
 			Assert.Equal(1, game.CurrentPlayer.BoardZone[0].Cost);
@@ -824,7 +824,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fatespinner"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fatespinner"));
 
 			Minion type1 = game.ProcessCard((Minion)testCard, null, true, 1);
 
@@ -896,14 +896,14 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Druid of the Swarm"));
+			Playable testCard1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Druid of the Swarm"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard1, 1));
 			Assert.Equal(1, game.CurrentPlayer.BoardZone.Count);
 			Assert.True(game.CurrentPlayer.BoardZone[0].Poisonous);
 			Assert.Equal(1, game.CurrentPlayer.BoardZone[0].AttackDamage);
 			Assert.Equal(2, game.CurrentPlayer.BoardZone[0].Health);
 
-			IPlayable testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Druid of the Swarm"));
+			Playable testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Druid of the Swarm"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard2, 2));
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
 			Assert.True(game.CurrentPlayer.BoardZone[1].HasTaunt);
@@ -912,11 +912,11 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			IPlayable chooseBoth = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fandral Staghelm"));
+			Playable chooseBoth = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fandral Staghelm"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, chooseBoth));
 			Assert.True(game.CurrentPlayer.ChooseBoth);
 
-			IPlayable testCard3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Druid of the Swarm"));
+			Playable testCard3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Druid of the Swarm"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard3, 2));
 			Assert.Equal(4, game.CurrentPlayer.BoardZone.Count);
 			Assert.True(game.CurrentPlayer.BoardZone[3].HasTaunt);
@@ -953,9 +953,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Strongshell Scavenger"));
-			IPlayable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Target Dummy"));
-			IPlayable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Target Dummy"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Strongshell Scavenger"));
+			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Target Dummy"));
+			Playable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Target Dummy"));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion1));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion2));
@@ -998,13 +998,13 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crypt Lord"));
-			IPlayable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
-			IPlayable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crypt Lord"));
+			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
+			Playable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
 
-			IPlayable testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crypt Lord"));
-			IPlayable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Angry Chicken"));
-			IPlayable minion4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Angry Chicken"));
+			Playable testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crypt Lord"));
+			Playable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Angry Chicken"));
+			Playable minion4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Angry Chicken"));
 
 			Assert.Equal(6, ((Minion)testCard).Health);
 
@@ -1061,10 +1061,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hadronox"));
-			IPlayable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pompous Thespian"));
-			IPlayable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
-			IPlayable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stubborn Gastropod"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hadronox"));
+			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pompous Thespian"));
+			Playable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
+			Playable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stubborn Gastropod"));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion1));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion2));
@@ -1074,14 +1074,14 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(3, game.CurrentOpponent.BoardZone.Count);
 			Assert.Equal(0, game.CurrentPlayer.BoardZone.Count);
 
-			IPlayable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Flamestrike"));
+			Playable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Flamestrike"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, spell1));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			IPlayable spell2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Twisting Nether"));
+			Playable spell2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Twisting Nether"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, spell2));
 			Assert.Equal(3, game.CurrentOpponent.BoardZone.Count);
 		}
@@ -1113,7 +1113,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Webweave"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Webweave"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, testCard));
 
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
@@ -1156,14 +1156,14 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spreading Plague"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spreading Plague"));
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			IPlayable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
-			IPlayable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
-			IPlayable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
-			IPlayable minion4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
+			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
+			Playable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
+			Playable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
+			Playable minion4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion1));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion2));
@@ -1203,7 +1203,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(0, game.CurrentPlayer.Hero.Armor);
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Gnash"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Gnash"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, testCard));
 
 			Assert.Equal(3, game.CurrentPlayer.Hero.Armor);
@@ -1240,7 +1240,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ultimate Infestation"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ultimate Infestation"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, testCard, game.CurrentOpponent.Hero));
 			Assert.Equal(5, game.CurrentOpponent.Hero.Damage);
 			Assert.Equal(9, game.CurrentPlayer.HandZone.Count);  //4 from starting hand and 5 from the spell
@@ -1276,15 +1276,15 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			var testCard = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Exploding Bloatbat"));
-			IPlayable alarm = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Alarm-o-Bot"));
+			var testCard = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Exploding Bloatbat"));
+			Playable alarm = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Alarm-o-Bot"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, alarm));
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			IPlayable aberrant = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Aberrant Berserker"));
-			IPlayable shot1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
+			Playable aberrant = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Aberrant Berserker"));
+			Playable shot1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, aberrant));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, shot1, testCard));
 			Assert.Equal(1, game.CurrentOpponent.BoardZone.Count);
@@ -1351,7 +1351,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			void ProcessAvailableSecret()
 			{
-				IPlayable pick = game.CurrentPlayer.HandZone.First(p => !p.Controller.SecretZone.Select(q => q.Card.Id).Contains(p.Card.Id));
+				Playable pick = game.CurrentPlayer.HandZone.First(p => !p.Controller.SecretZone.Select(q => q.Card.Id).Contains(p.Card.Id));
 				game.ProcessCard(pick);
 			}
 		}
@@ -1384,9 +1384,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			var testCard = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Corpse Widow"));
-			IPlayable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Abominable Bowman"));
-			IPlayable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
+			var testCard = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Corpse Widow"));
+			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Abominable Bowman"));
+			Playable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 
@@ -1400,15 +1400,15 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			IPlayable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
+			Playable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell1, testCard));
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
 
-			IPlayable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Anomalus"));
-			IPlayable minion4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Backstreet Leper"));
+			Playable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Anomalus"));
+			Playable minion4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Backstreet Leper"));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion3));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion4));
@@ -1453,7 +1453,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stitched Tracker"));
+			Playable testCard1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stitched Tracker"));
 			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard1));
 			int choice = game.CurrentPlayer.Choice.Choices[0];
@@ -1466,7 +1466,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Null(game.CurrentPlayer.Choice);
 			Assert.Equal("Murloc Raider", game.CurrentPlayer.HandZone[5].Card.Name);
 			Assert.False(game.CurrentPlayer.DeckZone.Any(p => p is Minion));
-			IPlayable testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stitched Tracker"));
+			Playable testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stitched Tracker"));
 			Assert.Equal(7, game.CurrentPlayer.HandZone.Count);
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard2));
 			Assert.Equal(6, game.CurrentPlayer.HandZone.Count);
@@ -1497,12 +1497,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			var testCard = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bearshark"));
+			var testCard = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bearshark"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, testCard));
 			Assert.Equal(3, ((Minion)testCard).Health);
-			IPlayable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostbolt"));
+			Playable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostbolt"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell, testCard));
 			Assert.False(((Minion)testCard).IsDead);
 			Assert.Equal(3, ((Minion)testCard).Health);
@@ -1533,19 +1533,19 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			var testCard1 = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Abominable Bowman"));
-			var testCard2 = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Abominable Bowman"));
-			var beast = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
-			var murloc = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Murloc Raider"));
+			var testCard1 = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Abominable Bowman"));
+			var testCard2 = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Abominable Bowman"));
+			var beast = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			var murloc = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Murloc Raider"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, beast));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, murloc));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard1));
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			IPlayable mark1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hunter's Mark"));
-			IPlayable shot1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
-			IPlayable shot2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
-			IPlayable shot3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
+			Playable mark1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hunter's Mark"));
+			Playable shot1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
+			Playable shot2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
+			Playable shot3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, shot3, murloc));
 			Assert.Equal(2, game.CurrentOpponent.BoardZone.Count);
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, mark1, testCard1));
@@ -1556,8 +1556,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard2));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			IPlayable mark2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hunter's Mark"));
-			IPlayable shot4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
+			Playable mark2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hunter's Mark"));
+			Playable shot4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
 			Assert.Equal(1, game.CurrentOpponent.BoardZone.Count);
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, mark2, testCard2));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, shot4, testCard2));
@@ -1592,8 +1592,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Toxic Arrow"));
-			var minion = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Aberrant Berserker"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Toxic Arrow"));
+			var minion = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Aberrant Berserker"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
 			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, testCard, minion));
@@ -1632,8 +1632,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Play Dead"));
-			var minion = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bloodmage Thalnos"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Play Dead"));
+			var minion = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bloodmage Thalnos"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
 			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
 			game.Process(PlayCardTask.MinionTarget(game.CurrentPlayer, testCard, minion));
@@ -1667,8 +1667,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Venomstrike Trap"));
-			var minion = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Acidic Swamp Ooze"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Venomstrike Trap"));
+			var minion = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Acidic Swamp Ooze"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, testCard));
 			Assert.Equal(1, game.CurrentPlayer.BoardZone.Count);
@@ -1750,7 +1750,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ghastly Conjurer"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ghastly Conjurer"));
 			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			Assert.Equal(1, game.CurrentPlayer.BoardZone.Count);
@@ -1782,13 +1782,13 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Doomed Apprentice"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Doomed Apprentice"));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			IPlayable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pyroblast"));
-			IPlayable spell2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
+			Playable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pyroblast"));
+			Playable spell2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
 			game.AuraUpdate();
 
 			Assert.Equal(11, spell1.Cost);
@@ -1827,14 +1827,14 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Coldwraith"));
-			IPlayable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frost Nova"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Coldwraith"));
+			Playable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frost Nova"));
 
 			Assert.Equal(6, game.CurrentPlayer.HandZone.Count);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			IPlayable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
+			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion1));
 
@@ -1920,15 +1920,15 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frozen Clone"));
-			IPlayable mirrorEntity = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mirror Entity"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frozen Clone"));
+			Playable mirrorEntity = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mirror Entity"));
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, mirrorEntity));
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			IPlayable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, minion));
 
 			Assert.Equal(1, game.CurrentOpponent.BoardZone.Count);
@@ -2332,7 +2332,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player2.BaseMana = 10;
 
 			game.ProcessCard("Bloodfen Raptor");
-			var target = game.ProcessCard("Bloodfen Raptor");
+			Minion target = game.ProcessCard<Minion>("Bloodfen Raptor");
 			game.ProcessCard("Bloodfen Raptor");
 
 			game.ProcessCard("Desperate Stand", target);
@@ -2543,14 +2543,14 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Eternal Servitude"));
-			var minion = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Obsidian Statue"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Eternal Servitude"));
+			var minion = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Obsidian Statue"));
 			for (int i = 0; i < 10; i++)
 				Generic.Draw(game.CurrentPlayer);
 			Assert.Equal(6, game.CurrentPlayer.GraveyardZone.Count);
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			IPlayable pyroblast = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pyroblast"));
+			Playable pyroblast = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pyroblast"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, pyroblast, minion));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			Assert.Equal(0, game.CurrentPlayer.BoardZone.Count);
@@ -2592,7 +2592,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shadow Essence"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shadow Essence"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, testCard));
 			var minion = game.CurrentPlayer.BoardZone[0];
 			Assert.Equal(5, minion.Health);
@@ -2625,21 +2625,21 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spirit Lash"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spirit Lash"));
 			game.CurrentPlayer.Hero.Damage = 10;
-			IPlayable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
-			IPlayable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
-			IPlayable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
-			IPlayable minion4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion1));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion2));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion3));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion4));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			IPlayable minion5 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
-			IPlayable minion6 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
-			IPlayable minion7 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
-			IPlayable minion8 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion5 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion6 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion7 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			Playable minion8 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion5));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion6));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion7));
@@ -2680,10 +2680,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			var minion = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			var minion = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Embrace Darkness"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Embrace Darkness"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, testCard, minion));
 			Assert.False(minion.Controller == game.CurrentPlayer);
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
@@ -2746,7 +2746,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Runeforge Haunter"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Runeforge Haunter"));
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer));
@@ -2881,7 +2881,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spectral Pillager"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spectral Pillager"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Wisp"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Wisp"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Wisp"));
@@ -2927,7 +2927,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Roll the Bones"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Roll the Bones"));
 			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 			Assert.Equal(9, game.CurrentPlayer.HandZone.Count);
@@ -2965,7 +2965,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.ProcessCard("Deadly Poison");
 			game.ProcessCard("Deadly Poison");
 			game.ProcessCard("Leeching Poison");
-			Assert.True(game.CurrentPlayer.Hero.Weapon.HasLifeSteal);
+			Assert.True(game.CurrentPlayer.Hero.Weapon.HasLifesteal);
 			game.CurrentPlayer.Hero.Damage = 10;
 			game.Process(HeroAttackTask.Any(game.CurrentPlayer, game.CurrentOpponent.Hero));
 			Assert.Equal(5, game.CurrentPlayer.Hero.Damage);
@@ -3217,8 +3217,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = game.ProcessCard("Moorabi", null, true);
-			IPlayable raptor = game.ProcessCard("Bloodfen Raptor", null, true);
+			Playable testCard = game.ProcessCard("Moorabi", null, true);
+			Playable raptor = game.ProcessCard("Bloodfen Raptor", null, true);
 			game.ProcessCard("Ice Lance", testCard);
 			Assert.Equal(4, game.CurrentPlayer.HandZone.Count);
 			game.ProcessCard("Ice Lance", raptor);
@@ -3473,7 +3473,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Blood-Queen Lana'thel"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Blood-Queen Lana'thel"));
 		}
 
 		// --------------------------------------- MINION - WARLOCK
@@ -3940,7 +3940,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bring It On!"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bring It On!"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 
 			Assert.Equal(10, game.CurrentPlayer.Hero.Armor);
@@ -4407,9 +4407,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fallen Sun Cleric"));
-			IPlayable silenceSpell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silence"));
-			IPlayable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fallen Sun Cleric"));
+			Playable silenceSpell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silence"));
+			Playable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
 
@@ -4681,35 +4681,35 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable armyOfTheDead = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t2"));
+			Playable armyOfTheDead = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t2"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, armyOfTheDead));
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
 			Assert.Equal(3, game.CurrentPlayer.GraveyardZone.Count);
 			Assert.Equal(3, game.CurrentPlayer.DeckZone.Count);
 			game.CurrentPlayer.UsedMana = 0;
-			IPlayable doomPact = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t3"));
+			Playable doomPact = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t3"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, doomPact));
 			Assert.Equal(0, game.CurrentPlayer.BoardZone.Count);
 			Assert.Equal(10, game.CurrentPlayer.GraveyardZone.Count);
-			IPlayable deathGrip = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t4"));
+			Playable deathGrip = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t4"));
 			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, deathGrip));
 			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
 			Assert.Equal(0, game.CurrentOpponent.DeckZone.Count);
 			game.CurrentPlayer.UsedMana = 0;
-			IPlayable fireBall = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
+			Playable fireBall = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, fireBall, game.CurrentPlayer.Hero));
 			Assert.Equal(24, game.CurrentPlayer.Hero.Health);
-			IPlayable deathCoil = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t5"));
+			Playable deathCoil = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t5"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, deathCoil, game.CurrentPlayer.Hero));
 			Assert.Equal(29, game.CurrentPlayer.Hero.Health);
-			IPlayable deathCoil2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t5"));
+			Playable deathCoil2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t5"));
 			Assert.Equal(30, game.CurrentOpponent.Hero.Health);
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, deathCoil2, game.CurrentOpponent.Hero));
 			Assert.Equal(25, game.CurrentOpponent.Hero.Health);
 			game.CurrentPlayer.UsedMana = 0;
 			var injuredBlademaster = (Minion)Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Injured Blademaster"));
-			IPlayable obliterate = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t6"));
+			Playable obliterate = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t6"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, injuredBlademaster));
 			Assert.Equal(3, injuredBlademaster.Health);
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, obliterate, injuredBlademaster));
@@ -4721,12 +4721,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.CurrentPlayer.UsedMana = 0;
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, game.CurrentPlayer.HandZone[0]));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, game.CurrentPlayer.HandZone[0], game.CurrentPlayer.BoardZone[2]));
-			var testMinion = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			var testMinion = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testMinion));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			IPlayable frostmourne = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t1"));
+			Playable frostmourne = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t1"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, frostmourne));
-			IPlayable testSpell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostbolt"));
+			Playable testSpell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostbolt"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, testSpell, testMinion));
 			game.Process(HeroAttackTask.Any(game.CurrentPlayer, game.CurrentOpponent.BoardZone[0]));
 			game.CurrentPlayer.Hero.IsExhausted = false;
@@ -4735,7 +4735,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(HeroAttackTask.Any(game.CurrentPlayer, game.CurrentOpponent.BoardZone[0]));
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
 			game.CurrentPlayer.UsedMana = 0;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("The Lich King"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("The Lich King"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			Assert.Equal(6, game.CurrentOpponent.HandZone.Count);
@@ -4773,7 +4773,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Stonetusk Boar"));
 			Assert.Single(game.CurrentPlayer.BoardZone);
 			Assert.Equal(26, game.CurrentPlayer.DeckZone.Count());
-			IPlayable doomPact = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t3"));
+			Playable doomPact = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t3"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, doomPact));
 			Assert.Empty(game.CurrentPlayer.BoardZone);
 			Assert.Equal(25, game.CurrentPlayer.DeckZone.Count());
@@ -4810,10 +4810,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 			Assert.Equal(0, game.CurrentPlayer.HandZone.Count);
-			IPlayable deathGrip1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t4"));
+			Playable deathGrip1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t4"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, deathGrip1));
 			Assert.Equal(1, game.CurrentPlayer.HandZone.Count);
-			IPlayable deathGrip2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t4"));
+			Playable deathGrip2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t4"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, deathGrip2));
 			Assert.Equal(1, game.CurrentPlayer.HandZone.Count);
 
@@ -4977,7 +4977,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Saronite Chain Gang"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Saronite Chain Gang"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			Assert.Equal(2, game.Player1.BoardZone.Count);
 			Assert.Equal("ICC_466", game.Player1.BoardZone[0].Card.Id);
@@ -5084,12 +5084,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable fireball = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
+			Playable fireball = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, fireball, game.CurrentOpponent.Hero));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
 			Assert.Equal(6, game.CurrentPlayer.Hero.Damage);
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Happy Ghoul"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Happy Ghoul"));
 			game.AuraUpdate();
 			Assert.Equal(3, testCard.Cost);
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, game.CurrentPlayer.Hero));
@@ -5151,7 +5151,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Skulking Geist"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Skulking Geist"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			Assert.Equal(0, game.CurrentPlayer.HandZone.Count);
 			Assert.Equal(0, game.CurrentPlayer.DeckZone.Count);
@@ -5191,7 +5191,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(3, game.CurrentPlayer.HandZone.Count);
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, game.CurrentPlayer.BoardZone[0]));
 			Assert.Equal(4, game.CurrentPlayer.HandZone.Count);
-			Assert.True(game.CurrentPlayer.HandZone[3].HasDeathrattle);
+			Assert.True(game.CurrentPlayer.HandZone[3].Card.Deathrattle);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL
@@ -5225,7 +5225,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			var minion = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
+			var minion = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
 
@@ -5236,7 +5236,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(1, minion.AttackDamage);
 			Assert.False(minion.HasTaunt);
 
-			IPlayable bonemare = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bonemare"));
+			Playable bonemare = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bonemare"));
 			game.Process(PlayCardTask.MinionTarget(game.CurrentPlayer, bonemare, minion));
 
 			Assert.Equal(5, minion.Health);
@@ -5357,7 +5357,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = game.ProcessCard("Meat Wagon", null, true);
+			Playable testCard = game.ProcessCard("Meat Wagon", null, true);
 			game.ProcessCard("Raid Leader", null, true);
 
 			game.ProcessCard("Fireball", testCard);
@@ -5403,13 +5403,13 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Prince Keleseth"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Prince Keleseth"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, game.CurrentPlayer.HandZone[3]));
-			Assert.Equal(2, ((ICharacter)game.CurrentPlayer.HandZone[3]).AttackDamage);
-			Assert.Equal(5, ((ICharacter)game.CurrentPlayer.HandZone[3]).Health);
-			Assert.Equal(2, ((ICharacter)game.CurrentPlayer.HandZone[4]).AttackDamage);
-			Assert.Equal(2, ((ICharacter)game.CurrentPlayer.HandZone[4]).Health);
+			Assert.Equal(2, ((Character)game.CurrentPlayer.HandZone[3]).AttackDamage);
+			Assert.Equal(5, ((Character)game.CurrentPlayer.HandZone[3]).Health);
+			Assert.Equal(2, ((Character)game.CurrentPlayer.HandZone[4]).AttackDamage);
+			Assert.Equal(2, ((Character)game.CurrentPlayer.HandZone[4]).Health);
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, game.CurrentPlayer.HandZone[4]));
 			Assert.Equal(2, game.CurrentPlayer.BoardZone[1].AttackDamage);
 			Assert.Equal(2, game.CurrentPlayer.BoardZone[1].Health);
@@ -5501,12 +5501,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			var testCard2 = (Minion)Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Prince Valanar"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 			Assert.False(testCard.HasTaunt);
-			Assert.False(testCard.HasLifeSteal);
+			Assert.False(testCard.HasLifesteal);
 			game.Player1.UsedMana = 0;
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Arcane Intellect"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard2));
 			Assert.True(testCard2.HasTaunt);
-			Assert.True(testCard2.HasLifeSteal);
+			Assert.True(testCard2.HasLifesteal);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL
@@ -5535,9 +5535,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			var testCard = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arfus"));
+			var testCard = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arfus"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
-			IPlayable frostBolt = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostbolt"));
+			Playable frostBolt = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostbolt"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, frostBolt, testCard));
 			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
 			Assert.StartsWith("ICC_314t", game.CurrentPlayer.HandZone[4].Card.Id);
@@ -5616,8 +5616,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spellweaver"));
-			IPlayable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spellweaver"));
+			Playable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell, game.CurrentOpponent.Hero));
 			Assert.Equal(8, game.CurrentOpponent.Hero.Damage);
@@ -5741,6 +5741,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(1, game.CurrentPlayer.BoardZone[0].AttackDamage);
 			Assert.Equal(1, game.CurrentPlayer.BoardZone[0].Health);
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, game.CurrentPlayer.BoardZone[0]));
+			Assert.Equal(1, game.NumMinionsKilledThisTurn);
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Wicked Skeleton"));
 			Assert.Equal(2, game.CurrentPlayer.BoardZone[0].AttackDamage);
 			Assert.Equal(2, game.CurrentPlayer.BoardZone[0].Health);
@@ -5857,10 +5858,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Corpsetaker"));
-			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p.IsMinion && p.HasTaunt), game.CurrentPlayer.BoardZone[0].HasTaunt);
-			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p.IsMinion && p.HasDivineShield), game.CurrentPlayer.BoardZone[0].HasDivineShield);
-			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p.IsMinion && p.HasLifeSteal), game.CurrentPlayer.BoardZone[0].HasLifeSteal);
-			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p.IsMinion && p.HasWindfury), game.CurrentPlayer.BoardZone[0].HasWindfury);
+			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p is Minion m && m.HasTaunt), game.CurrentPlayer.BoardZone[0].HasTaunt);
+			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p is Minion m && m.HasDivineShield), game.CurrentPlayer.BoardZone[0].HasDivineShield);
+			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p is Minion m && m.HasLifesteal), game.CurrentPlayer.BoardZone[0].HasLifesteal);
+			Assert.Equal(game.CurrentPlayer.DeckZone.Any(p => p is Minion m && m.HasWindfury), game.CurrentPlayer.BoardZone[0].HasWindfury);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL
@@ -5888,8 +5889,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tainted Zealot"));
-			IPlayable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostbolt"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tainted Zealot"));
+			Playable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostbolt"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			Assert.True(game.CurrentPlayer.BoardZone[0].HasDivineShield);
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell, game.CurrentOpponent.Hero));

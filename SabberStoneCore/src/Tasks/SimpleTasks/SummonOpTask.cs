@@ -18,7 +18,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public Card Card { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (controller.Opponent.BoardZone.IsFull)
@@ -29,14 +29,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			Minion summonEntity = Card != null
 				? Entity.FromCard(controller.Opponent, Card) as Minion
-				: stack?.Playables[0] is PlayableSurrogate ps
-					? (Minion)ps.CastToPlayable(controller.Opponent)
-					: stack?.Playables[0] as Minion;
+				: stack?.Playables[0] as Minion;
 
 			if (summonEntity == null)
 				return TaskState.STOP;
 
-			Generic.SummonBlock.Invoke(game, summonEntity, -1);
+			Generic.SummonBlock(game, summonEntity, -1);
 
 			return TaskState.COMPLETE;
 		}

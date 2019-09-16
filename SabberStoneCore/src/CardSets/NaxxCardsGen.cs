@@ -418,11 +418,11 @@ namespace SabberStoneCore.CardSets
 						int j = 0;
 						do
 						{
-							IPlayable p = graveyard[i];
-							if (p.Card.Type == CardType.MINION && p.ToBeDestroyed)
+							Playable p = graveyard[i];
+							if (p is Minion m && m.ToBeDestroyed)
 							{
 								if (c.BoardZone.IsFull) return 0;
-								Generic.SummonBlock.Invoke(c.Game, (Minion) Entity.FromCard(c, p.Card), -1);
+								Generic.SummonBlock(c.Game, (Minion) Entity.FromCard(c, p.Card), -1);
 								j++;
 							}
 							i--;
@@ -447,10 +447,10 @@ namespace SabberStoneCore.CardSets
 				DeathrattleTask = new FuncNumberTask(src =>
 				{
 					Controller c = src.Controller;
-					if ((c.GraveyardZone.Any(p => p.Card.AssetId == 1797 && p.ToBeDestroyed) ||
-					     c.Opponent.GraveyardZone.Any(p => p.Card.AssetId == 1797 && p.ToBeDestroyed)) &&
+					if ((c.GraveyardZone.Any(p => p.Card.AssetId == 1797 && ((Minion)p).ToBeDestroyed) ||
+					     c.Opponent.GraveyardZone.Any(p => p.Card.AssetId == 1797 && ((Minion)p).ToBeDestroyed)) &&
 					    !c.BoardZone.IsFull)
-						Generic.SummonBlock.Invoke(c.Game, (Minion) Entity.FromCard(c, Cards.FromId("FP1_014t")), -1);
+						Generic.SummonBlock(c.Game, (Minion) Entity.FromCard(c, Cards.FromId("FP1_014t")), -1);
 
 					return 0;
 				})
@@ -470,10 +470,10 @@ namespace SabberStoneCore.CardSets
 				DeathrattleTask = new FuncNumberTask(src =>
 				{
 					Controller c = src.Controller;
-					if ((c.GraveyardZone.Any(p => p.Card.AssetId == 1796 && p.ToBeDestroyed) ||
-					     c.Opponent.GraveyardZone.Any(p => p.Card.AssetId == 1796 && p.ToBeDestroyed)) &&
+					if ((c.GraveyardZone.Any(p => p.Card.AssetId == 1796 && ((Minion)p).ToBeDestroyed) ||
+					     c.Opponent.GraveyardZone.Any(p => p.Card.AssetId == 1796 && ((Minion)p).ToBeDestroyed)) &&
 					    !c.BoardZone.IsFull)
-						Generic.SummonBlock.Invoke(c.Game, (Minion) Entity.FromCard(c, Cards.FromId("FP1_014t")), -1);
+						Generic.SummonBlock(c.Game, (Minion) Entity.FromCard(c, Cards.FromId("FP1_014t")), -1);
 
 					return 0;
 				})

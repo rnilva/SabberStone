@@ -145,23 +145,23 @@ namespace SabberStoneCore.Enchants
 			}
 		}
 
-		public int Immune
+		public bool Immune
 		{
 			get
 			{
 				if (Type == CardType.HERO)
-					return _data[5];
+					return _data[5] > 0;
 				if (Type == CardType.WEAPON)
-					return _data[2];
+					return _data[2] > 0;
 
-				return 0;
+				return false;
 			}
 			set
 			{
 				if (Type == CardType.HERO)
-					_data[5] = value;
+					_data[5] = value ? 1 : 0;
 				else if (Type == CardType.WEAPON)
-					_data[2] = value;
+					_data[2] = value ? 1 : 0;
 				else
 					throw new NotImplementedException();
 			}
@@ -185,7 +185,7 @@ namespace SabberStoneCore.Enchants
 					case GameTag.CHARGE:
 						return Charge > 0 ? 1 : 0;
 					case GameTag.IMMUNE:
-						return Immune;
+						return Immune ? 1 : 0;
 					case GameTag.LIFESTEAL when Type == CardType.MINION:
 						return Lifesteal ? 1 : 0;
 					//case GameTag.CANT_ATTACK:
@@ -222,7 +222,7 @@ namespace SabberStoneCore.Enchants
 						//Owner[GameTag.HEALTH_MINIMUM] = value;
 						return;
 					case GameTag.IMMUNE:
-						Immune = value;
+						Immune = value > 0;
 						return;
 					case GameTag.LIFESTEAL:
 						Lifesteal = value > 0;

@@ -58,9 +58,9 @@ namespace SabberStoneCore.Auras
 			_owner = owner;
 		}
 
-		IPlayable IAura.Owner => _owner;
+		Playable IAura.Owner => _owner;
 
-		public void Activate(IPlayable owner)
+		public void Activate(Playable owner)
 		{
 			if (!(owner is Playable m))
 				throw new Exception($"Can't activate Adaptive Effect on non-Playable entity {owner}.");
@@ -114,17 +114,23 @@ namespace SabberStoneCore.Auras
 
 					if (_tag == GameTag.ATK)
 					{
-						if (!(_owner is Character c))
-						{
-							if (_owner is Weapon)
-								c = _owner.Controller.Hero;
-							else
-								throw new Exception($"Can't apply ATK aura {this} to entity {_owner}");
-						}
+						//if (!(_owner is Character c))
+						//{
+						//	if (_owner is Weapon)
+						//		c = _owner.Controller.Hero;
+						//	else
+						//		throw new Exception($"Can't apply ATK aura {this} to entity {_owner}");
+						//}
+
+						Character c = (Character) _owner;
+
+						if (_owner is Weapon)
+							c = _owner.Controller.Hero;
 
 						if (_operator == EffectOperator.SET)
 						{
-							c._modifiedATK = 0;
+							//c._modifiedATK = 0;
+							c.AttackDamage = 0;
 							ATK.Effect(EffectOperator.ADD, _lastValue).RemoveAuraFrom(c);
 							value = value - (c.AuraEffects?.ATK ?? 0);
 							ATK.Effect(EffectOperator.ADD, value).ApplyAuraTo(c);
@@ -172,7 +178,7 @@ namespace SabberStoneCore.Auras
 			_on = false;
 		}
 
-		public void Clone(IPlayable clone)
+		public void Clone(Playable clone)
 		{
 			Activate(clone);
 		}

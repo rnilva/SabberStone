@@ -358,7 +358,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - POISONOUS = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_607", new Power {
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				Trigger = new Trigger(TriggerType.PLAY_MINION)
 				{
 					TriggerSource = TriggerSource.FRIENDLY,
 					Condition = SelfCondition.IsBaseTagValue(GameTag.COST, 1),
@@ -777,7 +777,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_694", new Power {
-				PowerTask = new FuncNumberTask(p =>
+				PowerTask = new FuncNumberTask((Playable p) =>
 				{
 					IReadOnlyList<Card> legendaries = RandomCardTask.GetCardList(p, CardType.MINION, rarity: Rarity.LEGENDARY);
 					//p.Controller.DeckZone.ForEach((q, c, ls) =>
@@ -788,7 +788,7 @@ namespace SabberStoneCore.CardSets.Standard
 					//}, p.Controller, legendaries);
 					Random rnd = Util.Random;
 					Controller c = p.Controller;
-					DeckZone_new deck = c.DeckZone;
+					DeckZone deck = c.DeckZone;
 
 					for (int i = 0; i < deck.Count; i++)
 					{
@@ -926,7 +926,7 @@ namespace SabberStoneCore.CardSets.Standard
 
 						Card pick = p.Controller.Opponent.HandZone.Random?.Card;
 						if (pick == null) return 0;
-						IPlayable result = Generic.ChangeEntityBlock.Invoke(p.Controller, p, pick, true);
+						Playable result = Generic.ChangeEntityBlock.Invoke(p.Controller, p, pick, true);
 						Generic.AddEnchantmentBlock.Invoke(p.Controller, Cards.FromId("GIL_142e"), p, result, 0, 0, false);
 						return 0;
 					}),
@@ -1029,7 +1029,7 @@ namespace SabberStoneCore.CardSets.Standard
 					new FilterStackTask(SelfCondition.IsMinion),
 					new FuncPlayablesTask(list =>
 					{
-						IPlayable source = list[0];
+						Playable source = list[0];
 						Controller c = source.Controller;
 						Card enchantment = Cards.FromId("GIL_840e");
 						for (int i = 1; i < list.Count; i++)
@@ -1102,13 +1102,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Has Attack equal to its Health.
 			// --------------------------------------------------------
 			cards.Add("GIL_840e", new Power {
-				//Enchant = Enchants.Enchants.SetAttackScriptTag
-				Enchant = new Enchant(
-					SurrogateATK.Effect(EffectOperator.SET, 0),
-					SurrogateHealth.Effect(EffectOperator.SET, 0))
-				{
-					UseScriptTag = true
-				}
+				Enchant = Enchants.Enchants.SetAttackScriptTag
 			});
 
 			// ---------------------------------------- MINION - PRIEST
@@ -2286,8 +2280,8 @@ namespace SabberStoneCore.CardSets.Standard
 					new IncludeTask(EntityType.DECK),
 					new FuncPlayablesTask(deck =>
 					{
-						IPlayable[] ordered = deck.Where(p => p is Minion).OrderBy(p => p.Cost).ToArray();
-						if (ordered.Length == 0) return new List<IPlayable>();
+						Playable[] ordered = deck.Where(p => p is Minion).OrderBy(p => p.Cost).ToArray();
+						if (ordered.Length == 0) return new List<Playable>();
 						int lowest = ordered[0].Cost;
 						return ordered.TakeWhile(p => p.Cost == lowest).ToList();
 					}),
@@ -2700,14 +2694,14 @@ namespace SabberStoneCore.CardSets.Standard
 						new IncludeTask(EntityType.TARGET, addFlag: true),
 						new FuncPlayablesTask(list =>
 						{
-							IPlayable p = list[1];
+							Playable p = list[1];
 
 							if (p.Zone != p.Controller.HandZone)
 								return null;
 
 							Card pick = p.Controller.Opponent.HandZone.Random?.Card;
 							if (pick == null) return null;
-							IPlayable result = Generic.ChangeEntityBlock.Invoke(p.Controller, p, pick, true);
+							Playable result = Generic.ChangeEntityBlock.Invoke(p.Controller, p, pick, true);
 							Generic.AddEnchantmentBlock(p.Controller, Cards.FromId("GIL_142e"), list[0], result, 0, 0,
 								false);
 							return null;
@@ -2894,7 +2888,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("GIL_614e2", new Power {
 				DeathrattleTask = ComplexTask.Create(
 					new IncludeTask(EntityType.TARGET),
-					new FuncPlayablesTask(p => new List<IPlayable>{p[0].Game.IdEntityDic[p[0][GameTag.TAG_SCRIPT_DATA_NUM_1]]}),
+					new FuncPlayablesTask(p => new List<Playable>{p[0].Game.IdEntityDic[p[0][GameTag.TAG_SCRIPT_DATA_NUM_1]]}),
 					new ConditionTask(EntityType.STACK, SelfCondition.IsTagValue(GameTag.VOODOO_LINK, 1)),
 					new FlagTask(true, new DestroyTask(EntityType.STACK)))
 			});
@@ -3002,7 +2996,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Increased Durability.
 			// --------------------------------------------------------
 			cards.Add("GIL_672e", new Power {
-				Enchant = new Enchant(GameTag.DURABILITY, EffectOperator.ADD, 1)
+				Enchant = new Enchant(Effects.Durability_N(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3052,7 +3046,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: +1 Attack.
 			// --------------------------------------------------------
 			cards.Add("GIL_902e", new Power {
-				Enchant = new Enchant(WeaponATK.Effect(EffectOperator.ADD, 1))
+				Enchant = new Enchant(ATK.Effect(EffectOperator.ADD, 1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

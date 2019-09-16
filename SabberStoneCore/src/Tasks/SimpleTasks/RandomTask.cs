@@ -16,15 +16,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public EntityType Type { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			//List<IPlayable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
+			//List<Playable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 
 			//if (entities.Count == 0)
 			//	return TaskState.STOP;
 
-			IList<IPlayable> entities =
+			IList<Playable> entities =
 				IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 
 			//if (game.Splitting && game.Splits.Count == 0)
@@ -32,11 +32,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//	if (Amount == 1)
 			//	{
 			//		//entities.ForEach(p =>
-			//		foreach (IPlayable p in IncludeTask.GetEntities(Type, in controller, source, target,
+			//		foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target,
 			//			stack?.Playables))
 			//		{
 			//			//game.Dump("SplitTask", $"{sets.IndexOf(p)}: {string.Join(";", p)}");
-			//			stack.Playables = new List<IPlayable> {p};
+			//			stack.Playables = new List<Playable> {p};
 			//			State = TaskState.COMPLETE;
 			//			Game clone = game.Clone();
 			//			game.Splits.Add(clone);
@@ -44,9 +44,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//	}
 			//	else
 			//	{
-			//		List<IEnumerable<IPlayable>> sets = Util.GetPowerSet(entities.ToList())
+			//		List<IEnumerable<Playable>> sets = Util.GetPowerSet(entities.ToList())
 			//			.Where(plist => plist.Count() == Amount).ToList();
-			//		foreach (IEnumerable<IPlayable> plist in sets)
+			//		foreach (IEnumerable<Playable> plist in sets)
 			//		{
 			//			game.Dump("SplitTask", $"{sets.IndexOf(plist)}: {String.Join(";", plist)}");
 			//			stack.Playables = plist.ToList();
@@ -62,7 +62,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//}
 
 
-			//stack.Playables = entities is List<IPlayable> list ? list : entities.ToList();
+			//stack.Playables = entities is List<Playable> list ? list : entities.ToList();
 			stack.Playables = entities;
 
 			return TaskState.COMPLETE;
@@ -80,14 +80,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_type = type;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			//IEnumerable<IPlayable> temp =
+			//IEnumerable<Playable> temp =
 			//	IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
-			//List<IPlayable> entities = temp is List<IPlayable> list ? list : temp.ToList();
+			//List<Playable> entities = temp is List<Playable> list ? list : temp.ToList();
 
-			IList<IPlayable> entities = IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables);
+			IList<Playable> entities = IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables);
 
 			if (entities.Count == 0)
 				return TaskState.STOP;
@@ -98,17 +98,17 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				return TaskState.COMPLETE;
 			}
 
-			//stack.Playables = new List<IPlayable>();
+			//stack.Playables = new List<Playable>();
 			//for (int i = 0; i < _amount && entities.Count > 0; i++)
 			//{
-			//	IPlayable randPlayable = entities[Util.Random.Next(entities.Count)];
+			//	Playable randPlayable = entities[Util.Random.Next(entities.Count)];
 			//	entities.Remove(randPlayable);
 			//	stack?.Playables.Add(randPlayable);
 			//}
 
 			stack.Playables = _amount == 1 ?
 				new[] {entities[Util.Random.Next(entities.Count)]} :
-				Util.ChooseNElements((IReadOnlyList<IPlayable>)entities, _amount);
+				Util.ChooseNElements((IReadOnlyList<Playable>)entities, _amount);
 
 			game.OnRandomHappened(true);
 

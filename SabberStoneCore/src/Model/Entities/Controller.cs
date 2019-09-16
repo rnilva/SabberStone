@@ -28,8 +28,8 @@ namespace SabberStoneCore.Model.Entities
 		/// The deck of this player.
 		/// This zone contains cards which are not yet drawn. Can be empty.
 		/// </summary>
-		//public DeckZone DeckZone;
-		public DeckZone_new DeckZone;
+		public DeckZone DeckZone;
+		//public DeckZone_new DeckZone;
 
 		/// <summary>
 		/// The hand of this player.
@@ -91,7 +91,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// The hero entity representing this player.
 		/// </summary>
-		public Hero Hero { get; set; }
+		public HeroInPlay Hero { get; set; }
 
 		/// <summary>
 		/// The cardclass of the deck.
@@ -165,8 +165,7 @@ namespace SabberStoneCore.Model.Entities
 			Name = name;
 			Controller = this;
 
-			//DeckZone = new DeckZone(this);
-			DeckZone = new DeckZone_new(this);
+			DeckZone = new DeckZone(this);
 			BoardZone = new BoardZone(this);
 			HandZone = new HandZone(this);
 			SecretZone = new SecretZone(this);
@@ -198,7 +197,7 @@ namespace SabberStoneCore.Model.Entities
 
 			Controller = this;
 
-			Hero = (Hero)controller.Hero.Clone(this);
+			Hero = (HeroInPlay)controller.Hero.Clone(this);
 
 			Hero.HeroPower = (HeroPower)controller.Hero.HeroPower.Clone(this);
 
@@ -235,7 +234,7 @@ namespace SabberStoneCore.Model.Entities
 					var enchantments = new List<Enchantment>(originalEnchantments.Count);
 					foreach (Enchantment p in originalEnchantments)
 					{
-						enchantments.Add(p.Clone(this));
+						enchantments.Add((Enchantment) p.Clone(this));
 					}
 					AppliedEnchantments = enchantments;
 				}
@@ -247,7 +246,7 @@ namespace SabberStoneCore.Model.Entities
 			//NumTotemSummonedThisGame = controller.NumTotemSummonedThisGame;
 			//TemporusFlag = controller.TemporusFlag;
 
-			_attrs = new ControllerAttributes(controller._attrs);
+			_attrs = controller._attrs;
 		}
 
 		/// <summary>
@@ -290,7 +289,8 @@ namespace SabberStoneCore.Model.Entities
 			}
 
 
-			Hero = (Hero) FromCard(this, in heroCard, tags, null, id);
+			//Hero = (Hero) FromCard(this, in heroCard, tags, null, id);
+			Hero = HeroInPlay.FromCard(this, in heroCard);
 			Hero[GameTag.ZONE] = (int) Enums.Zone.PLAY;
 			HeroId = Hero.Id;
 			Hero.HeroPower = FromCard(this, powerCard ?? Cards.FromAssetId(Hero[GameTag.HERO_POWER]),
@@ -368,14 +368,14 @@ namespace SabberStoneCore.Model.Entities
 			Character[] allFriendly = null;
 			Character[] allEnemies = null;
 
-			ReadOnlySpan<IPlayable> handSpan = HandZone.GetSpan();
+			ReadOnlySpan<Playable> handSpan = HandZone.GetSpan();
 			for (int i = 0; i < handSpan.Length; i++)
 			{
 				if (!handSpan[i].ChooseOne || ChooseBoth)
 					GetPlayCardTasks(handSpan[i]);
 				else
 				{
-					IPlayable[] playables = handSpan[i].ChooseOnePlayables;
+					Playable[] playables = handSpan[i].ChooseOnePlayables;
 					for (int j = 1; j < 3; j++)
 						GetPlayCardTasks(handSpan[i], playables[j - 1], j);
 				}
@@ -454,7 +454,7 @@ namespace SabberStoneCore.Model.Entities
 			return allOptions;
 
 			#region local functions
-			void GetPlayCardTasks(in IPlayable playable, in IPlayable chooseOnePlayable = null, int subOption = -1)
+			void GetPlayCardTasks(in Playable playable, in Playable chooseOnePlayable = null, int subOption = -1)
 			{
 				Card card = chooseOnePlayable?.Card ?? playable.Card;
 
@@ -521,7 +521,7 @@ namespace SabberStoneCore.Model.Entities
 						{
 							for (int j = 0; j < targets.Length; j++)
 							{
-								ICharacter target = targets[j];
+								Character target = targets[j];
 								if (playable is Minion)
 									for (int i = 0; i <= zonePosRange; i++)
 										allOptions.Add(PlayCardTask.Any(this, playable, target, i, subOption,

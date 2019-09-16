@@ -1039,13 +1039,13 @@
 //						new FuncPlayablesTask(p =>
 //						{
 //							if (!p.Any())
-//								return new List<IPlayable>();
+//								return new List<Playable>();
 //							Controller contrA = p[0].Controller;
 //							Controller contrB = p[0].Controller.Opponent;
-//							IPlayable maxA = p.Where(t => t.Controller == contrA)
+//							Playable maxA = p.Where(t => t.Controller == contrA)
 //								.OrderByDescending(x => ((Minion) x).AttackDamage)
 //								.FirstOrDefault();
-//							IPlayable maxB = p.Where(t => t.Controller == contrB)
+//							Playable maxB = p.Where(t => t.Controller == contrB)
 //								.OrderByDescending(x => ((Minion) x).AttackDamage)
 //								.FirstOrDefault();
 //							p.Remove(maxA);
@@ -1342,7 +1342,7 @@
 //							new FuncPlayablesTask(p =>
 //							{
 //								Controller controller = p[0].Controller;
-//								return new List<IPlayable> { controller.Game.IdEntityDic[controller.LastCardDrawn] };
+//								return new List<Playable> { controller.Game.IdEntityDic[controller.LastCardDrawn] };
 //							}),
 //							new BuffTask(Buffs.Cost(-1), EntityType.STACK)))
 //						.Build()
@@ -1725,7 +1725,7 @@
 //								{
 //									"CS2_050","CS2_051","CS2_052","NEW1_009"
 //								};
-//								return new List<IPlayable>
+//								return new List<Playable>
 //								{
 //									Entity.FromCard(controller, Cards.FromId(Util.Choose<string>(basicTotem)))
 //								};

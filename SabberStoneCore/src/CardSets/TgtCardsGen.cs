@@ -1404,25 +1404,25 @@ namespace SabberStoneCore.CardSets
 						switch (Util.Random.Next(0, 4))
 						{
 							case 0:
-								return new List<IPlayable>
+								return new List<Playable>
 								{
 									Entity.FromCard(list[0].Controller,
 										Cards.FromId("NEW1_009"))
 								};
 							case 1:
-								return new List<IPlayable>
+								return new List<Playable>
 								{
 									Entity.FromCard(list[0].Controller,
 										Cards.FromId("CS2_050"))
 								};
 							case 2:
-								return new List<IPlayable>
+								return new List<Playable>
 								{
 									Entity.FromCard(list[0].Controller,
 										Cards.FromId("CS2_051"))
 								};
 							case 3:
-								return new List<IPlayable>
+								return new List<Playable>
 								{
 									Entity.FromCard(list[0].Controller,
 										Cards.FromId("CS2_052"))
@@ -2879,7 +2879,7 @@ namespace SabberStoneCore.CardSets
 			// Text: +1 Durability.
 			// --------------------------------------------------------
 			cards.Add("AT_065e", new Power {
-				Enchant = new Enchant(GameTag.DURABILITY, EffectOperator.ADD, 1)
+				Enchant = new Enchant(Effects.Durability_N(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -2899,7 +2899,7 @@ namespace SabberStoneCore.CardSets
 			// Text: +1 Durability.
 			// --------------------------------------------------------
 			cards.Add("AT_077e", new Power {
-				Enchant = new Enchant(new Effect(GameTag.DURABILITY, EffectOperator.ADD, 1))
+				Enchant = new Enchant(Effects.Durability_N(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

@@ -6,7 +6,7 @@
 //{
 //    public class TriggerManagerAnother
 //    {
-//	    public delegate void TriggerHandler(IEntity sender);
+//	    public delegate void TriggerHandler(Entity sender);
 
 //	    private class TriggerHandlerComparer : IEqualityComparer<TriggerHandler>
 //	    {
@@ -45,7 +45,7 @@
 //		    }
 //	    }
 
-//	    internal void OnDealDamageTrigger(IEntity sender)
+//	    internal void OnDealDamageTrigger(Entity sender)
 //	    {
 //		    if (_dealDamageTriggers.Count <= 0) return;
 //		    foreach (TriggerHandler trigger in _dealDamageTriggers)

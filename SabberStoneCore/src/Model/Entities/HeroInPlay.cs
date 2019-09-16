@@ -1,0 +1,344 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using SabberStoneCore.Auras;
+using SabberStoneCore.Enums;
+
+namespace SabberStoneCore.Model.Entities
+{
+	public class HeroInPlay : Hero
+	{
+		public HeroInPlay(in Controller controller, in Card card, in EntityData tags, in int id = -1) : base(in controller, in card, in tags, in id)
+		{
+			Auras = new List<Aura>();
+		}
+
+		private HeroInPlay(in Controller controller, HeroInPlay hero) : base(in controller, hero)
+		{
+			Auras = new List<Aura>(hero.Auras.Count);
+			DamageTakenThisTurn = hero.DamageTakenThisTurn;
+			Armor = hero.Armor;
+			_attrs = hero._attrs;
+		}
+
+		public static HeroInPlay FromCard(in Controller c, in Card card)
+		{
+			var entity = new HeroInPlay(in c, in card, new EntityData(1));
+			c.Game.IdEntityDic[entity.Id] = entity;
+			if (card.ChooseOne) CreateChooseOnePlayables(in c, entity, in card, -1);
+			return entity;
+		}
+
+		public List<Aura> Auras { get; }
+
+		/// <summary>Gets or sets the hero power entity.</summary>
+		/// <value><see cref="Entities.HeroPower"/></value>
+		public HeroPower HeroPower { get; set; }
+
+		/// <summary>Gets or sets the weapon entity equipped on the Hero.</summary>
+		/// <value><see cref="Entities.Weapon"/></value>
+		public Weapon Weapon { get; set; }
+
+		internal override bool GetAttribute(Entities.Attributes attr)
+		{
+			unsafe
+			{
+				return _attrs.boolAttrs[(int) attr];
+			}
+		}
+		internal override void SetAttribute(Entities.Attributes attr, bool value)
+		{
+			unsafe
+			{
+				_attrs.boolAttrs[(int) attr] = value;
+			}
+		}
+
+		public override int this[GameTag t]
+		{
+			get
+			{
+				switch (t)
+				{
+					case GameTag.SPELLPOWER:
+						return SpellPower;
+					case GameTag.HEROPOWER_DAMAGE:
+						return HeroPowerDamage;
+					case GameTag.FATIGUE:
+						return Fatigue;
+					default:
+						return base[t];
+				}
+			}
+			set
+			{
+				switch (t)
+				{
+					case GameTag.SPELLPOWER:
+						SpellPower = value;
+						return;
+					case GameTag.HEROPOWER_DAMAGE:
+						HeroPowerDamage = value;
+						return;
+					case GameTag.FATIGUE:
+						Fatigue = value;
+						return;
+					default:
+						base[t] = value;
+						return;
+				}
+			}
+		}
+
+		public override int AttackDamage
+		{
+			get
+			{
+				int value = _v1 ?? (_v1 = 0).Value;
+				value += (AuraEffects?.ATK ?? 0);
+				if (Weapon != null && Game.CurrentPlayer == Controller)
+					return Weapon.AttackDamage + value;
+				return value;
+			}
+			set => _v1 = value;
+		}
+
+		public override bool CanAttack => AttackDamage > 0 && base.CanAttack;
+
+		public override bool HasWindfury
+		{
+			get => Weapon?.HasWindfury ?? false;
+			set => throw new NotImplementedException();
+		}
+
+		public override bool HasLifesteal => Weapon?.HasLifesteal ?? false;
+
+		public override void Destroy()
+		{
+			ToBeDestroyed = true;
+		}
+
+		public static HeroInPlay FromHero(ref Hero hero)
+		{
+			var inPlay = new HeroInPlay(hero.Controller, hero.Card, hero._data, hero.Id);
+			inPlay.ChooseOnePlayables = hero.ChooseOnePlayables;
+			hero.Game.IdEntityDic[hero.Id] = inPlay;
+			hero = inPlay;
+			return inPlay;
+		}
+
+		/// <summary>
+		/// Gain the specified amount of armor.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="armor"></param>
+		public void GainArmor(Playable source, int armor)
+		{
+			Game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !Game.Logging? "":$"{this} gaining armor for {armor}.");
+			Armor += armor;
+			EventMetaData temp = Game.CurrentEventData;
+			Game.CurrentEventData = new EventMetaData(source, this, armor);
+			Game.TriggerManager.OnArmorTrigger(this);
+			//Game.ProcessTasks();
+			Game.CurrentEventData = temp;
+		}
+
+		public void AddWeapon(Weapon weapon)
+		{
+			RemoveWeapon();
+			//weapon.OrderOfPlay = Game.NextOop;
+			Weapon = weapon;
+			if (_history)
+			{
+				Weapon[GameTag.ZONE] = (int)Enums.Zone.PLAY;
+				Weapon[GameTag.ZONE_POSITION] = 0;
+				EquippedWeapon = weapon.Id;
+			}
+			if (weapon.HasWindfury && IsExhausted && NumAttacksThisTurn == 1)
+				IsExhausted = false;
+
+			Game.TriggerManager.OnEquipWeaponTrigger(weapon);
+		}
+
+		/// <summary>
+		/// Removes the equipped weapon to the graveyard. This triggers deathrattle events on the weapon.
+		/// </summary>
+		public void RemoveWeapon()
+		{
+			if (Weapon == null)
+				return;
+
+			if (Weapon.HasDeathrattle)
+				Weapon.ActivateTask(PowerActivation.DEATHRATTLE);
+
+			Game.TriggerManager.OnDeathTrigger(Weapon);
+
+			Game.Log(LogLevel.INFO, BlockType.PLAY, "Hero", !Game.Logging? "":$"Butcher's knife incoming to graveyard, say 'gugus' to {Weapon}");
+			Controller.GraveyardZone.Add(Weapon);
+
+			ClearWeapon();
+		}
+
+		/// <summary>
+		/// Clears weapon information on Hero.
+		/// </summary>
+		public void ClearWeapon()
+		{
+			Weapon.ActivatedTrigger?.Remove();
+			Weapon.OngoingEffect?.Remove();
+			if (Weapon.AppliedEnchantments != null && Weapon[GameTag.KEEP_ENCHANTMENTS] != 1)
+				for (int i = Weapon.AppliedEnchantments.Count - 1; i >= 0; i--)
+					Weapon.AppliedEnchantments[i].Remove();
+			Weapon = null;
+			EquippedWeapon = 0;
+		}
+
+		public override Playable Clone(in Controller controller)
+		{
+			return new HeroInPlay(in controller, this);
+		}
+
+		public string FullPrint()
+		{
+			var str = new StringBuilder();
+			string mStr = Weapon != null ? $"[{Weapon.Card.Name}[{Weapon.AttackDamage}/{Weapon.Durability}]]" : "[NO WEAPON]";
+			str.Append($"[HERO][{this}][ATK{AttackDamage}/AR{Armor}/HP{Health}][WP{mStr}][SP{Controller.CurrentSpellPower}]");
+			//str.Append($"[ENCH {OldEnchants.Count}]");
+			//str.Append($"[TRIG {Triggers.Count}]");
+			return str.ToString();
+		}
+
+		private void DisposeHero()
+		{
+			if (Controller.Opponent.PlayState == PlayState.LOSING)
+			{
+				Controller.PlayState = PlayState.TIED;
+				Controller.Opponent.PlayState = PlayState.TIED;
+			}
+			else
+				Controller.PlayState = PlayState.LOSING;
+		}
+
+		private static readonly Action<Game> SetDraw = g =>
+		{
+			g.Player1.PlayState = PlayState.TIED;
+			g.Player2.PlayState = PlayState.TIED;
+		};
+		public int EquippedWeapon
+		{
+			get { return this[GameTag.WEAPON]; }
+			set { this[GameTag.WEAPON] = value; }
+		}
+		public override bool CantAttackHeroes
+		{
+			get
+			{
+				if (AuraEffects?.CannotAttackHeroes ?? false)
+					return true;
+
+				return base.CantAttackHeroes;
+			}
+			set => base.CantAttackHeroes = value;
+		}
+
+		private Attributes _attrs;
+
+		private unsafe struct Attributes
+		{
+			// 0 : SpellPower
+
+			// 1 : Damage
+			// 2 : NumAttacksThisTurn
+			// 3 : Fatigue
+			// 4 : DamageTakenThisTurn
+			// 5 : HeroPowerDamage
+
+
+			// 0 : Immune
+			// 1 : Frozen
+			// 2 : ToBeDestroyed
+			// 3 : Stealth
+			// 4 : CantBeTargetedBySpells
+
+			private const int NUM_INT_ATTRS = 6;
+			private const int NUM_BOOL_ATTRS = 5;
+#pragma warning disable 649
+			public fixed int intAttrs[NUM_INT_ATTRS];
+			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
+#pragma warning restore 649
+		}
+
+		public unsafe int SpellPower
+		{
+			get => _attrs.intAttrs[0];
+			set => _attrs.intAttrs[0] = value;
+		}
+		public override unsafe int Damage
+		{
+			get => _attrs.intAttrs[1];
+			set
+			{
+				if (value < 0)
+					value = 0;
+				else if (BaseHealth <= value)
+					ToBeDestroyed = true;
+
+				_attrs.intAttrs[1] = value;
+			}
+		}
+		public override unsafe int NumAttacksThisTurn
+		{
+			get => _attrs.intAttrs[2];
+			set => _attrs.intAttrs[2] = value;
+		}
+		public unsafe int Fatigue
+		{
+			get => _attrs.intAttrs[3];
+			set => _attrs.intAttrs[3] = value;
+		}
+		public unsafe int DamageTakenThisTurn
+		{
+			get => _attrs.intAttrs[4];
+			set => _attrs.intAttrs[4] = value;
+		}
+		public unsafe int HeroPowerDamage
+		{
+			get => _attrs.intAttrs[5];
+			set => _attrs.intAttrs[5] = value;
+		}
+		public override unsafe bool IsImmune
+		{
+			get => (AuraEffects?.Immune ?? false) || _attrs.boolAttrs[0];
+			set => _attrs.boolAttrs[0] = value;
+		}
+		public override unsafe bool IsFrozen
+		{
+			get => _attrs.boolAttrs[1];
+			set => _attrs.boolAttrs[1] = value;
+		}
+		public override unsafe bool ToBeDestroyed
+		{
+			get => _attrs.boolAttrs[2];
+			set
+			{
+				if (value)
+					Game.ResolveDeadHeroes += DisposeHero;
+				_attrs.boolAttrs[2] = value;
+			}
+		}
+		public override unsafe bool HasStealth
+		{
+			get => _attrs.boolAttrs[3];
+			set => _attrs.boolAttrs[3] = value;
+		}
+		public override unsafe bool CantBeTargetedBySpells
+		{
+			get => (AuraEffects?.CantBeTargetedBySpells ?? false) || _attrs.boolAttrs[4];
+			set => _attrs.boolAttrs[4] = value;
+		}
+		internal override unsafe ref bool GetRef(int index)
+		{
+			return ref _attrs.boolAttrs[index];
+		}
+	}
+}

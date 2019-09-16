@@ -25,7 +25,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_toOpponent = toOpponent;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			Zone zone = _zoneType;
@@ -38,18 +38,18 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (targetZone.IsFull)
 				return TaskState.STOP;
 
-			List<IPlayable> result = addToStack ? new List<IPlayable>() : null;
+			List<Playable> result = addToStack ? new List<Playable>() : null;
 
 			if (_entityType == EntityType.STACK)
 			{
 				if (stack?.Playables.Count < 1)
 					return TaskState.STOP;
 
-				foreach (IPlayable p in stack.Playables)
+				foreach (Playable p in stack.Playables)
 				{
 					for (int i = 0; i < amount; i++)
 					{
-						IPlayable copied = Generic.Copy(in c, in source, in p, zone);
+						Playable copied = Generic.Copy(in c, in source, in p, zone);
 						if (addToStack)
 							result.Add(copied);
 
@@ -64,15 +64,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			}
 			else
 			{
-				IPlayable toBeCopied;
+				Playable toBeCopied;
 				bool deathrattle = false;
 				switch (_entityType)
 				{
 					case EntityType.TARGET:
-						toBeCopied = target as IPlayable;
+						toBeCopied = target as Playable;
 						break;
 					case EntityType.SOURCE:
-						toBeCopied = source as IPlayable;
+						toBeCopied = source as Playable;
 						deathrattle = _zoneType == Zone.PLAY && target is Enchantment e && e.Power?.DeathrattleTask != null;
 						break;
 					case EntityType.EVENT_SOURCE:
@@ -103,7 +103,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 				for (int i = 0; i < amount; i++)
 				{
-					IPlayable copied = Generic.Copy(in c, in source, in toBeCopied, zone, deathrattle);
+					Playable copied = Generic.Copy(in c, in source, in toBeCopied, zone, deathrattle);
 
 					if (addToStack)
 						result.Add(copied);

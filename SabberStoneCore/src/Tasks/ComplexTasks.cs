@@ -40,7 +40,7 @@ namespace SabberStoneCore.Tasks
 				new IncludeTask(entityType),
 				new FuncPlayablesTask(playables =>
 				{
-					foreach (IPlayable p in playables)
+					foreach (Playable p in playables)
 					{
 						var m = (Minion) p;
 						if (m.NumAttacksThisTurn == 1 && m.IsExhausted)
@@ -65,7 +65,7 @@ namespace SabberStoneCore.Tasks
 				new IncludeTask(entityType),
 				new FuncPlayablesTask(list =>
 				{
-					foreach (IPlayable p in list)
+					foreach (Playable p in list)
 					{
 						var m = (Minion) p;
 						if (m.NumAttacksThisTurn == 0 && m.IsExhausted)
@@ -241,7 +241,7 @@ namespace SabberStoneCore.Tasks
 						Controller c = stack[0].Controller;
 						do
 						{
-							var pick = (PlayableSurrogate)Util.Choose((List<IPlayable>)stack);
+							Playable pick = Util.Choose((List<Playable>)stack);
 							if (c.SecretZone.Any(p => p.Card.AssetId == pick.Card.AssetId))
 							{
 								stack.Remove(pick);
@@ -249,7 +249,7 @@ namespace SabberStoneCore.Tasks
 							}
 
 							c.DeckZone.Remove(pick);
-							var secret = (Spell) pick.CastToPlayable(c);
+							var secret = (Spell) pick;
 							secret.Power.Trigger?.Activate(c.Game, secret);
 							c.SecretZone.Add(secret);
 							if (c == c.Game.CurrentPlayer)
@@ -308,10 +308,12 @@ namespace SabberStoneCore.Tasks
 				new FuncPlayablesTask(p =>
 				{
 					Controller controller = p[0].Controller;
-					int jadeGolem = controller.JadeGolem;
-					controller.JadeGolem = jadeGolem + 1;
-					
-					return new List<IPlayable> { Entity.FromCard(controller, Cards.FromId(jadeGolem < 30 ? JadeGolemStr[jadeGolem] : JadeGolemStr[29])) };
+					//int jadeGolem = controller.JadeGolem;
+					//controller.JadeGolem = jadeGolem + 1;
+					int jadeGolem = controller[GameTag.JADE_GOLEM];
+					controller[GameTag.JADE_GOLEM] = jadeGolem + 1;
+
+					return new List<Playable> { Entity.FromCard(controller, Cards.FromId(jadeGolem < 30 ? JadeGolemStr[jadeGolem] : JadeGolemStr[29])) };
 				}),
 				new SummonTask(side));
 		}

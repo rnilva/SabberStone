@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
+using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Enchants
 {
@@ -105,12 +106,14 @@ namespace SabberStoneCore.Enchants
 
 		    if (text.Contains(@"<b>Divine Shield</b>"))
 		    {
-			    effects.Add(new Effect(GameTag.DIVINE_SHIELD, EffectOperator.SET, 1));
+			    //effects.Add(new Effect(GameTag.DIVINE_SHIELD, EffectOperator.SET, 1));
+			    effects.Add(new AttributeEffect(Attributes.DivineShield, true));
 		    }
 
 		    if (text.Contains(@"<b>Poisonous</b>"))
 		    {
-			    effects.Add(new Effect(GameTag.POISONOUS, EffectOperator.SET, 1));
+			    //effects.Add(new Effect(GameTag.POISONOUS, EffectOperator.SET, 1));
+			    effects.Add(new AttributeEffect(Attributes.Poisonous, true));
 		    }
 
 		    if (text.Contains(@"<b>Lifesteal</b>"))
@@ -151,6 +154,11 @@ namespace SabberStoneCore.Enchants
 		internal static IEffect Health_N(int n)
 		{
 			return Health.Effect(EffectOperator.ADD, n);
+		}
+
+		internal static IEffect Durability_N(int n)
+		{
+			return Health_N(n);
 		}
 
 		internal static IEffect[] AttackHealth_N(int n)

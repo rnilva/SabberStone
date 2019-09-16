@@ -426,11 +426,11 @@ namespace SabberStoneCore.CardSets.Standard
 					{
 						BoardZone board = p[0].Controller.Opponent.BoardZone;
 						if (board.Count == 0)
-							return new List<IPlayable>(0);
+							return new List<Playable>(0);
 						if (board.Count < 3)
 							return board.GetAll();
 
-						var list = new List<IPlayable>(2);
+						var list = new List<Playable>(2);
 						if (!board[0].Untouchable)
 							list.Add(board[0]);
 						if (!board[board.Count - 1].Untouchable)
@@ -458,7 +458,7 @@ namespace SabberStoneCore.CardSets.Standard
 					new FlagTask(true, ComplexTask.Create(
 						new FuncNumberTask(p => p.Controller.HandZone.Count),
 						new MathNumberIndexTask(0, 1, MathOperation.ADD, 1),
-						new FuncNumberTask((IPlayable p) => Controller.MaxHandSize),
+						new FuncNumberTask((Playable p) => Controller.MaxHandSize),
 						new MathNumberIndexTask(0, 1, MathOperation.SUB),
 						new EnqueueNumberTask(
 							ComplexTask.Create(
@@ -1942,25 +1942,25 @@ namespace SabberStoneCore.CardSets.Standard
 						switch (Util.Random.Next(0, 4))
 						{
 							case 0:
-								return new List<IPlayable>
+								return new List<Playable>
 								{
 									Entity.FromCard(list[0].Controller,
 										Cards.FromId("NEW1_009"))
 								};
 							case 1:
-								return new List<IPlayable>
+								return new List<Playable>
 								{
 									Entity.FromCard(list[0].Controller,
 										Cards.FromId("CS2_050"))
 								};
 							case 2:
-								return new List<IPlayable>
+								return new List<Playable>
 								{
 									Entity.FromCard(list[0].Controller,
 										Cards.FromId("CS2_051"))
 								};
 							case 3:
-								return new List<IPlayable>
+								return new List<Playable>
 								{
 									Entity.FromCard(list[0].Controller,
 										Cards.FromId("CS2_052"))
@@ -3495,7 +3495,7 @@ namespace SabberStoneCore.CardSets.Standard
 				DeathrattleTask = ComplexTask.Create(
 					new IncludeTask(EntityType.TARGET),
 					new FuncPlayablesTask(p =>
-						new List<IPlayable> {p[0].Game.IdEntityDic[p[0][GameTag.TAG_SCRIPT_DATA_NUM_1]]}),
+						new List<Playable> {p[0].Game.IdEntityDic[p[0][GameTag.TAG_SCRIPT_DATA_NUM_1]]}),
 					new CopyTask(EntityType.STACK, Zone.PLAY, 2))
 			});
 
@@ -3892,14 +3892,14 @@ namespace SabberStoneCore.CardSets.Standard
 					new FuncPlayablesTask(list =>
 					{
 						if (list.Count == 0) return null;
-						IPlayable drawed = list[0];
+						Playable drawed = list[0];
 						if (drawed == null) return null;
 						Controller c = drawed.Controller;
 						Card card = drawed.Card;
 						int space = drawed.Controller.HandZone.FreeSpace;
 						for (int i = 0; i < space; i++)
 						{
-							IPlayable copied = Entity.FromCard(c, card);
+							Playable copied = Entity.FromCard(c, card);
 							copied[GameTag.DISPLAYED_CREATOR] = drawed.Id;
 							c.HandZone.Add(copied);
 						}

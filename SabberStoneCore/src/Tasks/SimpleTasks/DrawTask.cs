@@ -21,15 +21,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		}
 
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			//Model.Entities.IPlayable drawedCard = Generic.Draw(controller);
+			//Model.Entities.Playable drawedCard = Generic.Draw(controller);
 			//bool nullFlag = false;
-			List<IPlayable> cards = _toStack ? new List<IPlayable>(_count) : null;
+			List<Playable> cards = _toStack ? new List<Playable>(_count) : null;
 			for (int i = 0; i < _count; i++)
 			{
-				IPlayable draw = Generic.Draw(controller);
+				Playable draw = Generic.Draw(controller);
 				if (draw == null)
 				{
 					//nullFlag = true;

@@ -160,7 +160,7 @@ namespace SabberStoneCoreConsole
 				    Shuffle = false,
 				    SkipMulligan = true,
 				    History = false,
-				    Logging = false,
+				    Logging = true,
 			    };
 			    var clone = new Game(config);
 			    clone.StartGame();

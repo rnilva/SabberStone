@@ -9,11 +9,11 @@
 //	internal readonly ref struct EntityContainer
 //	{
 //		private readonly EntityType _type;
-//		private readonly IEntity _source;
-//		private readonly IPlayable _target;
+//		private readonly Entity _source;
+//		private readonly Playable _target;
 //		private readonly Controller _controller;
 
-//		public EntityContainer(EntityType type, IEntity source, IPlayable target, Controller controller)
+//		public EntityContainer(EntityType type, Entity source, Playable target, Controller controller)
 //		{
 //			_type = type;
 //			_source = source;
@@ -36,14 +36,14 @@
 
 //		internal ref struct EntityEnumerator
 //		{
-//			public readonly ReadOnlySpan<IPlayable> PlayableSpan;
-//			public readonly ReadOnlySpan<Minion> MinionSpan;
-//			public readonly IPlayable SinglePlayable;
+//			public readonly ReadOnlySpan<Playable> PlayableSpan;
+//			public readonly ReadOnlySpan<MinionInPlay> MinionSpan;
+//			public readonly Playable SinglePlayable;
 
 //			public int Index;
 //			public int Length;
 
-//			public EntityEnumerator(IPlayable singlePlayable)
+//			public EntityEnumerator(Playable singlePlayable)
 //			{
 //				PlayableSpan = default;
 //				MinionSpan = default;
@@ -53,9 +53,9 @@
 //				Length = 1;
 //			}
 
-//			private IPlayable _current;
+//			private Playable _current;
 
-//			public IPlayable Current => _current;
+//			public Playable Current => _current;
 //			public bool MoveNext()
 //			{
 //				if (Index++ < 0)
@@ -73,7 +73,7 @@
 //		{
 //			EntityContainer test = new EntityContainer();
 
-//			foreach (IPlayable i in test)
+//			foreach (Playable i in test)
 //			{
 
 //			}

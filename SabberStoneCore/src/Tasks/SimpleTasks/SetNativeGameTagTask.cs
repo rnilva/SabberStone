@@ -18,10 +18,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public int Value { get; set; }
 		public EntityType Type { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			//System.Collections.Generic.List<IPlayable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
+			//System.Collections.Generic.List<Playable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 			//if (entities.Count != 1)
 			//{
 			//	return TaskState.STOP;
@@ -29,7 +29,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			//((Entity)entities[0]).SetNativeGameTag(Tag, Value);
 
-			using (IEnumerator<IPlayable> e = IncludeTask
+			using (IEnumerator<Playable> e = IncludeTask
 				.GetEntities(Type, in controller, source, target, stack?.Playables).GetEnumerator())
 			{
 				if (e.Current != null)

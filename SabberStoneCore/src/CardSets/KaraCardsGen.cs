@@ -397,7 +397,7 @@ namespace SabberStoneCore.CardSets
 								"CS2_052",
 								"NEW1_009"
 							};
-							return new List<IPlayable>
+							return new List<Playable>
 							{
 								Entity.FromCard(controller, Cards.FromId(Util.Choose(basicTotem)))
 							};
@@ -707,9 +707,9 @@ namespace SabberStoneCore.CardSets
 					{
 						int id = p[0][GameTag.MOAT_LURKER_MINION];
 						if (id == 0)
-							return new List<IPlayable>();
+							return new List<Playable>();
 
-						IPlayable originalTarget = p[0].Game.IdEntityDic[id];
+						Playable originalTarget = p[0].Game.IdEntityDic[id];
 						if (originalTarget.Controller.BoardZone.IsFull)
 							return null;
 						Entity.FromCard(originalTarget.Controller, originalTarget.Card, null, originalTarget.Controller.BoardZone);

@@ -6,6 +6,8 @@ using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Enchants
 {
+	public delegate void ApplyingEffect(Playable playable);
+
 	public enum EffectOperator
 	{
 		ADD, SUB, MUL, SET
@@ -16,17 +18,23 @@ namespace SabberStoneCore.Enchants
 	/// </summary>
 	public interface IEffect
 	{
-		void ApplyTo(IEntity entity, bool isOneTurnEffect = false);
-		void ApplyAuraTo(IPlayable playable);
+		GameTag Tag { get; }
+		EffectOperator Operator { get; }
+		int Value { get; }
+
+		void ApplyTo(Entity entity, bool isOneTurnEffect = false);
+		void ApplyAuraTo(Playable playable);
 		//void ApplyTo(AuraEffects auraEffects);
 		//void ApplyTo(ControllerAuraEffects controllerAuraEffects);
 
-		void RemoveFrom(IEntity entity);
-		void RemoveAuraFrom(IPlayable playable);
+		void RemoveFrom(Entity entity);
+		void RemoveAuraFrom(Playable playable);
 		//void RemoveFrom(AuraEffects auraEffects);
 		//void RemoveFrom(ControllerAuraEffects controllerAuraEffects);
 
 		IEffect ChangeValue(int newValue);
+
+		//ApplyingEffect GetFunction();
 	}
 
 	/// <summary>
@@ -54,10 +62,18 @@ namespace SabberStoneCore.Enchants
 		/// <summary>
 		/// Apply this effect to the target entity.
 		/// </summary>
-		public void ApplyTo(IEntity entity, bool oneTurnEffect = false)
+		public void ApplyTo(Entity entity, bool oneTurnEffect = false)
 		{
 			if (oneTurnEffect)
 				entity.Game.OneTurnEffects.Add((entity.Id, this));
+
+			Attributes attr = AttributeHelpers.GameTagToAttribute(Tag);
+			if (attr != Attributes.Invalid)
+			{
+				new AttributeEffect(attr, Value == 1).ApplyTo(entity);
+				return;
+			}
+
 
 			EntityData tags = (EntityData)entity.NativeTags;
 
@@ -68,7 +84,7 @@ namespace SabberStoneCore.Enchants
 				{
 					case GameTag.CHARGE:
 					{
-						var m = (Minion)entity;
+						var m = (MinionInPlay)entity;
 						if (m.IsExhausted && m.NumAttacksThisTurn == 0)
 							m.IsExhausted = false;
 						if (m.AttackableByRush)
@@ -77,7 +93,7 @@ namespace SabberStoneCore.Enchants
 					}
 					case GameTag.WINDFURY:
 					{
-						var m = (Minion)entity;
+						var m = (MinionInPlay)entity;
 						if (m.NumAttacksThisTurn == 1 && m.IsExhausted)
 							m.IsExhausted = false;
 						break;
@@ -93,7 +109,7 @@ namespace SabberStoneCore.Enchants
 						return;
 					case GameTag.RUSH:
 					{
-						var m = (Minion)entity;
+						var m = (MinionInPlay)entity;
 						if (m.IsExhausted && m.NumAttacksThisTurn == 0)
 						{
 							m.IsExhausted = false;
@@ -104,7 +120,7 @@ namespace SabberStoneCore.Enchants
 					}
 				}
 
-				if (oneTurnEffect && tags[Tag] == Value)
+				if (oneTurnEffect && tags.TryGetValue(Tag, out int value) && value == Value)
 					entity.Game.OneTurnEffects.Remove((entity.Id, this));
 
 				tags[Tag] = Value;
@@ -120,7 +136,10 @@ namespace SabberStoneCore.Enchants
 					case EffectOperator.ADD:
 						tags.Add(Tag, entity.Card[Tag] + Value);
 						if (Tag == GameTag.SPELLPOWER)
+						{
+							((MinionInPlay) entity).SpellPower += Value;	
 							entity.Controller.CurrentSpellPower += Value;
+						}
 						break;
 					case EffectOperator.SUB:
 						tags.Add(Tag, entity.Card[Tag] - Value);
@@ -137,7 +156,10 @@ namespace SabberStoneCore.Enchants
 					case EffectOperator.ADD:
 						tags[Tag] += Value;
 						if (Tag == GameTag.SPELLPOWER)
+						{
+							((MinionInPlay) entity).SpellPower += Value;
 							entity.Controller.CurrentSpellPower += Value;
+						}
 						break;
 					case EffectOperator.SUB:
 						tags[Tag] -= Value;
@@ -152,7 +174,7 @@ namespace SabberStoneCore.Enchants
 		/// <summary>
 		/// Apply this effect to the target as an aura effect.
 		/// </summary>
-		public void ApplyAuraTo(IPlayable playable)
+		public void ApplyAuraTo(Playable playable)
 		{
 			AuraEffects auraEffects = playable.AuraEffects;
 			if (auraEffects == null)
@@ -174,18 +196,18 @@ namespace SabberStoneCore.Enchants
 					//playable[Tag] = 0;
 					auraEffects[Tag] = Value;
 
-					if (playable is Minion m)
+					if (playable is MinionInPlay m)
 					{
 						switch (Tag)
 						{
 							case GameTag.CHARGE:
-								if (m.IsExhausted && m._numAttackThisTurn < 1)
+								if (m.IsExhausted && m.NumAttacksThisTurn < 1)
 									m.IsExhausted = false;
 								if (m.AttackableByRush)
 									m.AttackableByRush = false;
 								break;
 							case GameTag.RUSH:
-								if (m.IsExhausted && m._numAttackThisTurn == 0)
+								if (m.IsExhausted && m.NumAttacksThisTurn == 0)
 								{
 									m.IsExhausted = false;
 									m.AttackableByRush = true;
@@ -225,14 +247,24 @@ namespace SabberStoneCore.Enchants
 		/// <summary>
 		/// Remove this effect from the target entity.
 		/// </summary>
-		public void RemoveFrom(IEntity entity)
+		public void RemoveFrom(Entity entity)
 		{
+			Attributes attr = AttributeHelpers.GameTagToAttribute(Tag);
+			if (attr != Attributes.Invalid)
+			{
+				new AttributeEffect(attr, Value == 1).RemoveFrom(entity);
+				return;
+			}
+
 			switch (Operator)
 			{
 				case EffectOperator.ADD:
 					entity[Tag] -= Value;
 					if (Tag == GameTag.SPELLPOWER)
+					{
+						((MinionInPlay) entity).SpellPower -= Value;
 						entity.Controller.CurrentSpellPower -= Value;
+					}
 					return;
 				case EffectOperator.SUB:
 					entity[Tag] = entity.NativeTags[Tag] + Value;
@@ -246,7 +278,7 @@ namespace SabberStoneCore.Enchants
 		/// <summary>
 		/// Remove ths aura effect from the target entity.
 		/// </summary>
-		public void RemoveAuraFrom(IPlayable playable)
+		public void RemoveAuraFrom(Playable playable)
 		{
 			switch (Operator)
 			{
@@ -260,7 +292,7 @@ namespace SabberStoneCore.Enchants
 					playable.AuraEffects[Tag] -= Value;
 					if (Tag == GameTag.RUSH)
 					{
-						var m = (Minion)playable;
+						var m = (MinionInPlay)playable;
 						if (m.AttackableByRush && !m.IsExhausted)
 						{
 							if (m.IsRush || m.Card.Rush)
@@ -304,6 +336,9 @@ namespace SabberStoneCore.Enchants
 			return new Effect(Tag, Operator, newValue);
 		}
 
+		GameTag IEffect.Tag => Tag;
+		EffectOperator IEffect.Operator => Operator;
+		int IEffect.Value => Value;
 
 		public bool Equals(Effect other)
 		{
@@ -333,6 +368,11 @@ namespace SabberStoneCore.Enchants
 		public override string ToString()
 		{
 			return $"[{Operator} {Tag} {Value}]";
+		}
+
+		public ApplyingEffect GetFunction()
+		{
+			return MinionInPlay.GetFunction(this);
 		}
 	}
 

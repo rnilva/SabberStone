@@ -5,7 +5,7 @@ using SabberStoneCore.Model.Entities;
 namespace SabberStoneCore.Loader
 {
 	public delegate bool AvailabilityPredicate(Controller controller);
-	public delegate bool TargetingPredicate(ICharacter target);
+	public delegate bool TargetingPredicate(Character target);
 
 	public static class TargetingPredicates
 	{
@@ -37,7 +37,7 @@ namespace SabberStoneCore.Loader
 		public static readonly TargetingPredicate ReqStealthedTarget
 			= t => t.HasStealth;
 		public static readonly TargetingPredicate ReqTargetWithDeathrattle
-			= t => t.HasDeathrattle;
+			= t => t is MinionInPlay m && m.HasDeathrattle;
 		public static readonly TargetingPredicate ReqLegendaryTarget
 			= t => t.Card.Rarity == Rarity.LEGENDARY;
 
@@ -107,7 +107,7 @@ namespace SabberStoneCore.Loader
 			= c => c.Hero.Weapon != null;
 
 		public static readonly AvailabilityPredicate ReqFriendlyMinionDiedThisGame
-			= c => c.GraveyardZone.Any(q => q.Card.Type == CardType.MINION && q.ToBeDestroyed);
+			= c => c.GraveyardZone.Any(q => q is Minion m && m.ToBeDestroyed);
 
 		public static readonly AvailabilityPredicate ReqSecretZoneCapForNonSecret
 			= c => !c.SecretZone.IsFull;

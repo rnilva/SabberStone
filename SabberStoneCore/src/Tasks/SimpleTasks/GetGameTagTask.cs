@@ -21,15 +21,18 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public int EntityIndex { get; set; }
 		public int NumberIndex { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			IList<IPlayable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
+			IList<Playable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 			if (entities == null || entities.Count == 0 || entities.Count <= EntityIndex) return TaskState.STOP;
 
 			int value;
 			if (Tag == GameTag.ENTITY_ID)
 				value = entities[EntityIndex].Id;
+			else if
+				(Tag == GameTag.DURABILITY)
+				value = entities[EntityIndex] is Weapon w ? w.Durability : 0;
 			else if (entities[EntityIndex] is Character c)
 				switch (Tag)
 				{
@@ -86,7 +89,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_numberIndex = numberIndex;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			switch (_numberIndex)

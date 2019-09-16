@@ -57,11 +57,11 @@ namespace SabberStoneCore.Kettle
 			};
 		}
 
-		public static PowerHistoryFullEntity FullEntity(IPlayable playable)
+		public static PowerHistoryFullEntity FullEntity(Entity entity)
 		{
-			var tags = new Dictionary<GameTag, int>(((Entity)playable)._data);
-			gameTagsEntities.ForEach(p => tags[p] = playable[p]);
-			if (playable is Character c)
+			var tags = new Dictionary<GameTag, int>(entity._data);
+			gameTagsEntities.ForEach(p => tags[p] = entity[p]);
+			if (entity is Character c)
 			{
 				tags[GameTag.ATK] = c.AttackDamage;
 				tags[GameTag.HEALTH] = c.Health;
@@ -72,8 +72,8 @@ namespace SabberStoneCore.Kettle
 			{
 				Entity = new PowerHistoryEntity
 				{
-					Id = playable.Id,
-					Name = playable.Card.Id,
+					Id = entity.Id,
+					Name = entity.Card.Id,
 					Tags = tags
 				}
 			};
@@ -113,29 +113,29 @@ namespace SabberStoneCore.Kettle
 			GameTag.EXTRA_ATTACKS_THIS_TURN
 		};
 
-		public static PowerHistoryShowEntity ShowEntity(IPlayable playable)
+		public static PowerHistoryShowEntity ShowEntity(Entity entity)
 		{
-			var tags = new Dictionary<GameTag, int>(((Entity)playable)._data);
-			gameTagsEntities.ForEach(p => tags[p] = playable[p]);
+			var tags = new Dictionary<GameTag, int>(entity._data);
+			gameTagsEntities.ForEach(p => tags[p] = entity[p]);
 			//tags[GameTag.TAG_LAST_KNOWN_COST_IN_HAND] = playable[GameTag.COST];
 
 			return new PowerHistoryShowEntity
 			{
 				Entity = new PowerHistoryEntity
 				{
-					Id = playable.Id,
-					Name = playable.Card.Id,
+					Id = entity.Id,
+					Name = entity.Card.Id,
 					Tags = tags
 				}
 			};
 		}
 
-		public static IPowerHistoryEntry HideEntity(IPlayable playable)
+		public static IPowerHistoryEntry HideEntity(Entity entity)
 		{
 			return new PowerHistoryHideEntity
 			{
-				EntityID = playable.Id,
-				Zone = playable.Zone.Type
+				EntityID = entity.Id,
+				Zone = entity.Zone.Type
 			};
 		}
 

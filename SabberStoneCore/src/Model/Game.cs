@@ -23,15 +23,6 @@ using SabberStoneCore.Auras;
 namespace SabberStoneCore.Model
 {
 	/// <summary>
-	/// Signature used for passing tag update information around.
-	/// </summary>
-	/// <param name="sender">The sender, which is probably an entity.</param>
-	/// <param name="t">The gametag which changed.</param>
-	/// <param name="oldValue">The old value.</param>
-	/// <param name="newValue">The new value.</param>
-	public delegate void EntityChangedEventHandler(object sender, GameTag t, int oldValue, int newValue);
-
-	/// <summary>
 	/// The state machine which processes the given input and generates results which can be interpreted 
 	/// to create a new set of inputs.
 	/// 
@@ -76,12 +67,12 @@ namespace SabberStoneCore.Model
 		/// <summary>
 		/// List of Minions that ready to be destroyed and to be removed from the BoardZone.
 		/// </summary>
-		public readonly List<Minion> DeadMinions = new List<Minion>();
+		public readonly List<MinionInPlay> DeadMinions = new List<MinionInPlay>();
 
 		/// <summary>
 		/// List of Minions summoned in current event.
 		/// </summary>
-		public readonly List<Minion> SummonedMinions = new List<Minion>();
+		public readonly List<MinionInPlay> SummonedMinions = new List<MinionInPlay>();
 
 		/// <summary>
 		/// List of entity ids of Minions in the state of 'AttackableByRush'.
@@ -218,7 +209,7 @@ namespace SabberStoneCore.Model
 		///// <summary>
 		///// Gets the dictionary containing all generated entities for this game.
 		///// </summary>
-		///// <value><see cref="IPlayable"/></value>
+		///// <value><see cref="Playable"/></value>
 		public EntityList IdEntityDic { get; private set; }
 
 		/// <summary>
@@ -250,7 +241,7 @@ namespace SabberStoneCore.Model
 				[GameTag.CARDTYPE] = (int)CardType.GAME
 			})
 		{
-			//IdEntityDic = new Dictionary<int, IPlayable>(75);
+			//IdEntityDic = new Dictionary<int, Playable>(75);
 			IdEntityDic = new EntityList(75);
 			History = gameConfig.History;
 			Logging = gameConfig.Logging;
@@ -342,7 +333,7 @@ namespace SabberStoneCore.Model
 		/// <summary> A copy constructor. </summary>
 		private Game(Game game, bool logging = false) : base(null, game)
 		{
-			//IdEntityDic = new Dictionary<int, IPlayable>(game.IdEntityDic.Count);
+			//IdEntityDic = new Dictionary<int, Playable>(game.IdEntityDic.Count);
 			IdEntityDic = new EntityList(game.IdEntityDic.Capacity);
 			Game = this;
 
@@ -360,7 +351,7 @@ namespace SabberStoneCore.Model
 			// game._gameConfig is cloned here
 			_gameConfig = game._gameConfig;
 			_gameConfig.Logging = logging;
-			_attrs = new GameAttributes(game._attrs);
+			_attrs = game._attrs;
 
 			CloneIndex = game.CloneIndex + $"[{game.NextCloneIndex++}]";
 
@@ -437,7 +428,7 @@ namespace SabberStoneCore.Model
 				if (gameTask.HasSource)
 					gameTask.Source = IdEntityDic[gameTask.Source.Id];
 				if (gameTask.HasTarget)
-					gameTask.Target = (ICharacter) IdEntityDic[gameTask.Target.Id];
+					gameTask.Target = (Character) IdEntityDic[gameTask.Target.Id];
 			}
 			bool result = gameTask.Process();
 
@@ -627,7 +618,7 @@ namespace SabberStoneCore.Model
 					// 4th card for second player
 					Generic.Draw(p);
 
-					IPlayable coin = FromCard(FirstPlayer.Opponent, Cards.FromId("GAME_005"), new EntityData
+					Playable coin = FromCard(FirstPlayer.Opponent, Cards.FromId("GAME_005"), new EntityData
 					{
 						[GameTag.ZONE] = (int)Enums.Zone.HAND,
 						[GameTag.CARDTYPE] = (int)CardType.SPELL,
@@ -700,7 +691,7 @@ namespace SabberStoneCore.Model
 			if (History)
 				PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, CurrentPlayer.Id, "", 1, 0));
 
-			ReadOnlySpan<Minion> board;
+			ReadOnlySpan<MinionInPlay> board;
 
 			// Is this necessary?
 			Controller currentOpponent = currentPlayer.Opponent;
@@ -725,7 +716,7 @@ namespace SabberStoneCore.Model
 				currentPlayer.Hero.Weapon.IsExhausted = false;
 			ReadOnlySpan<Spell> secrets = currentPlayer.SecretZone.GetSpan();
 			for (int i = 0; i < secrets.Length; i++)
-				secrets[i].IsExhausted = false;
+				secrets[i].IsExhausted = true;
 
 			currentPlayer.CleanTurnStatistics();
 			currentPlayer.IsComboActive = false; // 9
@@ -884,7 +875,7 @@ namespace SabberStoneCore.Model
 			{
 				foreach (int id in GhostlyCards)
 				{
-					IPlayable entity = IdEntityDic[id];
+					Playable entity = IdEntityDic[id];
 					if (entity.Zone.Type != Enums.Zone.HAND) continue;
 					entity.Controller.SetasideZone.Add(entity.Zone.Remove(entity));
 				}
@@ -896,9 +887,7 @@ namespace SabberStoneCore.Model
 			// Removing one-turn-effects
 			for (int i = 0; i < OneTurnEffects.Count; i++)
 			{
-				IPlayable p = IdEntityDic[OneTurnEffects[i].entityId];
-				if (p is PlayableSurrogate)
-					continue;
+				Playable p = IdEntityDic[OneTurnEffects[i].entityId];
 				OneTurnEffects[i].effect.RemoveFrom(p);
 			}
 			OneTurnEffects.Clear();
@@ -917,9 +906,7 @@ namespace SabberStoneCore.Model
 			});
 
 			if (currentPlayer.Hero.IsFrozen && currentPlayer.Hero.NumAttacksThisTurn == 0)
-			{
 				currentPlayer.Hero.IsFrozen = false;
-			}
 
 			// Exhausts weapon and secrets
 			if (currentPlayer.Hero.Weapon != null)
@@ -1037,7 +1024,7 @@ namespace SabberStoneCore.Model
 
 		internal Action ClearWeapons;
 		internal Action ResolveDeadHeroes;
-		private static readonly Func<Minion, int> GetOrderOfPlay = m => m.OrderOfPlay;
+		private static readonly Func<MinionInPlay, int> GetOrderOfPlay = m => m.OrderOfPlay;
 
 		/// <summary>
 		/// Move destroyed entities from <see cref="Zone.PLAY"/> <see cref="Zone{T}"/> into 
@@ -1061,7 +1048,7 @@ namespace SabberStoneCore.Model
 				DeadMinions.InsertionSort(GetOrderOfPlay);
 				for (int i = 0; i < DeadMinions.Count; i++)
 				{
-					Minion minion = DeadMinions[i];
+					MinionInPlay minion = DeadMinions[i];
 					Log(LogLevel.INFO, BlockType.PLAY, "Game",
 						!Logging ? "" : $"{minion} is Dead! Graveyard say 'Hello'!");
 
@@ -1128,6 +1115,7 @@ namespace SabberStoneCore.Model
 				ResolveDeadHeroes = null;
 
 				NextStep = Step.FINAL_WRAPUP;
+				FinalWrapUp();
 			}
 		}
 
@@ -1415,12 +1403,12 @@ namespace SabberStoneCore.Model
 		}
 
 		/// <summary>Gets ALL characters.</summary>
-		/// <value><see cref="ICharacter"/></value>
-		public List<ICharacter> Characters
+		/// <value><see cref="Character"/></value>
+		public List<Character> Characters
 		{
 			get
 			{
-				var list = new List<ICharacter>();
+				var list = new List<Character>();
 				list.AddRange(Minions);
 				list.AddRange(Heroes);
 				return list;

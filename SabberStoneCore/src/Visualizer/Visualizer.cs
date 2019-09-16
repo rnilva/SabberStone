@@ -41,7 +41,7 @@ namespace SabberStoneCore.Visualizer
 				+ "".PadLeft(10 - player.BaseMana, '.')).PadLeft(10, 'o');
 		}
 
-		private static string CreateHero(Hero hero, bool turn)
+		private static string CreateHero(HeroInPlay hero, bool turn)
 		{
 			int cardCnt = 1;
 
@@ -106,7 +106,7 @@ namespace SabberStoneCore.Visualizer
 			return zoneStr.ToString();
 		}
 
-		private static string CreateZone<T>(Zone<T> zone, IZone outzone, bool turn) where T : IPlayable
+		private static string CreateZone<T>(Zone<T> zone, IZone outzone, bool turn) where T : Playable
 		{
 			var zoneStr = new StringBuilder();
 
@@ -126,7 +126,7 @@ namespace SabberStoneCore.Visualizer
 				char[][] cardAscii = new char[6][];
 
 				var spell = zone[i] as Spell;
-				var minion = zone[i] as Minion;
+				var minion = zone[i] as MinionInPlay;
 				var weapon = zone[i] as Weapon;
 
 				if (spell != null)

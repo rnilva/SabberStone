@@ -27,18 +27,17 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		}
 
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			var entities = new IPlayable[_amount];
+			var entities = new Playable[_amount];
 
 			switch (_type)
 			{
 				case EntityType.DECK:
 					for (int i = 0; i < entities.Length; i++)
 					{
-						//entities[i] = Entity.FromCard(in controller, in _card);
-						entities[i] = new PlayableSurrogate(in game, in _card);
+						entities[i] = Entity.FromCard(in controller, in _card);
 						entities[i][GameTag.DISPLAYED_CREATOR] = source.Id;
 					}
 

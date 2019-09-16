@@ -75,7 +75,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_opposite = false;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			switch (_type)
@@ -97,7 +97,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				GetCardList(source, _cardType, _cardClass, _cardSet, _race, _rarity, _gameTagFilter);
 
 
-			IPlayable randomCard =
+			Playable randomCard =
 				Entity.FromCard(_opposite ? controller.Opponent : controller, Util.Choose(cardsList));
 			stack.Playables = new []{randomCard};
 
@@ -106,7 +106,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			return TaskState.COMPLETE;
 		}
 
-		public static IReadOnlyList<Card> GetCardList(IEntity source, CardType cardType = CardType.INVALID,
+		public static IReadOnlyList<Card> GetCardList(Entity source, CardType cardType = CardType.INVALID,
 			CardClass cardClass = CardClass.INVALID, CardSet cardSet = CardSet.INVALID, Race race = Race.INVALID,
 			Rarity rarity = Rarity.INVALID, GameTag[] gameTagFilter = null)
 		{

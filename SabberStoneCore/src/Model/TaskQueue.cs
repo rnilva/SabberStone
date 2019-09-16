@@ -47,7 +47,7 @@
 //			//});
 //		}
 
-//		public void Execute(ISimpleTask task, Controller controller, IPlayable source, IPlayable target, int number = 0)
+//		public void Execute(ISimpleTask task, Controller controller, Playable source, Playable target, int number = 0)
 //		{
 //			ISimpleTask clone = task.Clone();
 //			clone.Game = controller.Game;

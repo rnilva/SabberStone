@@ -32,13 +32,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public bool SpellDmg { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (Amount < 1 && RandAmount < 1)
 				return TaskState.STOP;
 
-			IList<IPlayable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
+			IList<Playable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 
 			for (int i = 0; i < entities.Count; i++)
 			{
@@ -54,7 +54,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				game.Log(LogLevel.WARNING, BlockType.ACTION, "DamageTask",
 					!game.Logging ? "" : $"Amount is {amount} damage of {source}.");
 
-				Generic.DamageCharFunc.Invoke(source as IPlayable, entities[i] as ICharacter, amount, SpellDmg);
+				Generic.DamageCharFunc.Invoke(source as Playable, entities[i] as Character, amount, SpellDmg);
 			}
 			return TaskState.COMPLETE;
 		}

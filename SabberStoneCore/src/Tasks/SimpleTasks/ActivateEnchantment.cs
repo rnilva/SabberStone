@@ -15,7 +15,7 @@
 	//	public override TaskState Process()
 	//	{
 
-	//		System.Collections.Generic.List<IPlayable> entities = IncludeTask.GetEntites(Type, in controller, source, target, stack?.Playables);
+	//		System.Collections.Generic.List<Playable> entities = IncludeTask.GetEntites(Type, in controller, source, target, stack?.Playables);
 
 	//		entities.ForEach(p =>
 	//		{
@@ -23,7 +23,7 @@
 	//			{
 	//				if (t.Activation == Activation)
 	//				{
-	//					//t.Activate(controller, p, target as IPlayable);
+	//					//t.Activate(controller, p, target as Playable);
 	//				}
 	//			});
 

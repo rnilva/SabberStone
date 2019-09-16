@@ -507,10 +507,10 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Unstable Portal"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Unstable Portal"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, testCard));
 			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
-			IPlayable lastCardDrawn = game.CurrentPlayer.HandZone[4];
+			Playable lastCardDrawn = game.CurrentPlayer.HandZone[4];
 			Assert.Equal(lastCardDrawn.Card.Cost > 2 ? lastCardDrawn.Card.Cost - 3 : 0, lastCardDrawn.Cost);
 		}
 
@@ -837,7 +837,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bolvar Fordragon"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bolvar Fordragon"));
 
 			game.PlayHeroPower(null, 0, true);
 			game.PlayHeroPower(null, 0, true);

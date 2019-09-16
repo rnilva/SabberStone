@@ -9,30 +9,40 @@ namespace SabberStoneCore.Actions
 	public static partial class Generic
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public static Func<Game, Minion, int, bool> SummonBlock
-			=> delegate (Game g, Minion minion, int zonePosition)
-			{
-				SummonPhase.Invoke(g, minion, zonePosition);
+		public static bool SummonBlock(Game g, ref Minion minion, int zonePosition)
+		{
+			SummonPhase(g, ref minion, zonePosition);
 
-				g.TriggerManager.OnAfterSummonTrigger(minion);
+			g.TriggerManager.OnAfterSummonTrigger(minion);
 
-				return true;
-			};
+			return true;
+		}
 
-		private static Action<Game, Minion, int> SummonPhase
-			=> delegate (Game g, Minion minion, int zonePosition)
-			{
-				g.Log(LogLevel.INFO, BlockType.PLAY, "SummonPhase", !g.Logging? "":$"Summon Minion {minion} to Board of {minion.Controller.Name}.");
-				minion.Controller.BoardZone.Add(minion, zonePosition);
+		public static bool SummonBlock(Game g, ref Playable playable, int zonePosition)
+		{
+			var m = (Minion) playable;
+			bool flag = SummonBlock(g, ref m, zonePosition);
+			playable = m;
+			return flag;
+		}
 
-				g.AuraUpdate();
+		public static bool SummonBlock(Game g, Minion minion, int zonePosition)
+		{
+			return SummonBlock(g, ref minion, zonePosition);
+		}
+		private static void SummonPhase(Game g, ref Minion minion, int zonePosition)
+		{
+			g.Log(LogLevel.INFO, BlockType.PLAY, "SummonPhase", !g.Logging? "":$"Summon Minion {minion} to Board of {minion.Controller.Name}.");
+			minion.Controller.BoardZone.Add(ref minion, zonePosition);
 
-				g.SummonedMinions.Add(minion);
+			g.AuraUpdate();
 
-				// add summon block show entity 
-				if (g.History)
-					g.PowerHistory.Add(PowerHistoryBuilder.ShowEntity(minion));
-			};
+			g.SummonedMinions.Add((MinionInPlay) minion);
+
+			// add summon block show entity 
+			if (g.History)
+				g.PowerHistory.Add(PowerHistoryBuilder.ShowEntity(minion));
+		}
 	}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

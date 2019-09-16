@@ -19,18 +19,18 @@ namespace SabberStoneCore.Tasks.PlayerTasks
 		public Game Game { get; set; }
 
 		public Controller Controller { get; set; }
-		public IPlayable Source { get; set; }
-		public ICharacter Target { get; set; }
+		public Playable Source { get; set; }
+		public Character Target { get; set; }
 		public int ChooseOne { get; set; }
 		public bool SkipPrePhase { get; set; }
 
 		//public List<Game> Splits { get; set; } = new List<Game>();
-		//public IEnumerable<IEnumerable<IPlayable>> Sets { get; set; }
+		//public IEnumerable<IEnumerable<Playable>> Sets { get; set; }
 
 		public bool HasSource => Source != null;
 		public bool HasTarget => Target != null;
 
-		public virtual List<PlayerTask> Build(in Game game, in Controller controller, in IPlayable source, in ICharacter target)
+		public virtual List<PlayerTask> Build(in Game game, in Controller controller, in Playable source, in Character target)
 		{
 			Game = game;
 			Controller = controller;

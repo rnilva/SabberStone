@@ -6,10 +6,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class ChangeUnidentifiedTask : SimpleTask
 	{
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			Generic.ChangeEntityBlock(controller, (IPlayable) source, Cards.FromId(Util.Choose(source.Card.Entourage)), false);
+			Generic.ChangeEntityBlock(controller, (Playable) source, Cards.FromId(Util.Choose(source.Card.Entourage)), false);
 			return TaskState.COMPLETE;
 		}
 	}

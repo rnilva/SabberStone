@@ -23,7 +23,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_phaseShift = phaseShift;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (_condition != null && !CachedCardLists.TryGetValue(source.Card.AssetId, out Card[] cards))
@@ -61,10 +61,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				return TaskState.COMPLETE;
 			}
 
-			ICharacter randTarget = null;
+			Character randTarget = null;
 			if (randCard.TargetingType != TargetingType.None)
 			{
-				var targets = (List<ICharacter>) spellToCast.ValidPlayTargets;
+				var targets = (List<Character>) spellToCast.ValidPlayTargets;
 
 				randTarget = targets.Count > 0 ? Util.RandomElement(targets) : null;
 

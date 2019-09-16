@@ -6,10 +6,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class ClearStackTask : SimpleTask
 	{
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			stack.Playables = new List<IPlayable>();
+			stack.Playables = new List<Playable>();
 			return TaskState.COMPLETE;
 		}
 	}

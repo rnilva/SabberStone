@@ -25,7 +25,7 @@ namespace SabberStoneCore.Tasks
 
 		public bool IsTrigger { get; set; }
 
-		public TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target, in TaskStack stack = null)
+		public TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target, in TaskStack stack = null)
 		{
 			TaskStack currentStack = stack ?? new TaskStack();
 

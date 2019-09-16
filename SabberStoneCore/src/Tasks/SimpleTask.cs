@@ -8,7 +8,7 @@ namespace SabberStoneCore.Tasks
 	{
 		TaskState State { get; set; }
 
-		TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target, in TaskStack stack = null);
+		TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target, in TaskStack stack = null);
 
 		bool IsTrigger { get; set; }
 	}
@@ -19,7 +19,7 @@ namespace SabberStoneCore.Tasks
 
 		public TaskState State { get; set; } = TaskState.READY;
 
-		public abstract TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target, in TaskStack stack = null);
+		public abstract TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target, in TaskStack stack = null);
 
 		public void ResetState()
 		{

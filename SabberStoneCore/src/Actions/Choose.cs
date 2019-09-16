@@ -28,8 +28,8 @@ namespace SabberStoneCore.Actions
 					return false;
 				}
 
-				IPlayable playable = g.IdEntityDic[choice];
-				//IPlayable playable = ((PlayableSurrogate) g.IdEntityDic[choice]).CastToPlayable(in c);
+				Playable playable = g.IdEntityDic[choice];
+				//Playable playable = ((Entity) g.IdEntityDic[choice]).CastToPlayable(in c);
 				//playable[GameTag.CREATOR] = c.Choice.SourceId;
 				//playable[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
 				
@@ -58,17 +58,17 @@ namespace SabberStoneCore.Actions
 
 					case ChoiceAction.CAST:
 						RemoveFromZone(c, playable);
-						CastSpell.Invoke(c, (Spell)((PlayableSurrogate)playable).CastToPlayable(c), null, 0, true);
+						CastSpell.Invoke(c, (Spell) playable, null, 0, true);
 						break;
 
 					case ChoiceAction.SPELL_RANDOM:
 						if (RemoveFromZone(c, playable))
 						{
-							Spell spell = (Spell) ((PlayableSurrogate) playable).CastToPlayable(c);
-							ICharacter randTarget = null;
+							Spell spell = (Spell) playable;
+							Character randTarget = null;
 							if (spell.Card.TargetingType != TargetingType.None)
 							{
-								List<ICharacter> targets = (List<ICharacter>)spell.ValidPlayTargets;
+								List<Character> targets = (List<Character>)spell.ValidPlayTargets;
 
 								randTarget = targets.Count > 0 ? Util.RandomElement(targets) : null;
 
@@ -89,7 +89,8 @@ namespace SabberStoneCore.Actions
 					case ChoiceAction.SUMMON:
 						if (!c.BoardZone.IsFull && RemoveFromZone(c, playable))
 						{
-							SummonBlock.Invoke(g, (Minion)((PlayableSurrogate)playable).CastToPlayable(in c), -1);
+							Minion m = (Minion) playable;
+							SummonBlock(g, ref m, -1);
 						}
 						//if (RemoveFromZone(c, playable))
 						//{
@@ -105,10 +106,9 @@ namespace SabberStoneCore.Actions
 						break;
 
 					case ChoiceAction.ADAPT:
-						playable = ((PlayableSurrogate) playable).CastToPlayable(in c);
 						g.TaskQueue.StartEvent();
-						foreach (IPlayable p in c.Choice.EntityStack.Select(id => g.IdEntityDic[id]))
-							playable.ActivateTask(PowerActivation.POWER, (ICharacter)p);
+						foreach (Playable p in c.Choice.EntityStack.Select(id => g.IdEntityDic[id]))
+							playable.ActivateTask(PowerActivation.POWER, (Character)p);
 						// Need to move the chosen adaptation to the Graveyard
 						g.TaskQueue.Enqueue(new MoveToGraveYard(EntityType.SOURCE), in c, playable, playable);
 						g.TaskQueue.EndEvent();
@@ -145,7 +145,7 @@ namespace SabberStoneCore.Actions
 								!g.Logging ? "" : $"{c.Hero} power replaced by {playable}");
 
 							c.SetasideZone.Add(c.Hero.HeroPower);
-							c.Hero.HeroPower = (HeroPower)((PlayableSurrogate)playable).CastToPlayable(in c);
+							c.Hero.HeroPower = (HeroPower) playable;
 						}
 						break;
 
@@ -173,7 +173,7 @@ namespace SabberStoneCore.Actions
 							Card secondCard = playable.Card;
 							Card zombeastCard = Card.CreateZombeastCard(in firstCard, in secondCard, g.History);
 
-							IPlayable zombeast = Entity.FromCard(in c, in zombeastCard);
+							Playable zombeast = Entity.FromCard(in c, in zombeastCard);
 							zombeast[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
 
 							AddHandPhase.Invoke(c, zombeast);
@@ -239,8 +239,8 @@ namespace SabberStoneCore.Actions
 						mulliganList.ForEach(p =>
 						{
 							// drawing a new one
-							//IPlayable playable = c.DeckZone.Remove(c.DeckZone.TopCard);
-							IPlayable playable = c.DeckZone.Draw();
+							//Playable playable = c.DeckZone.Remove(c.DeckZone.TopCard);
+							Playable playable = c.DeckZone.Draw();
 
 							if (AddHandPhase.Invoke(c, playable))
 							{
@@ -269,8 +269,8 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Controller, IEntity, ChoiceType, ChoiceAction, List<int>, bool> CreateChoice
-			=> delegate (Controller c, IEntity source, ChoiceType type, ChoiceAction action, List<int> choices)
+		public static Func<Controller, Entity, ChoiceType, ChoiceAction, List<int>, bool> CreateChoice
+			=> delegate (Controller c, Entity source, ChoiceType type, ChoiceAction action, List<int> choices)
 			{
 				if (c.Choice != null)
 				{
@@ -288,8 +288,8 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Controller, IEntity, IList<IPlayable>, ChoiceType, ChoiceAction, Card[], ISimpleTask, bool> CreateChoiceCards
-			=> delegate (Controller c, IEntity source, IList<IPlayable> targets, ChoiceType type, ChoiceAction action, Card[] choices, ISimpleTask taskToDo)
+		public static Func<Controller, Entity, IList<Playable>, ChoiceType, ChoiceAction, Card[], ISimpleTask, bool> CreateChoiceCards
+			=> delegate (Controller c, Entity source, IList<Playable> targets, ChoiceType type, ChoiceAction action, Card[] choices, ISimpleTask taskToDo)
 			{
 				//if (c.Choice != null)
 				//{
@@ -300,13 +300,12 @@ namespace SabberStoneCore.Actions
 				var choicesIds = new List<int>();
 				for (int i = 0; i < choices.Length; i++)
 				{
-					//IPlayable choiceEntity = Entity.FromCard(c, p,
-					//	new EntityData
-					//	{
-					//		{GameTag.CREATOR, source.Id},
-					//		{GameTag.DISPLAYED_CREATOR, source.Id }
-					//	});
-					var choiceEntity = new PlayableSurrogate(c.Game, in choices[i]);
+					Playable choiceEntity = Entity.FromCard(c, in choices[i],
+						new EntityData
+						{
+							{GameTag.CREATOR, source.Id},
+							{GameTag.DISPLAYED_CREATOR, source.Id }
+						});
 					c.SetasideZone.Add(choiceEntity);
 					choicesIds.Add(choiceEntity.Id);
 				}

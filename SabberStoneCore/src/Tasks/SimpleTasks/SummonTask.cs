@@ -66,7 +66,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public SummonSide Side { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (Card == null && stack?.Playables.Count == 0)
@@ -80,7 +80,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				{
 					if (Card == null && stack?.Playables.Count > 0)
 					{
-						IPlayable m = stack.Playables[0];
+						Playable m = stack.Playables[0];
 						if (m.Zone == null)
 							controller.GraveyardZone.Add(stack.Playables[0]);
 					}
@@ -97,16 +97,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 							{GameTag.ZONE, (int) Zone.PLAY},
 							{GameTag.DISPLAYED_CREATOR, source.Id}
 						}) as Minion;
-					if (_addToStack)
-						stack.AddPlayable(summonEntity);
 				}
 				else if (stack?.Playables.Count > 0)
 				{
-					IPlayable entity = stack.Playables[0];
-					if (entity is PlayableSurrogate ps)
-						summonEntity = (Minion)ps.CastToPlayable(in controller);
-					else
-						summonEntity = (Minion)entity;
+					summonEntity = (Minion)stack.Playables[0];
 					if (RemoveFromStack) stack.Playables.Remove(summonEntity);
 				}
 
@@ -118,13 +112,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				if (summonPosition > controller.BoardZone.Count)
 					summonPosition = controller.BoardZone.Count;
 
-				Generic.SummonBlock.Invoke(game, summonEntity, summonPosition);
+				Generic.SummonBlock(game, ref summonEntity, summonPosition);
+				if (_addToStack)
+					stack.AddPlayable(summonEntity);
 			}
 
 			return TaskState.COMPLETE;
 		}
 
-		public static int GetPosition(in IEntity source, in SummonSide side, in int number, ref int alternateCount)
+		public static int GetPosition(in Entity source, in SummonSide side, in int number, ref int alternateCount)
 		{
 			int summonPosition;
 

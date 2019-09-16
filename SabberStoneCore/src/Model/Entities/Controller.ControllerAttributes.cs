@@ -15,13 +15,6 @@ namespace SabberStoneCore.Model.Entities
 			private fixed int _data[COUNT];
 #pragma warning restore 649
 
-			public ControllerAttributes(ControllerAttributes other)
-			{
-				fixed (void* ptr = _data)
-					Buffer.MemoryCopy(other._data, ptr,
-					COUNT * sizeof(int), COUNT * sizeof(int));
-			}
-
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void CleanTurnStatistics()
 			{

@@ -5,7 +5,7 @@ using SabberStoneCore.Model.Entities;
 namespace SabberStoneCore.Model.Zones
 {
 	/// <summary>
-	/// Interface of an abstract area where <see cref="IEntity"/> objects
+	/// Interface of an abstract area where <see cref="Entity"/> objects
 	/// reside.
 	/// A zone is owned by a controller and isn't shared.
 	/// </summary>
@@ -34,8 +34,8 @@ namespace SabberStoneCore.Model.Zones
 		/// <summary>
 		/// Gets <see cref="List{T}"/> that contains all entities in this zone.
 		/// </summary>
-		/// <value>The set of <see cref="IPlayable"/>.</value>
-		List<IPlayable> GetAll { get; }
+		/// <value>The set of <see cref="Playable"/>.</value>
+		List<Playable> GetAll { get; }
 
 		/// <summary>
 		/// Adds the specified entity into this zone, at the given position.
@@ -43,14 +43,14 @@ namespace SabberStoneCore.Model.Zones
 		/// <param name="entity">The entity.</param>
 		/// <param name="zonePosition">The zone position.</param>
 		/// <returns>The entity</returns>
-		void Add(IPlayable entity, int zonePosition = -1);
+		void Add(Playable entity, int zonePosition = -1);
 
 		/// <summary>
 		/// Removes the specified entity from this zone.
 		/// </summary>
 		/// <param name="entity">The entity.</param>
 		/// <returns>The entity.</returns>
-		IPlayable Remove(IPlayable entity);
+		Playable Remove(Playable entity);
 
 		/// <summary>
 		/// Returns a string which contains a hash unique to this zone object.

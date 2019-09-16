@@ -16,7 +16,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		/// </summary>
 		public static GetCapturedCardTask Task { get; } = new GetCapturedCardTask();
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (stack == null)
@@ -30,7 +30,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (c == null)
 				throw new Exception($"{e} does not have any captured Card.");
 
-			IPlayable entity = Entity.FromCard(in controller, in c);
+			Playable entity = Entity.FromCard(in controller, in c);
 
 			stack.Playables = new[] {entity};
 
@@ -50,7 +50,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		/// </summary>
 		public static ActivateCapturedDeathrattleTask Task { get; } = new ActivateCapturedDeathrattleTask();
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (!(target is Enchantment e))

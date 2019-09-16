@@ -10,32 +10,35 @@ namespace SabberStoneCore.Actions
 	public static partial class Generic
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public static IPlayable DrawCard(Controller c, Card card)
+		public static Playable DrawCard(Controller c, Card card)
 		{
 			return DrawCardBlock.Invoke(c, card);
 		}
 
-		public static IPlayable Draw(Controller c, int cardIdToDraw = -1)
+		public static Playable Draw(Controller c, int cardIdToDraw = -1)
 		{
 			return DrawBlock.Invoke(c, cardIdToDraw);
 		}
 
-		public static Func<Controller, Card, IPlayable> DrawCardBlock
+		public static Func<Controller, Card, Playable> DrawCardBlock
 			=> delegate (Controller c, Card card)
 			{
-				IPlayable playable = Entity.FromCard(c, card);
+				Playable playable = card.Type == CardType.MINION
+					? MinionInPlay.FromCard(in c, in card)
+					: Entity.FromCard(in c, in card);
+
 				//c.NumCardsDrawnThisTurn++;
 				AddHandPhase.Invoke(c, playable);
 				return playable;
 			};
 
-		public static Func<Controller, int, IPlayable> DrawBlock
+		public static Func<Controller, int, Playable> DrawBlock
 			=> delegate (Controller c, int cardIdToDraw)
 			{
 				if (!PreDrawPhase.Invoke(c))
 					return null;
 
-				IPlayable playable = DrawPhase.Invoke(c, cardIdToDraw);
+				Playable playable = DrawPhase.Invoke(c, cardIdToDraw);
 				//c.NumCardsToDraw--; 
 
 				if (AddHandPhase.Invoke(c, playable))
@@ -85,11 +88,11 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		private static Func<Controller, int, IPlayable> DrawPhase
+		private static Func<Controller, int, Playable> DrawPhase
 			=> delegate (Controller c, int cardIdToDraw)
 			{
-				//IPlayable playable = c.DeckZone.Remove(cardToDraw ?? c.DeckZone.TopCard);
-				IPlayable playable = c.DeckZone.Draw(cardIdToDraw);
+				//Playable playable = c.DeckZone.Remove(cardToDraw ?? c.DeckZone.TopCard);
+				Playable playable = c.DeckZone.Draw(cardIdToDraw);
 
 				c.Game.Log(LogLevel.INFO, BlockType.ACTION, "DrawPhase", !c.Game.Logging ? "" : $"{c.Name} draws {playable}");
 

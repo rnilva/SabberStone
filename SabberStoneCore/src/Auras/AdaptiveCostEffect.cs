@@ -17,7 +17,7 @@ namespace SabberStoneCore.Auras
 	{
 		private Playable _owner;
 		private readonly int _value;
-		private readonly Func<IPlayable, int> _costFunction;
+		private readonly Func<Playable, int> _costFunction;
 
 		private readonly TriggerType _triggerType;
 		private readonly TriggerSource _triggerSource;
@@ -35,7 +35,7 @@ namespace SabberStoneCore.Auras
 		/// the owner entity.
 		/// </summary>
 		/// <param name="costFunc">The cost function to calculate the amount the owner costs less than the card's cost.</param>
-		public AdaptiveCostEffect(Func<IPlayable, int> costFunc)
+		public AdaptiveCostEffect(Func<Playable, int> costFunc)
 		{
 			_costFunction = costFunc;
 		}
@@ -57,7 +57,7 @@ namespace SabberStoneCore.Auras
 			_condition = triggerCondition;
 		}
 
-		private AdaptiveCostEffect(AdaptiveCostEffect prototype, IPlayable owner)
+		private AdaptiveCostEffect(AdaptiveCostEffect prototype, Playable owner)
 		{
 			if (!(owner is Playable p))
 				throw new Exception($"Can't activate {this} to non-playable {owner}");
@@ -81,7 +81,7 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		public IPlayable Owner => _owner;
+		public Playable Owner => _owner;
 
 		public void Activate(Playable owner, bool cloning = false)
 		{
@@ -93,7 +93,7 @@ namespace SabberStoneCore.Auras
 				owner._costManager = new Playable.CostManager();
 
 			owner._costManager.ActivateAdaptiveEffect(instance);
-			owner.OngoingEffect = instance;
+			//owner.OngoingEffect = instance;
 
 			switch (_triggerType)
 			{
@@ -126,14 +126,12 @@ namespace SabberStoneCore.Auras
 
 		public void Remove()
 		{
-			_owner.OngoingEffect = null;
 			_owner.Game.Auras.Remove(this);
-			_owner._costManager?.DeactivateAdaptiveEffect();
 		}
 
-		void IAura.Activate(IPlayable owner)
+		void IAura.Activate(Playable owner)
 		{
-			Activate((Playable)owner, false);
+			Activate(owner, false);
 		}
 
 		public void Update()
@@ -155,7 +153,7 @@ namespace SabberStoneCore.Auras
 			// TODO History
 		}
 
-		private void Trigger(IEntity sender)
+		private void Trigger(Entity sender)
 		{
 			if (_isTriggered)
 				return;
@@ -174,7 +172,7 @@ namespace SabberStoneCore.Auras
 
 			if (_condition != null)
 			{
-				if (!(sender is IPlayable p)) return;
+				if (!(sender is Playable p)) return;
 
 				if (!(_condition.Eval(p))) return;
 			}
@@ -184,16 +182,16 @@ namespace SabberStoneCore.Auras
 			_isTriggered = true;
 		}
 
-		private void RemoveAtEnd(IEntity sender)
+		private void RemoveAtEnd(Entity sender)
 		{
 			_owner._costManager?.UpdateAdaptiveEffect();
 			_isTriggered = false;
 			_isAppliedThisTurn = false;
 		}
 
-		public void Clone(IPlayable clone)
+		public void Clone(Playable clone)
 		{
-			Activate((Playable)clone, true);
+			Activate(clone, true);
 		}
 
 		public override string ToString()

@@ -20,7 +20,7 @@ namespace SabberStoneCore.Auras
 
 		public readonly Card EnchantmentCard;
 
-		IPlayable IAura.Owner => _owner;
+		Playable IAura.Owner => _owner;
 		public bool BoardChanged { get; set; }
 
 
@@ -65,6 +65,7 @@ namespace SabberStoneCore.Auras
 					DeApply(_right);
 				_owner.OngoingEffect = null;
 				_owner.Game.Auras.Remove(this);
+				_board.AdjacentAuras.Remove(this);
 				return;
 			}
 
@@ -150,12 +151,12 @@ namespace SabberStoneCore.Auras
 			_toBeRemoved = true;
 		}
 
-		public void Clone(IPlayable clone)
+		public void Clone(Playable clone)
 		{
 			new AdjacentAura(this, (Minion) clone, true);
 		}
 
-		void IAura.Activate(IPlayable owner)
+		void IAura.Activate(Playable owner)
 		{
 			new AdjacentAura(this, (Minion) owner, false);
 		}

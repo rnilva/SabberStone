@@ -98,7 +98,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_taskTodo = afterDiscoverTask;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			Card[][] cardsToDiscover;
@@ -162,7 +162,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			return TaskState.COMPLETE;
 		}
 
-		//private void ProcessSplit(Game game, Controller controller, IEntity source, Card[][] cardsToDiscover,
+		//private void ProcessSplit(Game game, Controller controller, Entity source, Card[][] cardsToDiscover,
 		//	ChoiceAction choiceAction)
 		//{
 		//	int neutralCnt = cardsToDiscover[0].Length;
@@ -398,7 +398,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					{
 						choiceAction = ChoiceAction.HAND;
 						Card[][] cardSets =
-							{controller.DeckZone.Where(p => p.IsMinion).Select(p => p.Card).ToArray()};
+							{controller.DeckZone.Where(p => p is Minion).Select(p => p.Card).ToArray()};
 						return cardSets;
 					}
 
@@ -406,7 +406,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					{
 						choiceAction = ChoiceAction.HAND;
 						Card[][] cardSets =
-							{controller.Opponent.DeckZone.Where(p => p.IsMinion).Select(p => p.Card).ToArray()};
+							{controller.Opponent.DeckZone.Where(p => p is Minion).Select(p => p.Card).ToArray()};
 						return cardSets;
 					}
 
@@ -549,7 +549,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						choiceAction = ChoiceAction.SUMMON;
 						Card[][] cardSets =
 						{
-							controller.GraveyardZone.Where(p => p.ToBeDestroyed && p.Card.Type == CardType.MINION)
+							controller.GraveyardZone.Where(p => p is Minion m && m.IsDead)
 								.Select(p => p.Card).ToArray()
 						};
 						return cardSets;

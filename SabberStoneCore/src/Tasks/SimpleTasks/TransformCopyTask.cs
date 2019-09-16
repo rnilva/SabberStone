@@ -16,14 +16,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_addToStack = addToStack;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			var minionTarget = (Minion) target;
+			var minionTarget = (MinionInPlay) target;
 			if (minionTarget == null)
 				return TaskState.STOP;
 
-			var sourceTarget = (Minion) source;
+			var sourceTarget = (MinionInPlay) source;
 			if (sourceTarget.Zone?.Type != Zone.PLAY)
 				return TaskState.STOP;
 
@@ -34,8 +34,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (game.History)
 				tags.Add(GameTag.PREMIUM, minionTarget[GameTag.PREMIUM]);
 
-			var copy = (Minion) Entity.FromCard(in controller, minionTarget.Card, tags);
-			minionTarget.CopyInternalAttributes(copy);
+			//var copy = (Minion) Entity.FromCard(in controller, minionTarget.Card, tags);
+			var copy = MinionInPlay.FromCard(in controller, minionTarget.Card, tags);
+			//minionTarget.CopyInternalAttributes(copy);
+			copy.CopyAttributesFrom(minionTarget);
 
 			//Trigger trigger = minionTarget.ActivatedTrigger;
 			IAura aura = minionTarget.OngoingEffect;

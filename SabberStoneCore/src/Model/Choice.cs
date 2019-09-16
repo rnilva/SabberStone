@@ -108,7 +108,7 @@ namespace SabberStoneCore.Model
 		/// <summary>Gets or sets the next consecutive choice.</summary>
 		public Choice NextChoice { get; set;}
 
-		//internal IList<IPlayable> EntityStack { get; set; }
+		//internal IList<Playable> EntityStack { get; set; }
 		internal List<int> EntityStack { get; set; }
 
 		private readonly Card[][] _cardSets;
@@ -131,24 +131,12 @@ namespace SabberStoneCore.Model
 
 			Card[] cards = DiscoverTask.GetChoices(_cardSets, 3);
 			var choices = new List<int>(3);
-			//foreach (Card card in cards)
-			//	choices.Add(Entity.FromCard(Controller, card,  new EntityData
-			//	{
-			//		{GameTag.CREATOR, SourceId},
-			//		{GameTag.DISPLAYED_CREATOR, SourceId}
-			//	},Controller.SetasideZone).Id);
-			{
-				Game g = Controller.Game;
-				SetasideZone zone = Controller.SetasideZone;
-				for (int i = 0; i < cards.Length; i++)
+			foreach (Card card in cards)
+				choices.Add(Entity.FromCard(Controller, card, new EntityData
 				{
-					var entity = new PlayableSurrogate(in g, in cards[i]);
-					zone.Add(entity);
-					choices.Add(entity.Id);
-				}
-			}
-
-				
+					{GameTag.CREATOR, SourceId},
+					{GameTag.DISPLAYED_CREATOR, SourceId}
+				}, Controller.SetasideZone).Id);
 
 			Choices = choices;
 		}
@@ -160,16 +148,16 @@ namespace SabberStoneCore.Model
 			else
 				EntityStack.Add(entityId);
 
-			//if (EntityStack is List<IPlayable> list)
+			//if (EntityStack is List<Playable> list)
 			//	list.Add(entity);
 			//else if (EntityStack != null)
 			//{
-			//	list = new List<IPlayable>(EntityStack) {entity};
+			//	list = new List<Playable>(EntityStack) {entity};
 			//	EntityStack = list;
 			//}
 			//else
 			//{
-			//	list = new List<IPlayable> {entity};
+			//	list = new List<Playable> {entity};
 			//	EntityStack = list;
 			//}
 

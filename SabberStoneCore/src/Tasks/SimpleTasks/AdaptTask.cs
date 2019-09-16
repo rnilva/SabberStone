@@ -20,11 +20,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public EntityType Type { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			//ChoiceAction choiceAction = ChoiceAction.ADAPT;
-			//IEnumerable<IPlayable> targets = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
+			//IEnumerable<Playable> targets = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 
 			//if (!targets.Any())
 			//	return TaskState.STOP;
@@ -56,7 +56,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//if (!success)
 			//	return TaskState.STOP;
 
-			IList<IPlayable> targets = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
+			IList<Playable> targets = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 
 			if (targets.Count == 0)
 				return TaskState.STOP;

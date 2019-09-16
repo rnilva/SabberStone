@@ -35,7 +35,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_amount = amount;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			//[irc] Patashu @darkfriend77 yeah, that's the general idea. 
@@ -46,7 +46,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			// effect ??) that copies the additional effect to c'thuns in your 
 			// hand and board that aren't silenced
 
-			IPlayable proxyCthun;
+			Playable proxyCthun;
 			if (!controller.SeenCthun)
 			{
 				proxyCthun = Entity.FromCard(in controller, Cards.FromId("OG_279"));
@@ -60,7 +60,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				proxyCthun = game.IdEntityDic[controller.ProxyCthun];
 			}
 
-			var entities = new List<IPlayable> {proxyCthun};
+			var entities = new List<Playable> {proxyCthun};
 			entities.AddRange(controller.BoardZone.GetAll(p => p.Card.Id.Equals("OG_280")));
 			entities.AddRange(controller.HandZone.GetAll(p => p.Card.Id.Equals("OG_280")));
 
@@ -69,9 +69,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				case RitualType.Buff:
 					if (proxyCthun.OngoingEffect == null)
 					{
-						foreach (IPlayable p in entities)
+						foreach (Playable p in entities)
 						{
-							Generic.AddEnchantmentBlock.Invoke(controller, BuffEnchantmentCard, (IPlayable) source, p,
+							Generic.AddEnchantmentBlock.Invoke(controller, BuffEnchantmentCard, (Playable) source, p,
 								0, 0, false);
 
 							((OngoingEnchant) p.OngoingEffect).Count += _amount - 1;
@@ -80,10 +80,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						break;
 					}
 
-					foreach (IPlayable p in entities)
+					foreach (Playable p in entities)
 						if (p.OngoingEffect == null)
 						{
-							Generic.AddEnchantmentBlock.Invoke(controller, BuffEnchantmentCard, (IPlayable) source, p,
+							Generic.AddEnchantmentBlock.Invoke(controller, BuffEnchantmentCard, (Playable) source, p,
 								0, 0, false);
 							((OngoingEnchant) p.OngoingEffect).Count += _amount - 1;
 						}
@@ -96,15 +96,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 				case RitualType.Taunt:
 					if (proxyCthun[GameTag.TAUNT] == 1) break;
-					foreach (IPlayable p in entities)
-						Generic.AddEnchantmentBlock.Invoke(controller, TauntEnchantmentCard, (IPlayable) source, p, 0,
+					foreach (Playable p in entities)
+						Generic.AddEnchantmentBlock.Invoke(controller, TauntEnchantmentCard, (Playable) source, p, 0,
 							0, false);
 
 					break;
 
 				case RitualType.Blade:
-					foreach (IPlayable p in entities)
-						Generic.AddEnchantmentBlock.Invoke(controller, BladeofCThunEnchantmentCard, (IPlayable) source,
+					foreach (Playable p in entities)
+						Generic.AddEnchantmentBlock.Invoke(controller, BladeofCThunEnchantmentCard, (Playable) source,
 							p, stack.Number,
 							stack.Number1, false);
 

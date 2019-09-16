@@ -29,9 +29,14 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>Targetings the requirements.</summary>
 		/// <param name="target">The target.</param>
 		/// <returns></returns>
-		public override bool TargetingRequirements(ICharacter target)
+		public override bool TargetingRequirements(Character target)
 		{
 			return !target.CantBeTargetedByHeroPowers && base.TargetingRequirements(target);
+		}
+
+		public override void Destroy()
+		{
+			throw new System.NotImplementedException();
 		}
 
 		/// <summary>
@@ -45,7 +50,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public bool IsPassiveHeroPower => Card.HideStat;
 
-		public override IPlayable Clone(in Controller controller)
+		public override Playable Clone(in Controller controller)
 		{
 			return new HeroPower(in controller, this);
 		}

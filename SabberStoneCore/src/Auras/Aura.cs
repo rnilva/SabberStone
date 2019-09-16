@@ -25,10 +25,10 @@ namespace SabberStoneCore.Auras
 		}
 		private protected readonly struct AuraUpdateInstruction : IEquatable<AuraUpdateInstruction>
 		{
-			public readonly IPlayable Src;
+			public readonly Playable Src;
 			public readonly Instruction Instruction;
 
-			public AuraUpdateInstruction(IPlayable src, Instruction instruction)
+			public AuraUpdateInstruction(Playable src, Instruction instruction)
 			{
 				Src = src;
 				Instruction = instruction;
@@ -70,7 +70,7 @@ namespace SabberStoneCore.Auras
 		private readonly TriggerManager.TriggerHandler _removeHandler;
 		private readonly int _ownerId;
 
-		private IPlayable _owner;
+		private Playable _owner;
 
 		protected bool On = true;
 		protected IEffect[] Effects;
@@ -93,7 +93,7 @@ namespace SabberStoneCore.Auras
 		/// </summary>
 		public (TriggerType Type, SelfCondition Condition) RemoveTrigger;
 
-		public IPlayable Owner => _owner ?? (_owner = Game.IdEntityDic[_ownerId]);
+		public Playable Owner => _owner ?? (_owner = Game.IdEntityDic[_ownerId]);
 
 		public Aura(AuraType type, params IEffect[] effects)
 		{
@@ -107,7 +107,7 @@ namespace SabberStoneCore.Auras
 			EnchantmentCard = Cards.FromId(enchantmentId);
 		}
 
-		protected Aura(Aura prototype, IPlayable owner)
+		protected Aura(Aura prototype, Playable owner)
 		{
 			Type = prototype.Type;
 			Effects = prototype.Effects;
@@ -133,7 +133,7 @@ namespace SabberStoneCore.Auras
 		/// <summary>
 		/// Create new Aura instance to the owner's Game.
 		/// </summary>
-		public virtual void Activate(IPlayable owner, bool cloning = false)
+		public virtual void Activate(Playable owner, bool cloning = false)
 		{
 			if (Effects == null)
 				Effects = EnchantmentCard.Power.Enchant.Effects;
@@ -208,7 +208,7 @@ namespace SabberStoneCore.Auras
 			//				EnchantmentCard.Power.Trigger?.Activate(e);
 			//			}
 			//		}
-			//		foreach (IPlayable p in owner.Controller.HandZone)
+			//		foreach (Playable p in owner.Controller.HandZone)
 			//		{
 			//			if (!(p is Minion minion)) continue;
 
@@ -221,7 +221,7 @@ namespace SabberStoneCore.Auras
 			//		}
 			//		break;
 			//	case AuraType.SUMMONING_PORTAL:
-			//		foreach (IPlayable p in owner.Controller.HandZone.Where(p => p.Card.Type == CardType.MINION))
+			//		foreach (Playable p in owner.Controller.HandZone.Where(p => p.Card.Type == CardType.MINION))
 			//			Enchantment.GetInstance(in c, in owner, p, in EnchantmentCard);
 			//		break;
 			//}
@@ -334,7 +334,7 @@ namespace SabberStoneCore.Auras
 				e.Remove();
 		}
 
-		void IAura.Activate(IPlayable owner)
+		void IAura.Activate(Playable owner)
 		{
 			Activate(owner);
 		}
@@ -342,7 +342,7 @@ namespace SabberStoneCore.Auras
 		/// <summary>
 		/// Notices this aura instance that the given entity is added to the corresponding zone.
 		/// </summary>
-		public void EntityAdded(IPlayable playable)
+		public void EntityAdded(Playable playable)
 		{
 			if (!On)
 				return;
@@ -356,7 +356,7 @@ namespace SabberStoneCore.Auras
 		/// <summary>
 		/// Notices this aura instance that the given entity is removed from the corresponding zone.
 		/// </summary>
-		public void EntityRemoved(IPlayable playable)
+		public void EntityRemoved(Playable playable)
 		{
 			if (!On)
 				return;
@@ -380,12 +380,12 @@ namespace SabberStoneCore.Auras
 					break;
 				case AuraType.BOARD_EXCEPT_SOURCE:
 				{
-					IPlayable owner = Owner;
+					Playable owner = Owner;
 					owner.Controller.BoardZone.ForEach((minion, source, apply) =>
 					{
 						if (minion != source)
 							apply(minion);
-					}, owner, new Action<IPlayable>(Apply));
+					}, owner, new Action<Playable>(Apply));
 					return;
 				}
 				case AuraType.ADJACENT:
@@ -466,9 +466,7 @@ namespace SabberStoneCore.Auras
 				AppliedEntityIdCollection.ForEach(Game.IdEntityDic, effects,
 					(id, idDict, effs) =>
 					{
-						IPlayable entity = idDict[id];
-						if (entity is PlayableSurrogate)
-							return;
+						Playable entity = idDict[id];
 						for (int i = 0; i < effs.Length; i++)
 							effs[i].RemoveAuraFrom(entity);
 					});
@@ -483,9 +481,7 @@ namespace SabberStoneCore.Auras
 				AppliedEntityIdCollection.ForEach(_ownerId, Game.IdEntityDic,
 					(id, ownerId, idDict) =>
 					{
-						IPlayable entity = idDict[id];
-						if (entity is PlayableSurrogate)
-							return;
+						Playable entity = idDict[id];
 						for (int i = entity.AppliedEnchantments.Count - 1; i >= 0; i--)
 							if (entity.AppliedEnchantments[i].Creator.Id == ownerId)
 								entity.AppliedEnchantments[i].Remove();
@@ -493,28 +489,26 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		private void TriggeredRemove(IEntity source)
+		private void TriggeredRemove(Entity source)
 		{
 			if (RemoveTrigger.Condition != null)
 			{
 				if (source is Controller)
 					source = Owner;
-				if (!RemoveTrigger.Condition.Eval((IPlayable)source))
+				if (!RemoveTrigger.Condition.Eval((Playable)source))
 					return;
 			}
 
 			Remove();
 		}
 
-		private void DeApply(IPlayable entity)
+		private void DeApply(Playable entity)
 		{
 			if (!AppliedEntityIdCollection.Remove(entity.Id))
 				return;
 
 			for (int i = 0; i < Effects.Length; i++)
 			{
-				if (entity is PlayableSurrogate)
-					continue;
 				Effects[i].RemoveAuraFrom(entity);
 			}
 
@@ -534,7 +528,7 @@ namespace SabberStoneCore.Auras
 		/// <summary>
 		/// Apply this aura's effect(s) to the target entity.
 		/// </summary>
-		private void Apply(IPlayable entity)
+		private void Apply(Playable entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException();
@@ -584,7 +578,7 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		public virtual void Clone(IPlayable clone)
+		public virtual void Clone(Playable clone)
 		{
 			Activate(clone, true);
 			//((Aura)clone.OngoingEffect).ToBeUpdated = ToBeUpdated;
@@ -611,6 +605,6 @@ namespace SabberStoneCore.Auras
 		}
 
 		// For debugging
-		public IReadOnlyList<IPlayable> AppliedEntities => AppliedEntityIdCollection.Select(i => Game.IdEntityDic[i]).ToArray();
+		public IReadOnlyList<Playable> AppliedEntities => AppliedEntityIdCollection.Select(i => Game.IdEntityDic[i]).ToArray();
 	}
 }

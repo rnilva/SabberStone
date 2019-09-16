@@ -159,7 +159,7 @@ namespace SabberStoneCoreTest.CardSets
 			Assert.Single(game.CurrentOpponent.SecretZone);
 			game.EndTurn();
 
-			IPlayable t1 = game.ProcessCard("Stonetusk Boar");
+			Playable t1 = game.ProcessCard("Stonetusk Boar");
 			Minion t2 = game.ProcessCard<Minion>("Stonetusk Boar");
 			game.EndTurn();
 
@@ -485,7 +485,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
 
-			IPlayable testCard = game.ProcessCard("Mad Scientist");
+			Playable testCard = game.ProcessCard("Mad Scientist");
 			game.EndTurn();
 
 			game.ProcessCard("Frostbolt", testCard);
@@ -547,10 +547,10 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			var testCard = (ICharacter) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Nerubian Egg"));
+			var testCard = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Nerubian Egg"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			SabberStoneCore.Model.Entities.IPlayable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
+			SabberStoneCore.Model.Entities.Playable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell, testCard));
 			Assert.Equal(1, game.CurrentOpponent.BoardZone.Count);
 			Assert.Equal("FP1_007t", game.CurrentOpponent.BoardZone[0].Card.Id);

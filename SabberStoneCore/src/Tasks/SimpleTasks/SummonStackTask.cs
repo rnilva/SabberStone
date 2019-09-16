@@ -1,4 +1,5 @@
-﻿using SabberStoneCore.Actions;
+﻿using System.Collections.Generic;
+using SabberStoneCore.Actions;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
@@ -23,20 +24,23 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public bool RemoveFromStack { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (controller.BoardZone.IsFull || stack?.Playables.Count == 0) return TaskState.STOP;
 
+			List<Playable> playables = new List<Playable>(stack.Playables.Count);
 			for (int i = 0; i < stack?.Playables.Count && !controller.BoardZone.IsFull; i++)
 			{
-				IPlayable p = stack.Playables[i];
+				Playable p = stack.Playables[i];
 
 				if (RemoveFromZone)
 					p.Zone.Remove(p);
 
-				Generic.SummonBlock(game, p as Minion ?? (Minion)((PlayableSurrogate)p).CastToPlayable(in controller), -1);
+				Generic.SummonBlock(game, ref p, -1);
+				playables.Add(p);
 			}
+			stack.Playables = playables;
 
 			return TaskState.COMPLETE;
 		}

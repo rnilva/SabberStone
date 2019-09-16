@@ -12,18 +12,18 @@ namespace SabberStoneCoreTest
     internal static class TestUtils
     {
 		/// <summary>
-		/// Plays a card that matches the provided name. Returns the created <see cref="IPlayable"/> object from the card.
+		/// Plays a card that matches the provided name. Returns the created <see cref="Playable"/> object from the card.
 		/// If you play a minion, the minion's position will be the rightmost position on the board.
 		/// </summary>
 		/// <returns>The created entity object from the card.</returns>
-		public static IPlayable ProcessCard(this Game game, string cardName, IPlayable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1)
+		public static Playable ProcessCard(this Game game, string cardName, Playable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1)
 	    {
-			var character = target as ICharacter;
+			var character = target as Character;
 
 			if (target != null && character == null)
 				throw new ArgumentException($"Can't target non-charater entity {target}");
 
-			IPlayable entity;
+			Playable entity;
 			try
 			{
 				entity = Generic.DrawCard(game.CurrentPlayer, Cards.FromName(cardName));
@@ -47,15 +47,15 @@ namespace SabberStoneCoreTest
 		/// Plays the provided entity as current player of the game.
 		/// If you play a minion, the minion's position will be the rightmost position on the board.
 		/// </summary>
-		public static IPlayable ProcessCard(this Game game, IPlayable entity, IPlayable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1)
+		public static Playable ProcessCard(this Game game, Playable entity, Playable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1)
 	    {
-			if (target != null && !(target is ICharacter))
+			if (target != null && !(target is Character))
 				throw new ArgumentException($"Can't target non-charater entity {target}");
 
 			if (asZeroCost)
 			    entity.Cost = 0;
 			game.DeathProcessingAndAuraUpdate();
-			var option = PlayCardTask.Any(game.CurrentPlayer, entity, (ICharacter) target, zonePosition, chooseOne);
+			var option = PlayCardTask.Any(game.CurrentPlayer, entity, (Character) target, zonePosition, chooseOne);
 			if (!game.Process(option))
 				throw new Exception($"{option} is not a valid task.");
 			return entity;
@@ -66,9 +66,9 @@ namespace SabberStoneCoreTest
 		/// If you play a minion, the minion's position will be the rightmost position on the board.
 		/// </summary>
 		/// <returns>The created entity object from the card.</returns>
-		public static T ProcessCard<T>(this Game game, string cardName, IPlayable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1) where T: IPlayable
+		public static T ProcessCard<T>(this Game game, string cardName, Playable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1) where T: Playable
 		{
-			IPlayable entity;
+			Playable entity;
 			try
 			{
 				entity = Generic.DrawCard(game.CurrentPlayer, Cards.FromName(cardName));
@@ -79,24 +79,24 @@ namespace SabberStoneCoreTest
 			}
 			if (!(entity is T t))
 			    throw new ArgumentException($"The given card is not {typeof(T)}");
-			if (target != null && !(target is ICharacter))
+			if (target != null && !(target is Character))
 				throw new ArgumentException($"Can't target non-charater entity {target}");
 		    if (asZeroCost)
 			    entity.Cost = 0;
 			game.DeathProcessingAndAuraUpdate();
-		    game.Process(PlayCardTask.Any(game.CurrentPlayer, t, (ICharacter) target, zonePosition, chooseOne));
-		    return t;
+		    game.Process(PlayCardTask.Any(game.CurrentPlayer, t, (Character) target, zonePosition, chooseOne));
+		    return (T) game.IdEntityDic[t.Id];
 		}
 
-	    public static T ProcessCard<T>(this Game game, T entity, IPlayable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1) where T : IPlayable
+	    public static T ProcessCard<T>(this Game game, T entity, Playable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1) where T : Playable
 	    {
-			if (target != null && !(target is ICharacter))
+			if (target != null && !(target is Character))
 				throw new ArgumentException($"Can't target non-charater entity {target}");
 
 			if (asZeroCost)
 			    entity.Cost = 0;
 		    game.DeathProcessingAndAuraUpdate();
-		    var option = PlayCardTask.Any(game.CurrentPlayer, entity, (ICharacter) target, zonePosition, chooseOne);
+		    var option = PlayCardTask.Any(game.CurrentPlayer, entity, (Character) target, zonePosition, chooseOne);
 
 			if (!game.Process(option))
 				throw new Exception($"{option} is not a valid task.");
@@ -115,11 +115,11 @@ namespace SabberStoneCoreTest
 		/// <summary>
 		/// Plays current player's Hero Power.
 		/// </summary>
-	    public static void PlayHeroPower(this Game game, IPlayable target = null, int chooseOne = 0, bool asZeroCost = false, bool autoRefresh = false)
+	    public static void PlayHeroPower(this Game game, Playable target = null, int chooseOne = 0, bool asZeroCost = false, bool autoRefresh = false)
 	    {
-			if (target != null && !(target is ICharacter))
+			if (target != null && !(target is Character))
 				throw new ArgumentException($"Can't target non-charater entity {target}");
-			var option = HeroPowerTask.Any(game.CurrentPlayer, (ICharacter) target, chooseOne, asZeroCost);
+			var option = HeroPowerTask.Any(game.CurrentPlayer, (Character) target, chooseOne, asZeroCost);
 			if (!game.Process(option))
 				throw new Exception($"{option} is not a valid task.");
 			if (autoRefresh)
@@ -152,13 +152,13 @@ namespace SabberStoneCoreTest
 	    }
 
 		/// <summary>
-		/// Cast to <see cref="ICharacter"/>
+		/// Cast to <see cref="Character"/>
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns></returns>
-	    public static ICharacter AsCharacter(this IPlayable p)
+	    public static Character AsCharacter(this Playable p)
 	    {
-		    var c = p as ICharacter;
+		    var c = p as Character;
 		    if (c == null)
 			    throw new InvalidCastException($"{p} is not a Character");
 

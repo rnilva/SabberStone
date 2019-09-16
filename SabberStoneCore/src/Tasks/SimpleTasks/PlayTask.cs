@@ -38,7 +38,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_targetType = targetType;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			switch (_playType)
@@ -46,14 +46,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				case PlayType.SPELL:
 					for (int i = 0; i < (stack?.Playables).Count; i++)
 					{
-						IPlayable p = (stack?.Playables)[i];
-						ICharacter cardTarget = null;
+						Playable p = (stack?.Playables)[i];
+						Character cardTarget = null;
 						if (_randTarget && p.Card.MustHaveTargetToPlay)
 						{
-							if (p is PlayableSurrogate ps)
-								p = ps.CastToPlayable(in controller);
-
-							var targets = (List<ICharacter>) p.ValidPlayTargets;
+							var targets = (List<Character>) p.ValidPlayTargets;
 
 							cardTarget = targets.Count > 0
 								? Util.RandomElement(targets)
@@ -67,7 +64,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						else if
 							(_targetType != EntityType.INVALID)
 						{
-							cardTarget = (ICharacter) IncludeTask.GetEntities(_targetType, in controller, source,
+							cardTarget = (Character) IncludeTask.GetEntities(_targetType, in controller, source,
 								target, stack?.Playables)[0];
 						}
 

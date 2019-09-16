@@ -470,7 +470,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("CFM_671", new Power
 			{
 				PowerTask = ComplexTask.Create(
-					new ConditionTask(EntityType.SOURCE, SelfCondition.HasOp(GameTag.FROZEN, 1)),
+					new ConditionTask(EntityType.SOURCE, SelfCondition.IfAnyEnemyFrozen),
 					new FlagTask(true, new AddEnchantmentTask("CFM_671e", EntityType.SOURCE))),
 			});
 
@@ -1710,7 +1710,7 @@ namespace SabberStoneCore.CardSets
 				{
 					TriggerSource = TriggerSource.SELF,
 					Condition = new SelfCondition(
-						p => !p.ToBeDestroyed
+						p => !((Character)p).ToBeDestroyed
 						     && p.Game.CurrentEventData.EventTarget is Minion),
 					SingleTask = new DrawTask()
 				}
@@ -2826,7 +2826,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_651e", new Power
 			{
-				Enchant = new Enchant(GameTag.ATK, EffectOperator.ADD, 1)
+				Enchant = new Enchant(Effects.Attack_N(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -2921,8 +2921,8 @@ namespace SabberStoneCore.CardSets
 			cards.Add("CFM_755e", new Power
 			{
 				Enchant = new Enchant(
-					WeaponATK.Effect(EffectOperator.ADD, 1),
-					new Effect(GameTag.DURABILITY, EffectOperator.ADD, 1))
+					ATK.Effect(EffectOperator.ADD, 1),
+					Effects.Durability_N(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

@@ -16,16 +16,16 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_opponent = opponent;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IEntity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			var c = _opponent ? controller.Opponent : controller;
 
-			foreach (IPlayable p in IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables))
+			foreach (Playable p in IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables))
 			{
 				if (p.Zone?.Type == Zone.DECK)
 					continue;
-				IPlayable removedEntity = p.Zone?.Remove(p) ?? p;
+				Playable removedEntity = p.Zone?.Remove(p) ?? p;
 				removedEntity.Reset();
 				if (removedEntity.Controller != c)
 				{

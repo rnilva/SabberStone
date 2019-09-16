@@ -5,13 +5,13 @@ namespace SabberStoneCore.Tasks.PlayerTasks
 {
 	public class HeroPowerTask : PlayerTask
 	{
-		public static HeroPowerTask Any(Controller controller, ICharacter target = null, int chooseOne = 0,
+		public static HeroPowerTask Any(Controller controller, Character target = null, int chooseOne = 0,
 			bool skipPrePhase = false)
 		{
 			return new HeroPowerTask(controller, target, chooseOne, skipPrePhase);
 		}
 
-		private HeroPowerTask(Controller controller, ICharacter target, int chooseOne, bool skipPrePhase)
+		private HeroPowerTask(Controller controller, Character target, int chooseOne, bool skipPrePhase)
 		{
 			PlayerTaskType = PlayerTaskType.HERO_POWER;
 			Game = controller.Game;

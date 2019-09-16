@@ -29,7 +29,14 @@ namespace SabberStoneCore.Enchants
 
 		public Enchant(GameTag tag, EffectOperator @operator, int value)
 	    {
-		    Effects = new IEffect[] {new Effect(tag, @operator, value)};
+			IEffect eff;
+			Attributes attr = AttributeHelpers.GameTagToAttribute(tag);
+			if (attr != Attributes.Invalid)
+				eff = new AttributeEffect(attr, value == 1);
+			else
+				eff = new Effect(tag, @operator, value);
+
+			Effects = new IEffect[] {eff};
 	    }
 
 	    public Enchant(params IEffect[] effects)
@@ -53,11 +60,11 @@ namespace SabberStoneCore.Enchants
 		/// <param name="enchantment">The indicator <see cref="Enchantment"/> entity. Can be null.</param>
 		/// <param name="num1">Integer value for GameTag.TAG_SCRIPT_DATA_NUM_1.</param>
 		/// <param name="num2">Integer value for GameTag.TAG_SCRIPT_DATA_NUM_2.</param>
-		public virtual void ActivateTo(IEntity entity, Enchantment enchantment, int num1 = 0, int num2 = -1)
+		public virtual void ActivateTo(Entity entity, Enchantment enchantment, int num1 = 0, int num2 = -1)
 		{
 			IEffect[] effects = Effects;
 
-			//if (entity is PlayableSurrogate s)
+			//if (entity is Entity s)
 			//{
 			//	for (int i = 0; i < effects.Length; i++)
 			//	{
@@ -113,9 +120,9 @@ namespace SabberStoneCore.Enchants
 		private int _lastCount = 1;
 		//private int _targetId;
 		private bool _toBeUpdated;
-		//private IEntity _target;
+		//private Entity _target;
 
-		IPlayable IAura.Owner => Target;
+		Playable IAura.Owner => Target;
 
 		public OngoingEnchant(params IEffect[] effects) : base(effects) { }
 
@@ -128,7 +135,7 @@ namespace SabberStoneCore.Enchants
 				_toBeUpdated = true;
 			}
 		}
-		//public IEntity Target
+		//public Entity Target
 		//{
 		//	get => _target ?? (_target = Game.IdEntityDic[_targetId]);
 		//	set
@@ -137,11 +144,11 @@ namespace SabberStoneCore.Enchants
 		//		_target = value;
 		//	}
 		//}
-		public IPlayable Target { get; set; }
+		public Playable Target { get; set; }
 
-		public override void ActivateTo(IEntity entity, Enchantment enchantment, int num1 = 0, int num2 = -1)
+		public override void ActivateTo(Entity entity, Enchantment enchantment, int num1 = 0, int num2 = -1)
 		{
-			Clone((IPlayable) entity);
+			Clone((Playable) entity);
 
 			base.ActivateTo(entity, enchantment, num1, num2);
 		}
@@ -166,7 +173,7 @@ namespace SabberStoneCore.Enchants
 			Target.Game.Auras.Remove(this);
 		}
 
-		public void Clone(IPlayable clone)
+		public void Clone(Playable clone)
 		{
 			var copy = new OngoingEnchant(Effects)
 			{
@@ -178,7 +185,7 @@ namespace SabberStoneCore.Enchants
 			copy.Game.Auras.Add(copy);
 		}
 
-		void IAura.Activate(IPlayable owner)
+		void IAura.Activate(Playable owner)
 		{
 			throw new NotImplementedException();
 		}

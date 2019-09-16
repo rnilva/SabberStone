@@ -1,4 +1,5 @@
-﻿using SabberStoneCore.Enums;
+﻿using System;
+using SabberStoneCore.Enums;
 using System.Collections.Generic;
 using SabberStoneCore.Kettle;
 
@@ -10,7 +11,7 @@ namespace SabberStoneCore.Model.Entities
 	/// controller's hero for a limited use.
 	/// </summary>
 	/// <seealso cref="Playable" />
-	public partial class Weapon : Playable
+	public class Weapon : Character
 	{
 		/// <summary>Initializes a new instance of the <see cref="Weapon"/> class.</summary>
 		/// <param name="controller">The controller.</param>
@@ -20,6 +21,10 @@ namespace SabberStoneCore.Model.Entities
 		public Weapon(in Controller controller, in Card card, in EntityData tags, in int id = -1)
 			: base(in controller, in card, in tags, in id)
 		{
+			_v1 = card.ATK;
+			_v2 = card[GameTag.DURABILITY];
+			_attrs = new Attributes(in card);
+
 			Game.Log(LogLevel.INFO, BlockType.PLAY, "Weapon", !Game.Logging? "":$"{this} ({Card.Class}) was created.");
 		}
 
@@ -30,108 +35,138 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="weapon">A source <see cref="Weapon"/>.</param>
 		private Weapon(in Controller controller, Weapon weapon) : base(in controller, weapon)
 		{
-			_atk = weapon._atk;
+			_attrs = weapon._attrs;
 		}
 
-		public override IPlayable Clone(in Controller controller)
+		public override Playable Clone(in Controller controller)
 		{
 			return new Weapon(in controller, this);
 		}
-	}
 
-	public partial class Weapon
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-	{
-		internal int? _atk;
 
-		public int AttackDamage
+		public override int AttackDamage
 		{
-			//get { return this[GameTag.ATK]; }
-			//set { this[GameTag.ATK] = value; }
-			get => _atk ?? (_atk = Card.ATK).Value;
-			set
-			{
-				if (_logging)
-					Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Entity", !Game.Logging ? "" : $"{this} set data {GameTag.ATK} to {value}");
-				if (_history && value + (AuraEffects?.ATK ?? 0) != AttackDamage)
-				{
-					Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.ATK, value));
-					_data[GameTag.ATK] = value;
-				}
-
-				_atk = value;
-			}
-		}
-
-		public int Damage
-		{
-			get => this[GameTag.DAMAGE];
-			set
-			{
-				//Game.TriggerManager.OnDamageTrigger(this);
-				this[GameTag.DAMAGE] = value;
-				if (this[GameTag.DURABILITY] <= value)
-				{
-					ToBeDestroyed = true;
-				}
-			}
+			get => _v1.Value;
+			set => _v1 = value;
 		}
 
 		public int Durability
 		{
-			get { return this[GameTag.DURABILITY] - this[GameTag.DAMAGE]; }
-			set { this[GameTag.DURABILITY] = value; }
+			get => _v2.Value - Damage;
+			set => _v2 = value;
 		}
 
-		public bool IsWindfury
+		public bool HasDeathrattle => Card.Deathrattle;
+
+		#region Overrides of Playable
+
+		public override void Destroy()
 		{
-			get => Card.Windfury;
-			set { this[GameTag.WINDFURY] = value ? 1 : 0; }
+			ToBeDestroyed = true;
 		}
 
-		public bool IsImmune
+		#endregion
+
+		#region Overrides of Character
+
+		internal override ref bool GetRef(int index)
 		{
-			get { return this[GameTag.IMMUNE] == 1; }
-			set { this[GameTag.IMMUNE] = value ? 1 : 0; }
+			throw new NotImplementedException();
 		}
 
-		public bool Poisonous
+		internal override bool GetAttribute(Entities.Attributes attr)
 		{
-			get
+			return GetRef(attr);
+		}
+
+		internal override void SetAttribute(Entities.Attributes attr, bool value)
+		{
+			GetRef(attr) = value;
+		}
+
+		#endregion
+
+		#region Attributes
+		private unsafe struct Attributes
+		{
+			// 0 : Damage
+
+			// 0 : IsImmune
+			// 1 : ToBeDestroyed
+			// 2 : Poisonous
+			// 3 : Lifesteal
+			private const int NUM_INT_ATTRS = 1;
+			private const int NUM_BOOL_ATTRS = 4;
+#pragma warning disable 649
+			public fixed int intAttrs[NUM_INT_ATTRS];
+			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
+#pragma warning restore 649
+
+			public Attributes(in Card card)
 			{
-				if (!_data.ContainsKey(GameTag.POISONOUS))
-					return Card.Poisonous;
-				return true;
+				boolAttrs[2] = card.Poisonous;
+				boolAttrs[3] = card.LifeSteal;
 			}
-			set { this[GameTag.POISONOUS] = value ? 1 : 0; }
 		}
-
-		public override bool ToBeDestroyed
+		private Attributes _attrs;
+		public override unsafe int Damage
 		{
-			get => base.ToBeDestroyed;
+			get => _attrs.intAttrs[0];
 			set
 			{
-				Game.ClearWeapons += Controller.Hero.RemoveWeapon;
-				base.ToBeDestroyed = value;
+				_attrs.intAttrs[0] = value;
+				if (_v2 <= value)
+					ToBeDestroyed = true;
 			}
 		}
 
-		public override bool HasLifeSteal
+		public override unsafe bool IsImmune
 		{
-			get
+			get => (AuraEffects?.Immune ?? false) ||
+			       _attrs.boolAttrs[0];
+			set => _attrs.boolAttrs[0] = value;
+		}
+
+		public override unsafe bool ToBeDestroyed
+		{
+			get => _attrs.boolAttrs[1];
+			set
 			{
-				if (!_data.ContainsKey(GameTag.LIFESTEAL))
-					return Card.LifeSteal;
-				return true;
+				_attrs.boolAttrs[1] = value;
+				if (value)
+					Game.ClearWeapons += Controller.Hero.RemoveWeapon;
 			}
-			set => base.HasLifeSteal = value;
 		}
 
-		public override bool HasDeathrattle
+		public override unsafe bool Poisonous
 		{
-			get => Card.Deathrattle;
-			set => this[GameTag.DEATHRATTLE] = value ? 1 : 0;
+			get => _attrs.boolAttrs[2];
+			set => _attrs.boolAttrs[2] = value;
 		}
+		public override unsafe bool HasLifesteal
+		{
+			get => _attrs.boolAttrs[3];
+			set => _attrs.boolAttrs[3] = value;
+		}
+
+		private unsafe ref bool GetRef(Entities.Attributes attr)
+		{
+			switch (attr)
+			{
+				case Entities.Attributes.Immune:
+					return ref _attrs.boolAttrs[0];
+				case Entities.Attributes.ToBeDestroyed:
+					return ref _attrs.boolAttrs[1];
+				case Entities.Attributes.Poisonous:
+					return ref _attrs.boolAttrs[2];
+				case Entities.Attributes.Lifesteal:
+					return ref _attrs.boolAttrs[3];
+				default:
+					throw new NotImplementedException();
+			}
+		}
+		#endregion
 	}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

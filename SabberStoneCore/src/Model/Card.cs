@@ -18,7 +18,7 @@ namespace SabberStoneCore.Model
 	public sealed class Card
 	{
 		/// <summary>
-		/// Constraint condition based on the state of a target <see cref="ICharacter"/>.
+		/// Constraint condition based on the state of a target <see cref="Character"/>.
 		/// Returns true if the target is valid for this card.
 		/// The result of this predicate is independent of <see cref="TargetingType"/> of this card.
 		/// null if there is no such a condtion for this card.
@@ -45,28 +45,30 @@ namespace SabberStoneCore.Model
 		public int ATK { get; private set; }
 		public int Health { get; private set; }
 		public int SpellPower { get; private set; }
+
 		public bool Taunt { get; private set; }
-		public bool Charge { get; private set; }
-		public bool Stealth { get; private set; }
-		public bool Poisonous { get; private set; }
 		public bool DivineShield { get; private set; }
-		public bool Windfury { get; private set; }
-		public bool LifeSteal { get; private set; }
-		public bool Echo { get; private set; }
-		public bool Rush { get; private set; }
+		public bool Stealth { get; private set; }
 		public bool CantBeTargetedBySpells { get; private set; }
-		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
+		public bool Windfury { get; private set; }
+		public bool Charge { get; private set; }
+		public bool Poisonous { get; private set; }
+		public bool LifeSteal { get; private set; }
+		public bool Rush { get; private set; }
+		public bool Deathrattle { get; }
 		public bool CantAttack { get; private set; }
+
+		public bool Echo { get; private set; }
 		public bool Modular { get; private set; }
 		public bool ChooseOne { get; private set; }
 		public bool Combo { get; private set; }
 		public bool IsSecret { get; private set; }
 		public bool IsQuest { get; private set; }
-		public bool Deathrattle { get; }
 		public bool Untouchable { get; private set; }
 		public bool HideStat { get; private set; }
 		public bool ReceivesDoubleSpelldamageBonus { get; private set; }
 		public bool Freeze { get; }
+		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
 
 
 		private Card()
@@ -366,6 +368,25 @@ namespace SabberStoneCore.Model
 				Text += " @spelldmg";
 				IsAffectedBySpellDamage = true;
 			}
+
+			#region Temporary: Minion Attributes
+			unsafe
+			{
+				_minionAttrs.intAttrs[0] = SpellPower;
+
+				_minionAttrs.boolAttrs[0] = Stealth;
+				_minionAttrs.boolAttrs[1] = CantBeTargetedBySpells;
+				_minionAttrs.boolAttrs[2] = Taunt;
+				_minionAttrs.boolAttrs[3] = DivineShield;
+				_minionAttrs.boolAttrs[4] = Windfury;
+				_minionAttrs.boolAttrs[5] = Charge;
+				_minionAttrs.boolAttrs[6] = Poisonous;
+				_minionAttrs.boolAttrs[7] = LifeSteal;
+				_minionAttrs.boolAttrs[8] = Rush;
+				_minionAttrs.boolAttrs[9] = CantAttack;
+				_minionAttrs.boolAttrs[10] = Deathrattle;
+			}
+			#endregion
 		}
 
 		/// <summary>
@@ -657,39 +678,6 @@ namespace SabberStoneCore.Model
 			return clone;
 		}
 
-		private int GetTagValue(GameTag gameTag)
-		{
-			switch (gameTag)
-			{
-				case GameTag.ATK: return ATK;
-				case GameTag.HEALTH: return Health;
-				case GameTag.SPELLPOWER: return SpellPower;
-				case GameTag.TAUNT: return Taunt ? 1 : 0;
-				case GameTag.CHARGE: return Charge ? 1 : 0;
-				case GameTag.STEALTH: return Stealth ? 1 : 0;
-				case GameTag.POISONOUS: return Poisonous ? 1 : 0;
-				case GameTag.DIVINE_SHIELD: return DivineShield ? 1 : 0;
-				case GameTag.WINDFURY: return Windfury ? 1 : 0;
-				case GameTag.LIFESTEAL: return LifeSteal ? 1 : 0;
-				case GameTag.ECHO: return Echo ? 1 : 0;
-				case GameTag.RUSH: return Rush ? 1 : 0;
-				case GameTag.CANT_BE_TARGETED_BY_SPELLS:
-				case GameTag.CANT_BE_TARGETED_BY_HERO_POWERS: return CantBeTargetedBySpells ? 1 : 0;
-				case GameTag.CANT_ATTACK: return CantAttack ? 1 : 0;
-				case GameTag.MODULAR: return Modular ? 1 : 0;
-				case GameTag.CHOOSE_ONE: return ChooseOne ? 1 : 0;
-				case GameTag.COMBO: return Combo ? 1 : 0;
-				case GameTag.SECRET: return IsSecret ? 1 : 0;
-				case GameTag.QUEST: return IsQuest ? 1 : 0;
-				case GameTag.DEATHRATTLE: return Deathrattle ? 1 : 0;
-				case GameTag.UNTOUCHABLE: return Untouchable ? 1 : 0;
-				case GameTag.HIDE_STATS: return HideStat ? 1 : 0;
-				case GameTag.RECEIVES_DOUBLE_SPELLDAMAGE_BONUS: return ReceivesDoubleSpelldamageBonus ? 1 : 0;
-				case GameTag.FREEZE: return Freeze? 1 : 0;
-				default: return -1;
-			}
-		}
-
 		public static Card CreateZombeastCard(in Card firstCard, in Card secondCard, bool modifyTags)
 		{
 			Card zombeast = firstCard.Clone();
@@ -762,6 +750,74 @@ namespace SabberStoneCore.Model
 			potion.PlayAvailabilityPredicate = secondCard.PlayAvailabilityPredicate;
 
 			return potion;
+		}
+
+		private int GetTagValue(GameTag gameTag)
+		{
+			switch (gameTag)
+			{
+				case GameTag.ATK: return ATK;
+				case GameTag.HEALTH: return Health;
+				case GameTag.SPELLPOWER: return SpellPower;
+				case GameTag.TAUNT: return Taunt ? 1 : 0;
+				case GameTag.CHARGE: return Charge ? 1 : 0;
+				case GameTag.STEALTH: return Stealth ? 1 : 0;
+				case GameTag.POISONOUS: return Poisonous ? 1 : 0;
+				case GameTag.DIVINE_SHIELD: return DivineShield ? 1 : 0;
+				case GameTag.WINDFURY: return Windfury ? 1 : 0;
+				case GameTag.LIFESTEAL: return LifeSteal ? 1 : 0;
+				case GameTag.ECHO: return Echo ? 1 : 0;
+				case GameTag.RUSH: return Rush ? 1 : 0;
+				case GameTag.CANT_BE_TARGETED_BY_SPELLS:
+				case GameTag.CANT_BE_TARGETED_BY_HERO_POWERS: return CantBeTargetedBySpells ? 1 : 0;
+				case GameTag.CANT_ATTACK: return CantAttack ? 1 : 0;
+				case GameTag.MODULAR: return Modular ? 1 : 0;
+				case GameTag.CHOOSE_ONE: return ChooseOne ? 1 : 0;
+				case GameTag.COMBO: return Combo ? 1 : 0;
+				case GameTag.SECRET: return IsSecret ? 1 : 0;
+				case GameTag.QUEST: return IsQuest ? 1 : 0;
+				case GameTag.DEATHRATTLE: return Deathrattle ? 1 : 0;
+				case GameTag.UNTOUCHABLE: return Untouchable ? 1 : 0;
+				case GameTag.HIDE_STATS: return HideStat ? 1 : 0;
+				case GameTag.RECEIVES_DOUBLE_SPELLDAMAGE_BONUS: return ReceivesDoubleSpelldamageBonus ? 1 : 0;
+				case GameTag.FREEZE: return Freeze? 1 : 0;
+				default: return -1;
+			}
+		}
+
+		private unsafe struct MinionAttributes
+		{
+			public const int NUM_INT_ATTRS = 1;
+			public const int NUM_BOOL_ATTRS = 11;
+#pragma warning disable 649
+			public fixed int intAttrs[NUM_INT_ATTRS];
+			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
+		}
+		private MinionAttributes _minionAttrs;
+#pragma warning restore 649
+
+		internal unsafe void CopyMinionAttributes(int* intAttrs, bool* boolAttrs)
+		{
+			const int INT_SIZE = sizeof(int) * MinionAttributes.NUM_INT_ATTRS;
+			const int BOOL_SIZE = sizeof(bool) * MinionAttributes.NUM_BOOL_ATTRS;
+			fixed (void* src = _minionAttrs.intAttrs)
+				Buffer.MemoryCopy(src, intAttrs, INT_SIZE, INT_SIZE);
+			fixed (void* src = _minionAttrs.boolAttrs)
+				Buffer.MemoryCopy(src, boolAttrs, BOOL_SIZE, BOOL_SIZE);
+		}
+
+		private unsafe int[] _minionAttrsDebuggerView
+		{
+			get
+			{
+				var array = new int[MinionAttributes.NUM_INT_ATTRS + MinionAttributes.NUM_BOOL_ATTRS];
+				for (int i = 0; i < MinionAttributes.NUM_INT_ATTRS; i++)
+					array[i] = _minionAttrs.intAttrs[i];
+				for (int j = MinionAttributes.NUM_INT_ATTRS, i = 0; i < MinionAttributes.NUM_BOOL_ATTRS; i++, j++)
+					array[j] = _minionAttrs.boolAttrs[i] ? 1 : 0;
+
+				return array;
+			}
 		}
 	}
 }
