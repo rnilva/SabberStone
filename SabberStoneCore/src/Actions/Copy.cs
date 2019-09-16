@@ -2,12 +2,13 @@
 using SabberStoneCore.Model.Entities;
 using System.Collections.Generic;
 using SabberStoneCore.Enchants;
+using SabberStoneCore.Tasks.SimpleTasks;
 
 namespace SabberStoneCore.Actions
 {
 	public partial class Generic
 	{
-		public static Playable Copy(in Controller controller, in Entity creator, in Playable source, Zone targetZone, bool deathrattle = false)
+		public static Playable Copy(in Controller controller, in Entity creator, in Playable source, Zone targetZone, int zonePosition = -1)
 		{
 			// Determine whether enchantments should be also copied.
 			// Whenever a card moves forward in that flow (Deck -> Hand, Hand -> Play, Deck -> Play),
@@ -48,6 +49,11 @@ namespace SabberStoneCore.Actions
 					MinionInPlay mip = MinionInPlay.FromCard(in controller, source.Card, tags);
 					if (sourceZone == Zone.PLAY)
 						mip.CopyAttributesFrom((MinionInPlay) source);
+					else
+					{
+						mip._v1 = source._v1;
+						mip._v2 = source._v2;
+					}
 					copiedEntity = mip;
 				}
 				else
@@ -152,14 +158,7 @@ namespace SabberStoneCore.Actions
 					Generic.ShuffleIntoDeck.Invoke(controller, creator, copiedEntity);
 					break;
 				case Zone.PLAY:
-					int position = -1;
-					if (deathrattle)
-					{
-						position = ((Minion) source).LastBoardPosition;
-						if (position > controller.BoardZone.Count)
-							position = controller.BoardZone.Count;
-					}
-					Generic.SummonBlock(controller.Game, ref copiedEntity, position);
+					Generic.SummonBlock(controller.Game, ref copiedEntity, zonePosition);
 					break;
 				case Zone.SETASIDE:
 					controller.SetasideZone.Add(copiedEntity);

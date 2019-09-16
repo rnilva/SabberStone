@@ -1337,7 +1337,7 @@ namespace SabberStoneCoreTest.CardSets
 			Assert.Equal(2, minion.AttackDamage);
 			Assert.Equal(2, minion.Health);
 
-			minion.ToBeDestroyed = true;
+			minion.Destroy();
 			game.ProcessCard("Competitive Spirit");
 			game.EndTurn();
 			game.EndTurn();

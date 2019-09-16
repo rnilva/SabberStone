@@ -1238,7 +1238,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("LOOT_187", new Power {
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.GRAVEYARD),
-					new FilterStackTask(SelfCondition.IsDeathrattleMinion, SelfCondition.IsTagValue(GameTag.TO_BE_DESTROYED, 1)),
+					new FilterStackTask(SelfCondition.IsDeathrattleMinion, SelfCondition.IsDead),
 					new RandomTask(2, EntityType.STACK),
 					new CopyTask(EntityType.STACK, Zone.PLAY, addToStack: true),
 					new AddEnchantmentTask("LOOT_187e", EntityType.STACK))

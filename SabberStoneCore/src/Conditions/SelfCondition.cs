@@ -353,9 +353,6 @@ namespace SabberStoneCore.Conditions
 			if (tag == GameTag.COST)
 				return me.Cost;
 
-			if (tag == GameTag.TO_BE_DESTROYED)
-				return me is Minion m && m.ToBeDestroyed ? 1 : 0;
-
 			if (me is Character c)
 			{
 				if (tag == GameTag.ATK)
@@ -363,6 +360,9 @@ namespace SabberStoneCore.Conditions
 				else if
 					(tag == GameTag.HEALTH)
 					return c.BaseHealth;
+				else if
+					(tag == GameTag.TO_BE_DESTROYED)
+					return c.ToBeDestroyed ? 1 : 0;
 				else
 					return c[tag];
 			}

@@ -1824,7 +1824,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("OG_133", new Power {
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.GRAVEYARD),
-					new FilterStackTask(SelfCondition.IsDeathrattleMinion, SelfCondition.IsTagValue(GameTag.TO_BE_DESTROYED, 1)),
+					new FilterStackTask(SelfCondition.IsDeathrattleMinion, SelfCondition.IsDead),
 					new SummonCopyTask(EntityType.STACK, true))
 			});
 

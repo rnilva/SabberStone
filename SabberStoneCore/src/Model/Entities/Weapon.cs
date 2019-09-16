@@ -14,6 +14,7 @@
 ﻿using System;
 using SabberStoneCore.Enums;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using SabberStoneCore.Kettle;
 
 namespace SabberStoneCore.Model.Entities
@@ -76,7 +77,8 @@ namespace SabberStoneCore.Model.Entities
 
 		public override void Destroy()
 		{
-			ToBeDestroyed = true;
+			_toBeDestroyed = true;
+			Game.ClearWeapons += Controller.Hero.RemoveWeapon;
 		}
 
 		#endregion
@@ -106,11 +108,10 @@ namespace SabberStoneCore.Model.Entities
 			// 0 : Damage
 
 			// 0 : IsImmune
-			// 1 : ToBeDestroyed
-			// 2 : Poisonous
-			// 3 : Lifesteal
+			// 1 : Poisonous
+			// 2 : Lifesteal
 			private const int NUM_INT_ATTRS = 1;
-			private const int NUM_BOOL_ATTRS = 4;
+			private const int NUM_BOOL_ATTRS = 3;
 #pragma warning disable 649
 			public fixed int intAttrs[NUM_INT_ATTRS];
 			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
@@ -130,7 +131,7 @@ namespace SabberStoneCore.Model.Entities
 			{
 				_attrs.intAttrs[0] = value;
 				if (_v2 <= value)
-					ToBeDestroyed = true;
+					Destroy();
 			}
 		}
 
@@ -141,26 +142,15 @@ namespace SabberStoneCore.Model.Entities
 			set => _attrs.boolAttrs[0] = value;
 		}
 
-		public override unsafe bool ToBeDestroyed
-		{
-			get => _attrs.boolAttrs[1];
-			set
-			{
-				_attrs.boolAttrs[1] = value;
-				if (value)
-					Game.ClearWeapons += Controller.Hero.RemoveWeapon;
-			}
-		}
-
 		public override unsafe bool Poisonous
 		{
-			get => _attrs.boolAttrs[2];
-			set => _attrs.boolAttrs[2] = value;
+			get => _attrs.boolAttrs[1];
+			set => _attrs.boolAttrs[1] = value;
 		}
 		public override unsafe bool HasLifesteal
 		{
-			get => _attrs.boolAttrs[3];
-			set => _attrs.boolAttrs[3] = value;
+			get => _attrs.boolAttrs[2];
+			set => _attrs.boolAttrs[2] = value;
 		}
 
 		private unsafe ref bool GetRef(Entities.Attributes attr)
@@ -169,12 +159,10 @@ namespace SabberStoneCore.Model.Entities
 			{
 				case Entities.Attributes.Immune:
 					return ref _attrs.boolAttrs[0];
-				case Entities.Attributes.ToBeDestroyed:
-					return ref _attrs.boolAttrs[1];
 				case Entities.Attributes.Poisonous:
-					return ref _attrs.boolAttrs[2];
+					return ref _attrs.boolAttrs[1];
 				case Entities.Attributes.Lifesteal:
-					return ref _attrs.boolAttrs[3];
+					return ref _attrs.boolAttrs[2];
 				default:
 					throw new NotImplementedException();
 			}

@@ -198,7 +198,7 @@ namespace SabberStoneCoreTest
 		    if (m.Zone.Type != SabberStoneCore.Enums.Zone.PLAY)
 			    throw new ArgumentException($"{m} is not in the board.");
 
-			m.ToBeDestroyed = true;
+		    m.Destroy();
 		    m.Game.DeathProcessingAndAuraUpdate();
 	    }
 

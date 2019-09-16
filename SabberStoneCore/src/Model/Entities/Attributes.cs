@@ -20,10 +20,9 @@ namespace SabberStoneCore.Model.Entities
 		// ### Effect-only attributes
 		Immune = 0,
 		Frozen,
-		ToBeDestroyed,
 		// ### Card attributes
-		Stealth = 3,
-		Elusive,
+		Stealth,
+		Elusive = 3,
 		// ## Minion-only attributes
 		Taunt,
 		DivineShield,
@@ -34,7 +33,8 @@ namespace SabberStoneCore.Model.Entities
 		Rush,
 		CantAttack,
 		Deathrattle,
-		CannotAttackHeroes = 16,
+
+		CannotAttackHeroes = 15,
 		// ## Hero-only attributes
 	}
 
@@ -48,8 +48,6 @@ namespace SabberStoneCore.Model.Entities
 					return Attributes.Immune;
 				case GameTag.FROZEN:
 					return Attributes.Frozen;
-				case GameTag.TO_BE_DESTROYED:
-					return Attributes.ToBeDestroyed;
 				case GameTag.DIVINE_SHIELD:
 					return Attributes.DivineShield;
 				case GameTag.WINDFURY:
