@@ -96,6 +96,12 @@ namespace SabberStoneCore.Model.Entities
 
 		public bool TryGetValue(int key, out Playable value)
 		{
+			if (key >= _list.Length)
+			{
+				value = null;
+				return false;
+			}
+
 			value = _list[key];
 			return value != null;
 		}

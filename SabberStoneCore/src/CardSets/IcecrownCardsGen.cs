@@ -238,7 +238,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - REQ_HAND_NOT_FULL = 0
 			// --------------------------------------------------------
 			cards.Add("ICC_828p", new Power {
-				PowerTask = SpecificTask.BuildABeast
+				PowerTask = new SpecificTask.BuildABeast()
 			});
 
 			// ----------------------------------- HERO_POWER - NEUTRAL

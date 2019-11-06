@@ -18,7 +18,7 @@ namespace SabberStoneCore.Model.Entities
 			_attrs = new Attributes(in card);
 		}
 
-		protected MinionInPlay(in Controller controller, in MinionInPlay minion) : base(in controller, minion)
+		private MinionInPlay(in Controller controller, in MinionInPlay minion) : base(in controller, minion)
 		{
 			_v1 = minion._v1;
 			_v2 = minion._v2;
@@ -372,6 +372,11 @@ namespace SabberStoneCore.Model.Entities
 			return new MinionInPlay(in controller, this);
 		}
 
+		public Minion CloneAsMinion(in Controller controller)
+		{
+			return new Minion(in controller, this);
+		}
+
 		#region Attribute Implementation
 		private Attributes _attrs;
 		private unsafe struct Attributes
@@ -502,19 +507,15 @@ namespace SabberStoneCore.Model.Entities
 		}
 
 		public const int NUM_TOTAL_ATTRIBUTES = Attributes.NUM_INT_ATTRS + Attributes.NUM_BOOL_ATTRS;
+		public const int NUM_BOOL_ATTRIBUTES = Attributes.NUM_BOOL_ATTRS;
 
 		public unsafe void ExportAttributes(Span<float> destination)
 		{
 			if (destination.Length < NUM_TOTAL_ATTRIBUTES)
-			{
 				throw new Exception();
-			}
 
-			fixed (void* src = _attrs.intAttrs)
-			{
-				var intAttrs = new ReadOnlySpan<float>(src, Attributes.NUM_INT_ATTRS);
-				intAttrs.CopyTo(destination);
-			}
+			for (int i = 0; i < Attributes.NUM_INT_ATTRS; i++)
+				destination[i] = (float) _attrs.intAttrs[i];
 
 			Span<float> slice = destination.Slice(Attributes.NUM_INT_ATTRS);
 			fixed (bool* src = _attrs.boolAttrs)

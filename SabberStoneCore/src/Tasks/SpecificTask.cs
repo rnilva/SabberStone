@@ -344,51 +344,6 @@ namespace SabberStoneCore.Tasks
 			});
 		private static ReadOnlyDictionary<Rarity, Card[]> _ungoroPackMemory;
 
-		public static ISimpleTask BuildABeast
-			=> ComplexTask.Create(
-				new IncludeTask(EntityType.SOURCE),
-				new FuncPlayablesTask(p =>
-				{
-					Controller controller = p[0].Controller;
-
-					if (_firstBeastsMemory == null)
-					{
-						lock (locker)
-						{
-							IEnumerable<Card> all = controller.Game.FormatType == FormatType.FT_STANDARD ?
-								Cards.Standard[CardClass.HUNTER].Where(c => c.IsRace(Race.BEAST) && c.Cost <= 5) :
-								Cards.Wild[CardClass.HUNTER].Where(c => c.IsRace(Race.BEAST) && c.Cost <= 5);
-							var firstBeasts = new List<Card>();
-							var secondBeasts = new List<Card>();
-							foreach (Card card in all)
-							{
-								if (card.Power != null)
-									firstBeasts.Add(card);
-								else
-									secondBeasts.Add(card);
-							}
-
-							_firstBeastsMemory = firstBeasts.AsReadOnly();
-							_secondBeastsMemory = secondBeasts.AsReadOnly();
-						}
-					}
-
-					Util.DeepCloneableRandom rnd = controller.Game.Random;
-
-					Card[] first = _firstBeastsMemory.ChooseNElements(3, rnd);
-					Card[] second = _secondBeastsMemory.ChooseNElements(3, rnd);
-
-
-					Generic.CreateChoiceCards.Invoke(controller, p[0], null, ChoiceType.GENERAL,
-						ChoiceAction.BUILDABEAST, first, null);
-					Generic.CreateChoiceCards.Invoke(controller, p[0], null, ChoiceType.GENERAL,
-						ChoiceAction.BUILDABEAST, second, null);
-
-					return p;
-				}));
-		private static IReadOnlyList<Card> _firstBeastsMemory;
-		private static IReadOnlyList<Card> _secondBeastsMemory;
-
 		public static ISimpleTask RandomHunterSecretPlay
 			=> ComplexTask.Create(
 				new IncludeTask(EntityType.TARGET),
@@ -1208,6 +1163,50 @@ namespace SabberStoneCore.Tasks
 			{
 				Card pick = PastLegendaryMinions.Choose(game.Random);
 				Entity.FromCard(in controller, in pick, null, controller.HandZone);
+				return TaskState.COMPLETE;
+			}
+		}
+
+		public class BuildABeast : SimpleTask
+		{
+			public static IReadOnlyList<Card> FirstBeastsMemory;
+			public static IReadOnlyList<Card> SecondBeastsMemory;
+
+			public override TaskState Process(in Game game, in Controller controller, in Entity source,
+				in Entity target, in TaskStack stack = null)
+			{
+				if (FirstBeastsMemory == null)
+				{
+					lock (locker)
+					{
+						// In Hearthstone, cards from K & C is not included in the card pool for Build-A-Beast
+						// I am not sure whether Sabber should follow the rule or not ...
+						IEnumerable<Card> all = controller.Game.FormatType == FormatType.FT_STANDARD ?
+							Cards.Standard[CardClass.HUNTER].Where(c => c.Race == Race.BEAST && c.Cost <= 5) :
+							Cards.Wild[CardClass.HUNTER].Where(c => c.Race == Race.BEAST && c.Cost <= 5);
+						var firstBeasts = new List<Card>();
+						var secondBeasts = new List<Card>();
+						foreach (Card card in all)
+						{
+							if (card.Power != null)
+							{
+								if (card.Taunt) continue;
+								firstBeasts.Add(card);
+							}
+							else
+								secondBeasts.Add(card);
+						}
+
+						FirstBeastsMemory = firstBeasts.AsReadOnly();
+						SecondBeastsMemory = secondBeasts.AsReadOnly();
+					}
+				}
+
+				Card[] first = FirstBeastsMemory.ChooseNElements(3);
+
+				Generic.CreateChoiceCards.Invoke(controller, source, null, ChoiceType.GENERAL,
+					ChoiceAction.BUILDABEAST, first, null);
+
 				return TaskState.COMPLETE;
 			}
 		}
