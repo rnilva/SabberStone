@@ -181,7 +181,13 @@ namespace SabberStoneCore.Model.Zones
 			IList<Playable> src = zone._entities;
 			for (int i = 0; i < src.Count; ++i)
 			{
-				Playable copy = src[i].Clone(c);
+				Playable copy;
+				if (src[i] is MinionInPlay m)
+				{
+					copy = m.CloneAsMinion(in c);
+				}
+				else
+					copy = src[i].Clone(in c);
 				copy.Zone = this;
 				entities.Add(copy);
 			}

@@ -167,9 +167,31 @@ namespace SabberStoneCore.Actions
 						break;
 
 					case ChoiceAction.BUILDABEAST:
-						if (c.Choice.NextChoice == null)
+						//if (c.Choice.NextChoice == null)
+						//{
+						//	Card firstCard = g.IdEntityDic[c.Choice.LastChoice].Card.Clone();
+						//	Card secondCard = playable.Card;
+						//	Card zombeastCard = Card.CreateZombeastCard(in firstCard, in secondCard, g.History);
+
+						//	Playable zombeast = Entity.FromCard(in c, in zombeastCard);
+						//	zombeast[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
+
+						//	AddHandPhase.Invoke(c, zombeast);
+						//	break;
+						//}
+						//else
+						//	break;
+						if (playable.Power != null)
 						{
-							Card firstCard = g.IdEntityDic[c.Choice.LastChoice].Card.Clone();
+							c.Choice.EntityStack = new List<int> {playable.Id};
+							CreateChoiceCards(c, g.IdEntityDic[c.Choice.SourceId],
+								null, ChoiceType.GENERAL, ChoiceAction.BUILDABEAST,
+								SpecificTask.BuildABeast.SecondBeastsMemory.ChooseNElements(3), null);
+							break;
+						}
+						else
+						{
+							Card firstCard = g.IdEntityDic[c.Choice.EntityStack[0]].Card.Clone();
 							Card secondCard = playable.Card;
 							Card zombeastCard = Card.CreateZombeastCard(in firstCard, in secondCard, g.History);
 
@@ -179,9 +201,6 @@ namespace SabberStoneCore.Actions
 							AddHandPhase.Invoke(c, zombeast);
 							break;
 						}
-						else
-							break;
-
 
 					default:
 						throw new NotImplementedException();

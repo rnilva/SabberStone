@@ -182,19 +182,25 @@ namespace SabberStoneCore.Model.Entities
 			//tags = tags ?? new EntityData();
 			//tags[GameTag.CARD_ID] = card.AssetId;
 
+			if (tags != null)
+				;
+
 			Playable result;
 			CardType type = card.Type;
 			if (type == CardType.MINION)
 			{
-				result = new Minion(in controller, in card, tags ?? new EntityData(), in id);
+				if (zone?.Type != Enums.Zone.PLAY)
+					result = new Minion(in controller, in card, tags ?? new EntityData(), in id);
+				else
+					result = new MinionInPlay(in controller, in card, tags ?? new EntityData(), in id);
 			}
 			else if (type == CardType.SPELL)
 			{
-				result = new Spell(in controller, in card, tags ?? new EntityData(4), in id);
+				result = new Spell(in controller, in card, tags ?? new EntityData(), in id);
 			}
 			else if (type == CardType.WEAPON)
 			{
-				result = new Weapon(in controller, in card, tags ?? new EntityData(4), in id);
+				result = new Weapon(in controller, in card, tags ?? new EntityData(), in id);
 			}
 			else if (type == CardType.HERO)
 			{
@@ -211,7 +217,7 @@ namespace SabberStoneCore.Model.Entities
 			else if (type == CardType.HERO_POWER)
 			{
 				if (tags == null)
-					tags = new EntityData(4);
+					tags = new EntityData();
 				//tags[GameTag.COST] = card[GameTag.COST];
 				tags[GameTag.ZONE] = (int) Enums.Zone.PLAY;
 				//tags[GameTag.FACTION] = card[GameTag.FACTION];

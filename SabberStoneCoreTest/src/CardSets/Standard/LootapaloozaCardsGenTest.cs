@@ -444,10 +444,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		// Text: Also damages the minions next to whomever
 		//       this attacks.
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void CaveHydra_LOOT_078()
 		{
-			// TODO CaveHydra_LOOT_078 test
 			var game = new Game(new GameConfig
 			{
 				StartPlayer = 1,
@@ -464,8 +463,15 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Cave Hydra"));
-			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Cave Hydra"));
+
+			Minion target = game.ProcessCard<Minion>("Wisp");
+			game.ProcessCard("Wandering Monster");
+			game.EndTurn();
+
+			Minion testCard = game.ProcessCard<Minion>("Cave Hydra");
+			testCard.IsExhausted = false;
+			game.Process(MinionAttackTask.Any(game.CurrentPlayer, testCard, game.CurrentOpponent.Hero));
+			Assert.True(target.IsDead);
 		}
 
 		// ---------------------------------------- MINION - HUNTER

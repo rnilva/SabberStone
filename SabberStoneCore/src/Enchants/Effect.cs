@@ -292,7 +292,7 @@ namespace SabberStoneCore.Enchants
 					playable.AuraEffects[Tag] -= Value;
 					if (Tag == GameTag.RUSH)
 					{
-						var m = (MinionInPlay)playable;
+						if (!(playable is MinionInPlay m)) return;
 						if (m.AttackableByRush && !m.IsExhausted)
 						{
 							if (m.IsRush || m.Card.Rush)

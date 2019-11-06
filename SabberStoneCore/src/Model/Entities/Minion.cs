@@ -29,7 +29,7 @@ namespace SabberStoneCore.Model.Entities
 		///// </summary>
 		///// <param name="controller">The target <see cref="Controller"/> instance.</param>
 		///// <param name="minion">The source <see cref="Minion"/>.</param>
-		protected Minion(in Controller controller, Minion minion) : base(in controller, minion) { }
+		protected internal Minion(in Controller controller, Minion minion) : base(in controller, minion) { }
 
 		internal override bool GetAttribute(Attributes attr)
 		{

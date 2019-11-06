@@ -147,20 +147,6 @@ namespace SabberStoneCore.Model
 				EntityStack = new List<int> {entityId};
 			else
 				EntityStack.Add(entityId);
-
-			//if (EntityStack is List<Playable> list)
-			//	list.Add(entity);
-			//else if (EntityStack != null)
-			//{
-			//	list = new List<Playable>(EntityStack) {entity};
-			//	EntityStack = list;
-			//}
-			//else
-			//{
-			//	list = new List<Playable> {entity};
-			//	EntityStack = list;
-			//}
-
 		}
 
 		internal bool TryPopNextChoice(int lastChoice, out Choice nextChoice)

@@ -15,7 +15,7 @@ namespace SabberStoneCore.Model.Entities
 	/// </summary>
 	public class EntityData : IDictionary<GameTag, int>
 	{
-		private const int _initSize = 8;
+		private const int _initSize = 1;
 		private const int _initBucketSize = _initSize * 2;
 
 		private int[] _buckets;
@@ -53,19 +53,16 @@ namespace SabberStoneCore.Model.Entities
 			_buckets = new int[size << 1];
 			fixed (int* srcPtr = entityData._buckets, dstPtr = _buckets)
 			{
-				int* srcEndPtr = srcPtr + (size << 1);
-				S256Bit* s = (S256Bit*)srcPtr;
-				S256Bit* d = (S256Bit*)dstPtr;
-				do
-				{
-					*d = *s;
-					s++;
-					d++;
-				} while (s < srcEndPtr);
+				//S256Bit* s = (S256Bit*)srcPtr;
+				//S256Bit* d = (S256Bit*)dstPtr;
+				long* s = (long*) srcPtr;
+				long* d = (long*) dstPtr;
+				int i = 0;
+				do d[i] = s[i];
+				while (++i < size);
 			}
 
 			_count = entityData._count;
-
 		}
 
 		/// <summary>

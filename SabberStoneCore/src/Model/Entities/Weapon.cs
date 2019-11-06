@@ -62,6 +62,13 @@ namespace SabberStoneCore.Model.Entities
 
 		#region Overrides of Playable
 
+		public override void Reset()
+		{
+			_v1 = Card.ATK;
+			_v2 = Card[GameTag.DURABILITY];
+			_attrs = new Attributes(Card);
+		}
+
 		public override void Destroy()
 		{
 			_toBeDestroyed = true;

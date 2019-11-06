@@ -89,6 +89,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				}
 
 				Minion summonEntity = null;
+				int summonPosition = GetPosition(in source, Side, stack?.Number ?? 0, ref alternateCount);
+
+				if (summonPosition > controller.BoardZone.Count)
+					summonPosition = controller.BoardZone.Count;
 				if (Card != null)
 				{
 					summonEntity = Entity.FromCard(controller, Card,
@@ -96,25 +100,24 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						{
 							{GameTag.ZONE, (int) Zone.PLAY},
 							{GameTag.DISPLAYED_CREATOR, source.Id}
-						}) as Minion;
+						}, controller.BoardZone, zonePos: summonPosition) as Minion;
+					if (summonEntity == null)
+						return TaskState.STOP;
+					if (_addToStack)
+						stack.AddPlayable(summonEntity);
+					continue;
 				}
 				else if (stack?.Playables.Count > 0)
 				{
 					summonEntity = (Minion)stack.Playables[0];
-					if (RemoveFromStack) stack.Playables.Remove(summonEntity);
+					if (summonEntity == null)
+						return TaskState.STOP;
+					Generic.SummonBlock(game, ref summonEntity, summonPosition);
+					if (RemoveFromStack)
+						stack.Playables.Remove(summonEntity);
+					else
+						stack.Playables[0] = summonEntity;
 				}
-
-				if (summonEntity == null)
-					return TaskState.STOP;
-
-				int summonPosition = GetPosition(in source, Side, stack?.Number ?? 0, ref alternateCount);
-
-				if (summonPosition > controller.BoardZone.Count)
-					summonPosition = controller.BoardZone.Count;
-
-				Generic.SummonBlock(game, ref summonEntity, summonPosition);
-				if (_addToStack)
-					stack.AddPlayable(summonEntity);
 			}
 
 			return TaskState.COMPLETE;
