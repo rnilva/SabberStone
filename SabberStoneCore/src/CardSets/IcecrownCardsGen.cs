@@ -1,4 +1,16 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
 using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Actions;
@@ -9,9 +21,11 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
+using SabberStoneCore.Triggers;
+
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
 
-namespace SabberStoneCore.CardSets.Standard
+namespace SabberStoneCore.CardSets
 {
 	public static class IcecrownCardsGen
 	{
@@ -506,7 +520,7 @@ namespace SabberStoneCore.CardSets.Standard
 						new ConditionTask(EntityType.EVENT_TARGET, SelfCondition.IsMinion),
 						new FlagTask(true, ComplexTask.Create(
 						new GetGameTagTask(GameTag.ENTITY_ID, EntityType.EVENT_TARGET),
-						new AddEnchantmentTask("ICC_314t1e", EntityType.SOURCE, true, true))))
+						new AddEnchantmentTask("ICC_314t1e", EntityType.SOURCE, false, true))))
 				}
 			});
 
@@ -923,7 +937,7 @@ namespace SabberStoneCore.CardSets.Standard
 					Condition = SelfCondition.IsSecret,
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.SOURCE, SelfCondition.IsZoneCount(Zone.SECRET, 4, RelaSign.LEQ)),
-						new FlagTask(true, SpecificTask.RandomHunterSecretPlay))
+						new FlagTask(true, SpecificTask.CastRandomSecret(CardClass.HUNTER)))
 
 				}
 			});
@@ -1212,6 +1226,7 @@ namespace SabberStoneCore.CardSets.Standard
 					new FuncNumberTask(p =>
 					{
 						Controller c = p.Controller;
+						Game g = p.Game;
 						if (c.SecretZone.IsFull) return 0;
 						//Playable[] entities = c.DeckZone.GetAll(x => x.Card.IsSecret);
 						List<int> ids = c.SecretZone.Select(x => x.Card.AssetId).ToList();
@@ -1226,17 +1241,6 @@ namespace SabberStoneCore.CardSets.Standard
 
 							if (c.SecretZone.IsFull) return 0;
 						}
-						//for (int i = 0; i < entities.Length; i++)
-						//{
-						//	Playable e = entities[i];
-						//	if (ids.Contains(e.Card.AssetId)) continue;
-
-						//	var spell = c.DeckZone.Remove(e).
-						//	Generic.CastSpell(c, (Spell) e, null, 0, true);
-						//	ids.Add(e.Card.AssetId);
-
-						//	if (c.SecretZone.IsFull) return 0;
-						//}
 						return 0;
 					}))
 			});
@@ -1801,10 +1805,10 @@ namespace SabberStoneCore.CardSets.Standard
 			});
 
 			// ------------------------------------------ SPELL - ROGUE
-			// [ICC_221] Leeching Poison - COST:2 
+			// [ICC_221] Leeching Poison - COST:1 
 			// - Fac: neutral, Set: icecrown, Rarity: common
 			// --------------------------------------------------------
-			// Text: Give your weapon <b>Lifesteal</b>.
+			// Text: Give your weapon <b>Lifesteal</b> this turn.
 			// --------------------------------------------------------
 			// PlayReq:
 			// - REQ_WEAPON_EQUIPPED = 0
@@ -1883,13 +1887,17 @@ namespace SabberStoneCore.CardSets.Standard
 			// [ICC_221e] Leeching Poison (*) - COST:0 
 			// - Set: icecrown, 
 			// --------------------------------------------------------
-			// Text: <b>Lifesteal</b>
+			// Text: Has <b>Lifesteal</b> this turn.
 			// --------------------------------------------------------
 			// GameTag:
+			// - TAG_ONE_TURN_EFFECT = 1
 			// - LIFESTEAL = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_221e", new Power {
 				Enchant = new Enchant(Effects.Lifesteal)
+				{
+					IsOneTurnEffect = true
+				}
 			});
 
 			// ------------------------------------ ENCHANTMENT - ROGUE
@@ -1934,7 +1942,7 @@ namespace SabberStoneCore.CardSets.Standard
 					new Trigger(TriggerType.TURN_END)
 					{
 						SingleTask = ComplexTask.Create(
-							new RemoveEnchantmentTask(),
+							RemoveEnchantmentTask.Task,
 							new MoveToSetaside(EntityType.TARGET))
 					})
 
@@ -2039,10 +2047,11 @@ namespace SabberStoneCore.CardSets.Standard
 			// - OVERLOAD = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_090", new Power {
-				Aura = new AdaptiveCostEffect(p => p.Controller.OverloadThisGame)
-				//{
-				//	UpdateTrigger = (TriggerType.PLAY_CARD, TriggerSource.FRIENDLY, SelfCondition.IsCurrentEventNumber(1, RelaSign.GEQ))
-				//}
+				Aura = new AdaptiveCostEffect(
+					initialisationFunction: p => -p.Controller.OverloadThisGame,
+					triggerValueFunction: p => -p.Card.Overload,
+					trigger: TriggerType.OVERLOAD,
+					triggerSource: TriggerSource.FRIENDLY)
 			});
 
 			// ---------------------------------------- MINION - SHAMAN
@@ -2100,8 +2109,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("ICC_078", new Power {
 				PowerTask = ComplexTask.Create(
 					ComplexTask.Freeze(EntityType.TARGET),
-					new IncludeTask(EntityType.ALLMINIONS),
-					new FilterStackTask(EntityType.TARGET, RelaCondition.IsSideBySide),
+					new IncludeAdjacentTask(EntityType.TARGET),
 					new DamageTask(3, EntityType.STACK, true))
 			});
 
@@ -2589,8 +2597,7 @@ namespace SabberStoneCore.CardSets.Standard
 				// TODO Test: Sunborne Val'kyr_ICC_028
 				InfoCardId = "ICC_028e",
 				PowerTask = ComplexTask.Create(
-					new IncludeTask(EntityType.MINIONS),
-					new FilterStackTask(EntityType.SOURCE, RelaCondition.IsSideBySide),
+					new IncludeAdjacentTask(EntityType.SOURCE),
 					new AddEnchantmentTask("ICC_028e", EntityType.STACK))
 			});
 
@@ -2850,7 +2857,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_466", new Power {
-				PowerTask = new SummonCopyTask(EntityType.SOURCE, SummonSide.RIGHT)
+				PowerTask = new SummonTask("ICC_466", SummonSide.RIGHT)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -3016,7 +3023,6 @@ namespace SabberStoneCore.CardSets.Standard
 					new IncludeTask(EntityType.DECK, null, true),
 					new FuncPlayablesTask(list =>
 					{
-						var result = new List<Playable>();
 						int atk = ((Character)list[0]).AttackDamage;
 						return list.Where(p => p is Minion m && m.AttackDamage < atk).ToList();
 					}),
@@ -3554,7 +3560,7 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.TURN_START)
 				{
 					SingleTask = ComplexTask.Create(
-						new RemoveEnchantmentTask(),
+						RemoveEnchantmentTask.Task,
 						new ControlTask(EntityType.TARGET))
 				}
 			});

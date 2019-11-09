@@ -1,4 +1,17 @@
-﻿using System.Collections.Generic;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
@@ -9,6 +22,7 @@ using SabberStoneCore.Model.Zones;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
+using SabberStoneCore.Triggers;
 
 namespace SabberStoneCore.CardSets
 {
@@ -288,7 +302,7 @@ namespace SabberStoneCore.CardSets
 						new ConditionTask(EntityType.SOURCE, SelfCondition.IsTagValue(GameTag.CUSTOM_KEYWORD_EFFECT, 1)),
 						new FlagTask(true, ComplexTask.Create(
 							new SetGameTagTask(GameTag.CUSTOM_KEYWORD_EFFECT, 0, EntityType.SOURCE),
-							new SummonCopyTask(EntityType.SOURCE, SummonSide.RIGHT)))),
+							new SummonCopyTask(EntityType.SOURCE, side: SummonSide.RIGHT)))),
 					RemoveAfterTriggered = true
 				}
 			});
@@ -408,28 +422,7 @@ namespace SabberStoneCore.CardSets
 				Trigger = new Trigger(TriggerType.TURN_END)
 				{
 					EitherTurn = true,
-					SingleTask = new FuncNumberTask(src =>
-					{
-						Controller c = src.Controller;
-						int num = c.NumFriendlyMinionsThatDiedThisTurn;
-						GraveyardZone graveyard = c.GraveyardZone;
-						if (graveyard.Count == 0) return 0;
-						int i = graveyard.Count - 1;
-						int j = 0;
-						do
-						{
-							Playable p = graveyard[i];
-							if (p is Minion m && m.ToBeDestroyed)
-							{
-								if (c.BoardZone.IsFull) return 0;
-								Generic.SummonBlock(c.Game, (Minion) Entity.FromCard(c, p.Card), -1);
-								j++;
-							}
-							i--;
-						} while (j < num && i >= 0);
-
-						return 0;
-					})
+					SingleTask = ComplexTask.SummonAllFriendlyDiedThisTurn()
 				}
 			});
 
@@ -450,7 +443,7 @@ namespace SabberStoneCore.CardSets
 					if ((c.GraveyardZone.Any(p => p.Card.AssetId == 1797 && ((Minion)p).ToBeDestroyed) ||
 					     c.Opponent.GraveyardZone.Any(p => p.Card.AssetId == 1797 && ((Minion)p).ToBeDestroyed)) &&
 					    !c.BoardZone.IsFull)
-						Generic.SummonBlock(c.Game, (Minion) Entity.FromCard(c, Cards.FromId("FP1_014t")), -1);
+						Generic.SummonBlock.Invoke(c.Game, (Minion) Entity.FromCard(c, Cards.FromId("FP1_014t")), -1, src);
 
 					return 0;
 				})
@@ -473,7 +466,7 @@ namespace SabberStoneCore.CardSets
 					if ((c.GraveyardZone.Any(p => p.Card.AssetId == 1796 && ((Minion)p).ToBeDestroyed) ||
 					     c.Opponent.GraveyardZone.Any(p => p.Card.AssetId == 1796 && ((Minion)p).ToBeDestroyed)) &&
 					    !c.BoardZone.IsFull)
-						Generic.SummonBlock(c.Game, (Minion) Entity.FromCard(c, Cards.FromId("FP1_014t")), -1);
+						Generic.SummonBlock.Invoke(c.Game, (Minion) Entity.FromCard(c, Cards.FromId("FP1_014t")), -1, src);
 
 					return 0;
 				})
@@ -600,7 +593,7 @@ namespace SabberStoneCore.CardSets
 			// - DEATHRATTLE = 1
 			// --------------------------------------------------------
 			cards.Add("FP1_031", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_DEATHRATTLES, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_MINION_DEATHRATTLES_BASE, EffectOperator.SET, 1))
 			});
 
 		}

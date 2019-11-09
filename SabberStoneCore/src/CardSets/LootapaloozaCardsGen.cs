@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Auras;
@@ -10,9 +23,10 @@ using SabberStoneCore.Model.Zones;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
+using SabberStoneCore.Triggers;
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
 
-namespace SabberStoneCore.CardSets.Standard
+namespace SabberStoneCore.CardSets
 {
 	public static class LootapaloozaCardsGen
 	{
@@ -326,7 +340,7 @@ namespace SabberStoneCore.CardSets.Standard
 					new RandomTask(1, EntityType.STACK),
 					new CopyTask(EntityType.STACK, Zone.SETASIDE, addToStack: true),
 					new GetGameTagTask(GameTag.ENTITY_ID, EntityType.STACK),
-					new AddEnchantmentTask("LOOT_520e", EntityType.SOURCE, true, true))
+					new AddEnchantmentTask("LOOT_520e", EntityType.SOURCE, false, true))
 			});
 
 			// ----------------------------------------- SPELL - HUNTER
@@ -958,7 +972,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("LOOT_286", new Power {
 				// TODO Test: Unidentified Maul_LOOT_286
 				InfoCardId = "LOOT_286t3e",
-				Trigger = Triggers.RevealUnidentifiedItem
+				Trigger = TriggerLibrary.RevealUnidentifiedItem
 			});
 
 			// --------------------------------------- WEAPON - PALADIN
@@ -1171,10 +1185,10 @@ namespace SabberStoneCore.CardSets.Standard
 				PowerTask = ComplexTask.Create(
 						new GetGameTagTask(GameTag.ATK, EntityType.SOURCE),
 						new GetGameTagTask(GameTag.ATK, EntityType.TARGET, 0, 2),
-						new AddEnchantmentTask("LOOT_528e", EntityType.TARGET),
+						new AddEnchantmentTask("LOOT_528e", EntityType.TARGET, true),
 						new FuncNumberTask(function: p => 0),
 						new MathNumberIndexTask(3, 2, MathOperation.ADD),
-						new AddEnchantmentTask("LOOT_528e", EntityType.SOURCE))
+						new AddEnchantmentTask("LOOT_528e", EntityType.SOURCE, true))
 			});
 
 			// ---------------------------------------- MINION - PRIEST
@@ -1258,7 +1272,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("LOOT_278", new Power {
 				PowerTask = new AddEnchantmentTask("LOOT_278e", EntityType.TARGET),
-				Trigger = Triggers.RevealUnidentifiedItem
+				Trigger = TriggerLibrary.RevealUnidentifiedItem
 			});
 
 			// ----------------------------------------- SPELL - PRIEST
@@ -1582,8 +1596,7 @@ namespace SabberStoneCore.CardSets.Standard
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.TARGET, SelfCondition.IsBoardCount(1)),
 						new FlagTask(false, ComplexTask.Secret(
-							new IncludeTask(EntityType.OP_MINIONS),
-							new FilterStackTask(EntityType.TARGET, RelaCondition.IsSideBySide),
+							new IncludeAdjacentTask(EntityType.TARGET),
 							new RandomTask(1, EntityType.STACK),
 							new ChangeAttackingTargetTask(EntityType.TARGET, EntityType.STACK))))
 				}
@@ -1846,9 +1859,15 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("LOOT_064", new Power {
 				PowerTask = new SummonCopyTask(EntityType.TARGET),
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				//Trigger = new Trigger(TriggerType.PLAY_CARD)
+				//{
+				//	Condition = SelfCondition.IsOverloadCard,
+				//	TriggerActivation = TriggerActivation.HAND,
+				//	SingleTask = ComplexTask.ProgressSpellStoneUpdateUsingEventNumber("LOOT_064t1")
+				//},
+				Trigger = new Trigger(TriggerType.OVERLOAD)
 				{
-					Condition = SelfCondition.IsOverloadCard,
+					FastExecution = true,
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = ComplexTask.ProgressSpellStoneUpdateUsingEventNumber("LOOT_064t1")
 				}
@@ -1935,41 +1954,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: <b>Deathrattle:</b> Summon a random basic Totem.
 			// --------------------------------------------------------
 			cards.Add("LOOT_344e", new Power {
-				DeathrattleTask = ComplexTask.Create(
-					new IncludeTask(EntityType.SOURCE),
-					new FuncPlayablesTask(list =>
-					{
-						switch (Util.Random.Next(0, 4))
-						{
-							case 0:
-								return new List<Playable>
-								{
-									Entity.FromCard(list[0].Controller,
-										Cards.FromId("NEW1_009"))
-								};
-							case 1:
-								return new List<Playable>
-								{
-									Entity.FromCard(list[0].Controller,
-										Cards.FromId("CS2_050"))
-								};
-							case 2:
-								return new List<Playable>
-								{
-									Entity.FromCard(list[0].Controller,
-										Cards.FromId("CS2_051"))
-								};
-							case 3:
-								return new List<Playable>
-								{
-									Entity.FromCard(list[0].Controller,
-										Cards.FromId("CS2_052"))
-								};
-							default:
-								return null;
-						}
-					}),
-					new SummonTask())
+				DeathrattleTask = ComplexTask.SummonRandomBasicTotem
 			});
 
 			// ----------------------------------------- SPELL - SHAMAN
@@ -1991,9 +1976,15 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("LOOT_064t1", new Power {
 				PowerTask = new EnqueueTask(2, new SummonCopyTask(EntityType.TARGET)),
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				//Trigger = new Trigger(TriggerType.PLAY_CARD)
+				//{
+				//	Condition = SelfCondition.IsOverloadCard,
+				//	TriggerActivation = TriggerActivation.HAND,
+				//	SingleTask = ComplexTask.ProgressSpellStoneUpdateUsingEventNumber("LOOT_064t2")
+				//}
+				Trigger = new Trigger(TriggerType.OVERLOAD)
 				{
-					Condition = SelfCondition.IsOverloadCard,
+					FastExecution = true,
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = ComplexTask.ProgressSpellStoneUpdateUsingEventNumber("LOOT_064t2")
 				}
@@ -2491,7 +2482,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("LOOT_285", new Power {
 				// TODO Test: Unidentified Shield_LOOT_285
 				PowerTask = new ArmorTask(5),
-				Trigger = Triggers.RevealUnidentifiedItem
+				Trigger = TriggerLibrary.RevealUnidentifiedItem
 			});
 
 			// ---------------------------------------- SPELL - WARRIOR
@@ -2978,7 +2969,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("LOOT_161", new Power {
 				PowerTask = ComplexTask.Create(
 					new GetGameTagTask(GameTag.ENTITY_ID, EntityType.TARGET),
-					new AddEnchantmentTask("LOOT_161e", EntityType.SOURCE, true, true),
+					new AddEnchantmentTask("LOOT_161e", EntityType.SOURCE, false, true),
 					new DestroyTask(EntityType.TARGET))
 			});
 
@@ -2994,8 +2985,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("LOOT_167", new Power
 			{
 				PowerTask = ComplexTask.Create(
-					new IncludeTask(EntityType.MINIONS_NOSOURCE),
-					new FilterStackTask(EntityType.SOURCE, RelaCondition.IsSideBySide),
+					new IncludeAdjacentTask(EntityType.SOURCE),
 					new AddEnchantmentTask("LOOT_167e", EntityType.STACK))
 			});
 
@@ -3308,7 +3298,7 @@ namespace SabberStoneCore.CardSets.Standard
 				PowerTask = new EnqueueTask(3, new AddCardTo("LOOT_526t", EntityType.OP_DECK)),
 				Trigger = new Trigger(TriggerType.ZONE)
 				{
-					SingleTask = new TransformTask("LOOT_526d", EntityType.SOURCE)
+					SingleTask = new TransformTask("LOOT_526d", EntityType.SOURCE, true)
 					//SingleTask = ComplexTask.Create(
 					//	new TransformTask("LOOT_526d", EntityType.SOURCE),
 					//	new AddEnchantmentTask("LOOT_526et", EntityType.CONTROLLER))
@@ -3691,14 +3681,14 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("LOOT_517e", new Power {
 				//Enchant = new Enchant(GameTag.EXTRA_BATTLECRY, EffectOperator.SET, 1)
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_BATTLECRY, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_BATTLECRIES_BASE, EffectOperator.SET, 1))
 				{
 					RemoveTrigger = (TriggerType.TURN_END, null),
 				},
 				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
 				{
 					Condition = new SelfCondition(p => p.Card.Id != "LOOT_517" && p.Card[GameTag.BATTLECRY] == 1),
-					SingleTask = new RemoveEnchantmentTask()
+					SingleTask = RemoveEnchantmentTask.Task
 				}
 			});
 
@@ -3716,7 +3706,7 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
 				{
 					Condition = new SelfCondition(p => p.Card.Id != "LOOT_517" && p.Card[GameTag.BATTLECRY] == 1),
-					SingleTask = new RemoveEnchantmentTask()
+					SingleTask = RemoveEnchantmentTask.Task
 				}
 			});
 

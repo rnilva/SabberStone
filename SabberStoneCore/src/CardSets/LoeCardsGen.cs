@@ -1,10 +1,25 @@
-﻿using System.Collections.Generic;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System.Collections.Generic;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
+using SabberStoneCore.Triggers;
+
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
 
 namespace SabberStoneCore.CardSets
@@ -37,9 +52,7 @@ namespace SabberStoneCore.CardSets
 			// - SPELLPOWER = 2
 			// --------------------------------------------------------
 			cards.Add("LOE_051", new Power {
-				// TODO [LOE_051] Jungle Moonkin && Test: Jungle Moonkin_LOE_051
-				//PowerTask = null,
-				//Trigger = null,
+				Aura = new Aura(AuraType.OPPONENT, new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 2))
 			});
 
 			// ------------------------------------------ SPELL - DRUID
@@ -393,7 +406,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("LOE_019", new Power {
 				PowerTask = ComplexTask.Create(
 					new GetGameTagTask(GameTag.ENTITY_ID, EntityType.TARGET),
-					new AddEnchantmentTask("LOE_019e", EntityType.SOURCE, true, true))
+					new AddEnchantmentTask("LOE_019e", EntityType.SOURCE, false, true))
 			});
 
 		}
@@ -467,7 +480,7 @@ namespace SabberStoneCore.CardSets
 			//       Costs (1) less for each Murloc you control.
 			// --------------------------------------------------------
 			cards.Add("LOE_113", new Power {
-				Aura = new AdaptiveCostEffect(p => p.Controller.BoardZone.CountOf(m => m.Race == Race.MURLOC)),
+				Aura = new AdaptiveCostEffect(p => p.Controller.BoardZone.GetAll(q => q.IsRace(Race.MURLOC)).Length),
 				PowerTask = new AddEnchantmentTask("LOE_113e", EntityType.ALLMINIONS)
 			});
 
@@ -715,7 +728,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOE_039", new Power {
 				PowerTask = ComplexTask.Create(
-					new ConditionTask(EntityType.SOURCE, new SelfCondition(p => p.Controller.BoardZone.Any(q => q != p && q.Race == Race.MECHANICAL))),
+					new ConditionTask(EntityType.SOURCE, new SelfCondition(p => p.Controller.BoardZone.Any(q => q != p && q.IsRace(Race.MECHANICAL)))),
 					new FlagTask(true, new DiscoverTask(DiscoverType.MECHANICAL)))
 			});
 
@@ -830,7 +843,7 @@ namespace SabberStoneCore.CardSets
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("LOE_077", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_BATTLECRY, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_BATTLECRIES_BASE, EffectOperator.SET, 1))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

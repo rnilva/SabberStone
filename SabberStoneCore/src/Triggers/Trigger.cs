@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Enums;
@@ -6,7 +19,7 @@ using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 
-namespace SabberStoneCore.Enchants
+namespace SabberStoneCore.Triggers
 {
     public class Trigger
 	{ 
@@ -101,7 +114,7 @@ namespace SabberStoneCore.Enchants
 		/// <summary>
 		/// Create a new instance of <see cref="Trigger"/> object in source's Game. During activation, the instance's <see cref="Process(Entity)"/> subscribes to the events in <see cref="TriggerManager"/>.
 		/// </summary>
-		public virtual Trigger Activate(Game game, Playable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
+		public virtual Trigger Activate(IPlayable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false)
 		{
 			if (source.ActivatedTrigger != null && !IsAncillaryTrigger && !asAncillary)
 				throw new Exceptions.EntityException($"{source} already has an activated trigger.");
@@ -255,6 +268,9 @@ namespace SabberStoneCore.Enchants
 				case TriggerType.SHUFFLE_INTO_DECK:
 					game.TriggerManager.ShuffleIntoDeckTrigger += instance._processHandler;
 					break;
+				case TriggerType.OVERLOAD:
+					game.TriggerManager.OverloadTrigger += instance._processHandler;
+					break;
 			}
 
 			return instance;
@@ -262,6 +278,8 @@ namespace SabberStoneCore.Enchants
 
 		private void Process(Entity source)
 		{
+			// TODO: Report debug log here;
+
 			if (_removed)
 				return;
 
@@ -287,11 +305,6 @@ namespace SabberStoneCore.Enchants
 		    if (RemoveAfterTriggered)
 			    Remove();
 
-		    //if (_owner.ToBeDestroyed && _triggerType != TriggerType.TAKE_DAMAGE &&
-		    //    _triggerType != TriggerType.AFTER_ATTACK && Game.DeadMinions.Count == 0)
-			   // ;
-
-
 			// Enqueue tasks
 			// Source: The owner of this trigger
 			// Target: The source of this trigger or
@@ -305,15 +318,13 @@ namespace SabberStoneCore.Enchants
 		    {
 			    Game.TaskQueue.Enqueue(SingleTask, _owner.Controller,
 				    /*_owner is Enchantment ec ? ec : */_owner,
-				    source is Playable ?
-					    source :
-					    _owner is Enchantment ew && ew.Target is Playable p ?
+				    source is Playable pSource?
+					    pSource :
+					    _owner is Enchantment ew && ew.Target is IPlayable p ?
 						    p :
 						    null);
 		    }
-
-		    Validated = false;
-		}
+	    }
 
 		/// <summary>
 		/// Remove this object from the Game and unsubscribe from the related event.
@@ -451,6 +462,9 @@ namespace SabberStoneCore.Enchants
 				case TriggerType.SHUFFLE_INTO_DECK:
 					Game.TriggerManager.ShuffleIntoDeckTrigger -= _processHandler;
 					break;
+				case TriggerType.OVERLOAD:
+					Game.TriggerManager.OverloadTrigger -= _processHandler;
+					break;
 				default:
 				    throw new ArgumentOutOfRangeException();
 		    }
@@ -460,9 +474,6 @@ namespace SabberStoneCore.Enchants
 
 			if (_sequenceType != SequenceType.None)
 				Game.Triggers.Remove(this);
-
-			//if (TriggerActivation == TriggerActivation.DECK)
-			//	_owner.Controller.DeckZone.Triggers.Remove(this);
 
 			_removed = true;
 
@@ -506,6 +517,13 @@ namespace SabberStoneCore.Enchants
 
 			if (game.TaskQueue.IsEmpty) return;
 		    game.TaskQueue.ClearCurrentEvent();
+	    }
+
+	    public static void InvalidateAll(Game game)
+	    {
+			game.Triggers.ForEach(p => p.Validated = false);
+			if (game.TaskQueue.IsEmpty) return;
+			game.TaskQueue.ClearCurrentEvent();
 	    }
 
 	    private void Validate(Entity source)

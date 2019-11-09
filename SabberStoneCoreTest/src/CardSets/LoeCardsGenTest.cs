@@ -1,4 +1,17 @@
-﻿using System.Collections.Generic;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System.Collections.Generic;
 using Xunit;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Config;
@@ -263,6 +276,8 @@ namespace SabberStoneCoreTest.CardSets
 
 
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
+
+
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
 			Assert.Equal(1, game.CurrentOpponent.BoardZone.Count);
 		}
@@ -995,7 +1010,7 @@ namespace SabberStoneCoreTest.CardSets
 		// GameTag:
 		// - DURABILITY = 3
 		// --------------------------------------------------------
-		[Fact]
+		[Fact(Skip = "ignore")]
 		public void CursedBlade_LOE_118()
 		{
 			var game = new Game(new GameConfig
@@ -1441,7 +1456,8 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elise Starseeker"));
+			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elise Starseeker"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("LOE_079"));
 			Assert.Equal(0, game.CurrentPlayer.DeckZone.Count);
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			Assert.Equal(1, game.CurrentPlayer.BoardZone.Count);

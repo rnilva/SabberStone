@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Model;
@@ -29,12 +42,8 @@ namespace SabberStoneCore.Actions
 				}
 
 				Playable playable = g.IdEntityDic[choice];
-				//Playable playable = ((Entity) g.IdEntityDic[choice]).CastToPlayable(in c);
-				//playable[GameTag.CREATOR] = c.Choice.SourceId;
-				//playable[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
-				
 
-				g.Log(LogLevel.INFO, BlockType.ACTION, "ChoicePick", !g.Logging? "":$"{c.Name} Picks {playable.Card.Name} as choice!");
+                g.Log(LogLevel.INFO, BlockType.ACTION, "ChoicePick", !g.Logging? "":$"{c.Name} Picks {playable.Card.Name} as choice!");
 
 				switch (c.Choice.ChoiceAction)
 				{
@@ -44,44 +53,20 @@ namespace SabberStoneCore.Actions
 							AddHandPhase.Invoke(c, playable);
 							playable = g.IdEntityDic[choice];
 						}
-						//if (RemoveFromZone(c, playable))
-						//{
-						//	g.TaskQueue.Enqueue(new AddCardTo(playable, EntityType.HAND)
-						//	{
-						//		Game = g,
-						//		Controller = c,
-						//		Source = playable,
-						//		Target = playable
-						//	});
-						//}
-						break;
+                        break;
 
 					case ChoiceAction.CAST:
 						RemoveFromZone(c, playable);
-						CastSpell.Invoke(c, (Spell) playable, null, 0, true);
+						CastSpell.Invoke(c, g, playable as Spell, null, 0);
 						break;
 
 					case ChoiceAction.SPELL_RANDOM:
 						if (RemoveFromZone(c, playable))
 						{
-							Spell spell = (Spell) playable;
-							Character randTarget = null;
-							if (spell.Card.TargetingType != TargetingType.None)
-							{
-								List<Character> targets = (List<Character>)spell.ValidPlayTargets;
-
-								randTarget = targets.Count > 0 ? Util.RandomElement(targets) : null;
-
-								spell.CardTarget = randTarget?.Id ?? -1;
-
-								g.Log(LogLevel.INFO, BlockType.POWER, "CastRandomSpell",
-									!g.Logging ? "" : $"{spell}'s target is randomly selected to {randTarget}");
-							}
-							if (spell.Card.HasOverload)
-								c.OverloadOwed = spell.Card.Overload;
+							ICharacter randTarget = ((Playable) playable).GetRandomValidTarget();
 
 							g.TaskQueue.StartEvent();
-							CastSpell.Invoke(c, spell, randTarget, 0, true);
+							CastSpell.Invoke(c, g, (Spell)playable, randTarget, 0);
 							g.TaskQueue.EndEvent();
 						}
 						break;
@@ -92,25 +77,15 @@ namespace SabberStoneCore.Actions
 							Minion m = (Minion) playable;
 							SummonBlock(g, ref m, -1);
 						}
-						//if (RemoveFromZone(c, playable))
-						//{
-						//	g.TaskStack.Playables.Add(playable);
-						//	g.TaskQueue.Enqueue(new SummonTask()
-						//	{
-						//		Game = g,
-						//		Controller = c,
-						//		Source = playable,
-						//		Target = playable
-						//	});
-						//}
-						break;
+                        break;
 
 					case ChoiceAction.ADAPT:
 						g.TaskQueue.StartEvent();
 						foreach (Playable p in c.Choice.EntityStack.Select(id => g.IdEntityDic[id]))
 							playable.ActivateTask(PowerActivation.POWER, (Character)p);
 						// Need to move the chosen adaptation to the Graveyard
-						g.TaskQueue.Enqueue(new MoveToGraveYard(EntityType.SOURCE), in c, playable, playable);
+						g.TaskQueue.Enqueue(new MoveToGraveYard(EntityType.SOURCE), in c, playable, null);
+						g.ProcessTasks();
 						g.TaskQueue.EndEvent();
 						if (g.History)
 						{
@@ -124,18 +99,6 @@ namespace SabberStoneCore.Actions
 						}
 						break;
 
-					//case ChoiceAction.TRACKING:
-					//	if (RemoveFromZone(c, playable))
-					//	{
-					//		g.TaskQueue.Enqueue(new AddCardTo(playable, EntityType.HAND)
-					//		{
-					//			Game = g,
-					//			Controller = c,
-					//			Source = playable,
-					//			Target = playable
-					//		});
-					//	}
-					//	break;
 
 					case ChoiceAction.HEROPOWER:
 						if (RemoveFromZone(c, playable))
@@ -149,6 +112,9 @@ namespace SabberStoneCore.Actions
 						}
 						break;
 
+					case ChoiceAction.STACK:
+						c.Choice.AddToStack(choice);
+						break;
 					case ChoiceAction.KAZAKUS:
 						if (playable.Power == null)
 							c.Choice.EntityStack = new List<int> {playable.Id};
@@ -157,7 +123,6 @@ namespace SabberStoneCore.Actions
 
 						KazakusPower.Action(in g, in c, c.Choice.EntityStack);
 						break;
-
 					case ChoiceAction.GLIMMERROOT:
 						if (c.Opponent.DeckCards.Select(p => p.Id).Contains(playable.Card.Id))
 						{
@@ -167,20 +132,7 @@ namespace SabberStoneCore.Actions
 						break;
 
 					case ChoiceAction.BUILDABEAST:
-						//if (c.Choice.NextChoice == null)
-						//{
-						//	Card firstCard = g.IdEntityDic[c.Choice.LastChoice].Card.Clone();
-						//	Card secondCard = playable.Card;
-						//	Card zombeastCard = Card.CreateZombeastCard(in firstCard, in secondCard, g.History);
 
-						//	Playable zombeast = Entity.FromCard(in c, in zombeastCard);
-						//	zombeast[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
-
-						//	AddHandPhase.Invoke(c, zombeast);
-						//	break;
-						//}
-						//else
-						//	break;
 						if (playable.Power != null)
 						{
 							c.Choice.EntityStack = new List<int> {playable.Id};
@@ -324,8 +276,7 @@ namespace SabberStoneCore.Actions
 						{
 							{GameTag.CREATOR, source.Id},
 							{GameTag.DISPLAYED_CREATOR, source.Id }
-						});
-					c.SetasideZone.Add(choiceEntity);
+						}, c.SetasideZone);
 					choicesIds.Add(choiceEntity.Id);
 				}
 

@@ -1,4 +1,17 @@
-﻿using Xunit;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using Xunit;
 using System.Collections.Generic;
 using SabberStoneCore.Config;
 using SabberStoneCore.Enums;
@@ -735,7 +748,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, game.CurrentPlayer.HandZone[4]));
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
-			Assert.Equal(Race.TOTEM, game.CurrentPlayer.BoardZone[1].Card.Race);
+			Assert.Equal(Race.TOTEM, game.CurrentPlayer.BoardZone[1].Card.GetRawRace());
 		}
 
 		// ---------------------------------------- WEAPON - SHAMAN
@@ -1282,9 +1295,9 @@ namespace SabberStoneCoreTest.CardSets
 			game.Player2.BaseMana = 10;
 			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("The Curator"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
-			Assert.Equal(Race.BEAST, game.CurrentPlayer.HandZone[4].Card.Race);
-			Assert.Equal(Race.DRAGON, game.CurrentPlayer.HandZone[5].Card.Race);
-			Assert.Equal(Race.MURLOC, game.CurrentPlayer.HandZone[6].Card.Race);
+			Assert.Equal(Race.BEAST, game.CurrentPlayer.HandZone[4].Card.GetRawRace());
+			Assert.Equal(Race.DRAGON, game.CurrentPlayer.HandZone[5].Card.GetRawRace());
+			Assert.Equal(Race.MURLOC, game.CurrentPlayer.HandZone[6].Card.GetRawRace());
 		}
 
 		// --------------------------------------- MINION - NEUTRAL
@@ -1319,9 +1332,9 @@ namespace SabberStoneCoreTest.CardSets
 			game.Player2.BaseMana = 10;
 			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Netherspite Historian"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
-			Assert.Equal(Race.DRAGON, game.IdEntityDic[game.CurrentPlayer.Choice.Choices[0]].Card.Race);
-			Assert.Equal(Race.DRAGON, game.IdEntityDic[game.CurrentPlayer.Choice.Choices[1]].Card.Race);
-			Assert.Equal(Race.DRAGON, game.IdEntityDic[game.CurrentPlayer.Choice.Choices[2]].Card.Race);
+			Assert.True(game.IdEntityDic[game.CurrentPlayer.Choice.Choices[0]].Card.IsRace(Race.DRAGON));
+			Assert.True(game.IdEntityDic[game.CurrentPlayer.Choice.Choices[1]].Card.IsRace(Race.DRAGON));
+			Assert.True(game.IdEntityDic[game.CurrentPlayer.Choice.Choices[2]].Card.IsRace(Race.DRAGON));
 			Assert.Equal(1, game.CurrentPlayer.HandZone.Count);
 			game.Process(ChooseTask.Pick(game.CurrentPlayer, game.CurrentPlayer.Choice.Choices[0]));
 			Assert.Equal(2, game.CurrentPlayer.HandZone.Count);

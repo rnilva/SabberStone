@@ -1,9 +1,22 @@
-﻿using System;
-using SabberStoneCore.Enchants;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using SabberStoneCore.Model;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Triggers;
 
 namespace SabberStoneCore.Actions
 {
@@ -23,8 +36,10 @@ namespace SabberStoneCore.Actions
 					if (!PrePlayPhase.Invoke(g, c, source, target, zonePosition, chooseOne))
 						return false;
 
+				bool history = g.History;
+
 				// Start play block
-				if (g.History)
+				if (history)
 					g.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.PLAY, source.Id, "", 0, target?.Id ?? 0));
 
 				g.CurrentEventData = new EventMetaData(source, target);
@@ -33,9 +48,11 @@ namespace SabberStoneCore.Actions
 				if (!PayPhase.Invoke(g, c, source))
 					return false;
 
+				bool echo = source.IsEcho;
+
 				// remove from hand zone
-				if (source is Spell)
-					source[GameTag.TAG_LAST_KNOWN_COST_IN_HAND] = source.Cost;
+				if (!RemoveFromZone.Invoke(c, source))
+					return false;
 
 				bool echo = source.IsEcho;
 
@@ -45,15 +62,6 @@ namespace SabberStoneCore.Actions
 
 				c.NumCardsPlayedThisTurn++;
 				c.LastCardPlayed = source.Id;
-
-				// Check Overload
-				if (source.Card.HasOverload)
-				{
-					int amount = source.Overload;
-					c.OverloadOwed += amount;
-					c.OverloadThisGame += amount;
-					g.CurrentEventData.EventNumber = amount;
-				}
 
 				// record played cards for effect of cards like Obsidian Shard and Lynessa Sunsorrow
 				// or use graveyard instead with 'played' tag(or bool)?
@@ -103,20 +111,19 @@ namespace SabberStoneCore.Actions
 					g.GhostlyCards.Add(echoPlayable.Id);
 				}
 
-				c.NumOptionsPlayedThisTurn++;
-
 				if (!c.IsComboActive)
 					c.IsComboActive = true;
 
-				if (g.History)
+				c.NumOptionsPlayedThisTurn++;
+
+				if (history)
 				{
 					if (source[GameTag.GHOSTLY] == 1)
 						source[GameTag.GHOSTLY] = 0;
-					g.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
+					game.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
 				}
 
 				g.CurrentEventData = null;
-
 
 				return true;
 			};
@@ -149,6 +156,8 @@ namespace SabberStoneCore.Actions
 				int cost = source.Cost;
 				if (cost > 0)
 				{
+					source[GameTag.TAG_LAST_KNOWN_COST_IN_HAND] = cost;
+
 					if (source is Spell && c.ControllerAuraEffects[GameTag.SPELLS_COST_HEALTH] == 1)
 					{
 						c.Hero.TakeDamage(c.Hero, cost);
@@ -162,7 +171,7 @@ namespace SabberStoneCore.Actions
 					}
 
 					int tempUsed = Math.Min(c.TemporaryMana, cost);
-					c.TemporaryMana -= tempUsed;
+					if (tempUsed > 0) c.TemporaryMana -= tempUsed;
 					c.UsedMana += cost - tempUsed;
 					c.TotalManaSpentThisGame += cost;
 				}
@@ -261,16 +270,22 @@ namespace SabberStoneCore.Actions
 				//   (death processing, aura updates)
 				g.TaskQueue.StartEvent();
 				if (minion.Combo && c.IsComboActive)
+				{
 					minion.ActivateTask(PowerActivation.COMBO, target);
+					if (c.ControllerAuraEffects[GameTag.EXTRA_MINION_BATTLECRIES_BASE] == 1)
+						minion.ActivateTask(PowerActivation.COMBO, target);
+				}
 				else
 					minion.ActivateTask(PowerActivation.POWER, target, chooseOne);
+
 				// check if [LOE_077] Brann Bronzebeard aura is active
 				if (c.ExtraBattlecry && minion.HasBattleCry)
-				//if (minion[GameTag.BATTLECRY] == 2)
 				{
 					minion.ActivateTask(PowerActivation.POWER, target, chooseOne);
 				}
-				g.ProcessTasks();
+                OverloadBlock(c, minion, game.History);
+                
+                g.ProcessTasks();
 				g.TaskQueue.EndEvent();
 				g.DeathProcessingAndAuraUpdate();
 
@@ -335,7 +350,7 @@ namespace SabberStoneCore.Actions
 						g.Log(LogLevel.DEBUG, BlockType.ACTION, "PlaySpell", !g.Logging ? "" : $"trigger Spellbender Phase. Target of {spell} is changed to {target}.");
 					}
 
-					CastSpell.Invoke(c, spell, target, chooseOne, false);
+					CastSpell.Invoke(c, g, spell, target, chooseOne);
 					g.DeathProcessingAndAuraUpdate();
 				}
 				
@@ -359,7 +374,6 @@ namespace SabberStoneCore.Actions
 				if (g.History)
 					weapon[GameTag.ZONE] = (int) Zone.PLAY;
 
-
 				// - OnPlay Phase --> OnPlay Trigger (Illidan)
 				//   (death processing, aura updates)
 				g.TriggerManager.OnPlayCardTrigger(weapon);
@@ -375,6 +389,8 @@ namespace SabberStoneCore.Actions
 						target = (Character) g.IdEntityDic[weapon.CardTarget];
 				}
 
+				OverloadBlock(c, weapon, game.History);
+
 				// - Equipping Phase --> Resolve Battlecry, OnDeathTrigger
 				// activate battlecry
 				if (g.History)
@@ -387,7 +403,8 @@ namespace SabberStoneCore.Actions
 				g.ProcessTasks();
 				g.TaskQueue.EndEvent();
 
-				g.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
+				if (g.History)
+					game.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
 
 				// equip new weapon here
 				g.TaskQueue.StartEvent();

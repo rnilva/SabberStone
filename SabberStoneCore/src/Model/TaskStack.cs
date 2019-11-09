@@ -1,6 +1,19 @@
-﻿using System.Linq;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
 using SabberStoneCore.Model.Entities;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SabberStoneCore.Model
 {
@@ -8,13 +21,13 @@ namespace SabberStoneCore.Model
 	{
 		public IList<Playable> Playables { get; set; }
 		public bool Flag { get; set; }
-		public int Number { get; set; }
-		public int Number1 { get; set; }
+		public int Number { get; set; } = -1;
+		public int Number1 { get; set; } = -1;
 		public int Number2 { get; set; }
 		public int Number3 { get; set; }
 		public int Number4 { get; set; }
 
-		public void AddPlayables(IEnumerable<Playable> playables)
+		public void AddPlayables(IEnumerable<IPlayable> playables)
 		{
 			if (Playables is List<Playable> list)
 				list.AddRange(playables);

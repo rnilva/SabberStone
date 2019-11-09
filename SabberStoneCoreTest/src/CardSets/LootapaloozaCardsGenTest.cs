@@ -1,4 +1,17 @@
-﻿using Xunit;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using Xunit;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Config;
 using SabberStoneCore.Model;
@@ -10,7 +23,7 @@ using Generic = SabberStoneCore.Actions.Generic;
 using System.Linq;
 using SabberStoneCore.Tasks.PlayerTasks;
 
-namespace SabberStoneCoreTest.CardSets.Standard
+namespace SabberStoneCoreTest.CardSets
 {
 	public class DruidLootapaloozaTest
 	{
@@ -502,7 +515,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 					Cards.FromName("Wisp"),
 					Cards.FromName("Wisp"),
 					Cards.FromName("Stonetusk Boar"),
-					Cards.FromName("Stonetusk Boar"),
+					Cards.FromName("Nightmare Amalgam"),
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -516,12 +529,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Kathrena Winterwisp"));
 
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
-			Assert.Equal(Race.BEAST, game.CurrentPlayer.BoardZone.Last().Card.Race);
+			Assert.True(game.CurrentPlayer.BoardZone.Last().Card.IsRace(Race.BEAST));
 
 			game.CurrentPlayer.BoardZone[0].Kill();
 
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
-			Assert.Equal(Race.BEAST, game.CurrentPlayer.BoardZone.Last().Card.Race);
+			Assert.True(game.CurrentPlayer.BoardZone.Last().Card.IsRace(Race.BEAST));
 		}
 
 		// ---------------------------------------- MINION - HUNTER
@@ -695,6 +708,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal("Emerald Spellstone", testCard2.Card.Name);
 			Assert.Equal("Emerald Spellstone", testCard3.Card.Name);
 
+			game.CurrentPlayer.UsedMana = 0;
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard2, skipPrePhase: true));
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
 
@@ -2088,13 +2102,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			int i = 0;
 			do
 			{
-				Playable p = game.CurrentPlayer.DeckZone[i];
-				if (p is Minion m)
-				{
-					game.CurrentPlayer.DeckZone.Remove(m);
-					game.CurrentPlayer.BoardZone.Add(MinionInPlay.FromMinion(ref m));
-				}
-
+				if (game.CurrentPlayer.DeckZone[i] is Minion m)
+					game.CurrentPlayer.BoardZone.Add(game.CurrentPlayer.DeckZone.Remove(m));
 				i++;
 			} while (!game.CurrentPlayer.BoardZone.IsFull && i < 26);
 
@@ -2866,7 +2875,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
 
-			Assert.True(game.CurrentPlayer.BoardZone.ToList().TrueForAll(p => p.Card.Race == Race.TOTEM));
+			Assert.True(game.CurrentPlayer.BoardZone.ToList().TrueForAll(p => p.Card.IsRace(Race.TOTEM)));
 		}
 
 		// ----------------------------------------- SPELL - SHAMAN
@@ -2956,12 +2965,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Unstable Evolution"),
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
-				FillDecks = true,
-				FillDecksPredictably = true
+				FillDecks = false
 			});
 			game.StartGame();
 			game.Player1.BaseMana = 10;
@@ -2970,7 +2977,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.ProcessCard("Stonetusk Boar");
 			game.ProcessCard("Unstable Evolution", game.CurrentPlayer.BoardZone[0]);
 			Assert.Equal(2, game.CurrentPlayer.BoardZone[0].Cost);
-			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
+			Assert.Equal(1, game.CurrentPlayer.HandZone.Count);
 
 			int i = 0;
 			while (i != 8)
@@ -2983,7 +2990,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			game.EndTurn();
 
-			Assert.Equal(4, game.CurrentOpponent.HandZone.Count);
+			// random scenarios will add cards to hand (Archmage Antonidas), hand count is not a good test
+			//Assert.Equal(4, game.CurrentOpponent.HandZone.Count);
+			Assert.All(game.CurrentOpponent.HandZone, c =>
+				Assert.NotEqual("Unstable Evolution", c.Card.Name));
 		}
 
 		// ---------------------------------------- WEAPON - SHAMAN
@@ -3161,7 +3171,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			{
 					Cards.FromName("Dread Infernal"),
 					Cards.FromName("Voidwalker"),
-					Cards.FromName("Succubus"),
+					Cards.FromName("Felstalker"),
 					Cards.FromName("Blood Imp"),
 					Cards.FromName("Doomguard"),
 					Cards.FromName("Pit Lord"),
@@ -3216,7 +3226,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			for (int i = 0; i < demonsInDeck.Count; i++)
 			{
 				game.CurrentPlayer.TemporaryMana = 10;
-				var testCard = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Possessed Lackey"));
+				var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Possessed Lackey"));
 				var darkPact = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dark Pact"));
 				int previousBoardAmount = game.CurrentPlayer.BoardZone.Count;
 				//game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
@@ -3325,23 +3335,19 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Rin, the First Disciple"));
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Rin, the First Disciple"));
+			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Rin, the First Disciple"));
+			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 
-			game.ProcessCard("Cataclysm", null, true);
-			game.CurrentPlayer.UsedMana = 0;
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, game.CurrentPlayer.HandZone[0])); // The First Seal
-			game.CurrentPlayer.UsedMana = 0;
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, game.CurrentPlayer.HandZone[0])); // The Second Seal
-			game.CurrentPlayer.UsedMana = 0;
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, game.CurrentPlayer.HandZone[0])); // The Third Seal
-			game.CurrentPlayer.UsedMana = 0;
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, game.CurrentPlayer.HandZone[0])); // The Fourth Seal
-			game.CurrentPlayer.UsedMana = 0;
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, game.CurrentPlayer.HandZone[0])); // The Final Seal
-			game.CurrentPlayer.UsedMana = 0;
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, game.CurrentPlayer.HandZone[0])); // Azari, the Devourer
+			game.ProcessCard("Twisting Nether", null, true);
+			Assert.Equal("The First Seal", game.CurrentPlayer.HandZone.Last().Card.Name);
+			game.ProcessCard(game.CurrentPlayer.HandZone.Last(), asZeroCost:true); // The First Seal
+			game.ProcessCard(game.CurrentPlayer.HandZone.Last(), asZeroCost: true); // The Second Seal
+			game.ProcessCard(game.CurrentPlayer.HandZone.Last(), asZeroCost: true); // The Third Seal
+			game.ProcessCard(game.CurrentPlayer.HandZone.Last(), asZeroCost: true); // The Fourth Seal
+			game.ProcessCard(game.CurrentPlayer.HandZone.Last(), asZeroCost: true); // The Final Seal
+			game.ProcessCard(game.CurrentPlayer.HandZone.Last(), asZeroCost: true); // Azari, the Devourer
 
+			Assert.Equal("Felhunter", game.CurrentPlayer.BoardZone[0].Card.Name);
 			Assert.Equal(2, game.CurrentPlayer.BoardZone[0].AttackDamage);
 			Assert.Equal(3, game.CurrentPlayer.BoardZone[1].AttackDamage);
 			Assert.Equal(4, game.CurrentPlayer.BoardZone[2].AttackDamage);
@@ -3388,8 +3394,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			int previousHealth = game.CurrentPlayer.Hero.Health;
 			var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dark Pact"));
 			var testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dark Pact"));
-			var silverback = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silverback Patriarch"));
-			var silverback2 = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silverback Patriarch"));
+			var silverback = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silverback Patriarch"));
+			var silverback2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silverback Patriarch"));
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, silverback));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard, silverback));
@@ -4012,10 +4018,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			var testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Scorp-o-matic"));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			var elvenArcher = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elven Archer"));
+			var elvenArcher = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elven Archer"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, elvenArcher, game.CurrentPlayer.Opponent.Hero));
 
-			var frostwolfGrunt = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
+			var frostwolfGrunt = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, frostwolfGrunt, game.CurrentPlayer.Opponent.Hero));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 

@@ -1,4 +1,17 @@
-﻿using SabberStoneCore.Actions;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using SabberStoneCore.Actions;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
@@ -19,23 +32,40 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_useEntityId = useEntityId;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source,
+			in Playable target,
 			in TaskStack stack = null)
 		{
-			int n1 = stack?.Number ?? 0;
-			int n2 = stack?.Number1 ?? 0;
+			
+			//int n1 = stack?.Number ?? 0;
+			//int n2 = stack?.Number1 ?? 0;
+
+			int n1 = 0, n2 = 0, entityId = 0;
+			if (_useScriptTag)
+			{
+				n1 = stack.Number;
+				n2 = stack.Number1;
+				if (_useEntityId)
+					entityId = stack.Playables[0].Id;
+			}
+			else if (_useEntityId)
+			{
+				n1 = entityId = stack.Number;
+			}
+
+			//int entityId = _useEntityId ? stack.Playables[0].Id : 0;
 
 			//	Controller Auras (OTEs)
 			if (_entityType == EntityType.CONTROLLER)
 			{
-				Generic.AddEnchantmentBlock.Invoke(controller, _enchantmentCard, (Playable) source, controller, n1, n2, _useEntityId);
+				Generic.AddEnchantmentBlock(game, _enchantmentCard, (Playable) source, controller, n1, n2, entityId);
 				return TaskState.COMPLETE;
 			}
 
 			if (_entityType == EntityType.OP_CONTROLLER)
 			{
-				Generic.AddEnchantmentBlock.Invoke(controller, _enchantmentCard, (Playable) source,
-					controller.Opponent, n1, n2, _useEntityId);
+				Generic.AddEnchantmentBlock(game, _enchantmentCard, (Playable) source,
+					controller.Opponent, n1, n2, entityId);
 				return TaskState.COMPLETE;
 			}
 
@@ -46,7 +76,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			var entities = IncludeTask.GetEntities(in _entityType, in controller, source, target, stack?.Playables);
 			Playable p = (Playable)source;
 			for (int i = 0; i < entities.Count; i++)
-				Generic.AddEnchantmentBlock.Invoke(controller, _enchantmentCard, p, entities[i], n1, n2, _useEntityId);
+				Generic.AddEnchantmentBlock.Invoke(game, enchantmentCard, p, entities[i], n1, n2, entityId);
 
 			return TaskState.COMPLETE;
 		}

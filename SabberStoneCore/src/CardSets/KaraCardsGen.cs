@@ -1,4 +1,17 @@
-﻿using System.Collections.Generic;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System.Collections.Generic;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Conditions;
@@ -7,6 +20,8 @@ using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
+using SabberStoneCore.Triggers;
+
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
 
 namespace SabberStoneCore.CardSets
@@ -390,16 +405,10 @@ namespace SabberStoneCore.CardSets
 						new FuncPlayablesTask(list =>
 						{
 							Controller controller = list[0].Controller;
-							string[] basicTotem = 
+							return new List<IPlayable>
 							{
-								"CS2_050",
-								"CS2_051",
-								"CS2_052",
-								"NEW1_009"
-							};
-							return new List<Playable>
-							{
-								Entity.FromCard(controller, Cards.FromId(Util.Choose(basicTotem)))
+								Entity.FromCard(controller,
+									Cards.BasicTotems.Choose(controller.Game.Random))
 							};
 						}),
 						new SummonTask())
@@ -712,7 +721,10 @@ namespace SabberStoneCore.CardSets
 						Playable originalTarget = p[0].Game.IdEntityDic[id];
 						if (originalTarget.Controller.BoardZone.IsFull)
 							return null;
-						Entity.FromCard(originalTarget.Controller, originalTarget.Card, null, originalTarget.Controller.BoardZone);
+						Entity.FromCard(originalTarget.Controller,
+							originalTarget.Card, null,
+							originalTarget.Controller.BoardZone,
+							creator: p[0]);
 						return null;
 					}))
 			});

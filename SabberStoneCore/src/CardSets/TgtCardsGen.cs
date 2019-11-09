@@ -1,4 +1,22 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+
+#if NOSPAN
+using SabberStoneCore.Model.Zones;
+#else
+using System;
+#endif
 using System.Collections.Generic;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Conditions;
@@ -8,6 +26,8 @@ using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
+using SabberStoneCore.Triggers;
+
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
 
 namespace SabberStoneCore.CardSets
@@ -36,7 +56,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			// Text: <b>Hero Power</b>
 			//       Gain 2 Armor and +2 Attack this turn.
-			// --------------------------------------------------------
+			// --------------------------------------------------------t
 			cards.Add("AT_132_DRUID", new Power {
 				PowerTask = ComplexTask.Create(
 					new ArmorTask(2),
@@ -285,13 +305,23 @@ namespace SabberStoneCore.CardSets
 			// - 890 = 10
 			// --------------------------------------------------------
 			cards.Add("AT_043", new Power {
-				// TODO [AT_043] Astral Communion && Test: Astral Communion_AT_043
-				//PowerTask = null,
-				//Trigger = null,
 				PowerTask = ComplexTask.Create(
-				new DiscardTask(EntityType.HAND),
-						  ComplexTask.ExcessManaCheck,
-						  new ManaCrystalFullTask(10))
+			new DiscardTask(EntityType.HAND),
+			new CustomTask((g,c,s,t,stack) =>
+				{
+					if (c.BaseMana == 10 || c.RemainingMana == 10)
+					{
+						stack.Flag = true;
+						return;
+					}
+
+					c.BaseMana = 10;
+					c.OverloadLocked = 0;
+					c.OverloadOwed = 0;
+					c.UsedMana = 0;
+					c.TemporaryMana = 0;
+				}),
+			new FlagTask(true, new AddCardTo("CS2_013t", EntityType.HAND)))
 			});
 
 			// ------------------------------------------ SPELL - DRUID
@@ -552,9 +582,9 @@ namespace SabberStoneCore.CardSets
 			// - REQ_MINION_TARGET = 0
 			// --------------------------------------------------------
 			cards.Add("AT_056", new Power {
-				// TODO [AT_056] Powershot && Test: Powershot_AT_056
-				//PowerTask = null,
-				//Trigger = null,
+				PowerTask = ComplexTask.Create(
+					new IncludeAdjacentTask(EntityType.TARGET, true),
+					new DamageTask(2, EntityType.STACK, true))
 			});
 
 			// ----------------------------------------- SPELL - HUNTER
@@ -647,8 +677,7 @@ namespace SabberStoneCore.CardSets
 			// - HEROPOWER_DAMAGE = 1
 			// --------------------------------------------------------
 			cards.Add("AT_003", new Power {
-				// TODO [AT_003] Fallen Hero && Test: Fallen Hero_AT_003
-				//Aura = new Aura(AuraType.HERO, new Effect(GameTag.HEROPOWER_DAMAGE, EffectOperator.ADD, 1))
+				Aura = new Aura(AuraType.HERO, new Effect(GameTag.HEROPOWER_DAMAGE, EffectOperator.ADD, 1))
 			});
 
 			// ------------------------------------------ MINION - MAGE
@@ -766,9 +795,9 @@ namespace SabberStoneCore.CardSets
 			// - SPELLPOWER = 1
 			// --------------------------------------------------------
 			cards.Add("AT_004", new Power {
-				// TODO [AT_004] Arcane Blast && Test: Arcane Blast_AT_004
-				//PowerTask = null,
-				//Trigger = null,
+				PowerTask = ComplexTask.Create(
+					new FuncNumberTask(p => 2 + p.Controller.CurrentSpellPower * 2),
+					new DamageNumberTask(EntityType.TARGET, false))
 			});
 
 			// ------------------------------------------- SPELL - MAGE
@@ -1397,41 +1426,7 @@ namespace SabberStoneCore.CardSets
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("AT_046", new Power {
-				PowerTask = ComplexTask.Create(
-					new IncludeTask(EntityType.SOURCE),
-					new FuncPlayablesTask(list =>
-					{
-						switch (Util.Random.Next(0, 4))
-						{
-							case 0:
-								return new List<Playable>
-								{
-									Entity.FromCard(list[0].Controller,
-										Cards.FromId("NEW1_009"))
-								};
-							case 1:
-								return new List<Playable>
-								{
-									Entity.FromCard(list[0].Controller,
-										Cards.FromId("CS2_050"))
-								};
-							case 2:
-								return new List<Playable>
-								{
-									Entity.FromCard(list[0].Controller,
-										Cards.FromId("CS2_051"))
-								};
-							case 3:
-								return new List<Playable>
-								{
-									Entity.FromCard(list[0].Controller,
-										Cards.FromId("CS2_052"))
-								};
-							default:
-								return null;
-						}
-					}),
-					new SummonTask())
+				PowerTask = ComplexTask.SummonRandomBasicTotem
 			});
 
 			// ---------------------------------------- MINION - SHAMAN
@@ -1860,8 +1855,7 @@ namespace SabberStoneCore.CardSets
 			// - CHARGE = 1
 			// --------------------------------------------------------
 			cards.Add("AT_071", new Power {
-				PowerTask = ComplexTask.Conditional(EntityType.SOURCE,
-					SelfCondition.IsDragonInHand,
+				PowerTask = ComplexTask.Conditional(SelfCondition.IsDragonInHand,
 					new AddEnchantmentTask("AT_071e", EntityType.SOURCE))
 			});
 
@@ -1942,8 +1936,7 @@ namespace SabberStoneCore.CardSets
 			// - TAUNT = 1
 			// --------------------------------------------------------
 			cards.Add("AT_065", new Power {
-				PowerTask = ComplexTask.Conditional(EntityType.SOURCE,
-					SelfCondition.HasBoardMinion(GameTag.TAUNT, 1, RelaSign.GEQ),
+				PowerTask = ComplexTask.Conditional(SelfCondition.HasBoardMinion(GameTag.TAUNT, 1, RelaSign.GEQ),
 					new AddEnchantmentTask("AT_065e", EntityType.SOURCE))
 			});
 
@@ -2008,8 +2001,7 @@ namespace SabberStoneCore.CardSets
 			// - TAUNT = 1
 			// --------------------------------------------------------
 			cards.Add("AT_017", new Power {
-				PowerTask = ComplexTask.Conditional(EntityType.SOURCE,
-					SelfCondition.IsDragonInHand,
+				PowerTask = ComplexTask.Conditional(SelfCondition.IsDragonInHand,
 					new AddEnchantmentTask("AT_017e", EntityType.SOURCE))
 			});
 
@@ -2030,7 +2022,7 @@ namespace SabberStoneCore.CardSets
 					int count = 0;
 					var board = p.Controller.BoardZone.GetSpan();
 					for (int i = 0; i < board.Length; i++)
-						if (board[i].Race == Race.PIRATE)
+						if (board[i].IsRace(Race.PIRATE))
 							count++;
 
 					return count;
@@ -2126,8 +2118,7 @@ namespace SabberStoneCore.CardSets
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("AT_086", new Power {
-				// TODO [AT_086] Saboteur && Test: Saboteur_AT_086
-				//PowerTask = new AddEnchantmentTask("AT_086e", EntityType.OP_HERO_POWER)
+				PowerTask = new AddEnchantmentTask("AT_086e", EntityType.OP_HERO_POWER)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -2522,8 +2513,7 @@ namespace SabberStoneCore.CardSets
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("AT_117", new Power {
-				PowerTask = ComplexTask.Conditional(EntityType.SOURCE,
-					SelfCondition.HasBoardMinion(GameTag.SPELLPOWER, 1, RelaSign.GEQ),
+				PowerTask = ComplexTask.Conditional(SelfCondition.HasBoardMinion(GameTag.SPELLPOWER, 1, RelaSign.GEQ),
 					new AddEnchantmentTask("AT_117e", EntityType.SOURCE))
 			});
 
@@ -2615,8 +2605,7 @@ namespace SabberStoneCore.CardSets
 			// - DEATHRATTLE = 1
 			// --------------------------------------------------------
 			cards.Add("AT_123", new Power {
-				DeathrattleTask = ComplexTask.Conditional(EntityType.SOURCE,
-					SelfCondition.IsDragonInHand,
+				DeathrattleTask = ComplexTask.Conditional(SelfCondition.IsDragonInHand,
 					new DamageTask(3, EntityType.ALLMINIONS))
 			});
 
@@ -2942,10 +2931,9 @@ namespace SabberStoneCore.CardSets
 			// Text: Your Hero Power costs (5) more this turn.
 			// --------------------------------------------------------
 			cards.Add("AT_086e", new Power {
-				// TODO [AT_086e] Villainy && Test: Villainy_AT_086e
-				//PowerTask = null,
-				//Trigger = null,
-
+				Enchant = new Enchant(Effects.AddCost(5)),
+				Trigger = TriggerBuilder.Type(TriggerType.TURN_START)
+					.SetTask(RemoveEnchantmentTask.Task)
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

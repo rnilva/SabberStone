@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -45,9 +58,7 @@ namespace SabberStoneCore.Tasks
 			=> ComplexTask.Create(
 				new FuncNumberTask((Playable p) =>
 				{
-					//Minion[] minions = p.Controller.BoardZone.GetAll();
 					var minions = p.Controller.BoardZone.GetSpan();
-					//var notContained = new List<Card>(4);
 					Span<int> notContained = stackalloc int[4];
 					int k = 0;
 					var entourage = p.Card.Entourage;
@@ -65,11 +76,10 @@ namespace SabberStoneCore.Tasks
 							}
 						}
 						if (!flag)
-							//notContained.Add(Cards.FromId(id));
 							notContained[k++] = i;
 					}
 					Entity.FromCard(p.Controller, Cards.FromId(entourage[notContained[
-							Util.Random.Next(k)]]),
+							p.Game.Random.Next(k)]]),
 						null, p.Controller.BoardZone);
 					p.Game.OnRandomHappened(true);
 					return 0;
@@ -78,8 +88,7 @@ namespace SabberStoneCore.Tasks
 		public static ISimpleTask Betrayal
 			=> ComplexTask.Create(
 				new GetGameTagTask(GameTag.ATK, EntityType.TARGET),
-				new IncludeTask(EntityType.OP_MINIONS),
-				new FilterStackTask(EntityType.TARGET, RelaCondition.IsSideBySide),
+				new IncludeAdjacentTask(EntityType.TARGET),
 				new DamageNumberTask(EntityType.STACK));
 
 		public static ISimpleTask JusticarTrueheart
@@ -149,7 +158,7 @@ namespace SabberStoneCore.Tasks
 					}
 					if (left != null)
 					{
-						Generic.SummonBlock(c.Game, ref left, s.ZonePosition);
+						Generic.SummonBlock(c.Game, ref left, s.ZonePosition, s);
 						s.AppliedEnchantments?.ForEach(e => Enchantment.GetInstance(in c, left, left, e.Card));
 						//left[GameTag.ATK] = s[GameTag.ATK];
 						//left[GameTag.HEALTH] = s[GameTag.HEALTH];
@@ -158,7 +167,7 @@ namespace SabberStoneCore.Tasks
 
 						if (right != null)
 						{
-							Generic.SummonBlock(c.Game, ref right, s.ZonePosition + 1);
+							Generic.SummonBlock(c.Game, ref right, s.ZonePosition + 1, s);
 							s.AppliedEnchantments?.ForEach(e => Enchantment.GetInstance(in c, right, right, e.Card));
 							//right[GameTag.ATK] = s[GameTag.ATK];
 							//right[GameTag.HEALTH] = s[GameTag.HEALTH];
@@ -171,177 +180,169 @@ namespace SabberStoneCore.Tasks
 			);
 
 		public static ISimpleTask MayorNoggenfogger =>
-			ComplexTask.Create(
-				new IncludeTask(EntityType.TARGET),
-				new FuncPlayablesTask(list =>
+			new CustomTask((g, c, s, t, stack) =>
+			{
+				int opBoardCount = t.Controller.Opponent.BoardZone.CountExceptUntouchables;
+
+				if (t is Character ch && ch.IsAttacking)
 				{
-					Playable p = list[0];
-					//int boardCount = p.Controller.BoardZone.CountExceptUntouchables;
-					int opBoardCount = p.Controller.Opponent.BoardZone.CountExceptUntouchables;
+					int index = g.Random.Next(opBoardCount + 1);
+					g.CurrentEventData.EventTarget =
+						index == opBoardCount
+							? (Playable)ch.Controller.Opponent.Hero
+							: ch.Controller.Opponent.BoardZone.HasUntouchables
+								? ch.Controller.Opponent.BoardZone.GetAll(null)[index]
+								: ch.Controller.Opponent.BoardZone[index];
 
-					if (p is Character c && c.IsAttacking)
-					{
-						int index = Util.Random.Next(opBoardCount + 1);
-						c.Game.CurrentEventData.EventTarget =
-							index == opBoardCount
-								? (Playable)c.Controller.Opponent.Hero
-								: c.Controller.Opponent.BoardZone.HasUntouchables
-									? c.Controller.Opponent.BoardZone.GetAll(null)[index]
-									: c.Controller.Opponent.BoardZone[index];
+					g.ProposedDefender = g.CurrentEventData.EventTarget.Id;
+					g.OnRandomHappened(true);
+					return;
+				}
 
-						c.Game.ProposedDefender = c.Game.CurrentEventData.EventTarget.Id;
-						c.Game.OnRandomHappened(true);
-						return null;
-					}
-
-					p.CardTarget = Util.Choose((List<Character>) p.ValidPlayTargets).Id;
-					p.Game.OnRandomHappened(true);
-					return null;
-				}));
+				t.CardTarget = t.ValidPlayTargets.RandomElement(g.Random).Id;
+				g.OnRandomHappened(true);
+				return;
+			});
 
 		// TODO The cache should be managed separately when using different decks 
 		public static ISimpleTask CuriousGlimmerroot
-			=> ComplexTask.Create(
-				new IncludeTask(EntityType.SOURCE),
-				new FuncPlayablesTask(p =>
+			=> new CustomTask((g,c,s,t,stack) =>
+			{
+				Controller op = c.Opponent;
+				if (_glimmerrootMemory1 == null)
 				{
-					Entity source = p[0];
-					Controller controller = p[0].Controller;
-					Controller opponent = p[0].Controller.Opponent;
-					if (_glimmerrootMemory1 == null)
+					lock (locker)
 					{
-						lock (locker)
+						var opClassCards = new List<Card>();
+						_glimmerrootMemory2 = new HashSet<int>();
+						_glimmerrootMemory3 = Cards.FormatTypeClassCards(c.Game.FormatType)[op.BaseClass]
+							.Where(card => card.Class == op.BaseClass)
+							.ToList()
+							.AsReadOnly();
+						foreach (Card card in op.DeckCards)
 						{
-							var opClassCards = new List<Card>();
-							_glimmerrootMemory2 = new HashSet<int>();
-							_glimmerrootMemory3 = Cards.FormatTypeClassCards(controller.Game.FormatType)[opponent.BaseClass].Where(c => c.Class == opponent.BaseClass).ToList().AsReadOnly();
-							foreach (Card card in opponent.DeckCards)
-							{
-								if (card.Class != opponent.BaseClass)
-									continue;
-								if (_glimmerrootMemory2.Contains(card.AssetId))
-									continue;
-								opClassCards.Add(card);
-								_glimmerrootMemory2.Add(card.AssetId);
-							}
-							_glimmerrootMemory1 = opClassCards.AsReadOnly();
+							if (card.Class != op.BaseClass)
+								continue;
+							if (_glimmerrootMemory2.Contains(card.AssetId))
+								continue;
+							opClassCards.Add(card);
+							_glimmerrootMemory2.Add(card.AssetId);
 						}
+						_glimmerrootMemory1 = opClassCards.AsReadOnly();
 					}
+				}
 
-					if (_glimmerrootMemory1.Count == 0)
-						return null;
+				if (_glimmerrootMemory1.Count == 0)
+					return;
 
-					//var result = new List<Card> { Util.Choose(_glimmerrootMemory1) };
-					//while (result.Count < 3)
-					//{
-					//	Card pick = Util.Choose(_glimmerrootMemory3);
-					//	if (_glimmerrootMemory2.Contains(pick.AssetId) || result.Contains(pick))
-					//		continue;
-					//	result.Add(pick);
-					//}
+				//var result = new List<Card> { Util.Choose(_glimmerrootMemory1) };
+				//while (result.Count < 3)
+				//{
+				//	Card pick = Util.Choose(_glimmerrootMemory3);
+				//	if (_glimmerrootMemory2.Contains(pick.AssetId) || result.Contains(pick))
+				//		continue;
+				//	result.Add(pick);
+				//}
 
-					var result = new Card[3];
-					result[0] = Util.Choose(_glimmerrootMemory1);
-					int count = 1;
-					do
-					{
-						Card pick = Util.Choose(_glimmerrootMemory3);
-						if (_glimmerrootMemory2.Contains(pick.AssetId) || result.Contains(pick)) continue;
-						result[count] = pick;
-						count++;
-					} while (count < 3);
+				Util.DeepCloneableRandom rnd = g.Random;
 
-					for (int i = 0; i < 3; i++)
-					{
-						int j = Util.Random.Next(i, 3);
-						Card temp = result[i];
-						result[i] = result[j];
-						result[j] = temp;
-					}
-					Generic.CreateChoiceCards.Invoke(controller, source, null, ChoiceType.GENERAL, ChoiceAction.GLIMMERROOT,
-						result, null);
-					controller.Game.OnRandomHappened(true);
-					return p;
-				}));
+				var result = new Card[3];
+				result[0] = _glimmerrootMemory1.Choose(rnd);
+				int count = 1;
+				do
+				{
+					Card pick = _glimmerrootMemory3.Choose(rnd);
+					if (_glimmerrootMemory2.Contains(pick.AssetId) || result.Contains(pick)) continue;
+					result[count] = pick;
+					count++;
+				} while (count < 3);
+
+				for (int i = 0; i < 3; i++)
+				{
+					int j = rnd.Next(i, 3);
+					Card temp = result[i];
+					result[i] = result[j];
+					result[j] = temp;
+				}
+				Generic.CreateChoiceCards.Invoke(c, s, null, ChoiceType.GENERAL, ChoiceAction.GLIMMERROOT,
+					result, null);
+				g.OnRandomHappened(true);
+			});
 		private static ReadOnlyCollection<Card> _glimmerrootMemory1;
 		private static HashSet<int> _glimmerrootMemory2;
 		private static ReadOnlyCollection<Card> _glimmerrootMemory3;
 		private static readonly object locker = new object();
 
 		public static ISimpleTask UngoroPack
-			=> ComplexTask.Create(
-				new IncludeTask(EntityType.SOURCE),
-				new FuncPlayablesTask(p =>
+			=> new CustomTask((g,c,s,t,stack) =>
+			{
+				int space = Controller.MaxHandSize - c.HandZone.Count;
+				if (space >= 5)
+					space = 5;
+				else if (space == 0)
+					return;
+				//var pack = new List<IPlayable>(space);
+
+				if (_ungoroPackMemory == null)
 				{
-					Controller controller = p[0].Controller;
-					int space = Controller.MaxHandSize - controller.HandZone.Count;
-					if (space >= 5)
-						space = 5;
-					else if (space == 0)
-						return null;
-					//var pack = new List<Playable>(space);
-
-					if (_ungoroPackMemory == null)
+					lock (locker)
 					{
-						lock (locker)
-						{
-							var dic = new Dictionary<Rarity, Card[]>(4);
-							Card[] ungCards = Cards.All.Where(c => c.Set == CardSet.UNGORO && c.Collectible && !c.IsQuest).ToArray();
-							dic.Add(Rarity.COMMON, ungCards.Where(c => c.Rarity == Rarity.COMMON).ToArray());
-							dic.Add(Rarity.RARE, ungCards.Where(c => c.Rarity == Rarity.RARE).ToArray());
-							dic.Add(Rarity.EPIC, ungCards.Where(c => c.Rarity == Rarity.EPIC).ToArray());
-							dic.Add(Rarity.LEGENDARY, ungCards.Where(c => c.Rarity == Rarity.LEGENDARY).ToArray());
-							_ungoroPackMemory = new ReadOnlyDictionary<Rarity, Card[]>(dic);
-						}
+						var dic = new Dictionary<Rarity, Card[]>(4);
+						Card[] ungCards = Cards.All.Where(card => card.Set == CardSet.UNGORO && card.Collectible && !card.IsQuest).ToArray();
+						dic.Add(Rarity.COMMON, ungCards.Where(card => card.Rarity == Rarity.COMMON).ToArray());
+						dic.Add(Rarity.RARE, ungCards.Where(card => card.Rarity == Rarity.RARE).ToArray());
+						dic.Add(Rarity.EPIC, ungCards.Where(card => card.Rarity == Rarity.EPIC).ToArray());
+						dic.Add(Rarity.LEGENDARY, ungCards.Where(card => card.Rarity == Rarity.LEGENDARY).ToArray());
+						_ungoroPackMemory = new ReadOnlyDictionary<Rarity, Card[]>(dic);
 					}
+				}
 
-					for (int i = 0; i < space; ++i)
+				for (int i = 0; i < space; ++i)
+				{
+					var tags = new EntityData
 					{
-						var tags = new EntityData
-						{
-							{GameTag.CREATOR, p[0].Id}
-						};
-						Rarity rarity;
-						double rnd = Util.Random.NextDouble();
+						{GameTag.CREATOR, s.Id}
+					};
+					Rarity rarity;
+					double rnd = g.Random.NextDouble();
 
-						// empirical result
-						if (rnd < 0.19)
-							rarity = Rarity.LEGENDARY;
-						else if (rnd < 0.43)
-							rarity = Rarity.EPIC;
-						else if (rnd < 0.71)
-							rarity = Rarity.RARE;
-						else
-							rarity = Rarity.COMMON;
+					// empirical result
+					if (rnd < 0.19)
+						rarity = Rarity.LEGENDARY;
+					else if (rnd < 0.43)
+						rarity = Rarity.EPIC;
+					else if (rnd < 0.71)
+						rarity = Rarity.RARE;
+					else
+						rarity = Rarity.COMMON;
 
-						Card[] cards = _ungoroPackMemory[rarity];
-						Card pick = cards[Util.Random.Next(cards.Length)];
-						Playable entity = Entity.FromCard(controller, pick, tags, controller.HandZone);
-						entity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, p[0].Id);
-						//pack.Add(entity);
-					}
+					Card[] cards = _ungoroPackMemory[rarity];
+					Card pick = cards[g.Random.Next(cards.Length)];
+					IPlayable entity = Entity.FromCard(c, pick, tags, c.HandZone);
+					entity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, s.Id);
+					//pack.Add(entity);
+				}
 
-					controller.Game.OnRandomHappened(true);
-					return null;
-				}));
+				g.OnRandomHappened(true);
+			});
 		private static ReadOnlyDictionary<Rarity, Card[]> _ungoroPackMemory;
 
-		public static ISimpleTask RandomHunterSecretPlay
-			=> ComplexTask.Create(
-				new IncludeTask(EntityType.TARGET),
-				new FuncPlayablesTask(p =>
-				{
-					Controller controller = p[0].Controller;
-					var activeSecrets = controller.SecretZone.Select(secret => secret.Card.Id).ToList();
-					//activeSecrets.Add(p[0].Card.Id);
-					IEnumerable<Card> cards = controller.Game.FormatType == FormatType.FT_STANDARD ? Cards.Standard[CardClass.HUNTER] : Cards.Wild[CardClass.HUNTER];
-					IEnumerable<Card> cardsList = cards.Where(card => card.Type == CardType.SPELL && card.Tags.ContainsKey(GameTag.SECRET) && !activeSecrets.Contains(card.Id));
-					var spell = (Spell)Entity.FromCard(controller, Util.Choose(cardsList.ToList()));
-					Generic.CastSpell(controller, spell, null, 0, true);
-					controller.Game.OnRandomHappened(true);
-					return new List<Playable>();
-				})
-			);
+		// public static ISimpleTask RandomHunterSecretPlay
+		// 	=> ComplexTask.Create(
+		// 		new IncludeTask(EntityType.TARGET),
+		// 		new FuncPlayablesTask(p =>
+		// 		{
+		// 			Controller controller = p[0].Controller;
+		// 			var activeSecrets = controller.SecretZone.Select(secret => secret.Card.Id).ToList();
+		// 			//activeSecrets.Add(p[0].Card.Id);
+		// 			IEnumerable<Card> cards = controller.Game.FormatType == FormatType.FT_STANDARD ? Cards.Standard[CardClass.HUNTER] : Cards.Wild[CardClass.HUNTER];
+		// 			IEnumerable<Card> cardsList = cards.Where(card => card.Type == CardType.SPELL && card.Tags.ContainsKey(GameTag.SECRET) && !activeSecrets.Contains(card.Id));
+		// 			var spell = (Spell)Entity.FromCard(controller, Util.Choose(cardsList.ToList()));
+		// 			Generic.CastSpell(controller, spell, null, 0, true);
+		// 			controller.Game.OnRandomHappened(true);
+		// 			return new List<Playable>();
+		// 		})
+		// 	);
 
 		public static ISimpleTask Simulacrum
 			=> ComplexTask.Create(
@@ -389,7 +390,7 @@ namespace SabberStoneCore.Tasks
 					if (newEntity[GameTag.DISPLAYED_CREATOR] == 0)
 						newEntity[GameTag.DISPLAYED_CREATOR] = e.Creator.Id;
 
-					Generic.AddEnchantmentBlock(e.Controller, e.Card, e, newEntity, 0, 0, false);
+					Generic.AddEnchantmentBlock(e.Game, e.Card, e, newEntity, 0, 0, 0);
 
 					// TODO choose ones
 
@@ -424,12 +425,13 @@ namespace SabberStoneCore.Tasks
 				new IncludeTask(EntityType.GRAVEYARD),
 				new FuncPlayablesTask(list =>
 				{
-					list[0].Controller.Game.OnRandomHappened(true);
+					list[0].Game.OnRandomHappened(true);
+					Util.DeepCloneableRandom rnd = list[0].Game.Random;
 					return list
 						.Where(p => p is Minion m && m.IsDead)
 						.Select(p => p.Card.Id)
 						.Distinct()
-						.OrderBy(p => Util.Random)
+						.OrderBy(p => rnd.Next())
 						.Take(i)
 						.Select(p => Entity.FromCard(list[0].Controller, Cards.FromId(p)))
 						.ToList();
@@ -502,7 +504,9 @@ namespace SabberStoneCore.Tasks
 		public static ISimpleTask LynessaSunsorrow
 			=> new FuncNumberTask(p =>
 			{
+				int original = p.Card.AssetId;
 				Controller c = p.Controller;
+				Game g = c.Game;
 				List<PlayHistoryEntry> history = c.PlayHistory;
 
 				List<PlayHistoryEntry> spellCards = history
@@ -510,13 +514,14 @@ namespace SabberStoneCore.Tasks
 					                  current.SourceCard.Type == CardType.SPELL)
 					.ToList();
 
-				spellCards.Shuffle();
+				spellCards.Shuffle(g.Random);
 				for (int i = 0; i < spellCards.Count; i++)
 				{
-					Generic.CastSpell(c, (Spell)Entity.FromCard(c, spellCards[i].SourceCard), (Character)p, spellCards[i].SubOption, true);
+					Playable spell = Entity.FromCard(c, spellCards[i].SourceCard);
+					Generic.CastSpell(c, g, (Spell)spell, (Character)p, spellCards[i].SubOption);
 					while (c.Choice != null)
-						Generic.ChoicePick(c, c.Game, Util.Choose(c.Choice.Choices));
-					if (p.Zone?.Type != Zone.PLAY)
+						Generic.ChoicePick(c, g, c.Choice.Choices.Choose(g.Random));
+					if (p.Zone?.Type != Zone.PLAY || p.Card.AssetId != original)
 						break;
 				}
 
@@ -553,42 +558,32 @@ namespace SabberStoneCore.Tasks
 		public static ISimpleTask TessGreymane
 			=> new FuncNumberTask((Playable p) =>
 			{
-				IList<Card> playedCards = p.Controller.PlayHistory
+				Controller c = p.Controller;
+				Game g = c.Game;
+
+				IList<Card> playedCards = c.PlayHistory
 					.Select(e => e.SourceCard)
-					.Where(card => card.Class != CardClass.NEUTRAL && card.Class != p.Controller.Hero.Card.Class)
+					.Where(card => card.Class != CardClass.NEUTRAL && card.Class != c.Hero.Card.Class)
 					.ToArray()
-					.Shuffle();
+					.Shuffle(g.Random);
 
 				foreach (Card card in playedCards)
 				{
-					Controller c = p.Controller;
-					Game g = c.Game;
-					Playable entity = Entity.FromCard(c, card);
-					Character randTarget = null;
-					if (card.TargetingType != TargetingType.None)
-					{
-						List<Character> targets = (List<Character>)entity.ValidPlayTargets;
+					Playable entity = (Playable)Entity.FromCard(c, card);
 
-						randTarget = targets.Count > 0 ? Util.RandomElement(targets) : null;
+					Character randTarget = entity.GetRandomValidTarget();
 
-						entity.CardTarget = randTarget?.Id ?? -1;
+					if (card.MustHaveTargetToPlay && randTarget == null)
+						continue;
 
-						if (randTarget != null)
-							p.Game.Log(LogLevel.INFO, BlockType.POWER, "Tess Greymane",
-							!p.Game.Logging ? "" : $"{entity}'s target is randomly selected to {randTarget}");
-					}
-
-					int randChooseOne = SimpleTask.Random.Next(1, 3);
-
-					if (card.HasOverload)
-						c.OverloadOwed = card.Overload;
+					int randChooseOne = g.Random.Next(1, 3);
 
 					c.Game.TaskQueue.StartEvent();
 					switch (card.Type)
 					{
 						case CardType.MINION:
 							if (c.BoardZone.IsFull) break;
-							Generic.SummonBlock(c.Game, entity as Minion, -1);
+							Generic.SummonBlock(c.Game, entity as Minion, -1, p);
 							c.Game.DeathProcessingAndAuraUpdate();
 							break;
 						case CardType.WEAPON:
@@ -598,24 +593,25 @@ namespace SabberStoneCore.Tasks
 							c.Hero.AddWeapon(weapon);
 							break;
 						case CardType.HERO:
-							Generic.PlayHero.Invoke(c.Game, c, entity as Hero, randTarget, randChooseOne);
+							Generic.PlayHero.Invoke(c, g, entity as Hero, randTarget, randChooseOne);
 							break;
 						case CardType.SPELL:
-							Generic.CastSpell.Invoke(c, entity as Spell, randTarget, randChooseOne, true);
+							Generic.CastSpell.Invoke(c, g, entity as Spell, randTarget, randChooseOne);
 							c.Game.DeathProcessingAndAuraUpdate();
 							break;
 						default:
 							throw new NotImplementedException();
 					}
-					c.Game.TaskQueue.EndEvent();
+
+					g.TaskQueue.EndEvent();
 
 					while (c.Choice != null)
 					{
-						c.Game.TaskQueue.StartEvent();
-						Generic.ChoicePick.Invoke(c, c.Game, Util.Choose(c.Choice.Choices));
-						c.Game.ProcessTasks();
-						c.Game.TaskQueue.EndEvent();
-						c.Game.DeathProcessingAndAuraUpdate();
+						g.TaskQueue.StartEvent();
+						Generic.ChoicePick.Invoke(c, g, c.Choice.Choices.Choose(g.Random));
+						g.ProcessTasks();
+						g.TaskQueue.EndEvent();
+						g.DeathProcessingAndAuraUpdate();
 					}
 				}
 				return 0;
@@ -624,6 +620,7 @@ namespace SabberStoneCore.Tasks
 		public static ISimpleTask Shudderwock
 			=> new FuncNumberTask(p =>
 			{
+				int original = p.Card.AssetId;
 				Game game = p.Game;
 				Controller c = p.Controller;
 
@@ -631,25 +628,16 @@ namespace SabberStoneCore.Tasks
 					.Select(e => e.SourceCard)
 					.Where(card => card[GameTag.BATTLECRY] == 1 && card.AssetId != 48111)
 					.ToArray()
-					.Shuffle();
+					.Shuffle(game.Random);
 
 				int count = 0;
 				foreach (Card card in playedCards)
 				{
-					Playable entity = Entity.FromCard(c, card); // TODO
-					Character randTarget = null;
-					if (card.TargetingType != TargetingType.None)
-					{
-						List<Character> targets = (List<Character>) entity.ValidPlayTargets;
+					var entity = (Playable)Entity.FromCard(c, card); // TODO
+					Character randTarget = entity.GetRandomValidTarget();
 
-						randTarget = targets.Count > 0 ? Util.RandomElement(targets) : null;
-
-						entity.CardTarget = randTarget?.Id ?? -1;
-
-						if (randTarget != null)
-							game.Log(LogLevel.INFO, BlockType.POWER, "Shudderwock",
-							!game.Logging ? "" : $"{entity}'s target is randomly selected to {randTarget}");
-					}
+					if (card.MustHaveTargetToPlay && randTarget == null)
+						continue;
 
 					game.TaskQueue.StartEvent();
 					entity.ActivateTask(PowerActivation.POWER, randTarget, 0, p);
@@ -659,16 +647,16 @@ namespace SabberStoneCore.Tasks
 
 					while (c.Choice != null)
 					{
-						c.Game.TaskQueue.StartEvent();
-						Generic.ChoicePick.Invoke(c, game, Util.Choose(c.Choice.Choices));
-						c.Game.ProcessTasks();
-						c.Game.TaskQueue.EndEvent();
-						c.Game.DeathProcessingAndAuraUpdate();
+						game.TaskQueue.StartEvent();
+						Generic.ChoicePick.Invoke(c, game, c.Choice.Choices.Choose(game.Random));
+						game.ProcessTasks();
+						game.TaskQueue.EndEvent();
+						game.DeathProcessingAndAuraUpdate();
 					}
 
 					if (++count == 30) break;
 
-					if (p is MinionInPlay m && m.ToBeDestroyed || p.Zone.Type != Zone.PLAY)
+					if (p is MinionInPlay m && m.ToBeDestroyed || p.Zone.Type != Zone.PLAY || p.Card.AssetId != original)
 						break;
 				}
 
@@ -681,31 +669,17 @@ namespace SabberStoneCore.Tasks
 				if (source.Controller.SecretZone.IsFull) return 0;
 
 				CardClass[] secretClasses = {CardClass.HUNTER, CardClass.PALADIN, CardClass.ROGUE};
-				Card[] existing = source.Controller.SecretZone.Select(p => p.Card).ToArray();
+				int[] existing = source.Controller.SecretZone.Select(p => p.Card.AssetId).ToArray();
 
 				CardClass cls = source.Controller.Hero.Card.Class;
 
 				if (!secretClasses.Contains(cls))
 					cls = CardClass.MAGE;
 
-				lock (locker)
-				{
-					if (_cachedSecrets == null || !_cachedSecrets.ContainsKey(cls))
-					{
-						if (_cachedSecrets == null)
-							_cachedSecrets = new Dictionary<CardClass, Card[]>();
+				Card[] candidates = GetFormatTypeClassSecrets(source.Game.FormatType, cls)
+					.Where(c => !existing.Contains(c.AssetId)).ToArray();
 
-						// This would not work when you would use both format types at the same time in a runtime
-						_cachedSecrets.Add(cls, Cards.FormatTypeClassCards(source.Game.FormatType)[cls]
-							.Where(p => p.IsSecret && !existing.Contains(p))
-							.ToArray());
-					}
-
-				}
-
-				Card[] candidates = _cachedSecrets[cls];
-
-				Card[] choices = candidates.ChooseNElements(3);
+				Card[] choices = candidates.ChooseNElements(3, source.Game.Random);
 
 				if (candidates.Length == 0) return 0;
 
@@ -713,72 +687,143 @@ namespace SabberStoneCore.Tasks
 					choices, null);
 				return 0;
 			});
-		private static Dictionary<CardClass, Card[]> _cachedSecrets;
+
+		public static ISimpleTask CastRandomSecret(CardClass cardClass) =>
+			new CustomTask((g,c,s,t,stack) =>
+			{
+				//if (c.SecretZone.IsFull) return;
+				int[] activeSecrets = c.SecretZone.Select(secret => secret.Card.AssetId).ToArray();
+				Card[] cardsList = GetFormatTypeClassSecrets(g.FormatType, cardClass)
+					.Where(card => !activeSecrets.Contains(card.AssetId)).ToArray();
+				Spell spell = (Spell)Entity.FromCard(c, cardsList.Choose(g.Random));
+				Generic.CastSpell(c, g, spell, null, 0);
+				g.OnRandomHappened(true);
+			});
+
+		private static Card[] GetFormatTypeClassSecrets(FormatType format, CardClass cardClass)
+		{
+			lock (locker)
+			{
+				if (_cachedSecrets == null || !_cachedSecrets.ContainsKey((format, cardClass)))
+				{
+					if (_cachedSecrets == null)
+						_cachedSecrets = new Dictionary<(FormatType, CardClass), Card[]>();
+
+					// This would not work when you would use both format types at the same time in a runtime
+					_cachedSecrets.Add((format, cardClass), Cards.FormatTypeClassCards(format)[cardClass]
+						.Where(card => card.IsSecret)
+						.ToArray());
+				}
+			}
+
+			return _cachedSecrets[(format, cardClass)];
+		}
+
+		private static Dictionary<(FormatType, CardClass), Card[]> _cachedSecrets;
+
+		public static ISimpleTask AzalinaSoulthief =>
+			new FuncNumberTask(source =>
+			{
+				Controller c = source.Controller;
+				SetasideZone setaside = c.SetasideZone;
+				HandZone hand = c.HandZone, opHand = c.Opponent.HandZone;
+
+				// Move hand cards to setaside.
+				for (int i = hand.Count - 1; i >= 0; i--)
+					setaside.Add(hand.Remove(hand[i]));
+
+				// Create copies of opponent cards and add them to the hand
+				// and move them to the opponent's setaside zone.
+				for (int i = opHand.Count - 1; i >= 0; i--)
+					Generic.Copy(in c, source, opHand[i], Zone.HAND);
+
+				return 0;
+			});
 
 		public static ISimpleTask GetRandomDrBoomHeroPower =>
 			new FuncNumberTask(source =>
 			{
 				string nextId;
 				Controller c = source.Controller;
+				Util.DeepCloneableRandom rnd = source.Game.Random;
 
 				if (source is HeroPower currentPower)
 				{
 					do
 					{
-						nextId = Util.Choose(DrBoomHeroPowerIds);
+						nextId = DrBoomHeroPowerIds.Choose(rnd);
 					} while (nextId == currentPower.Card.Id);
 				}
 				else
 				{
-					nextId = Util.Choose(DrBoomHeroPowerIds);
+					nextId = DrBoomHeroPowerIds.Choose(rnd);
 					currentPower = c.Hero.HeroPower;
 				}
 				c.SetasideZone.Add(currentPower);
 				HeroPower nextPower = (HeroPower)Entity.FromCard(in c, Cards.FromId(nextId));
 				c.Hero.HeroPower = nextPower;
-				nextPower.Power?.Trigger?.Activate(c.Game, nextPower);
+				nextPower.Power?.Trigger?.Activate(nextPower);
 
 				return 0;
 			});
-		private static IReadOnlyList<string> DrBoomHeroPowerIds = Cards.FromId("BOT_238p").Entourage;
+		private static readonly IReadOnlyList<string> DrBoomHeroPowerIds = Cards.FromId("BOT_238p").Entourage;
+
+		public static readonly ISimpleTask Zuljin = new FuncNumberTask(ZuljinInternal);
+		private static int ZuljinInternal(IPlayable source)
+		{
+			Controller c = source.Controller;
+			Game g = c.Game;
+			Util.DeepCloneableRandom rnd = g.Random;
+			// Iterate through the play history of the controller.
+			foreach (PlayHistoryEntry history in c.PlayHistory)
+			{
+				if (history.SourceCard.Type != CardType.SPELL)
+					continue;
+
+				Spell entity = (Spell) Entity.FromCard(in c, in history.SourceCard);
+				ICharacter randTarget = entity.GetRandomValidTarget();
+
+				if (history.SourceCard.MustHaveTargetToPlay && randTarget == null)
+					continue;
+
+				Generic.CastSpell(c, g, entity, randTarget, history.SourceCard.ChooseOne ? rnd.Next(1, 3) : -1);
+			}
+			return 0;
+		}
 
 		public static readonly ISimpleTask PrismaticLens =
 			new FuncNumberTask(p =>
 			{
 				Controller c = p.Controller;
-				ReadOnlySpan<Playable> deck = c.DeckZone.GetSpan();
+				var deck = c.DeckZone.GetSpan();
 				List<int> minions = new List<int>();
 				List<int> spells = new List<int>();
 				for (int i = 0; i < deck.Length; i++)
 				{
-					switch (deck[i].Card.Type)
-					{
-						case CardType.MINION:
-							minions.Add(i);
-							break;
-						case CardType.SPELL:
-							spells.Add(i);
-							break;
-					}
+					if (deck[i] is Minion)
+						minions.Add(i);
+					else if
+						(deck[i] is Spell)
+						spells.Add(i);
 				}
 
-				Random rnd = Util.Random;
-				Playable minionToDraw = minions.Count == 0 ? null : deck[minions[rnd.Next(minions.Count)]];
-				Playable spellToDraw = spells.Count == 0 ? null : deck[spells[rnd.Next(spells.Count)]];
+				Util.DeepCloneableRandom rnd = c.Game.Random;
+				IPlayable minionToDraw = minions.Count == 0 ? null : deck[minions[rnd.Next(minions.Count)]];
+				IPlayable spellToDraw = spells.Count == 0 ? null : deck[spells[rnd.Next(spells.Count)]];
 
 				if (minionToDraw == null)
 				{
-					Generic.Draw(c, spellToDraw?.Id ?? -1);
+					Generic.Draw(c, spellToDraw);
 					return 0;
 				}
 				if (spellToDraw == null)
 				{
-					Generic.Draw(c, minionToDraw?.Id ?? -1);
+					Generic.Draw(c, minionToDraw);
 					return 0;
 				}
 
-				Generic.Draw(c, minionToDraw.Id);
-				Generic.Draw(c, spellToDraw.Id);
+				Generic.Draw(c, minionToDraw);
+				Generic.Draw(c, spellToDraw);
 
 				int temp = minionToDraw.Cost;
 				minionToDraw.Cost = spellToDraw.Cost;
@@ -789,6 +834,192 @@ namespace SabberStoneCore.Tasks
 				return 0;
 			});
 
+		public static readonly ISimpleTask MastersCall =
+			new FuncNumberTask(p =>
+			{
+				Controller c = p.Controller;
+				var deck = c.DeckZone.GetSpan();
+				List<IPlayable> minions = new List<IPlayable>();
+				List<int> indices = new List<int>();
+				for (int i = 0; i < deck.Length; i++)
+				{
+					if (deck[i].Card.Type == CardType.MINION)
+					{
+						bool contained = false;
+						int id = deck[i].Card.AssetId;
+						for (int j = 0; j < minions.Count; j++)
+						{
+							if (minions[j].Card.AssetId != id) continue;
+							contained = true;
+							break;
+						}
+
+						if (contained)
+							continue;
+						minions.Add(deck[i]);
+						indices.Add(i);
+					}
+
+				}
+
+				int count = minions.Count;
+
+				if (count == 0) return 0;
+
+				if (count <= 3)
+				{
+					minions.InsertionSort(indices);
+
+					if (count == 3 && minions.TrueForAll(e => e.Card.IsRace(Race.BEAST)))
+					{
+						for (int i = count - 1; i >= 0; i--)
+						{
+							IPlayable playable = c.DeckZone.Remove(indices[i]);
+							Generic.AddHandPhase(c, playable);
+						}
+					}
+					else
+					{
+						for (int i = count - 1; i >= 0; i--)
+							c.SetasideZone.Add(c.DeckZone.Remove(indices[i]));
+						Generic.CreateChoice(c, p, ChoiceType.GENERAL, ChoiceAction.HAND,
+							minions.Select(q => q.Id).ToList());
+					}
+
+					return 0;
+				}
+
+				IPlayable[] choices = new IPlayable[3];
+				int[] choiceIndices = new int[3];
+				int[] range = new int[count];
+				for (int i = 0; i < range.Length; i++)
+					range[i] = i;
+				Util.DeepCloneableRandom rnd = p.Game.Random;
+				for (int i = 0; i < 3; i++)
+				{
+					int j = rnd.Next(i, count);
+					int temp = range[i];
+					range[i] = range[j];
+					range[j] = temp;
+					choices[i] = minions[range[i]];
+					choiceIndices[i] = indices[range[i]];
+				}
+
+				Array.Sort(choiceIndices, choices);
+				if (Array.TrueForAll(choices, e => e.Card.IsRace(Race.BEAST)))
+				{
+					for (int i = choiceIndices.Length - 1; i >= 0; i--)
+					{
+						IPlayable playable = c.DeckZone.Remove(choiceIndices[i]);
+						Generic.AddHandPhase(c, playable);
+					}
+				}
+				else
+				{
+					for (int i = choiceIndices.Length - 1; i >= 0; i--)
+						c.SetasideZone.Add(c.DeckZone.Remove(choiceIndices[i]));
+					Generic.CreateChoice(c, p, ChoiceType.GENERAL, ChoiceAction.HAND,
+						minions.Select(q => q.Id).ToList());
+				}
+
+				return 0;
+			});
+
+		public static readonly ISimpleTask ArchmageVargoth =
+			new CustomTask((g, c, s, t, stack) =>
+			{
+				List<Card> spellsPlayedThisTurn = new List<Card>();
+				foreach (Card card in c.CardsPlayedThisTurn)
+					if (card.Type == CardType.SPELL)
+						spellsPlayedThisTurn.Add(card);
+				if (spellsPlayedThisTurn.Count == 0) return;
+				Util.DeepCloneableRandom rnd = g.Random;
+				g.OnRandomHappened(true);
+
+				Card randSpellCard = spellsPlayedThisTurn.Count == 1
+					? spellsPlayedThisTurn[0]
+					: spellsPlayedThisTurn[rnd.Next(spellsPlayedThisTurn.Count)];
+
+				// TODO: Reveal card for history
+				if (!randSpellCard.IsPlayableByCardReq(in c) ||
+				    randSpellCard.IsSecret && c.SecretZone.IsFull ||
+				    randSpellCard.IsQuest && c.SecretZone.Quest != null)
+				{
+					return;
+				}
+
+				Character randTarget;
+				{
+					List<Character> validTargets = randSpellCard.GetValidPlayTargets(in c);
+					randTarget = validTargets.Count == 0 ? null : validTargets[rnd.Next(validTargets.Count)];
+				}
+				if (randSpellCard.MustHaveTargetToPlay && randTarget == null)
+				{
+					return;
+				}
+
+				Spell spellToCast = (Spell)Entity.FromCard(in c, in randSpellCard);
+
+				int randChooseOne = rnd.Next(1, 3);
+
+				Generic.CastSpell(c, g, spellToCast, randTarget, randChooseOne);
+
+				while (c.Choice != null)
+					Generic.ChoicePick(c, g, c.Choice.Choices[rnd.Next(c.Choice.Choices.Count)]);
+			});
+
+		public static readonly ISimpleTask ImmortalPrelate =
+			new CustomTask((g, c, s, t, stack) =>
+			{
+				Minion source = (Minion)s;
+
+				Minion newEntity = (Minion) Entity.FromCard(in c, source.Card,
+					zone: c.DeckZone, zonePos: g.Random.Next(c.DeckZone.Count));
+				source.CopyInternalAttributes(newEntity);
+				newEntity.Damage = 0;
+
+				if (source.AppliedEnchantments != null)
+				{
+					foreach (Enchantment e in source.AppliedEnchantments)
+					{
+						Enchantment instance = Enchantment.GetInstance(in c, e.Creator, newEntity, e.Card);
+						if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
+						{
+							instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
+							if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
+								instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
+						}
+						instance.CapturedCard = e.CapturedCard;
+
+						if (e.IsOneTurnActive)
+							instance.Game.OneTurnEffectEnchantments.Add(instance);
+					}
+				}
+
+				if (source.HasDivineShield)
+					newEntity.HasDivineShield = true;
+				if (source.HasWindfury)
+					newEntity.HasWindfury = true;
+				if (source.HasLifeSteal)
+					newEntity.HasLifeSteal = true;
+				if (source.CantBeTargetedByOpponents)
+					newEntity.CantBeTargetedByOpponents = true;
+				if (source.Poisonous)
+					newEntity.Poisonous = true;
+				if (source.IsRush)
+					newEntity.IsRush = true;
+				if (source.SpellPower > 0)
+					newEntity.SpellPower = source.SpellPower;
+
+				List<(int entityId, IEffect effect)> oneTurnEffects = g.OneTurnEffects;
+				for (int i = oneTurnEffects.Count - 1; i >= 0; i--)
+				{
+					(int id, IEffect effect) = oneTurnEffects[i];
+					if (id == source.Id)
+						oneTurnEffects.Add((newEntity.Id, effect));
+				}
+			});
+
 		public class RenonunceDarkness : SimpleTask
 		{
 			private static readonly Card EnchantmentCard = Cards.FromId("OG_118e");
@@ -796,11 +1027,13 @@ namespace SabberStoneCore.Tasks
 			public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 				in TaskStack stack = null)
 			{
+				Util.DeepCloneableRandom rnd = game.Random;
+
 				// get a new class
 				CardClass randClass;
 				do
 				{
-					randClass = (CardClass) Random.Next(2, 11);
+					randClass = (CardClass) rnd.Next(2, 11);
 				} while (randClass == CardClass.WARLOCK);
 					
 				// replace Hero Power
@@ -861,6 +1094,7 @@ namespace SabberStoneCore.Tasks
 					newEntity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, source.Id);
 					newEntity.Cost = newEntity.Card.Cost - 1;
 				}
+				
 
 				ReadOnlySpan<Playable> deck = controller.DeckZone.GetSpan();
 				// replace cards in deck
@@ -869,7 +1103,7 @@ namespace SabberStoneCore.Tasks
 					Playable entity = deck[i];
 					if (entity.Card.Class != CardClass.WARLOCK) continue;
 
-					Card randCard = Util.Choose(cards);
+					Card randCard = cards.Choose(rnd);
 					Playable newEntity = Entity.FromCard(in controller, in randCard, null, controller.DeckZone);
 					newEntity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, source.Id);
 
@@ -901,7 +1135,7 @@ namespace SabberStoneCore.Tasks
 			public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 				in TaskStack stack = null)
 			{
-				Card pick = Util.Choose(PastLegendaryMinions);
+				Card pick = PastLegendaryMinions.Choose(game.Random);
 				Entity.FromCard(in controller, in pick, null, controller.HandZone);
 				return TaskState.COMPLETE;
 			}
@@ -922,8 +1156,8 @@ namespace SabberStoneCore.Tasks
 						// In Hearthstone, cards from K & C is not included in the card pool for Build-A-Beast
 						// I am not sure whether Sabber should follow the rule or not ...
 						IEnumerable<Card> all = controller.Game.FormatType == FormatType.FT_STANDARD ?
-							Cards.Standard[CardClass.HUNTER].Where(c => c.Race == Race.BEAST && c.Cost <= 5) :
-							Cards.Wild[CardClass.HUNTER].Where(c => c.Race == Race.BEAST && c.Cost <= 5);
+							Cards.Standard[CardClass.HUNTER].Where(c => c.IsRace(Race.BEAST) && c.Cost <= 5) :
+							Cards.Wild[CardClass.HUNTER].Where(c => c.IsRace(Race.BEAST) && c.Cost <= 5);
 						var firstBeasts = new List<Card>();
 						var secondBeasts = new List<Card>();
 						foreach (Card card in all)
@@ -942,7 +1176,7 @@ namespace SabberStoneCore.Tasks
 					}
 				}
 
-				Card[] first = FirstBeastsMemory.ChooseNElements(3);
+				Card[] first = FirstBeastsMemory.ChooseNElements(3, game.Random);
 
 				Generic.CreateChoiceCards.Invoke(controller, source, null, ChoiceType.GENERAL,
 					ChoiceAction.BUILDABEAST, first, null);

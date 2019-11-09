@@ -1,4 +1,17 @@
-﻿using System.Collections.Generic;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
@@ -71,8 +84,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					{
 						foreach (Playable p in entities)
 						{
-							Generic.AddEnchantmentBlock.Invoke(controller, BuffEnchantmentCard, (Playable) source, p,
-								0, 0, false);
+							Generic.AddEnchantmentBlock(game, BuffEnchantmentCard, (Playable) source, p,
+								0, 0, 0);
 
 							((OngoingEnchant) p.OngoingEffect).Count += _amount - 1;
 						}
@@ -83,8 +96,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					foreach (Playable p in entities)
 						if (p.OngoingEffect == null)
 						{
-							Generic.AddEnchantmentBlock.Invoke(controller, BuffEnchantmentCard, (Playable) source, p,
-								0, 0, false);
+							Generic.AddEnchantmentBlock(game, BuffEnchantmentCard, (IPlayable) source, p,
+								0, 0, 0);
 							((OngoingEnchant) p.OngoingEffect).Count += _amount - 1;
 						}
 						else
@@ -97,16 +110,16 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				case RitualType.Taunt:
 					if (proxyCthun[GameTag.TAUNT] == 1) break;
 					foreach (Playable p in entities)
-						Generic.AddEnchantmentBlock.Invoke(controller, TauntEnchantmentCard, (Playable) source, p, 0,
-							0, false);
+						Generic.AddEnchantmentBlock(game, TauntEnchantmentCard, (IPlayable) source, p, 0,
+							0, 0);
 
 					break;
 
 				case RitualType.Blade:
 					foreach (Playable p in entities)
-						Generic.AddEnchantmentBlock.Invoke(controller, BladeofCThunEnchantmentCard, (Playable) source,
+						Generic.AddEnchantmentBlock(game, BladeofCThunEnchantmentCard, (IPlayable) source,
 							p, stack.Number,
-							stack.Number1, false);
+							stack.Number1, 0);
 
 					break;
 			}

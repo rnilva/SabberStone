@@ -1,9 +1,23 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
+using SabberStoneCore.Tasks;
 using SabberStoneCore.Model.Zones;
 
 namespace SabberStoneCore.Model.Entities
@@ -260,9 +274,11 @@ namespace SabberStoneCore.Model.Entities
 				amount = game.CurrentEventData.EventNumber;
 				if (amount == 0 && armor == 0)
 				{
-					//if (_history)
-					//	PreDamage = 0;
+					if (_history)
+						PreDamage = 0;
+
 					game.TaskQueue.EndEvent();
+					game.CurrentEventData = temp;
 					return 0;
 				}
 			}
@@ -272,14 +288,14 @@ namespace SabberStoneCore.Model.Entities
 				game.CurrentEventData = temp;
 
 				game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !game.Logging ? "" : $"{this} is immune.");
-				//if (_history)
-				//	PreDamage = 0;
-				return 0;
+                if (_history)
+                    PreDamage = 0;
+                return 0;
 			}
 
 			// reset predamage
-			//if (_history)
-			//	PreDamage = 0;
+			if (_history)
+				PreDamage = 0;
 
 			// remove armor first from hero ....
 			if (armor > 0)
@@ -297,12 +313,22 @@ namespace SabberStoneCore.Model.Entities
 			TakeDamageTrigger?.Invoke(this);
 			game.TriggerManager.OnDamageTrigger(this);
 			game.TriggerManager.OnDealDamageTrigger(source);
+
+            // Check if the source is Overkill
+            if (source.HasOverkill && source.Controller == game.CurrentPlayer && Health < 0)
+            {
+                game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TakeDamage", !_logging ? "" : $"{source}' Overkill is triggered.");
+
+                ISimpleTask task = source is Hero h ? h.Weapon.Card.Power.OverkillTask : source.Card.Power.OverkillTask;
+                game.TaskQueue.Enqueue(task, source.Controller, source, null);
+            }
+
 			game.ProcessTasks();
 			game.TaskQueue.EndEvent();
 			game.CurrentEventData = temp;
 
 			// Check if the source is lifesteal
-			if (source.HasLifesteal && !_lifestealChecker)
+			if (source.HasLifeSteal && !_lifestealChecker)
 			{
 				if (_history)
 					game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, source.Id, source.Card.Id, -1, 0)); // TriggerKeyword=LIFESTEAL
@@ -320,6 +346,9 @@ namespace SabberStoneCore.Model.Entities
 
 			if (hero != null)
 				hero.DamageTakenThisTurn += amount;
+
+			if (source.Card.Type == CardType.HERO_POWER)
+				source.Controller.NumHeroPowerDamageThisGame += amount;
 
 			return amount;
 		}
@@ -396,7 +425,12 @@ namespace SabberStoneCore.Model.Entities
 
 		private bool _lifestealChecker;
 
-#pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
+		internal int? _modifiedATK;
+		internal int? _modifiedHealth;
+		internal bool? _modifiedStealth;
+		internal bool? _modifiedImmune;
+		internal bool? _modifiedTaunt;
+		internal bool? _modifiedCantBeTargetedBySpells;
 
 		public virtual int AttackDamage
 		{
@@ -414,7 +448,7 @@ namespace SabberStoneCore.Model.Entities
 			set{ return; }
 		}
 
-		public int Health
+		public bool CantBeTargetedByHeroPowers
 		{
 			get => BaseHealth - Damage;
 			set

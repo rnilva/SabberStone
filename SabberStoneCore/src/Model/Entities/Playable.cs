@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +19,7 @@ using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Tasks;
+using SabberStoneCore.Triggers;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -489,7 +503,8 @@ namespace SabberStoneCore.Model.Entities
 
 		public bool IsEcho
 		{
-			get
+			get => _zonePosition;
+			set
 			{
 				if (AuraEffects?.Echo ?? false)
 					return true;
@@ -635,6 +650,7 @@ namespace SabberStoneCore.Model.Entities
 		//internal virtual bool GetBoolAttribute(Attributes attribute) => throw new NotImplementedException();
 		//internal virtual int GetIntAttribute(Attributes attribute) => throw new NotImplementedException();
 		private static void AddAttackDamage(Playable p, int value) => p._v1 += value;
+		public virtual bool HasOverkill => Card.Overkill;
 	}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

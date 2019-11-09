@@ -1,4 +1,18 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Actions;
@@ -11,6 +25,8 @@ using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Model.Zones;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
+using SabberStoneCore.Triggers;
+
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
 
 namespace SabberStoneCore.CardSets.Standard
@@ -331,7 +347,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - STEALTH = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_200", new Power {
-				Trigger = Triggers.WorgenTransform("GIL_200t", "GIL_200e")
+				Trigger = TriggerLibrary.WorgenTransform("GIL_200t", "GIL_200e")
 			});
 
 			// ---------------------------------------- MINION - HUNTER
@@ -486,7 +502,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - STEALTH = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_200t", new Power {
-				Trigger = Triggers.WorgenTransform("GIL_200", "GIL_200e")
+				Trigger = TriggerLibrary.WorgenTransform("GIL_200", "GIL_200e")
 			});
 
 			// ---------------------------------------- MINION - HUNTER
@@ -777,19 +793,12 @@ namespace SabberStoneCore.CardSets.Standard
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_694", new Power {
-				PowerTask = new FuncNumberTask((Playable p) =>
+				PowerTask = new CustomTask((g, c, s, t, stack) =>
 				{
-					IReadOnlyList<Card> legendaries = RandomCardTask.GetCardList(p, CardType.MINION, rarity: Rarity.LEGENDARY);
-					//p.Controller.DeckZone.ForEach((q, c, ls) =>
-					//{
-					//	if (q.Cost != 1) return;
+					IReadOnlyList<Card> legendaries = RandomCardTask.GetCardList(s, CardType.MINION, rarity: Rarity.LEGENDARY);
 
-					//	Generic.ChangeEntityBlock.Invoke(c, q, Util.Choose(ls));
-					//}, p.Controller, legendaries);
-					Random rnd = Util.Random;
-					Controller c = p.Controller;
+					Util.DeepCloneableRandom rnd = g.Random;
 					DeckZone deck = c.DeckZone;
-
 					for (int i = 0; i < deck.Count; i++)
 					{
 						if (deck[i].Cost != 1) continue;
@@ -797,8 +806,6 @@ namespace SabberStoneCore.CardSets.Standard
 						deck.SetEntity(i,
 							Generic.ChangeEntityBlock.Invoke(c, deck[i], legendaries[rnd.Next(legendaries.Count)], false));
 					}
-
-					return 0;
 				})
 			});
 
@@ -919,7 +926,7 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.TURN_START)
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					SingleTask = new FuncNumberTask(p =>
+					SingleTask = new CustomTask((g, c, s, t, stack) =>
 					{
 						if (p.Zone?.Type != Zone.HAND)
 							return 0;
@@ -1030,10 +1037,10 @@ namespace SabberStoneCore.CardSets.Standard
 					new FuncPlayablesTask(list =>
 					{
 						Playable source = list[0];
-						Controller c = source.Controller;
+						Game g = source.Game;
 						Card enchantment = Cards.FromId("GIL_840e");
-						for (int i = 1; i < list.Count; i++)
-							Generic.AddEnchantmentBlock(c, enchantment, source, list[i], list[i].Card.Health, 0, false);
+						for (int i = 0; i < list.Count; i++)
+							Generic.AddEnchantmentBlock(g, enchantment, source, list[i], list[i].Card.Health, 0, 0);
 						return null;
 					}))
 			});
@@ -2032,9 +2039,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_198", new Power {
-				// TODO [GIL_198] Azalina Soulthief && Test: Azalina Soulthief_GIL_198
-				//PowerTask = null,
-				//Trigger = null,
+				PowerTask = SpecificTask.AzalinaSoulthief
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -2049,7 +2054,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - LIFESTEAL = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_201", new Power {
-				Trigger = Triggers.WorgenTransform("GIL_201t", "GIL_200e")
+				Trigger = TriggerLibrary.WorgenTransform("GIL_201t", "GIL_200e")
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -2065,7 +2070,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RUSH = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_202", new Power {
-				Trigger = Triggers.WorgenTransform("GIL_202t", "GIL_200e")
+				Trigger = TriggerLibrary.WorgenTransform("GIL_202t", "GIL_200e")
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -2172,7 +2177,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RUSH = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_528", new Power {
-				Trigger = Triggers.WorgenTransform("GIL_528t", "GIL_200e")
+				Trigger = TriggerLibrary.WorgenTransform("GIL_528t", "GIL_200e")
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -2187,7 +2192,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SPELLPOWER = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_529", new Power {
-				Trigger = Triggers.WorgenTransform("GIL_529t", "GIL_200e")
+				Trigger = TriggerLibrary.WorgenTransform("GIL_529t", "GIL_200e")
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -2471,11 +2476,7 @@ namespace SabberStoneCore.CardSets.Standard
 			//       Demon, Murloc, Dragon,
 			//       Beast, Pirate and Totem.</i>
 			// --------------------------------------------------------
-			cards.Add("GIL_681", new Power {
-				// TODO [GIL_681] Nightmare Amalgam && Test: Nightmare Amalgam_GIL_681
-				//PowerTask = null,
-				//Trigger = null,
-			});
+			cards.Add("GIL_681", null);
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [GIL_682] Muck Hunter - COST:5 [ATK:5/HP:8] 
@@ -2702,8 +2703,7 @@ namespace SabberStoneCore.CardSets.Standard
 							Card pick = p.Controller.Opponent.HandZone.Random?.Card;
 							if (pick == null) return null;
 							Playable result = Generic.ChangeEntityBlock.Invoke(p.Controller, p, pick, true);
-							Generic.AddEnchantmentBlock(p.Controller, Cards.FromId("GIL_142e"), list[0], result, 0, 0,
-								false);
+							Generic.AddEnchantmentBlock(p.Game, Cards.FromId("GIL_142e"), list[0], result, 0, 0, 0);
 							return null;
 						}))
 				}
@@ -2877,6 +2877,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("GIL_614e1", new Power {
 				// TODO: must check the real log
 				Enchant = new Enchant(GameTag.VOODOO_LINK, EffectOperator.SET, 1),
+				
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -2887,10 +2888,19 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("GIL_614e2", new Power {
 				DeathrattleTask = ComplexTask.Create(
-					new IncludeTask(EntityType.TARGET),
-					new FuncPlayablesTask(p => new List<Playable>{p[0].Game.IdEntityDic[p[0][GameTag.TAG_SCRIPT_DATA_NUM_1]]}),
-					new ConditionTask(EntityType.STACK, SelfCondition.IsTagValue(GameTag.VOODOO_LINK, 1)),
-					new FlagTask(true, new DestroyTask(EntityType.STACK)))
+					new CustomTask((g,c,s,t,stack)=>
+						{
+							if (!(g.IdEntityDic[t[GameTag.TAG_SCRIPT_DATA_NUM_1]] is Minion m))
+								return;
+							if (m.IsSilenced ||
+							    !m.NativeTags.TryGetValue(GameTag.VOODOO_LINK, out int v) ||
+								v == 0 ||
+							    m.Zone.Type != Zone.PLAY) return;
+							stack.Flag = true;
+							stack.Playables = new IPlayable[] {m};
+						}),
+					new FlagTask(true,
+					new DestroyTask(EntityType.STACK)))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3071,7 +3081,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - LIFESTEAL = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_201t", new Power {
-				Trigger = Triggers.WorgenTransform("GIL_201", "GIL_200e")
+				Trigger = TriggerLibrary.WorgenTransform("GIL_201", "GIL_200e")
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -3087,7 +3097,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RUSH = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_202t", new Power {
-				Trigger = Triggers.WorgenTransform("GIL_202", "GIL_200e")
+				Trigger = TriggerLibrary.WorgenTransform("GIL_202", "GIL_200e")
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -3102,7 +3112,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RUSH = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_528t", new Power {
-				Trigger = Triggers.WorgenTransform("GIL_528", "GIL_200e")
+				Trigger = TriggerLibrary.WorgenTransform("GIL_528", "GIL_200e")
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -3117,7 +3127,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SPELLPOWER = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_529t", new Power {
-				Trigger = Triggers.WorgenTransform("GIL_529", "GIL_200e")
+				Trigger = TriggerLibrary.WorgenTransform("GIL_529", "GIL_200e")
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

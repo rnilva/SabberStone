@@ -1,4 +1,17 @@
-﻿using System.Collections.Generic;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
@@ -8,6 +21,7 @@ using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
+using SabberStoneCore.Triggers;
 using static SabberStoneCore.Tasks.SimpleTasks.RitualTask;
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
 
@@ -889,8 +903,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("OG_100", new Power {
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.ALLMINIONS),
-					new FilterStackTask(EntityType.SOURCE,
-						RelaCondition.IsOther(SelfCondition.IsTagValue(GameTag.ATK, 2, RelaSign.LEQ))),
+					new FilterStackTask(SelfCondition.IsTagValue(GameTag.ATK, 2, RelaSign.LEQ)),
 					new DestroyTask(EntityType.STACK))
 			});
 
@@ -1743,11 +1756,11 @@ namespace SabberStoneCore.CardSets
 					new GetGameTagTask(GameTag.HEALTH, EntityType.TARGET, 0, 3),
 					new GetGameTagTask(GameTag.DAMAGE, EntityType.TARGET, 0, 4),
 					new MathNumberIndexTask(3, 4, MathOperation.SUB, 3),
-					new AddEnchantmentTask("OG_102e", EntityType.TARGET),
+					new AddEnchantmentTask("OG_102e", EntityType.TARGET, true),
 					new MathMultiplyTask(0),
 					new MathNumberIndexTask(3, 0, MathOperation.ADD, 1),
 					new MathNumberIndexTask(2, 0, MathOperation.ADD),
-					new AddEnchantmentTask("OG_102e", EntityType.SOURCE))
+					new AddEnchantmentTask("OG_102e", EntityType.SOURCE, true))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -1845,7 +1858,10 @@ namespace SabberStoneCore.CardSets
 					//new GetGameTagControllerTask(GameTag.NUM_SPELLS_PLAYED_THIS_GAME),
 					new GetPropertyTask(EntityType.CONTROLLER, "NumSpellsPlayedThisGame"),
 					new EnqueueNumberTask(ComplexTask.Create(
-						new ConditionTask(EntityType.SOURCE, SelfCondition.IsInZone(Zone.PLAY), SelfCondition.IsNotSilenced),
+						new ConditionTask(EntityType.SOURCE,
+							SelfCondition.IsInZone(Zone.PLAY),
+							SelfCondition.IsNotSilenced,
+							SelfCondition.IsCardId("OG_134")),	// TODO: find a better way
 						new FlagTask(true, new CastRandomSpellTask()))))
 			});
 
@@ -2042,7 +2058,7 @@ namespace SabberStoneCore.CardSets
 								p[i].Destroy();
 							c.Game.GraveYard();	// forced death phase
 							var ancientOne = (Minion) Entity.FromCard(c, Cards.FromId("OG_173a"));
-							Generic.SummonBlock(c.Game, ancientOne, c.BoardZone.Count);
+							Generic.SummonBlock.Invoke(c.Game, ancientOne, c.BoardZone.Count, p[0]);
 							return p;
 						}))
 
@@ -2592,7 +2608,7 @@ namespace SabberStoneCore.CardSets
 			// - TAG_ONE_TURN_EFFECT = 1
 			// --------------------------------------------------------
 			cards.Add("OG_104e", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.RESTORE_TO_DAMAGE, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.HEALING_DOES_DAMAGE, EffectOperator.SET, 1))
 				{
 					RemoveTrigger = (TriggerType.TURN_END, null)
 				}
@@ -2627,7 +2643,7 @@ namespace SabberStoneCore.CardSets
 				},
 				Trigger = new Trigger(TriggerType.TURN_END)
 				{
-					SingleTask = new RemoveEnchantmentTask()
+					SingleTask = RemoveEnchantmentTask.Task
 				}
 			});
 

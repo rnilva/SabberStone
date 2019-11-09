@@ -129,8 +129,6 @@ namespace SabberStoneCoreTest.Basic
 				.Cast<Minion>()
 				.ToArray();
 
-			//PlayableSurrogate[] minions = game.CurrentPlayer.DeckZone.GetAll();
-
 			for (int i = 0; i < minions.Length; i++)
 			{
 				Assert.Equal(1, minions[i].Cost);

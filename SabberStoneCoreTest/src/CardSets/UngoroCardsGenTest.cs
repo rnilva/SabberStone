@@ -1,4 +1,17 @@
-﻿using System.Collections.Generic;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using SabberStoneCore.Actions;
@@ -8,10 +21,8 @@ using SabberStoneCore.Model;
 using SabberStoneCore.Tasks.PlayerTasks;
 using SabberStoneCore.Model.Entities;
 
-namespace SabberStoneCoreTest.CardSets.Standard
+namespace SabberStoneCoreTest.CardSets
 {
-
-
 	public class HeroPowersUngoroTest
 	{
 		// ------------------------------------ HERO_POWER - HUNTER
@@ -2909,12 +2920,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(1, game.CurrentPlayer.HandZone.Count);
 
-			game.ProcessCard("Succubus");
+			game.ProcessCard("Felstalker");
 			Assert.Equal(1, game.CurrentPlayer.HandZone.Count);
 			Assert.Equal(4, ((Minion)game.CurrentPlayer.HandZone[0]).AttackDamage);
 			Assert.Equal(4, ((Minion)game.CurrentPlayer.HandZone[0]).Health);
 
-			game.ProcessCard("Succubus");
+			game.ProcessCard("Felstalker");
 			Assert.Equal(1, game.CurrentPlayer.HandZone.Count);
 			Assert.Equal(6, ((Minion)game.CurrentPlayer.HandZone[0]).AttackDamage);
 			Assert.Equal(6, ((Minion)game.CurrentPlayer.HandZone[0]).Health);

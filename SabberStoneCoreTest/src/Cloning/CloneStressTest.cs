@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using Xunit;
 using SabberStoneCore.Config;
 using SabberStoneCore.Enums;
@@ -22,7 +35,7 @@ namespace SabberStoneCoreTest.Cloning
 				CardClass.DRUID, CardClass.HUNTER, CardClass.MAGE, CardClass.PALADIN, CardClass.PRIEST,
 				CardClass.ROGUE, CardClass.SHAMAN, CardClass.WARLOCK, CardClass.WARRIOR
 			};
-			bool flag = true;
+
 			for (int i = 0; i < 100; i++)
 			{
 				var game = new Game(new GameConfig
@@ -44,14 +57,12 @@ namespace SabberStoneCoreTest.Cloning
 					string str1 = game.Hash();
 					string str2 = cloneGame.Hash();
 
-					flag &= str1.Equals(str2);
 
-					if (!flag)
-						break;
+					Assert.Equal(str1, str2);
 				}
 			}
 
-			Assert.True(flag);
+			//Assert.True(flag, diff);
 		}
 
 		[Fact]

@@ -1,6 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 
@@ -110,11 +121,24 @@ namespace SabberStoneCore.Enchants
 					case GameTag.RUSH:
 					{
 						var m = (MinionInPlay)entity;
-						if (m.IsExhausted && m.NumAttacksThisTurn == 0)
+						if (m.IsExhausted)
 						{
-							m.IsExhausted = false;
-							m.AttackableByRush = true;
-							m.Game.RushMinions.Add(m.Id);
+							if (m.HasWindfury)
+							{
+								if (m.NumAttacksThisTurn < 2)
+								{
+									m.IsExhausted = false;
+									m.AttackableByRush = true;
+								}
+							}
+						}
+						else
+						{
+							if (m.NumAttacksThisTurn == 0)
+							{
+								m.IsExhausted = false;
+								m.AttackableByRush = true;
+							}
 						}
 						return;
 					}
@@ -126,48 +150,6 @@ namespace SabberStoneCore.Enchants
 				tags[Tag] = Value;
 
 				return;
-			}
-
-
-			if (!tags.ContainsKey(Tag))
-			{
-				switch (Operator)
-				{
-					case EffectOperator.ADD:
-						tags.Add(Tag, entity.Card[Tag] + Value);
-						if (Tag == GameTag.SPELLPOWER)
-						{
-							((MinionInPlay) entity).SpellPower += Value;	
-							entity.Controller.CurrentSpellPower += Value;
-						}
-						break;
-					case EffectOperator.SUB:
-						tags.Add(Tag, entity.Card[Tag] - Value);
-						break;
-					case EffectOperator.MUL:
-						tags.Add(Tag, entity.Card[Tag] * Value);
-						break;
-				}
-			}
-			else
-			{
-				switch (Operator)
-				{
-					case EffectOperator.ADD:
-						tags[Tag] += Value;
-						if (Tag == GameTag.SPELLPOWER)
-						{
-							((MinionInPlay) entity).SpellPower += Value;
-							entity.Controller.CurrentSpellPower += Value;
-						}
-						break;
-					case EffectOperator.SUB:
-						tags[Tag] -= Value;
-						break;
-					case EffectOperator.MUL:
-						tags[Tag] *= Value;
-						break;
-				}
 			}
 		}
 
@@ -260,17 +242,22 @@ namespace SabberStoneCore.Enchants
 			{
 				case EffectOperator.ADD:
 					entity[Tag] -= Value;
-					if (Tag == GameTag.SPELLPOWER)
-					{
-						((MinionInPlay) entity).SpellPower -= Value;
-						entity.Controller.CurrentSpellPower -= Value;
-					}
+					// if (Tag == GameTag.SPELLPOWER)
+					// {
+					// 	((MinionInPlay) entity).SpellPower -= Value;
+					// 	entity.Controller.CurrentSpellPower -= Value;
+					// }
 					return;
 				case EffectOperator.SUB:
 					entity[Tag] = entity.NativeTags[Tag] + Value;
 					return;
 				case EffectOperator.SET:
 					entity[Tag] = 0;		// unstable
+					entity.NativeTags.Remove(Tag);		// unstable
+					if (entity.Game.History)
+						entity.Game.PowerHistory.Add(
+							Kettle.PowerHistoryBuilder
+								.TagChange(entity.Id, Tag, entity.Card[Tag]));
 					return;
 			}
 		}

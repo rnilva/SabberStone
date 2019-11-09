@@ -1,4 +1,17 @@
-﻿using Xunit;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using Xunit;
 
 using System.Linq;
 using System.Collections.Generic;
@@ -401,7 +414,7 @@ namespace SabberStoneCoreTest.CardSets
 			Assert.Equal(4, game.CurrentOpponent.HandZone.Count);
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, minion1));
 			Assert.Equal(5, game.CurrentOpponent.HandZone.Count);
-			Assert.Equal(Race.BEAST, game.CurrentOpponent.HandZone[4].Card.Race);
+			Assert.True(game.CurrentOpponent.HandZone[4].Card.IsRace(Race.BEAST));
 		}
 
 		// ----------------------------------------- SPELL - HUNTER
@@ -4453,14 +4466,14 @@ namespace SabberStoneCoreTest.CardSets
 				public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 					in TaskStack stack = null)
 				{
-					if (!(source.Zone is BoardZone) || source[GameTag.SILENCED] == 1)
+					if (!(source.Zone is BoardZone) || source[GameTag.SILENCED] == 1 || (source.Card.AssetId != 38505))
 						return TaskState.STOP;
 
 					var spellToCast = (Spell) Entity.FromCard(source.Controller, _spellCard);
 
 					spellToCast.CardTarget = source.Id;
 
-					Generic.CastSpell.Invoke(source.Controller, spellToCast, (Character)source, 0, true);
+					Generic.CastSpell.Invoke(source.Controller, game, spellToCast, (Character)source, 0);
 					game.DeathProcessingAndAuraUpdate();
 
 					NumSpellCasted++;

@@ -1,4 +1,17 @@
-﻿using Xunit;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using Xunit;
 using SabberStoneCore.Config;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -1737,13 +1750,13 @@ namespace SabberStoneCoreTest.CardSets
 		}
 
 		// --------------------------------------- MINION - WARLOCK
-		// [GVG_018] Mistress of Pain - COST:2 [ATK:1/HP:4] 
+		// [GVG_018] Queen of Pain - COST:2 [ATK:1/HP:4] 
 		// - Race: demon, Set: pe1, Rarity: rare
 		// --------------------------------------------------------
 		// Text: Whenever this minion deals damage, restore that much Health to your hero.
 		// --------------------------------------------------------
 		[Fact(Skip = "ignore")]
-		public void MistressOfPain_GVG_018()
+		public void QueenOfPain_GVG_018()
 		{
 			// TODO MistressOfPain_GVG_018 test
 			var game = new Game(new GameConfig
@@ -1757,7 +1770,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//var testCard = game.CurrentPlayer.Draw(Cards.FromName("Mistress of Pain"));
+			//var testCard = game.CurrentPlayer.Draw(Cards.FromName("Queen of Pain"));
 		}
 
 		// --------------------------------------- MINION - WARLOCK

@@ -1,4 +1,17 @@
-﻿using System.Diagnostics;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System.Diagnostics;
 using System.Text;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
@@ -30,25 +43,11 @@ namespace SabberStoneCore.Tasks
 			TaskStack currentStack = stack ?? new TaskStack();
 
 			State = TaskState.RUNNING;
-			//TaskStack temp = Game.TaskStack;
-			//Game.TaskStack = Stack;
+
 			for (int i = 0; i < _tasks.Length; ++i)
-			{
-				//ISimpleTask current = _tasks[i];
-				//if (current is StateTaskList stacklist)
-				//	stacklist.Stack = Stack;
-				//else
-				//{
-				//	current.Game = Game;    
-				//	current.Controller = Controller;
-				//	current.Source = Source;
-				//	current.Target = Target;
-				//}
-
-
-				if (_tasks[i].Process(in game, in controller, in source, in target, in currentStack) != TaskState.COMPLETE)
+				if (_tasks[i].Process(in game, in controller, in source, in target, in currentStack) !=
+				    TaskState.COMPLETE)
 					break;
-			}
 
 			State = TaskState.COMPLETE;
 
@@ -60,6 +59,15 @@ namespace SabberStoneCore.Tasks
 		public static StateTaskList Chain(params ISimpleTask[] list)
 		{
 			return new StateTaskList(list);
+		}
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			for (int i = 0; i < _tasks.Length; i++)
+				sb.Append($"[{_tasks[i].GetType().Name}]");
+
+			return sb.ToString();
 		}
 
 		private string DebuggerDisplay

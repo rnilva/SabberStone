@@ -12,7 +12,7 @@ namespace SabberStoneCore.Auras
 	public class EnrageEffect : Aura
 	{
 		private bool _enraged;
-		private Playable _target;
+		private IPlayable _target;
 		private Enchantment _currentInstance;
 
 		public EnrageEffect(AuraType type, params IEffect[] effects) : base(type, effects)
@@ -24,7 +24,7 @@ namespace SabberStoneCore.Auras
 
 		}
 
-		private EnrageEffect(EnrageEffect prototype, Playable owner) : base(prototype, owner)
+		private EnrageEffect(EnrageEffect prototype, IPlayable owner) : base(prototype, owner)
 		{
 			_enraged = prototype._enraged;
 			Restless = true;            //	can cause performance issue; should replace with heal trigger ?
@@ -39,10 +39,10 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		public override void Activate(Playable owner, bool cloning = false)
+		public override void Activate(IPlayable owner, bool cloning = false)
 		{
 			//if (owner is Enchantment e)
-			//	owner = (Playable)e.Target;
+			//	owner = (IPlayable)e.Target;
 
 			var instance = new EnrageEffect(this, owner);
 
@@ -103,7 +103,7 @@ namespace SabberStoneCore.Auras
 				//if (_target != null)
 				//	for (int i = 0; i < Effects.Length; i++)
 				//		Effects[i].ApplyTo(_target.AuraEffects);
-				Generic.AddEnchantmentBlock.Invoke(m.Controller, EnchantmentCard, m, _target, 0, 0, false);
+				Generic.AddEnchantmentBlock(Game, EnchantmentCard, m, _target, 0, 0, 0);
 				if (Game.History)
 					_currentInstance = _target.AppliedEnchantments.Last();
 				_enraged = true;
@@ -112,12 +112,15 @@ namespace SabberStoneCore.Auras
 			{
 				if (m.Damage != 0) return;
 
+				for (int i = 0; i < EnchantmentCard.Power.Enchant.Effects.Length; i++)
+					EnchantmentCard.Power.Enchant.Effects[i].RemoveFrom(m);
+
 				_currentInstance?.Remove();
 				_enraged = false;
 			}
 		}
 
-		public override void Clone(Playable clone)
+		public override void Clone(IPlayable clone)
 		{
 			Activate(clone, true);
 		}

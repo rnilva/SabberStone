@@ -58,9 +58,9 @@ namespace SabberStoneCore.Auras
 			_owner = owner;
 		}
 
-		Playable IAura.Owner => _owner;
+		IPlayable IAura.Owner => _owner;
 
-		public void Activate(Playable owner)
+		public void Activate(IPlayable owner)
 		{
 			if (!(owner is Playable m))
 				throw new Exception($"Can't activate Adaptive Effect on non-Playable entity {owner}.");
@@ -98,9 +98,8 @@ namespace SabberStoneCore.Auras
 
 					if (_tag == GameTag.ATK)
 					{
-						Character c = (Character)_owner;
-						ATK.Effect(_operator, _lastValue).RemoveFrom(c);
-						ATK.Effect(_operator, value).ApplyTo(c);
+						ATK.Effect(_operator, _lastValue).RemoveFrom(_owner);
+						ATK.Effect(_operator, value).ApplyTo(_owner);
 					}
 					else
 					{
@@ -114,23 +113,17 @@ namespace SabberStoneCore.Auras
 
 					if (_tag == GameTag.ATK)
 					{
-						//if (!(_owner is Character c))
-						//{
-						//	if (_owner is Weapon)
-						//		c = _owner.Controller.Hero;
-						//	else
-						//		throw new Exception($"Can't apply ATK aura {this} to entity {_owner}");
-						//}
-
-						Character c = (Character) _owner;
-
-						if (_owner is Weapon)
-							c = _owner.Controller.Hero;
+						if (!(_owner is Character c))
+						{
+							if (_owner is Weapon)
+								c = _owner.Controller.Hero;
+							else
+								throw new Exception($"Can't apply ATK aura {this} to entity {_owner}");
+						}
 
 						if (_operator == EffectOperator.SET)
 						{
-							//c._modifiedATK = 0;
-							c.AttackDamage = 0;
+							c._modifiedATK = 0;
 							ATK.Effect(EffectOperator.ADD, _lastValue).RemoveAuraFrom(c);
 							value = value - (c.AuraEffects?.ATK ?? 0);
 							ATK.Effect(EffectOperator.ADD, value).ApplyAuraTo(c);
@@ -155,15 +148,14 @@ namespace SabberStoneCore.Auras
 				if (_isSwitching)
 				{
 					if (_tag == GameTag.ATK)
-						ATK.Effect(_operator, _lastValue).RemoveFrom((Character)_owner);
+						ATK.Effect(_operator, _lastValue).RemoveFrom(_owner);
 					else
 						new Effect(_tag, _operator, _lastValue).RemoveFrom(_owner);
 				}
 				else
 				{
 					if (_tag == GameTag.ATK)
-						ATK.Effect(_operator, _lastValue)
-							.RemoveAuraFrom(_owner is Weapon ? _owner.Controller.Hero : (Character) _owner);
+						ATK.Effect(_operator, _lastValue).RemoveAuraFrom(_owner is Weapon ? _owner.Controller.Hero : _owner);
 					else
 						new Effect(_tag, _operator, _lastValue).RemoveAuraFrom(_owner);
 				}
@@ -178,7 +170,7 @@ namespace SabberStoneCore.Auras
 			_on = false;
 		}
 
-		public void Clone(Playable clone)
+		public void Clone(IPlayable clone)
 		{
 			Activate(clone);
 		}

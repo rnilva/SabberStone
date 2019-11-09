@@ -1,4 +1,17 @@
-﻿using System.Collections.Generic;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
@@ -7,6 +20,8 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
+using SabberStoneCore.Triggers;
+
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
 
 namespace SabberStoneCore.CardSets
@@ -1004,7 +1019,7 @@ namespace SabberStoneCore.CardSets
 			// - AURA = 1
 			// --------------------------------------------------------
 			cards.Add("GVG_024", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.BoardZone.Any(m => m.Race == Race.MECHANICAL) ? 2 : 0)
+				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.BoardZone.Any(m => m.IsRace(Race.MECHANICAL)) ? 2 : 0)
 			});
 
 		}
@@ -1180,8 +1195,9 @@ namespace SabberStoneCore.CardSets
 		private static void Warlock(IDictionary<string, Power> cards)
 		{
 			// --------------------------------------- MINION - WARLOCK
-			// [GVG_018] Mistress of Pain - COST:2 [ATK:1/HP:4] 
+			// [GVG_018] Queen of Pain - COST:2 [ATK:1/HP:4] 
 			// - Race: demon, Set: gvg, Rarity: rare
+			// Renamed Queen of Pain 2019-07-01
 			// --------------------------------------------------------
 			// Text: <b>Lifesteal</b>
 			// --------------------------------------------------------
@@ -1558,7 +1574,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("GVG_013", new Power {
 				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD,
-					p => p.Controller.BoardZone.Any(m => m.Race == Race.MECHANICAL) ? 2 : 0)
+					p => p.Controller.BoardZone.Any(m => m.IsRace(Race.MECHANICAL)) ? 2 : 0)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +23,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class RandomCardTask : SimpleTask
 	{
-		private static readonly ConcurrentDictionary<int, Card[]> CachedCardLists =
-			new ConcurrentDictionary<int, Card[]>();
+		private static readonly ConcurrentDictionary<(int, CardClass), Card[]> CachedCardLists =
+			new ConcurrentDictionary<(int, CardClass), Card[]>();
 
 		private readonly CardSet _cardSet;
 		private readonly CardType _cardType;
@@ -21,7 +34,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private readonly Rarity _rarity;
 
 		private readonly EntityType _type;
-		private CardClass _cardClass;
+		private readonly CardClass _cardClass;
 
 
 		/// <summary>
@@ -78,15 +91,18 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
+			CardClass cardClass;
+
 			switch (_type)
 			{
 				case EntityType.HERO:
-					_cardClass = controller.HeroClass;
+					cardClass = controller.HeroClass;
 					break;
 				case EntityType.OP_HERO:
-					_cardClass = controller.Opponent.HeroClass;
+					cardClass = controller.Opponent.HeroClass;
 					break;
 				case EntityType.INVALID:
+					cardClass = _cardClass;
 					break;
 				default:
 					throw new NotImplementedException();
@@ -94,11 +110,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 
 			IReadOnlyList<Card> cardsList =
-				GetCardList(source, _cardType, _cardClass, _cardSet, _race, _rarity, _gameTagFilter);
+				GetCardList(source, _cardType, cardClass, _cardSet, _race, _rarity, _gameTagFilter);
 
 
 			Playable randomCard =
-				Entity.FromCard(_opposite ? controller.Opponent : controller, Util.Choose(cardsList));
+				Entity.FromCard(_opposite ? controller.Opponent : controller, cardsList.Choose(game.Random));
 			stack.Playables = new []{randomCard};
 
 			game.OnRandomHappened(true);
@@ -114,19 +130,19 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				? Cards.AllStandard
 				: Cards.AllWild;
 
-			if (!CachedCardLists.TryGetValue(source.Card.AssetId, out Card[] cardsList))
+			if (!CachedCardLists.TryGetValue((source.Card.AssetId, cardClass), out Card[] cardsList))
 			{
 				cardsList = cards.Where(p =>
 					(cardType == CardType.INVALID || p.Type == cardType) &&
 					(cardClass == CardClass.INVALID || p.Class == cardClass) &&
 					(cardSet == CardSet.INVALID || p.Set == cardSet) &&
-					(race == Race.INVALID || p.Race == race) &&
+					(race == Race.INVALID || p.IsRace(race)) &&
 					(rarity == Rarity.INVALID || p.Rarity == rarity) &&
 					(gameTagFilter == null ||
 					 Array.TrueForAll(gameTagFilter, gameTag => p.Tags.ContainsKey(gameTag))) &&
 					p[GameTag.QUEST] == 0).ToArray();
 
-				CachedCardLists.TryAdd(source.Card.AssetId, cardsList);
+				CachedCardLists.TryAdd((source.Card.AssetId, cardClass), cardsList);
 			}
 
 			return cardsList;

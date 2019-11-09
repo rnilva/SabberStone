@@ -1,4 +1,19 @@
-﻿using SabberStoneCore.Enums;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+
+using System;
+using SabberStoneCore.Enums;
 using SabberStoneCore.Exceptions;
 using SabberStoneCore.Model.Entities;
 using System.Collections.Generic;
@@ -16,7 +31,7 @@ namespace SabberStoneCore.Model.Zones
 		/// </summary>
 		public Spell Quest { get; set; }
 
-		public SecretZone(Controller controller)
+		public SecretZone(Controller controller) : base(Zone.SECRET, SecretZoneMaxSize)
 		{
 			Game = controller.Game;
 			Controller = controller;
@@ -27,11 +42,7 @@ namespace SabberStoneCore.Model.Zones
 			Quest = (Spell) zone.Quest?.Clone(c);
 		}
 
-		public override Zone Type => Zone.SECRET;
-
 		public override bool IsFull => _count == SecretZoneMaxSize;
-
-		public override int MaxSize => SecretZoneMaxSize;
 
 		public override void Add(Spell entity, int zonePosition = -1)
 		{
@@ -56,6 +67,11 @@ namespace SabberStoneCore.Model.Zones
 				: $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}' in position '{entity.ZonePosition}'."); 
 
 			//entity.OrderOfPlay = Game.NextOop;
+		}
+
+		public override void ChangeEntity(Spell oldEntity, Spell newEntity)
+		{
+			throw new NotImplementedException();
 		}
 
 		public override IEnumerator<Spell> GetEnumerator()

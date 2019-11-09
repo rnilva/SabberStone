@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Conditions;
@@ -53,33 +66,26 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (indices.Count == 0)
 				return TaskState.STOP;
 
-			int[] results = indices.ChooseNElements(amount);
+			int[] results = indices.ChooseNElements(amount, game.Random);
 
-			Playable[] entities = new Playable[results.Length];
+			IPlayable[] entities = new Playable[results.Length];
 			for (int i = 0; i < entities.Length; i++)
 				entities[i] = deck[results[i]];
 
 			if (indices.Count > amount)
 				game.OnRandomHappened(true);
 
-			List<Playable> playables = null;
-			if (_addToStack)
-				playables = new List<Playable>(entities.Length);
-
 			for (int i = 0; i < entities.Length; i++)
 			{
-				Playable p = entities[i];
-				Generic.RemoveFromZone.Invoke(controller, p);
-				Generic.SummonBlock(game, ref p, -1);
-
-				playables?.Add(p);
+				Generic.RemoveFromZone.Invoke(controller, entities[i]);
+				Generic.SummonBlock.Invoke(game, (Minion)entities[i], -1, source);
 
 				if (controller.BoardZone.IsFull)
 					break;
 			}
 
 			if (_addToStack)
-				stack.Playables = playables;
+				stack.Playables = entities;
 
 			return TaskState.COMPLETE;
 		}

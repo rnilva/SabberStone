@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -16,7 +16,6 @@ using System.Text;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 using System;
-using SabberStoneCore.Model.Zones;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 
@@ -108,7 +107,7 @@ namespace SabberStoneCore.Model
 		/// <summary>Gets or sets the next consecutive choice.</summary>
 		public Choice NextChoice { get; set;}
 
-		//internal IList<Playable> EntityStack { get; set; }
+		//internal IList<IPlayable> EntityStack { get; set; }
 		internal List<int> EntityStack { get; set; }
 
 		private readonly Card[][] _cardSets;
@@ -129,14 +128,14 @@ namespace SabberStoneCore.Model
 		{
 			if (_cardSets == null) return;
 
-			Card[] cards = DiscoverTask.GetChoices(_cardSets, 3);
+			Card[] cards = DiscoverTask.GetChoices(_cardSets, 3, Controller.Game.Random);
 			var choices = new List<int>(3);
 			foreach (Card card in cards)
-				choices.Add(Entity.FromCard(Controller, card, new EntityData
+				choices.Add(Entity.FromCard(Controller, card,  new EntityData
 				{
 					{GameTag.CREATOR, SourceId},
 					{GameTag.DISPLAYED_CREATOR, SourceId}
-				}, Controller.SetasideZone).Id);
+				},Controller.SetasideZone).Id);
 
 			Choices = choices;
 		}

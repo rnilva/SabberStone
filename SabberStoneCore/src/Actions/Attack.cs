@@ -1,9 +1,22 @@
-﻿using System;
-using SabberStoneCore.Enchants;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Triggers;
 
 namespace SabberStoneCore.Actions
 {
@@ -11,7 +24,7 @@ namespace SabberStoneCore.Actions
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
 		public static Func<Controller, Character, Character, bool, bool> AttackBlock
-			=> delegate (Controller c, Character source, Character target, bool skipPrePhase)
+			=> delegate (Controller c, Character source, Character target, bool skipPrePhase, bool skipDeathPhase)
 			{
 				Game g = c.Game;
 
@@ -39,12 +52,13 @@ namespace SabberStoneCore.Actions
 					return false;
 				}
 				Trigger.ValidateTriggers(g, source, SequenceType.Target);
-				if (!AttackPhase.Invoke(c, source, target))
+				if (!AttackPhase.Invoke(c, source, target, skipDeathPhase))
 				{
 					// end block
 					if (g.History)
 						g.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
-					g.DeathProcessingAndAuraUpdate();
+					if (!skipDeathPhase)
+						g.DeathProcessingAndAuraUpdate();
 					g.CurrentEventData = null;
 					return false;
 				}
@@ -57,8 +71,8 @@ namespace SabberStoneCore.Actions
 				g.ProcessTasks();
 				g.TaskQueue.EndEvent();
 
-
-				g.DeathProcessingAndAuraUpdate();
+				if (!skipDeathPhase)
+					g.DeathProcessingAndAuraUpdate();
 				g.CurrentEventData = null;
 				g.NextStep = Step.MAIN_ACTION;
 
@@ -129,7 +143,7 @@ namespace SabberStoneCore.Actions
 			};
 
 		private static Func<Controller, Character, Character, bool> AttackPhase
-			=> delegate (Controller c, Character source, Character target)
+			=> delegate (Controller c, Character source, Character target, bool noExhaustion)
 			{
 				Game game = c.Game;
 				var hero = source as HeroInPlay;
@@ -218,8 +232,9 @@ namespace SabberStoneCore.Actions
 					c.NumFriendlyMinionsThatAttackedThisTurn++;
 
 				// set exhausted ...
-				if (numAtk > 0 && !source.HasWindfury ||
-					numAtk > 1 && source.HasWindfury)
+				if (!noExhuastion && 
+                    (numAtk > 0 && !source.HasWindfury ||
+					numAtk > 1 && source.HasWindfury))
 				{
 					game.Log(LogLevel.INFO, BlockType.ATTACK, "AttackPhase", !game.Logging? "":$"{source} is now exhausted.");
 					source.IsExhausted = true;

@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -185,8 +198,8 @@ namespace SabberStoneCore.Model.Entities
 			{
 				if (buckets[i] > 0)
 				{
-					//if (buckets[i] == k)
-					//	;
+					if (buckets[i] == k)
+						throw new Exceptions.EntityException($"Tag {t} has already been added.");
 					continue;
 				}
 				buckets[i] = k;
@@ -199,8 +212,8 @@ namespace SabberStoneCore.Model.Entities
 			{
 				if (buckets[i] > 0)
 				{
-					//if (buckets[i] == k)
-					//	;
+					if (buckets[i] == k)
+						throw new Exceptions.EntityException($"Tag {t} has already been added.");
 					continue;
 				}
 				buckets[i] = k;
@@ -364,8 +377,8 @@ namespace SabberStoneCore.Model.Entities
 						break;
 					}
 
-					if (flag)
-						continue;
+				if (flag)
+					continue;
 
 					for (int j = 0; j < newHash; j += 2)
 					{
@@ -392,7 +405,7 @@ namespace SabberStoneCore.Model.Entities
 				int[] buckets = _buckets;
 				for (int i = 0, j = 0; i < buckets.Length; i += 2)
 				{
-					if (buckets[i] < 0) continue;
+					if (buckets[i] <= 0) continue;
 					tags[j] = (GameTag)buckets[i];
 					++j;
 				}
@@ -409,7 +422,7 @@ namespace SabberStoneCore.Model.Entities
 				int[] buckets = _buckets;
 				for (int i = 0, j = 0; i < buckets.Length; i += 2)
 				{
-					if (buckets[i] < 0) continue;
+					if (buckets[i] <= 0) continue;
 					values[j] = buckets[i + 1];
 					++j;
 				}
@@ -466,52 +479,31 @@ namespace SabberStoneCore.Model.Entities
 		#endregion
 
 		/// <summary>Resets all tags from the container.</summary>
-		public void Reset(/*Dictionary<GameTag, int> tags = null*/)
+		public void Reset()
 		{
-			// Remove except entity_id and controller
+			// Remove except entity_id, zone and controller
 			int[] buckets = _buckets;
-			int count = 0;
+			int k = 0;
+			Span<int> buffer = stackalloc int[6];
 			for (int i = 0; i < buckets.Length; i += 2)
 			{
-				if (buckets[i] == (int)GameTag.ENTITY_ID || buckets[i] == (int)GameTag.CONTROLLER)
+				GameTag key = (GameTag) buckets[i];
+				if (key == GameTag.ENTITY_ID ||
+				    key == GameTag.CONTROLLER ||
+				    key == GameTag.ZONE)
 				{
-					count++;
-					continue;
+					buffer[k++] = (int)key;
+					buffer[k++] = buckets[i + 1];
 				}
+
 
 				buckets[i] = -1;
 			}
 
-			_count = count;
+			_count = 0;
 
-
-
-			////Tags = tags ?? new Dictionary<GameTag, int>(Enum.GetNames(typeof(GameTag)).Length);
-			////Remove(GameTag.DAMAGE);
-			//Remove(GameTag.PREDAMAGE);
-			//Remove(GameTag.ZONE_POSITION);
-			//Remove(GameTag.EXHAUSTED);
-			////Remove(GameTag.JUST_PLAYED);
-			////Remove(GameTag.SUMMONED);
-			////Remove(GameTag.ATTACKING);
-			////Remove(GameTag.DEFENDING);
-			////Remove(GameTag.ATK);
-			////Remove(GameTag.HEALTH);
-			//Remove(GameTag.COST);
-			//Remove(GameTag.TAUNT);
-			//Remove(GameTag.FROZEN);
-			//Remove(GameTag.ENRAGED);
-			//Remove(GameTag.CHARGE);
-			//Remove(GameTag.WINDFURY);
-			//Remove(GameTag.DIVINE_SHIELD);
-			//Remove(GameTag.STEALTH);
-			//Remove(GameTag.DEATHRATTLE);
-			//Remove(GameTag.BATTLECRY);
-			//Remove(GameTag.SILENCED);
-			//Remove(GameTag.NUM_ATTACKS_THIS_TURN);
-			//Remove(GameTag.NUM_TURNS_IN_PLAY);
-			//Remove(GameTag.ATTACKABLE_BY_RUSH);
-			//Remove(GameTag.GHOSTLY);
+			for (int i = 0; i < k; i += 2)
+				Insert((GameTag) buffer[i], buffer[i + 1]);
 		}
 
 		/// <summary>
@@ -538,34 +530,33 @@ namespace SabberStoneCore.Model.Entities
 		{
 			return Hash();
 		}
-
-		private unsafe struct Initialiser
-		{
-			public const int SIZE = 1024;
+        
+        private unsafe struct Initialiser
+        {
+            public const int SIZE = 1024;
 #pragma warning disable 649
-			public fixed int Space[SIZE];
-			public static Initialiser Get;
+            public fixed int Space[SIZE];
+            public static Initialiser Get;
 #pragma warning restore 649
 
 
 
-			static Initialiser()
-			{
-				for (int i = 0; i < SIZE; i++)
-					Get.Space[i] = -1;
-			}
-		}
+            static Initialiser()
+            {
+                for (int i = 0; i < SIZE; i++)
+                    Get.Space[i] = -1;
+            }
+        }
 
-		private struct S256Bit
-		{
+        private struct S256Bit
+        {
 #pragma warning disable 169
-			private long a;
-			private long b;
-			private long c;
-			private long d;
+            private long a;
+            private long b;
+            private long c;
+            private long d;
 #pragma warning restore 169
-		}
-
+        }
 	}
 }
 

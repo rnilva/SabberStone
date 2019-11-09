@@ -2,13 +2,12 @@
 using SabberStoneCore.Model.Entities;
 using System.Collections.Generic;
 using SabberStoneCore.Enchants;
-using SabberStoneCore.Tasks.SimpleTasks;
 
 namespace SabberStoneCore.Actions
 {
 	public partial class Generic
 	{
-		public static Playable Copy(in Controller controller, in Entity creator, in Playable source, Zone targetZone, int zonePosition = -1)
+		public static IPlayable Copy(in Controller controller, in IEntity creator, in IPlayable source, Zone targetZone, bool deathrattle = false)
 		{
 			// Determine whether enchantments should be also copied.
 			// Whenever a card moves forward in that flow (Deck -> Hand, Hand -> Play, Deck -> Play),
@@ -44,34 +43,31 @@ namespace SabberStoneCore.Actions
 					[GameTag.DISPLAYED_CREATOR] = creator.Id
 				};
 
-				if (targetZone == Zone.PLAY)
-				{
-					MinionInPlay mip = MinionInPlay.FromCard(in controller, source.Card, tags);
-					if (sourceZone == Zone.PLAY)
-						mip.CopyAttributesFrom((MinionInPlay) source);
-					else
-					{
-						mip._v1 = source._v1;
-						mip._v2 = source._v2;
-					}
-					copiedEntity = mip;
-				}
-				else
-				{
-					copiedEntity = Entity.FromCard(in controller, source.Card, tags);
+                if (targetZone == Zone.PLAY)
+                {
+                    MinionInPlay mip = MinionInPlay.FromCard(in controller, source.Card, tags);
+                    if (sourceZone == Zone.PLAY)
+                        mip.CopyAttributesFrom((MinionInPlay) source);
+                    else
+                    {
+                        mip._v1 = source._v1;
+                        mip._v2 = source._v2;
+                    }
+                    copiedEntity = mip;
+                }
+                else
+                {
+                    copiedEntity = Entity.FromCard(in controller, source.Card, tags);
 
-					copiedEntity._v1 = source._v1;
-					copiedEntity._v2 = source._v2;
-					int? modifiedCost = source._modifiedCost;
+                    copiedEntity._v1 = source._v1;
+                    copiedEntity._v2 = source._v2;
+                    int? modifiedCost = source._modifiedCost;
 
-					if (modifiedCost.HasValue)
-						copiedEntity.Cost = modifiedCost.Value;
-				}
+                    if (modifiedCost.HasValue)
+                        copiedEntity.Cost = modifiedCost.Value;
+                }
 
-				//if (copiedEntity is Character c)
-				//	((Character) source).CopyInternalAttributes(in c);
-
-				if (source.AppliedEnchantments != null)
+                if (source.AppliedEnchantments != null)
 				{
 					foreach (Enchantment e in source.AppliedEnchantments)
 					{
@@ -81,18 +77,17 @@ namespace SabberStoneCore.Actions
 							instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
 							if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
 								instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
-
-							instance.CapturedCard = e.CapturedCard;
 						}
+						instance.CapturedCard = e.CapturedCard;
 
 						if (e.IsOneTurnActive)
 							instance.Game.OneTurnEffectEnchantments.Add(instance);
 					}
-
+					
 				}
 
-				var kvps = new KeyValuePair<GameTag, int>[source.NativeTags.Count];
-				source.NativeTags.CopyTo(kvps, 0);
+				//var kvps = new KeyValuePair<GameTag, int>[source.NativeTags.Count];
+				//source.NativeTags.CopyTo(kvps, 0);
 
 				//for (int i = 0; i < kvps.Length; i++)
 				//{
@@ -123,14 +118,6 @@ namespace SabberStoneCore.Actions
 						oneTurnEffects.Add((copiedEntity.Id, effect));
 				}
 			}
-			else if
-				(targetZone == Zone.DECK)
-			{
-				copiedEntity = Entity.FromCard(in controller, source.Card);
-				ShuffleIntoDeck(controller, creator, copiedEntity);
-				return copiedEntity;
-				// TODO: Add tag
-			}
 			else
 			{
 				copiedEntity = Entity.FromCard(in controller, source.Card);
@@ -146,7 +133,14 @@ namespace SabberStoneCore.Actions
 					Generic.ShuffleIntoDeck.Invoke(controller, creator, copiedEntity);
 					break;
 				case Zone.PLAY:
-					Generic.SummonBlock(controller.Game, ref copiedEntity, zonePosition);
+					int position = -1;
+					if (deathrattle)
+					{
+						position = ((Minion) source).LastBoardPosition;
+						if (position > controller.BoardZone.Count)
+							position = controller.BoardZone.Count;
+					}
+					Generic.SummonBlock.Invoke(controller.Game, (Minion) copiedEntity, position, creator);
 					break;
 				case Zone.SETASIDE:
 					controller.SetasideZone.Add(copiedEntity);

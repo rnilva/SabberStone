@@ -1,4 +1,17 @@
-﻿namespace SabberStoneCore.Enums
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+namespace SabberStoneCore.Enums
 {
 	/// <summary> Events in Hearthstone. </summary>
 	public enum TriggerType
@@ -13,7 +26,7 @@
 		TURN_START,
 		/// <summary> The effect will be triggered when a minion dies. </summary>
 		DEATH,
-		/// <summary> The effect will be triggered when a player uses Hero Power. </summary>
+		/// <summary> The effect will be triggered after a player uses Hero Power. </summary>
 		INSPIRE,
 		/// <summary> The effect will be triggered when a character is damaged. </summary>
 		DEAL_DAMAGE,
@@ -69,6 +82,7 @@
 		/// <summary> The effect will be triggered when a card is shuffled into a deck. </summary>
 		SHUFFLE_INTO_DECK,
 
+		OVERLOAD,
 
 		WORGEN_TRANSFORM
 	}
@@ -94,7 +108,8 @@
 		HERO_POWER,
 		FRIENDLY_SPELL_CASTED_ON_THE_OWNER,
 		FRIENDLY_SPELL_CASTED_ON_OWN_MINIONS,
-		FRIENDLY_EVENT_SOURCE
+		FRIENDLY_EVENT_SOURCE,
+		ADJACENT_TO_THE_OWNER
 	}
 
 	/// <summary>

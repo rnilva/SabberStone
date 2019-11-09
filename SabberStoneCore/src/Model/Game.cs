@@ -1,4 +1,17 @@
-﻿using SabberStoneCore.Actions;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using SabberStoneCore.Actions;
 using SabberStoneCore.Config;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
@@ -14,6 +27,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Auras;
+using SabberStoneCore.Triggers;
 
 // TODO check if event should be removed
 // TODO ... spellbender phase ??? and spell text ? wtf .. did you forget them???
@@ -40,7 +54,7 @@ namespace SabberStoneCore.Model
 		/// <summary>
 		/// The entityID of the game itself is always 1.
 		/// </summary>
-		internal const int GAME_ENTITYID = 1;
+		public const int GAME_ENTITYID = 1;
 
 		/// <summary>
 		/// The maximum minions that are allowed on the board.
@@ -95,6 +109,9 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		/// <value>The index of the next clone.</value>
 		public int NextCloneIndex { get; set; } = 1;
+		internal Util.DeepCloneableRandom Random { get; set; }
+
+		public void SetRandomSeed(long seed) => Random.SetSeed(seed);
 
 		///// <summary>
 		///// Gets or sets the list of splitted (and fully resolved) games, derived from this game.
@@ -166,7 +183,7 @@ namespace SabberStoneCore.Model
 		/// This object facilitates building POWER blocks to send to the hearthstone client.
 		/// </summary>
 		/// <value><see cref="Kettle.PowerHistory"/></value>
-		public PowerHistory PowerHistory { get; set; } = new PowerHistory();
+		public PowerHistory PowerHistory { get; }
 
 		/// <summary>Gets a value indicating whether this <see cref="Game"/> has Power History 
 		/// building enabled.
@@ -209,31 +226,31 @@ namespace SabberStoneCore.Model
 		///// <summary>
 		///// Gets the dictionary containing all generated entities for this game.
 		///// </summary>
-		///// <value><see cref="Playable"/></value>
+		///// <value><see cref="IPlayable"/></value>
 		public EntityList IdEntityDic { get; private set; }
 
 		/// <summary>
 		/// Gets the dictionary containing all generated choice sets for this game.
 		/// </summary>
 		/// <value><see cref="PowerEntityChoices"/></value>
-		public Dictionary<int, PowerEntityChoices> EntityChoicesMap { get; } = new Dictionary<int, PowerEntityChoices>();
+		public Dictionary<int, PowerEntityChoices> EntityChoicesMap { get; }
 
 		/// <summary>
 		/// Gets all the dictionary containing all generated option sets for this game.
 		/// </summary>
 		/// <value><see cref="PowerAllOptions"/></value>
-		public Dictionary<int, PowerAllOptions> AllOptionsMap { get; } = new Dictionary<int, PowerAllOptions>();
+		public Dictionary<int, PowerAllOptions> AllOptionsMap { get; }
 
 		/// <summary>
 		/// Gets or sets the collection of log entries.
 		/// </summary>
 		/// <value><see cref="LogEntry"/></value>
-		public Queue<LogEntry> Logs { get; set; } = new Queue<LogEntry>();
+		public Queue<LogEntry> Logs { get; }
 
 		/// <summary>Initializes a new instance of the <see cref="Game"/> class.</summary>
 		/// <param name="gameConfig">The game configuration.</param>
 		/// <param name="setupHeroes"></param>
-		public Game(in GameConfig gameConfig, bool setupHeroes = true)
+		public Game(GameConfig gameConfig, bool setupHeroes = true)
 			: base(null, Card.CardGame, new EntityData
 			{
 				[GameTag.ENTITY_ID] = GAME_ENTITYID,
@@ -241,33 +258,38 @@ namespace SabberStoneCore.Model
 				[GameTag.CARDTYPE] = (int)CardType.GAME
 			})
 		{
-			//IdEntityDic = new Dictionary<int, Playable>(75);
+			Random = gameConfig.RandomSeed is null ?
+				new Util.DeepCloneableRandom() :
+				new Util.DeepCloneableRandom(gameConfig.RandomSeed.Value);
 			IdEntityDic = new EntityList(75);
-			History = gameConfig.History;
-			Logging = gameConfig.Logging;
-			Game = this;
 			_gameConfig = gameConfig;
-			_attrs = new GameAttributes();
-			Auras = new List<IAura>();
-			Triggers = new List<Trigger>();
-			//GamesEventManager = new GameEventManager(this);
-			//_characters = new Character[CHARACTERS_LENGTH];
+            _attrs = new GameAttributes();
+			Game = this;
+            Auras = new List<IAura>();
 
-			EntityData p1Dict = gameConfig.History
+			bool history = gameConfig.History;
+			if (gameConfig.Logging)
+				Logs = new Queue<LogEntry>();
+
+			EntityData p1Dict = history
 				? new EntityData(64)
 				{
 					//[GameTag.HERO_ENTITY] = heroId,
-					[GameTag.MAXHANDSIZE] = 10,
+					[GameTag.MAXHANDSIZE] = Controller.MaxHandSize,
 					[GameTag.STARTHANDSIZE] = 4,
 					[GameTag.PLAYER_ID] = 1,
 					[GameTag.TEAM_ID] = 1,
 					[GameTag.ZONE] = (int) SabberStoneCore.Enums.Zone.PLAY,
 					[GameTag.CONTROLLER] = 1,
-					[GameTag.MAXRESOURCES] = 10,
+					[GameTag.MAXRESOURCES] = Controller.MaxResources,
 					[GameTag.CARDTYPE] = (int) CardType.PLAYER
 				}
-				: new EntityData();
-			EntityData p2Dict = gameConfig.History
+				: new EntityData(64)
+				{
+					{GameTag.MAXRESOURCES, 10},
+					{GameTag.MAXHANDSIZE, 10}
+				};
+			EntityData p2Dict = history
 				? new EntityData(64)
 				{
 					//[GameTag.HERO_ENTITY] = heroId,
@@ -280,16 +302,25 @@ namespace SabberStoneCore.Model
 					[GameTag.MAXRESOURCES] = 10,
 					[GameTag.CARDTYPE] = (int) CardType.PLAYER
 				}
-				: new EntityData();
-			Player1 = new Controller(this, gameConfig.Player1Name, 1, 2, p1Dict);
-			Player2 = new Controller(this, gameConfig.Player2Name, 2, 3, p2Dict);
+				: new EntityData(64)
+				{
+					{GameTag.MAXRESOURCES, 10},
+					{GameTag.MAXHANDSIZE, 10}
+				};
+			_players[0] = new Controller(this, gameConfig.Player1Name, 1, 2, p1Dict);
+			_players[1] = new Controller(this, gameConfig.Player2Name, 2, 3, p2Dict);
 
 			Player1.Opponent = Player2;
 			Player2.Opponent = Player1;
 
 			// add power history create game
-			if (History)
-				PowerHistory.Add(PowerHistoryBuilder.CreateGame(this, new []{Player1, Player2}));
+			if (history)
+			{
+				EntityChoicesMap = new Dictionary<int, PowerEntityChoices>();
+				AllOptionsMap = new Dictionary<int, PowerAllOptions>();
+				PowerHistory = new PowerHistory();
+				PowerHistory.Add(PowerHistoryBuilder.CreateGame(this, _players));
+			}
 
 			if (setupHeroes)
 			{
@@ -306,36 +337,52 @@ namespace SabberStoneCore.Model
 			OneTurnEffects = new List<(int, IEffect)>();
 			OneTurnEffectEnchantments = new List<Enchantment>();
 
-			if (!_gameConfig.Shuffle)
+			if (!gameConfig.Shuffle && !gameConfig.DrawWithRandom)
 			{
-				_gameConfig.Player1Deck?.Reverse();
-				_gameConfig.Player2Deck?.Reverse();
+				gameConfig.Player1Deck?.Reverse();
+				gameConfig.Player2Deck?.Reverse();
 			}
 
-			if (_gameConfig.Player1Deck != null)
+			// setting up the decks ...
+			gameConfig.Player1Deck?.ForEach(p =>
 			{
-				Player1.DeckCards = new List<Card>(_gameConfig.Player1Deck);
-				Player1.DeckZone.Setup(this, _gameConfig.Player1Deck);
-			}
-			if (_gameConfig.Player2Deck != null)
+				Player1.DeckCards.Add(p);
+				FromCard(Player1, p, null, Player1.DeckZone);
+			});
+			gameConfig.Player2Deck?.ForEach(p =>
 			{
-				Player2.DeckCards = new List<Card>(_gameConfig.Player2Deck);
-				Player2.DeckZone.Setup(this, _gameConfig.Player2Deck);
-			}
-
-			if (_gameConfig.FillDecks)
+				Player2.DeckCards.Add(p);
+				FromCard(Player2, p, null, Player2.DeckZone);
+			});
+			if (gameConfig.FillDecks)
 			{
 				Player1.DeckZone.Fill(_gameConfig.FillDecksPredictably ? GameConfig.UnPredictableCardIDs : null);
 				Player2.DeckZone.Fill(_gameConfig.FillDecksPredictably ? GameConfig.UnPredictableCardIDs : null);
 			}
+
+			if (gameConfig.DrawWithRandom)
+			{
+				gameConfig.Shuffle = false;
+				_players[0].DeckZone.DrawWithRandom = true;
+				_players[1].DeckZone.DrawWithRandom = true;
+			}
 		}
 
 		/// <summary> A copy constructor. </summary>
-		private Game(Game game, bool logging = false) : base(null, game)
+		private Game(Game game, bool logging, bool resetRandomSeed) : base(null, game)
 		{
 			//IdEntityDic = new Dictionary<int, Playable>(game.IdEntityDic.Count);
 			IdEntityDic = new EntityList(game.IdEntityDic.Capacity);
 			Game = this;
+
+			if (logging)
+				Logs = new Queue<LogEntry>();	// Logs are not cloned.
+			if (game.History)
+			{
+				PowerHistory = new PowerHistory();
+				EntityChoicesMap = new Dictionary<int, PowerEntityChoices>();
+				AllOptionsMap = new Dictionary<int, PowerAllOptions>();
+			}
 
 			TaskQueue = new TaskQueue(this);
 			TriggerManager = new TriggerManager(this);
@@ -355,6 +402,8 @@ namespace SabberStoneCore.Model
 
 			CloneIndex = game.CloneIndex + $"[{game.NextCloneIndex++}]";
 
+			Random = resetRandomSeed ? new Util.DeepCloneableRandom() : game.Random.Clone();
+
 			Player1 = game.Player1.Clone(this);
 			Player2 = game.Player2.Clone(this);
 			Player1.Opponent = Player2;
@@ -368,7 +417,7 @@ namespace SabberStoneCore.Model
 				aura.Clone(IdEntityDic[aura.Owner.Id]);
 			}
 
-			SetIndexer(game._idIndex, game._oopIndex);
+            SetIndexer(game._idIndex, game._oopIndex);
 		}
 
 		///// <summary>Method which is called when an entity wants to notify that one of it's tags changed value.</summary>
@@ -418,7 +467,7 @@ namespace SabberStoneCore.Model
 			Log(LogLevel.INFO, BlockType.PLAY, "Game", !Logging ? "" : gameTask.FullPrint());
 
 			// clear last power history
-			PowerHistory.Last.Clear();
+			PowerHistory?.Last.Clear();
 
 			// make sure that we only use task for this game ...
 			if (gameTask.Game != this)
@@ -512,8 +561,13 @@ namespace SabberStoneCore.Model
 		/// <summary>
 		/// Part of the state machine.
 		/// Runs when STATE = RUNNING.
+		/// First player is determined here.
+		/// For true <paramref name="stopBeforeShuffling"/> the order of cards in decks
+		/// and the first hands of both players are determined too.
 		/// </summary>
-		public void StartGame()
+		/// <param name="stopBeforeShuffling">true if you want to start shuffling
+		/// and drawing cards later.</param>
+		public void StartGame(bool stopBeforeShuffling = false)
 		{
 			Log(LogLevel.INFO, BlockType.PLAY, "Game", !Logging ? "" : "Starting new game now!");
 
@@ -546,6 +600,9 @@ namespace SabberStoneCore.Model
 
 			// triggers Start of Game triggers (but does not process tasks here)
 			TriggerManager.OnGameStartTrigger();
+
+			if (stopBeforeShuffling)
+				return;
 
 			// set next step
 			NextStep = Step.BEGIN_FIRST;
@@ -769,18 +826,20 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		public void MainRessources()
 		{
+			Controller c = CurrentPlayer;
+
 			// adding manacrystal to next player
-			Generic.ChangeManaCrystal.Invoke(CurrentPlayer, 1, false);
+			Generic.ChangeManaCrystal.Invoke(c, 1, false);
 
 			// clear used mana
-			CurrentPlayer.UsedMana = 0;
+			c.UsedMana = 0;
 
 			// remove temp mana
-			CurrentPlayer.TemporaryMana = 0;
+			c.TemporaryMana = 0;
 
 			// overload
-			CurrentPlayer.OverloadLocked = CurrentPlayer.OverloadOwed;
-			CurrentPlayer.OverloadOwed = 0;
+			c.OverloadLocked = c.OverloadOwed;
+			c.OverloadOwed = 0;
 
 			//// set next step
 			//NextStep = Step.MAIN_DRAW;
@@ -885,14 +944,19 @@ namespace SabberStoneCore.Model
 
 
 			// Removing one-turn-effects
-			for (int i = 0; i < OneTurnEffects.Count; i++)
+			if (OneTurnEffectEnchantments.Count > 0)
 			{
-				Playable p = IdEntityDic[OneTurnEffects[i].entityId];
-				OneTurnEffects[i].effect.RemoveFrom(p);
+				List<Enchantment> enchantments = OneTurnEffectEnchantments;
+				for (int i = enchantments.Count - 1; i >= 0; --i)
+					enchantments[i].Remove();	
 			}
-			OneTurnEffects.Clear();
-			for (int i = OneTurnEffectEnchantments.Count - 1; i >= 0; --i)
-				OneTurnEffectEnchantments[i].Remove();
+			if (OneTurnEffects.Count > 0)
+			{
+				foreach ((int id, IEffect eff) in OneTurnEffects)
+					eff.RemoveFrom(IdEntityDic[id]);
+				
+				OneTurnEffects.Clear();
+			}
 
 
 			// After a player ends their turn (just before the next player's Start of
@@ -1114,6 +1178,8 @@ namespace SabberStoneCore.Model
 				ResolveDeadHeroes.Invoke();
 				ResolveDeadHeroes = null;
 
+				if (State == State.COMPLETE)
+					return;
 				NextStep = Step.FINAL_WRAPUP;
 				FinalWrapUp();
 			}
@@ -1136,6 +1202,7 @@ namespace SabberStoneCore.Model
 		internal void ProcessTasks()
 		{
 			TaskQueue queue = TaskQueue;
+			queue.ResumePendingTasks();
 			while (!queue.IsEmpty)
 			{
 				if (queue.Process() != TaskState.COMPLETE)
@@ -1158,6 +1225,7 @@ namespace SabberStoneCore.Model
 			// Summon Resolution Step
 			if (TriggerManager.HasOnSummonTrigger)
 			{
+				List<Minion> minions = SummonedMinions;
 				TaskQueue.StartEvent();
 				for (int i = 0; i < SummonedMinions.Count; i++)
 					TriggerManager.OnSummonTrigger(SummonedMinions[i], true);
@@ -1183,9 +1251,9 @@ namespace SabberStoneCore.Model
 		/// Performs a deep copy of this game instance and returns the result.
 		/// </summary>
 		/// <returns></returns>
-		public Game Clone(bool logging = false)
+		public Game Clone(bool logging = false, bool resetRandomSeed = true)
 		{
-			return new Game(this, logging);
+			return new Game(this, logging, resetRandomSeed);
 		}
 
 		/// <summary>Builds and stores a logentry, from the specified log message.</summary>
@@ -1301,7 +1369,6 @@ namespace SabberStoneCore.Model
 		/// <value><see cref="Controller"/></value>
 		public Controller CurrentPlayer
 		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _currentPlayer;
 			private set
 			{

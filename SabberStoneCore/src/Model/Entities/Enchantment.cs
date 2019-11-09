@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +20,7 @@ using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model.Zones;
+using SabberStoneCore.Triggers;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -24,8 +38,7 @@ namespace SabberStoneCore.Model.Entities
 
 		}
 
-		private Enchantment(in Controller c, in Enchantment e)
-			: base(in c, e)
+		private Enchantment(in Controller c, in Enchantment e) : base(in c, e)
 		{
 			//Game = c.Game;
 			//Card = e.Card;
@@ -81,23 +94,7 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		//public new Controller Controller
-		//{
-		//	get => _controller ?? (_controller = Game.ControllerById(_controllerId));
-		//	set
-		//	{
-		//		_controllerId = value.Id;
-		//		_controller = value;
-		//	}
-		//}
-
-		//public IAura OngoingEffect
-		//{
-		//	get => _ongoingEffect;
-		//	set => _ongoingEffect = value;
-		//}
-
-		public bool IsOneTurnActive => Card[GameTag.TAG_ONE_TURN_EFFECT] == 1;
+		public bool IsOneTurnActive { get; private set; }
 
 		public int ScriptTag1 => this[GameTag.TAG_SCRIPT_DATA_NUM_1];
 
@@ -111,7 +108,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="target">The entity who is subjected to the enchantment.</param>
 		/// <param name="card">The card from which the enchantment must be derived.</param>
 		/// <returns>The resulting enchantment entity.</returns>
-		public static Enchantment GetInstance(in Controller controller, in Playable creator, in Entity target, in Card card)
+		public static Enchantment GetInstance(in Controller controller, in Playable creator, in Entity target, in Card card, int num1 = 0, int num2 = 0)
 		{
 			int id = controller.Game.NextId;
 
@@ -133,9 +130,9 @@ namespace SabberStoneCore.Model.Entities
 
 			if (controller.Game.History)
 			{
-				//tags.Add(GameTag.ENTITY_ID, id);
-				//tags.Add(GameTag.CONTROLLER, controller.PlayerId);
+				tags.Add(GameTag.ENTITY_ID, id);
 				tags.Add(GameTag.ZONE, (int)Enums.Zone.SETASIDE);
+				tags.Add(GameTag.CONTROLLER, controller.PlayerId);
 
 				controller.Game.PowerHistory.Add(new PowerHistoryFullEntity
 				{
@@ -148,40 +145,29 @@ namespace SabberStoneCore.Model.Entities
 
 				if (!(target.Zone is DeckZone))
 				{
+					var gameTags = new Dictionary<GameTag, int>
+					{
+						{GameTag.CONTROLLER, controller.PlayerId},
+						{GameTag.CARDTYPE, (int) CardType.ENCHANTMENT},
+						{GameTag.ATTACHED, target.Id},
+						{GameTag.DAMAGE, 0},
+						{GameTag.ZONE, (int) Enums.Zone.SETASIDE},
+						{GameTag.ENTITY_ID, instance.Id},
+						{GameTag.ZONE_POSITION, 0},
+						{GameTag.CREATOR, creator.Id},
+						{GameTag.TAG_LAST_KNOWN_COST_IN_HAND, 0}
+						//	CREATOR_DBID
+						//	479
+					};
+					if (card[GameTag.TAG_ONE_TURN_EFFECT] == 1)
+						gameTags.Add(GameTag.TAG_ONE_TURN_EFFECT, 1);
 					controller.Game.PowerHistory.Add(new PowerHistoryShowEntity
 					{
 						Entity = new PowerHistoryEntity
 						{
 							Id = instance.Id,
 							Name = instance.Card.Name,
-							Tags = new Dictionary<GameTag, int>
-							{
-								{GameTag.CONTROLLER, controller.PlayerId},
-								{GameTag.CARDTYPE, (int) CardType.ENCHANTMENT},
-								{GameTag.PREMIUM, creator[GameTag.PREMIUM]},
-								{GameTag.ATTACHED, target.Id},
-								{GameTag.DAMAGE, 0},
-								{GameTag.ZONE, (int) Enums.Zone.SETASIDE},
-								{GameTag.ENTITY_ID, instance.Id},
-								{GameTag.SILENCE, 0},
-								{GameTag.WINDFURY, 0},
-								{GameTag.TAUNT, 0},
-								{GameTag.STEALTH, 0},
-								{GameTag.DIVINE_SHIELD, 0},
-								{GameTag.CHARGE, 0},
-								{GameTag.FROZEN, 0},
-								{GameTag.ZONE_POSITION, 0},
-								{GameTag.NUM_ATTACKS_THIS_TURN, 0},
-								{GameTag.CREATOR, creator.Id},
-								{GameTag.FORCED_PLAY, 0},
-								{GameTag.TO_BE_DESTROYED, 0},
-								{GameTag.POISONOUS, 0},
-								{GameTag.CUSTOM_KEYWORD_EFFECT, 0},
-								{GameTag.EXTRA_ATTACKS_THIS_TURN, 0},
-								{GameTag.TAG_LAST_KNOWN_ATK_IN_HAND, 0},
-								//	479
-								{GameTag.LIFESTEAL, 0}
-							}
+							Tags = gameTags
 						}
 					});
 				}
@@ -190,7 +176,10 @@ namespace SabberStoneCore.Model.Entities
 			}
 
 			if (card[GameTag.TAG_ONE_TURN_EFFECT] == 1)
+			{
+				instance.IsOneTurnActive = true;
 				controller.Game.OneTurnEffectEnchantments.Add(instance);
+			}
 
 
 			instance.Zone = controller.BoardZone;
@@ -202,6 +191,13 @@ namespace SabberStoneCore.Model.Entities
 
 			controller.Game.Log(LogLevel.VERBOSE, BlockType.ACTION, "Enchantment",
 				!controller.Game.Logging ? "" : $"Enchantment {card} created by {creator} is added to {target}.");
+
+			if (num1 > 0)
+			{
+				tags.Add(GameTag.TAG_SCRIPT_DATA_NUM_1, num1);
+				if (num2 > 0)
+					tags.Add(GameTag.TAG_SCRIPT_DATA_NUM_2, num2);
+			}
 
 			return instance;
 		}

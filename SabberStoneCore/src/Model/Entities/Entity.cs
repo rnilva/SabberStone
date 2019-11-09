@@ -1,4 +1,18 @@
-﻿using System;
+#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -173,18 +187,15 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="zone">The zone in which the entity must spawn.</param>
 		/// <param name="id">The EntityID to assign to the newly created entity.</param>
 		/// <param name="zonePos">The position to be placed when the entity is summoned to Board.</param>
+		/// <param name="creator">The creator entity of the new entity.</param>
 		/// <returns></returns>
 		/// <exception cref="EntityException"></exception>
-		public static Playable FromCard(in Controller controller, in Card card, EntityData tags = null, in IZone zone = null, in int id = -1, in int zonePos = -1)
+		public static Playable FromCard(in Controller controller, in Card card,
+			EntityData tags = null,
+			in IZone zone = null, in int id = -1, in int zonePos = -1,
+			in Entity creator = null)
 		{
 			Game game = controller.Game;
-
-			//tags = tags ?? new EntityData();
-			//tags[GameTag.CARD_ID] = card.AssetId;
-
-			if (tags != null)
-				;
-
 			Playable result;
 			CardType type = card.Type;
 			if (type == CardType.MINION)

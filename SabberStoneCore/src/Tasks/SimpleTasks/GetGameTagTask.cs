@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -45,6 +58,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					case GameTag.DAMAGE:
 						value = c.Damage;
 						break;
+                    case GameTag.EXTRA_ATTACKS_THIS_TURN:
+                        if (c is Hero h)
+                            value = h.ExtraAttacksThisTurn;
+                        else
+                            value = 0;
+                        break;
 					default:
 						value = c[Tag];
 						break;
@@ -112,6 +131,29 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+
+			return TaskState.COMPLETE;
+		}
+	}
+
+	public class SetEventNumberTask : SimpleTask
+	{
+		private readonly int _num;
+		public SetEventNumberTask()
+		{
+			_num = -1;
+		}
+
+		public SetEventNumberTask(int num)
+		{
+			_num = num;
+		}
+
+		public override TaskState Process(in Game game, in Controller controller, in Entity source,
+			in Playable target,
+			in TaskStack stack = null)
+		{
+			game.CurrentEventData.EventNumber = _num > 0 ? _num : stack.Number;
 
 			return TaskState.COMPLETE;
 		}

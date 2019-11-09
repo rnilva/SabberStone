@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,13 +20,11 @@ using SabberStoneCore.Config;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;
-using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.PlayerTasks;
 using System.Threading.Tasks;
 using SabberStoneCore.Model.Entities;
 using System.Text;
 using System.IO;
-using SabberStoneCore.Enchants;
 
 namespace SabberStoneCoreConsole
 {
@@ -68,7 +79,7 @@ namespace SabberStoneCoreConsole
 
 			//GatherTagsUsedByEnchantsOrTriggers();
 
-			//Console.WriteLine(Cards.AllStandard.Where(p => p.Race == Race.BEAST && p.Collectible).Count());
+			//Console.WriteLine(Cards.AllStandard.Where(p => p.IsRace(Race.BEAST) && p.Collectible).Count());
 
 			//Cards.Standard[CardClass.PALADIN].ForEach(p => Console.WriteLine($" {p.Id} {p.Type} {p}"));
 
@@ -434,12 +445,13 @@ namespace SabberStoneCoreConsole
 		private static string RandomUntilTerminal2(Game g)
 		{
 			int simcount = 0;
+			var rnd = new Random();
 			while (simcount < 1000)
 			{
 
 				// try
 				// {
-				g.Process(g.CurrentPlayer.Options()[Util.Random.Next(g.CurrentPlayer.Options().Count)]);
+				g.Process(g.CurrentPlayer.Options()[rnd.Next(g.CurrentPlayer.Options().Count)]);
 				//}
 				//catch (Exception ex)
 				//{
@@ -1134,7 +1146,12 @@ namespace SabberStoneCoreConsole
 				game.Player1.BaseMana = 10;
 				game.Player2.BaseMana = 10;
 
-				Card[] randomCards = Cards.Standard[CardClass.MAGE].Where(p => p.Class != CardClass.NEUTRAL).ToArray().ChooseNElements(20);
+				var rnd = new Random();
+
+				Card[] randomCards = Cards.Standard[CardClass.MAGE]
+					.Where(p => p.Class != CardClass.NEUTRAL)
+					.ToArray()
+					.ChooseNElements(20, rnd);
 
 				foreach (Card card in randomCards)
 				{
@@ -1166,10 +1183,12 @@ namespace SabberStoneCoreConsole
 				game.Player1.BaseMana = 10;
 				game.Player2.BaseMana = 10;
 
+				var rnd = new Random();
+
 				Card[] randomCards = Cards.AllStandard
 					.Where(p => p.Collectible && p[GameTag.BATTLECRY] == 1)
 					.ToArray()
-					.ChooseNElements(10);
+					.ChooseNElements(10, rnd);
 
 				foreach (Card card in randomCards)
 				{
@@ -1401,7 +1420,7 @@ namespace SabberStoneCoreConsole
 
 					Console.ForegroundColor = foreground;
 
-					string logStr = $"{logEntry.TimeStamp.ToLongTimeString()} - {logEntry.Level} [{logEntry.BlockType}] - {logEntry.Location}: {logEntry.Text}";
+					string logStr = logEntry.ToString();
 					str.Append(logStr + "\n");
 					Console.WriteLine(logStr);
 				}

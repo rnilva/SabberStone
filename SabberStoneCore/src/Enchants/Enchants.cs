@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using SabberStoneCore.Enums;
@@ -29,6 +42,11 @@ namespace SabberStoneCore.Enchants
 		    {
 			    UseScriptTag = true
 		    };
+	    public static readonly Enchant SetHealthScriptTag =
+		    new Enchant(Effects.SetMaxHealth(0))
+		    {
+			    UseScriptTag = true
+		    };
 		public static readonly Enchant AddAttackHealthScriptTag =
 		    new Enchant(Effects.AttackHealth_N(0))
 		    {
@@ -53,36 +71,39 @@ namespace SabberStoneCore.Enchants
 			bool oneTurn = false;
 			bool mod = false;
 
-			Match attackHealth = AttackHealth.Match(text);
-		    Match attack = Attack.Match(text);
-		    Match health = Health.Match(text);
-		    Match set = SetAttackHealth.Match(text);
-
-			if (attackHealth.Success)
-			{
-				effects.Add(Effects.Attack_N(Int32.Parse(attackHealth.Groups[1].Value)));
-				effects.Add(Effects.Health_N(Int32.Parse(attackHealth.Groups[2].Value)));
-			}
-		    else if (attack.Success)
-		    {
-			    effects.Add(Effects.Attack_N(Int32.Parse(attack.Groups[1].Value)));
-		    }
-		    else if (health.Success)
-		    {
-			    effects.Add(Effects.Health_N(Int32.Parse(health.Groups[1].Value)));
-		    }
-			else if
-				(set.Success)
-			{
-				effects.Add(Effects.SetAttack(Int32.Parse(set.Groups[1].Value)));
-				effects.Add(Effects.SetMaxHealth(Int32.Parse(set.Groups[2].Value)));
-			}
-			// generate magnetic enchants
-			else if (card[GameTag.MODULAR] == 1)
-			{
+			if (card.Modular)
+			{	// generate magnetic enchants
 				effects.AddRange(Effects.AttackHealth_N(0));
 				mod = true;
 			}
+			else
+			{
+				Match attackHealth = AttackHealth.Match(text);
+				Match attack = Attack.Match(text);
+				Match health = Health.Match(text);
+				Match set = SetAttackHealth.Match(text);
+
+				if (attackHealth.Success)
+				{
+					effects.Add(Effects.Attack_N(Int32.Parse(attackHealth.Groups[1].Value)));
+					effects.Add(Effects.Health_N(Int32.Parse(attackHealth.Groups[2].Value)));
+				}
+				else if (attack.Success)
+				{
+					effects.Add(Effects.Attack_N(Int32.Parse(attack.Groups[1].Value)));
+				}
+				else if (health.Success)
+				{
+					effects.Add(Effects.Health_N(Int32.Parse(health.Groups[1].Value)));
+				}
+				else if
+					(set.Success)
+				{
+					effects.Add(Effects.SetAttack(Int32.Parse(set.Groups[1].Value)));
+					effects.Add(Effects.SetMaxHealth(Int32.Parse(set.Groups[2].Value)));
+				}
+			}
+
 
 			if (text.Contains(@"<b>Taunt</b>"))
 		    {

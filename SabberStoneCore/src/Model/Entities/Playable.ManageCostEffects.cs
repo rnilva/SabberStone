@@ -11,11 +11,13 @@ namespace SabberStoneCore.Model.Entities
 	{
 		internal class CostManager
 		{
-			private int _cachedValue;
-			private bool _toBeUpdated;
-
 			private readonly List<(EffectOperator Operator, int Value)> _costEffects =
 				new List<(EffectOperator @operator, int value)>();
+			private readonly List<(EffectOperator Operator, int Value)> _costEnchantments =
+				new List<(EffectOperator Operator, int Value)>();
+
+			private int _cachedValue;
+			private bool _toBeUpdated;	
 			private AdaptiveCostEffect _adaptiveCostEffect;
 
 			public CostManager()
@@ -68,8 +70,10 @@ namespace SabberStoneCore.Model.Entities
 			/// <exception cref="KeyNotFoundException"></exception>
 			public void RemoveCostAura(EffectOperator @operator, int value)
 			{
+				// TODO: Fix the behaviour when adaptive cost effect + redraw
 				if (!_costEffects.Remove((@operator, value)))
-					throw new KeyNotFoundException($"Can't remove cost aura [{@operator} {value}]");
+					// throw new KeyNotFoundException($"Can't remove cost aura [{@operator} {value}]");
+					return;
 
 				switch (@operator)
 				{
@@ -104,7 +108,6 @@ namespace SabberStoneCore.Model.Entities
 
 			public void DeactivateAdaptiveEffect()
 			{
-				_adaptiveCostEffect?.Remove();
 				_adaptiveCostEffect = null;
 			}
 
@@ -127,6 +130,8 @@ namespace SabberStoneCore.Model.Entities
 						_toBeUpdated = true;
 						break;
 				}
+
+				_costEnchantments.Add((@operator, value));
 			}
 
 			public int GetCost(int c)
@@ -139,6 +144,30 @@ namespace SabberStoneCore.Model.Entities
 			internal void QueueUpdate()
 			{
 				_toBeUpdated = true;
+			}
+
+			internal int EntityChanged(int newCardCost)
+			{
+				for (int i = 0; i < _costEnchantments.Count; i++)
+				{
+					(EffectOperator @operator, int value) = _costEnchantments[i];
+					switch (@operator)
+					{
+						case EffectOperator.SUB:
+							newCardCost -= value;
+							break;
+						case EffectOperator.ADD:
+							newCardCost += value;
+							break;
+						case EffectOperator.SET:
+							newCardCost = value;
+							break;
+					}
+				}
+
+				newCardCost = GetCostInternal(newCardCost);
+
+				return newCardCost > 0 ? newCardCost : 0;
 			}
 
 			private int GetCostInternal(int c)
@@ -202,12 +231,10 @@ namespace SabberStoneCore.Model.Entities
 
 		internal void ResetCost()
 		{
-			if (_costManager != null)
-			{
-				_costManager.DeactivateAdaptiveEffect();
-				_costManager = null;
-			}
+			_costManager = null;
 			_modifiedCost = null;
+			if (OngoingEffect is AdaptiveCostEffect ace)
+				ace.Remove();
 
 			if (_history)
 				Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.COST, Card.Cost));

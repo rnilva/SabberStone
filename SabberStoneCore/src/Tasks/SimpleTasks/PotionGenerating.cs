@@ -76,7 +76,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			PotionCards[4] = new[] { Cards.FromId("CFM_621t"), Cards.FromId("CFM_621t14"), Cards.FromId("CFM_621t15")};
 		}
 
-		internal static void CreateCostChoices(Controller c, Entity source)
+		internal static void CreateCostChoices(Controller c, IEntity source)
 		{
 			Generic.CreateChoiceCards(c, source, null, ChoiceType.GENERAL, ChoiceAction.KAZAKUS, PotionCards[0], null);
 		}
@@ -103,7 +103,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		{
 			Card[] cards = GetCostCards(cost);
 
-			cards = cards.ChooseNElements(3);
+			cards = cards.ChooseNElements(3, c.Game.Random);
 
 			CreateChoices(in c, in cards);
 		}
@@ -114,7 +114,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			Card[] results = new Card[3];
 			#region Choose 3 random cards from not previously chosen ones
-			Random rnd = Util.Random;
+			Util.DeepCloneableRandom rnd = c.Game.Random;
 			Span<int> indices = stackalloc int[3];
 			for (int i = 0; i < 3; i++)
 			{
@@ -144,7 +144,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				indices[i] = j;
 			}
 			#endregion
-			
+
 			CreateChoices(in c, in results);
 		}
 
@@ -161,10 +161,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			else
 				kazakusPotion = Card.CreateKazakusPotion(in baseCard, in spell1, in spell2, g.History);
 
-			Playable potion = Entity.FromCard(in c, in kazakusPotion,
-				zone: c.HandZone);
-
-			potion[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
+			Entity.FromCard(in c, in kazakusPotion,
+				zone: c.HandZone,
+				creator: dict[c.Choice.SourceId]);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

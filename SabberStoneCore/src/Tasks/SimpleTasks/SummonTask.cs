@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -111,8 +124,16 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				{
 					summonEntity = (Minion)stack.Playables[0];
 					if (summonEntity == null)
+					{
+						if (game.Logging)
+						{
+							object cause = Card != null ? (object)Card : stack?.Playables.Count > 0 ? stack.Playables[0] : null;
+							game.Log(LogLevel.WARNING, BlockType.POWER, "SummonTask",
+								$"Cannot summon {cause}. Please Check the implementation of {source}.");
+						}
 						return TaskState.STOP;
-					Generic.SummonBlock(game, ref summonEntity, summonPosition);
+					}
+					Generic.SummonBlock(game, ref summonEntity, summonPosition, source);
 					if (RemoveFromStack)
 						stack.Playables.Remove(summonEntity);
 					else

@@ -1,8 +1,22 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Model.Zones;
 
 namespace SabberStoneCore.Tasks.SimpleTasks
 {
@@ -75,10 +89,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		/// </summary>
 		DECK,
 
-		/// <summary>
-		/// Player's secrets
-		/// </summary>
-		SECRETS,
+		///// <summary>
+		///// Player's secrets
+		///// </summary>
+		//SECRETS,
 
 		/// <summary>
 		/// Player's minions
@@ -179,6 +193,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		/// The Controller entity of the opponent.
 		/// </summary>
 		OP_CONTROLLER,
+
+		/// <summary>
+		/// The cards have been discarded from the player's hand.
+		/// </summary>
+		DISCARDED
 	}
 
 	public class IncludeTask : SimpleTask
@@ -239,10 +258,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					return c.DeckZone.GetAll();
 				case EntityType.MINIONS:
 					return c.BoardZone.GetAll();
-				case EntityType.SECRETS:
-					return c.SecretZone.GetAll();
 				case EntityType.GRAVEYARD:
-					return c.GraveyardZone.ToArray();
+					return c.GraveyardZone.GetSpan().ToArray();
 				case EntityType.OP_HAND:
 					return c.Opponent.HandZone.GetAll();
 				case EntityType.OP_DECK:
@@ -258,7 +275,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				{
 					if (source.Controller == c)
 					{
-						Minion[] board = c.BoardZone. GetAll(p => p != source);
+						Minion[] board = c.BoardZone.GetAll(p => p != source);
 						var array = new Minion[board.Length + c.Opponent.BoardZone.CountExceptUntouchables];
 						board.CopyTo(array, 0);
 						c.Opponent.BoardZone.CopyTo(array, board.Length);
@@ -273,6 +290,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						return array;
 					}
 				}
+
 				case EntityType.ENEMIES:
 				{
 					var arr = new Character[c.Opponent.BoardZone.CountExceptUntouchables + 1];
@@ -280,6 +298,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					c.Opponent.BoardZone.CopyTo(arr, 1);
 					return arr;
 				}
+
 				case EntityType.TARGET:
 					return target == null ? new Playable[0] : new[] {(Playable) target};
 				case EntityType.SOURCE:
@@ -297,6 +316,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					c.BoardZone.CopyTo(arr, 1);
 					return arr;
 				}
+
 				case EntityType.OP_HERO:
 					return new[] {c.Opponent.Hero};
 				case EntityType.ENEMIES_NOTARGET:
@@ -319,6 +339,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 						return new[] { c.Opponent.Hero };
 					}
+
 				case EntityType.ALL:
 				{
 					var arr = new Playable[c.BoardZone.CountExceptUntouchables +
@@ -329,6 +350,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					arr[arr.Length - 1] = c.Opponent.Hero;
 					return arr;
 				}
+
 				case EntityType.ALL_NOSOURCE:
 				{
 					if (source.Zone == null) throw new NotImplementedException();
@@ -365,6 +387,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 					return arr;
 				}
+
 				case EntityType.WEAPON:
 					return c.Hero.Weapon == null ? new Playable[0] : new[] {c.Hero.Weapon};
 				case EntityType.OP_WEAPON:
@@ -377,12 +400,18 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					c.Opponent.BoardZone.CopyTo(arr, c.BoardZone.CountExceptUntouchables);
 					return arr;
 				}
+
 				case EntityType.HEROES:
 					return new[] {c.Hero, c.Opponent.Hero};
 				case EntityType.TOPCARDFROMDECK:
 					return c.DeckZone.Count > 0 ? new[] {c.DeckZone.TopCard} : new Playable[0];
 				case EntityType.OP_TOPDECK:
 					return c.Opponent.DeckZone.Count > 0 ? new[] {c.Opponent.DeckZone.TopCard} : new Playable[0];
+				case EntityType.DISCARDED:
+				{
+					EntityList dict = c.Game.IdEntityDic;
+					return c.DiscardedEntities.Select(id => dict[id]).ToArray();
+				}
 				case EntityType.EVENT_SOURCE:
 					return c.Game.CurrentEventData != null
 						? new[] {c.Game.CurrentEventData.EventSource}
@@ -394,6 +423,104 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				default:
 					throw new NotImplementedException();
 			}
+		}
+	}
+
+	public class IncludeAdjacentTask : SimpleTask
+	{
+		private readonly EntityType _type;
+		private readonly bool _includeCentre;
+
+		/// <summary>
+		/// Get minions adjacent to the minion of the given entity type
+		/// and add them to the stack. 
+		/// </summary>
+		/// <param name="includeCentre">True if the centre minion should be included.</param>
+		public IncludeAdjacentTask(EntityType entityType, bool includeCentre = false)
+		{
+			_type = entityType;
+			_includeCentre = includeCentre;
+		}
+
+		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
+			in IPlayable target,
+			in TaskStack stack = null)
+		{
+			Minion left = null, right = null, centre;
+			Minion[] minions;
+
+			switch (_type)
+			{
+				case EntityType.SOURCE:
+					centre = source as Minion;
+					break;
+				case EntityType.TARGET:
+					centre = target as Minion;
+					break;
+				case EntityType.EVENT_SOURCE:
+					centre = game.CurrentEventData?.EventSource as Minion;
+					break;
+				case EntityType.EVENT_TARGET:
+					centre = game.CurrentEventData?.EventTarget as Minion;
+					break;
+				default:
+					throw new NotImplementedException();
+			}
+
+			if (centre == null)
+				throw new Exception($"Can't obtain adjacent minions of non-minion. (Source:{source}, Target:{target}");
+
+			if (!(centre.Zone is BoardZone zone))
+				minions = new Minion[0];
+			else
+			{
+				bool l = false, c = _includeCentre, r = false;
+				int count = c ? 1 : 0;
+				int pos = centre.ZonePosition;
+
+				if (pos > 0)
+				{
+					left = zone[pos - 1];
+					if (!left.Untouchable)
+					{
+						l = true;
+						count++;
+					}
+
+					if (pos < zone.Count - 1)
+					{
+						right = zone[pos + 1];
+						if (!right.Untouchable)
+						{
+							r = true;
+							count++;
+						}
+					}
+				}
+				else if (zone.Count > 1)
+				{
+					right = zone[pos + 1];
+					if (!right.Untouchable)
+					{
+						r = true;
+						count++;
+					}
+				}
+
+				minions = new Minion[count];
+
+				if (r)
+					minions[--count] = right;
+				if (c)
+					minions[--count] = centre;
+				if (l)
+					minions[--count] = left;
+
+			}
+
+			stack.Playables = minions;
+
+			return TaskState.COMPLETE;
 		}
 
 		//public static Playable GetEntity(in EntityType type, in TaskStack stack)

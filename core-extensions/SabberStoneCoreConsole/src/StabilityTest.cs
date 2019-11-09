@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,7 +20,6 @@ using System.Threading.Tasks;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Config;
 using SabberStoneCore.Model;
-using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.PlayerTasks;
 
 namespace SabberStoneCoreConsole
@@ -20,55 +32,63 @@ namespace SabberStoneCoreConsole
 	    public static void CloneStabilityTest()
 	    {
 		    Console.WriteLine("Test started");
-		    List<PlayerTask> optionHistory = new List<PlayerTask>();
-		    Queue<LogEntry> logs = new Queue<LogEntry>();
-		    for (int i = 0; i < TESTCOUNT; i++)
-			{
-				var config = new GameConfig
-				{
-					Player1HeroClass = (CardClass)rnd.Next(2, 11),
-					Player2HeroClass = (CardClass)rnd.Next(2, 11),
-					FillDecks = true,
-					FillDecksPredictably = true,
-					Shuffle = false,
-					SkipMulligan = true,
-					History = false,
-					Logging = true,
-				};
-			    var game = new Game(config);
-				game.StartGame();
-				//try
-				//{
-					do
-					{
-						while (game.Logs.Count > 0)
-							logs.Enqueue(game.Logs.Dequeue());
-						game = game.Clone(true);
-						List<PlayerTask> options = game.CurrentPlayer.Options();
-						PlayerTask option = options[rnd.Next(options.Count)];
-						optionHistory.Add(option);
-						game.Process(option);
-					} while (game.State != State.COMPLETE);
-				//} catch (Exception e)
-				//{
-				//	ShowLog(logs, LogLevel.DEBUG);
-				//	Program.ShowLog(game, LogLevel.DEBUG);
-				//	Console.WriteLine(e.Message);
-				//	Console.WriteLine(e.Source);
-				//	Console.WriteLine(e.TargetSite);
-				//	Console.WriteLine(e.StackTrace);
-				//	PlayerTask last = optionHistory[optionHistory.Count - 1];
-				//	Console.WriteLine($"LastOption: {last.FullPrint()}");
-				//	break;
-				//}
 
+		    int n = 0;
 
-			if (i % (TESTCOUNT / 10) == 0)
-					Console.WriteLine($"{((double)i / TESTCOUNT) * 100}% done");
+		    //for (int i = 0; i < TESTCOUNT; i++)
+		    Parallel.For(0, TESTCOUNT, i =>
+			    {
+				    var config = new GameConfig
+				    {
+					    Player1HeroClass = (CardClass) rnd.Next(2, 11),
+					    Player2HeroClass = (CardClass) rnd.Next(2, 11),
+					    FillDecks = true,
+					    FillDecksPredictably = true,
+					    Shuffle = false,
+					    SkipMulligan = true,
+					    History = false,
+					    Logging = false,
+				    };
+				    var game = new Game(config);
+				    game.StartGame();
+				    List<PlayerTask> optionHistory = new List<PlayerTask>();
+				    Queue<LogEntry> logs = new Queue<LogEntry>();
+				    //try
+				    //{
+				    do
+				    {
+					    //while (game.Logs.Count > 0)
+						   // logs.Enqueue(game.Logs.Dequeue());
+					    game = game.Clone();
+					    List<PlayerTask> options = game.CurrentPlayer.Options();
+					    PlayerTask option = options[rnd.Next(options.Count)];
+					    //optionHistory.Add(option);
+					    game.Process(option);
+				    } while (game.State != State.COMPLETE);
+				    //} catch (Exception e)
+				    //{
+				    //	ShowLog(logs, LogLevel.DEBUG);
+				    //	Program.ShowLog(game, LogLevel.DEBUG);
+				    //	Console.WriteLine(e.Message);
+				    //	Console.WriteLine(e.Source);
+				    //	Console.WriteLine(e.TargetSite);
+				    //	Console.WriteLine(e.StackTrace);
+				    //	PlayerTask last = optionHistory[optionHistory.Count - 1];
+				    //	Console.WriteLine($"LastOption: {last.FullPrint()}");
+				    //	break;
+				    //}
 
-				optionHistory.Clear();
-				logs.Clear();
-			}
+				    Interlocked.Increment(ref n);
+
+					if (n % (TESTCOUNT / 100) == 0)
+						Console.WriteLine($"{((double)n / TESTCOUNT) * 100}% done");
+
+					//Console.Write(".");
+
+				   //optionHistory.Clear();
+				   //logs.Clear();
+			    }
+		    );
 	    }
 
 	    public static void ThreadSafetyTest()
@@ -147,7 +167,7 @@ namespace SabberStoneCoreConsole
 	    public static void TestRun()
 	    {
 		    Console.WriteLine("Test started");
-
+		    Console.Write("Count: 0");
 		    Stack<PlayerTask> history = new Stack<PlayerTask>();
 		    for (int i = 0; i < TESTCOUNT; i++)
 		    {
@@ -178,8 +198,12 @@ namespace SabberStoneCoreConsole
 
 			    history.Clear();
 
-			    if (i % (TESTCOUNT / 10) == 0)
-				    Console.WriteLine($"{((double)i / TESTCOUNT) * 100}% done");
+			    //if (i % (TESTCOUNT / 10) == 0)
+				   // Console.WriteLine($"{((double)i / TESTCOUNT) * 100}% done");
+
+				for (int j = 0; j < i.ToString().Length; j++)
+				   Console.Write("\b");
+				Console.Write(i + 1);
 		    }
 		}
 

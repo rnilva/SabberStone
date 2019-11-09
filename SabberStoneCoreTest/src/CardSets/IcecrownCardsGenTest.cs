@@ -1,4 +1,17 @@
-﻿using Xunit;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using Xunit;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Config;
 using SabberStoneCore.Model;
@@ -8,7 +21,7 @@ using SabberStoneCore.Tasks.PlayerTasks;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SabberStoneCoreTest.CardSets.Standard
+namespace SabberStoneCoreTest.CardSets
 {
 	public class HeroesIcecrownTest
 	{
@@ -173,10 +186,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			// Zombeast
 			Assert.Equal(2, game.CurrentPlayer.HandZone.Count); //	The Coin and created Zombeast
 			Minion zomBeast = (Minion)game.CurrentPlayer.HandZone[1];
-			Assert.Equal(Race.BEAST, zomBeast.Race);
+			Assert.True(zomBeast.IsRace(Race.BEAST));  // this is rare case where we may want an exact Race enum check
 			Assert.Equal(firstCard.Cost + secondCard.Cost, zomBeast.Cost);
 			Assert.Equal(secondCard.Taunt, zomBeast.HasTaunt);
-			Assert.Equal(secondCard.LifeSteal, zomBeast.HasLifesteal);
+			Assert.Equal(secondCard.LifeSteal, zomBeast.HasLifeSteal);
 			Assert.Equal(secondCard.Rush, zomBeast.IsRush);
 		}
 
@@ -342,8 +355,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, game.CurrentOpponent.Hero));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			Generic.SummonBlock(game,
-				(Minion) Entity.FromCard(game.CurrentPlayer, Cards.FromName("Doomguard")), -1);
+			Generic.SummonBlock.Invoke(game,
+				(Minion) Entity.FromCard(game.CurrentPlayer, Cards.FromName("Doomguard")), -1, null);
 			Assert.Single(game.CurrentPlayer.BoardZone);
 			game.CurrentPlayer.BoardZone[0].Kill();
 			Assert.Empty(game.CurrentPlayer.BoardZone);
@@ -2934,10 +2947,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		}
 
 		// ------------------------------------------ SPELL - ROGUE
-		// [ICC_221] Leeching Poison - COST:2 
+		// [ICC_221] Leeching Poison - COST:1 
 		// - Fac: neutral, Set: icecrown, Rarity: common
 		// --------------------------------------------------------
-		// Text: Give your weapon <b>Lifesteal</b>.
+		// Text: Give your weapon <b>Lifesteal</b> this turn.
 		// --------------------------------------------------------
 		// PlayReq:
 		// - REQ_WEAPON_EQUIPPED = 0
@@ -2948,7 +2961,6 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		[Fact]
 		public void LeechingPoison_ICC_221()
 		{
-			// TODO LeechingPoison_ICC_221 test
 			var game = new Game(new GameConfig
 			{
 				StartPlayer = 1,
@@ -2969,6 +2981,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.CurrentPlayer.Hero.Damage = 10;
 			game.Process(HeroAttackTask.Any(game.CurrentPlayer, game.CurrentOpponent.Hero));
 			Assert.Equal(5, game.CurrentPlayer.Hero.Damage);
+
+			game.EndTurn();
+			Assert.False(game.CurrentOpponent.Hero.Weapon.HasLifeSteal);
 		}
 
 		// ------------------------------------------ SPELL - ROGUE
@@ -4159,7 +4174,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Fireball", game.CurrentOpponent.BoardZone[0]));
 			Assert.Equal(4, game.CurrentOpponent.HandZone.Count);
-			Assert.True(((Minion)game.CurrentOpponent.HandZone[3]).Race == Race.DRAGON);
+			Assert.True(((Minion)game.CurrentOpponent.HandZone[3]).IsRace(Race.DRAGON));
 
 		}
 

@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <LangVersion>7.2</LangVersion>
+    <Configurations>Debug;Release;NoSpan</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,12 +13,11 @@
 
   <ItemGroup>
     <Folder Include="CardSetsTest\" />
-    <Folder Include="CardSets\" />
     <Folder Include="Statistics\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="xunit" Version="2.4.0-beta.1.build3958" />
+    <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
 
 </Project>

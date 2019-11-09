@@ -1,4 +1,17 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -118,7 +131,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// Returns true if this player has a dragon in his hand.
 		/// </summary>
-		public bool DragonInHand => HandZone.Any(p => p.Card.Race == Race.DRAGON);
+		public bool DragonInHand => HandZone.Any(p => p.Card.IsRace(Race.DRAGON));
 
 		public bool TemporusFlag { get; set; }
 
@@ -163,6 +176,7 @@ namespace SabberStoneCore.Model.Entities
 			: base(in game, Card.CardPlayer, in tags, in id)
 		{
 			Name = name;
+			_playerId = playerId;
 			Controller = this;
 
 			DeckZone = new DeckZone(this);
@@ -220,7 +234,7 @@ namespace SabberStoneCore.Model.Entities
 			BaseClass = controller.BaseClass;
 
 			ControlledZones = new ControlledZones(this);
-			ControllerAuraEffects = controller.ControllerAuraEffects.Clone();
+			ControllerAuraEffects = controller.ControllerAuraEffects.Clone(this);
 
 			PlayHistory = new List<PlayHistoryEntry>(controller.PlayHistory);
 			DiscardedEntities = new List<int>(controller.DiscardedEntities);
@@ -368,7 +382,7 @@ namespace SabberStoneCore.Model.Entities
 			Character[] allFriendly = null;
 			Character[] allEnemies = null;
 
-			ReadOnlySpan<Playable> handSpan = HandZone.GetSpan();
+			var handSpan = HandZone.GetSpan();
 			for (int i = 0; i < handSpan.Length; i++)
 			{
 				if (!handSpan[i].ChooseOne || ChooseBoth)
@@ -419,7 +433,7 @@ namespace SabberStoneCore.Model.Entities
 			var boardSpan = BoardZone.GetSpan();
 			for (int j = 0; j < boardSpan.Length; j++)
 			{
-				var minion = boardSpan[j];
+				Minion minion = boardSpan[j];
 
 				if (minion.IsExhausted && (!minion.HasCharge || minion.NumAttacksThisTurn != 0))
 					continue;
@@ -439,7 +453,8 @@ namespace SabberStoneCore.Model.Entities
 			#region HeroAttackTaskts
 			Hero hero = Hero;
 
-			if (!hero.IsExhausted && hero.AttackDamage > 0 && !hero.IsFrozen)
+			if ((!hero.IsExhausted || (hero.ExtraAttacksThisTurn > 0 && hero.ExtraAttacksThisTurn >= hero.NumAttacksThisTurn))
+			    && hero.AttackDamage > 0 && !hero.IsFrozen)
 			{
 				GenerateAttackTargets();
 
@@ -454,7 +469,7 @@ namespace SabberStoneCore.Model.Entities
 			return allOptions;
 
 			#region local functions
-			void GetPlayCardTasks(in Playable playable, in Playable chooseOnePlayable = null, int subOption = -1)
+			void GetPlayCardTasks(in IPlayable playable, in IPlayable chooseOnePlayable = null, int subOption = -1)
 			{
 				Card card = chooseOnePlayable?.Card ?? playable.Card;
 
@@ -521,7 +536,7 @@ namespace SabberStoneCore.Model.Entities
 						{
 							for (int j = 0; j < targets.Length; j++)
 							{
-								Character target = targets[j];
+								ICharacter target = targets[j];
 								if (playable is Minion)
 									for (int i = 0; i <= zonePosRange; i++)
 										allOptions.Add(PlayCardTask.Any(this, playable, target, i, subOption,
@@ -540,7 +555,7 @@ namespace SabberStoneCore.Model.Entities
 			Character[] GetTargets(Card card)
 			{
 				// Check it needs additional validation
-				if (!card.TargetingAvailabilityPredicate?.Invoke(this) ?? false)
+				if (!card.TargetingAvailabilityPredicate?.Invoke(this, card) ?? false)
 					return null;
 
 				Character[] targets;
@@ -634,7 +649,7 @@ namespace SabberStoneCore.Model.Entities
 					}
 					else
 					{
-						if (!card.TargetingAvailabilityPredicate?.Invoke(this) ?? false)
+						if (!card.TargetingAvailabilityPredicate?.Invoke(this, card) ?? false)
 							return null;
 
 						Character[] buffer = new Character[targets.Length];
@@ -1158,8 +1173,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public bool ExtraBattlecry
 		{
-			get => ControllerAuraEffects[GameTag.EXTRA_BATTLECRY] > 0;
-			set => ControllerAuraEffects[GameTag.EXTRA_BATTLECRY] = value ? 1 : 0;
+			get => ControllerAuraEffects[GameTag.EXTRA_BATTLECRIES_BASE] > 0 ||
+			       ControllerAuraEffects[GameTag.EXTRA_MINION_BATTLECRIES_BASE] == 1;
+			set => ControllerAuraEffects[GameTag.EXTRA_BATTLECRIES_BASE] = value ? 1 : 0;
 		}
 
 		/// <summary>
@@ -1197,10 +1213,24 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public int CurrentSpellPower
 		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => _attrs.CurrentSpellPower;
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			set => _attrs.CurrentSpellPower = value;
+			get => BoardZone.Sum(m => m.SpellPower)
+				+ (Hero.NativeTags.ContainsKey(GameTag.SPELLPOWER) ? Hero.NativeTags[GameTag.SPELLPOWER] : 0)
+				+ (NativeTags.ContainsKey(GameTag.SPELLPOWER) ? NativeTags [GameTag.SPELLPOWER] : 0)
+				+ ControllerAuraEffects[GameTag.SPELLPOWER];
 		}
+
+		public int AmountHealedThisGame
+		{
+			get => this[GameTag.AMOUNT_HEALED_THIS_GAME];
+			set => this[GameTag.AMOUNT_HEALED_THIS_GAME] = value;
+		}
+
+		public int NumHeroPowerDamageThisGame
+		{
+			get => this[GameTag.NUM_HERO_POWER_DAMAGE_THIS_GAME];
+			set => this[GameTag.NUM_HERO_POWER_DAMAGE_THIS_GAME] = value;
+		}
+
+		private Controller _opponent;
 	}
 }

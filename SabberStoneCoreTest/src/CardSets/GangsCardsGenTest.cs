@@ -1,4 +1,17 @@
-﻿using Xunit;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+using Xunit;
 
 using System.Linq;
 using System.Collections.Generic;
@@ -2236,7 +2249,6 @@ namespace SabberStoneCoreTest.CardSets
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(MinionAttackTask.Any(game.CurrentPlayer, testCard, game.CurrentOpponent.Hero));
-			Assert.NotEqual(testCard.Card.Id, game.CurrentPlayer.BoardZone[0].Card.Id);
 			Assert.Equal(6, game.CurrentPlayer.BoardZone[0].Cost);
 		}
 
@@ -2420,7 +2432,7 @@ namespace SabberStoneCoreTest.CardSets
 			Assert.Equal(4, game.CurrentPlayer.HandZone.Count);
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			Assert.Equal(5, game.CurrentOpponent.HandZone.Count);
-			Assert.Equal(Race.DEMON, game.CurrentOpponent.HandZone[4].Card.Race);
+			Assert.True(game.CurrentOpponent.HandZone[4].Card.IsRace(Race.DEMON));
 		}
 
 		// --------------------------------------- MINION - WARLOCK
