@@ -11,8 +11,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
+
+using System;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
+// ReSharper disable PossibleNullReferenceException
 
 namespace SabberStoneCore.Model
 {
@@ -85,17 +88,22 @@ namespace SabberStoneCore.Model
 		public bool HasOnSummonTrigger => SummonTrigger != null;
 		public bool HasShuffleIntoDeckTrigger => ShuffleIntoDeckTrigger != null;
 
+		internal void OnDamageTriggers(Playable source, Character target)
+		{
+			
+		}
+
 		internal bool OnDealDamageTrigger(Entity sender)
 	    {
 	        if (DealDamageTrigger == null) return false;
-	        StartEvent();
+	        //StartEvent();
 	        DealDamageTrigger.Invoke(sender);
 	        return true;
 	    }
 	    internal bool OnDamageTrigger(Entity sender)
 	    {
 	        if (DamageTrigger == null) return false;
-	        StartEvent();
+	        //StartEvent();
 	        DamageTrigger.Invoke(sender);
 	        return true;
 	    }
@@ -106,7 +114,6 @@ namespace SabberStoneCore.Model
 	        HealTrigger.Invoke(sender);
 	        ProcessTasks();
 	        EndEvent();
-	        return;
 	    }
 	    internal void OnLoseDivineShield(Entity sender)
 	    {
@@ -162,7 +169,6 @@ namespace SabberStoneCore.Model
 			if (PlayCardTrigger == null) return;
 			StartEvent();
 			PlayCardTrigger.Invoke(sender);
-			return;
 	    }
 	    internal void OnAfterPlayCardTrigger(Entity sender)
 	    {
@@ -172,7 +178,6 @@ namespace SabberStoneCore.Model
 	        ProcessTasks();
 	        EndEvent();
 	        DeathProcessingAndAuraUpdate();
-	        return;
 	    }
 	    internal void OnPlayMinionTrigger(Entity sender)
 	    {
@@ -328,12 +333,12 @@ namespace SabberStoneCore.Model
 		    EquipWeaponTrigger?.Invoke(sender);
 	    }
 
-	    internal void OnShuffleIntoDeckTrigger(IEntity sender)
+	    internal void OnShuffleIntoDeckTrigger(Entity sender)
 	    {
 		    ShuffleIntoDeckTrigger?.Invoke(sender);
 	    }
 
-	    internal void OnOverloadTrigger(IPlayable sender, int amount)
+	    internal void OnOverloadTrigger(Playable sender, int amount)
 	    {
 			if (OverloadTrigger == null)
 				return;
@@ -427,7 +432,7 @@ namespace SabberStoneCore.Model
 					EquipWeaponTrigger += method;
 					return;
 				default:
-					throw new System.NotImplementedException();
+					throw new NotImplementedException();
 			}
 		}
 
@@ -514,7 +519,7 @@ namespace SabberStoneCore.Model
 				    EquipWeaponTrigger -= method;
 				    return;
 			    default:
-				    throw new System.NotImplementedException();
+				    throw new NotImplementedException();
 		    }
 	    }
     }

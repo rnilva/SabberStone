@@ -112,7 +112,7 @@ namespace SabberStoneCore.Exceptions
 
 	public class TaskException : SabberStoneExceptions
 	{
-		public TaskException() : base() { }
+		public TaskException() { }
 
 		public TaskException(string message) : base(message) { }
 

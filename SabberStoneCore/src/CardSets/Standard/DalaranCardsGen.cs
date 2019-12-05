@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
@@ -75,11 +74,12 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = TriggerBuilder.Type(TriggerType.AFTER_CAST)
 					.SetTask(new CustomTask((g, c, s, t, stack) =>
 					{
-						GenericEffect<Cost, Playable> costEffect = Cost.Effect(EffectOperator.SET, t.Card.Cost);
+						GenericEffect<Playable> costEffect = Cost.Effect(EffectOperator.SET, t.Card.Cost);
 
-						for (int i = 0; i < t.ChooseOnePlayables.Length; i++)
+						var target = (Playable) t;
+						for (int i = 0; i < target.ChooseOnePlayables.Length; i++)
 						{
-							Playable copy = (Playable)Generic.Copy(in c, in s, t.ChooseOnePlayables[i], Zone.HAND);
+							Playable copy = Generic.Copy(in c, in s, target.ChooseOnePlayables[i], Zone.HAND);
 							costEffect.ApplyTo(copy);
 						}
 					}))
@@ -304,6 +304,7 @@ namespace SabberStoneCore.CardSets.Standard
 						new FilterStackTask(SelfCondition.IsSpell),
 						new RandomTask(1, EntityType.STACK),
 						new DrawStackTask()))
+					//.SetTask()
 					.SetSource(TriggerSource.FRIENDLY)
 					.SetCondition(SelfCondition.IsCost(1))
 					.GetTrigger()
@@ -598,9 +599,10 @@ namespace SabberStoneCore.CardSets.Standard
 						{
 							if (t.Controller.BoardZone.IsFull) return;
 
+							var target = (Playable) t;
 							Entity.FromCard(t.Controller, t.Card,
 								new EntityData {{GameTag.COPIED_BY_KHADGAR, 1}},
-								c.BoardZone, zonePos: t.ZonePosition + 1, creator: in s);
+								c.BoardZone, zonePos: target.ZonePosition + 1, creator: in s);
 						}))
 					.SetCondition(new SelfCondition(p => p.Game.CurrentEventData.EventSource != p
 					                                     && p[GameTag.COPIED_BY_KHADGAR] != 1))
@@ -1643,7 +1645,7 @@ namespace SabberStoneCore.CardSets.Standard
 						{
 							{GameTag.GHOSTLY, 1}
 						};
-						IPlayable echoPlayable = Entity.FromCard(in c, s.Card, echoTags, c.HandZone);
+						Playable echoPlayable = Entity.FromCard(in c, s.Card, echoTags, c.HandZone);
 						echoPlayable[GameTag.DISPLAYED_CREATOR] = s.Id;
 						c.Game.AuraUpdate();
 						c.Game.GhostlyCards.Add(echoPlayable.Id);
@@ -1925,7 +1927,7 @@ namespace SabberStoneCore.CardSets.Standard
 					new FilterStackTask(SelfCondition.IsCardId("BOT_511t")),
 					new CountTask(EntityType.STACK),
 					new NumberConditionTask(4, RelaSign.GEQ),
-					new FlagTask(true, new FuncNumberTask((IPlayable p) => 3)),
+					new FlagTask(true, new FuncNumberTask((Playable p) => 3)),
 					new EnqueueNumberTask(new SummonTask("GVG_110t", 2, side:SummonSide.ALTERNATE)))
 			});
 

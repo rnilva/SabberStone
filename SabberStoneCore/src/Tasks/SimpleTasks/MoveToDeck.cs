@@ -32,7 +32,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			var c = _opponent ? controller.Opponent : controller;
+			Controller c = _opponent ? controller.Opponent : controller;
 
 			foreach (Playable p in IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables))
 			{

@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
-using System;
+
 using SabberStoneCore.Model;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
@@ -22,12 +22,15 @@ namespace SabberStoneCore.Actions
 	public static partial class Generic
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public static bool SummonBlock(Game g, ref Minion minion, int zonePosition, Entity summoner)
+		public static bool SummonBlock(Game g, ref Minion minion, int zonePosition, Playable summoner)
 		{
 			SummonPhase(g, ref minion, zonePosition);
 
-			summoner!!
+			EventMetaData temp = g.CurrentEventData;
+			if (summoner != null)
+				g.CurrentEventData = new EventMetaData(summoner, minion);
 			g.TriggerManager.OnAfterSummonTrigger(minion);
+			g.CurrentEventData = temp;
 
             if (minion.IsRace(Race.TOTEM))
                 minion.Controller.NumTotemSummonedThisGame++;
@@ -35,17 +38,17 @@ namespace SabberStoneCore.Actions
 			return true;
 		}
 
-		public static bool SummonBlock(Game g, ref Playable playable, int zonePosition)
+		public static bool SummonBlock(Game g, ref Playable playable, int zonePosition, Playable summoner)
 		{
 			var m = (Minion) playable;
-			bool flag = SummonBlock(g, ref m, zonePosition);
+			bool flag = SummonBlock(g, ref m, zonePosition, summoner);
 			playable = m;
 			return flag;
 		}
 
-		public static bool SummonBlock(Game g, Minion minion, int zonePosition)
+		public static bool SummonBlock(Game g, Minion minion, int zonePosition, Playable summoner)
 		{
-			return SummonBlock(g, ref minion, zonePosition);
+			return SummonBlock(g, ref minion, zonePosition, summoner);
 		}
 		private static void SummonPhase(Game g, ref Minion minion, int zonePosition)
 		{

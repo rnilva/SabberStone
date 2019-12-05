@@ -1986,7 +1986,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(6, game.CurrentPlayer.BoardZone.Count);
 			for (int i = 3; i < 6; i++)
 			{
-				Minion mech = game.CurrentPlayer.BoardZone[i];
+				MinionInPlay mech = game.CurrentPlayer.BoardZone[i];
 
 				switch (mech.Card.Name)
 				{
@@ -2747,7 +2747,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.ProcessCard("Academic Espionage");
 
 			Assert.Equal(10, game.CurrentPlayer.DeckZone.Count);
-			IEnumerable<IPlayable> unexpectedCards = game.CurrentPlayer.DeckZone.Where(
+			IEnumerable<Playable> unexpectedCards = game.CurrentPlayer.DeckZone.Where(
 										p => p.Cost != 1 || p.Card.Class != CardClass.PALADIN);
 			foreach (Playable p in unexpectedCards)
 			{
@@ -2759,7 +2759,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.ProcessCard("Academic Espionage");
 
 			Assert.Equal(10, game.CurrentPlayer.DeckZone.Count);
-			IEnumerable<IPlayable> unexpectedCards2 = game.CurrentPlayer.DeckZone.Where(
+			IEnumerable<Playable> unexpectedCards2 = game.CurrentPlayer.DeckZone.Where(
 										p => p.Cost != 1 || p.Card.Class != CardClass.ROGUE);
 			foreach (Playable p in unexpectedCards2)
 			{

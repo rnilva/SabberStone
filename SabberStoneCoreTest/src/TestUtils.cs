@@ -115,7 +115,7 @@ namespace SabberStoneCoreTest
 			if (!game.Process(option))
 				throw new Exception($"{option} is not a valid task.");
 
-			return entity;
+			return (T) game.IdEntityDic[entity.Id];
 	    }
 
 		/// <summary>
@@ -131,7 +131,7 @@ namespace SabberStoneCoreTest
 		/// </summary>
 	    public static void PlayHeroPower(this Game game, Playable target = null, int chooseOne = 0, bool asZeroCost = false, bool autoRefresh = false)
 	    {
-			if (target != null && !(target is ICharacter))
+			if (target != null && !(target is Character))
 				throw new ArgumentException($"Can't target non-charater entity {target}");
 			var option = HeroPowerTask.Any(game.CurrentPlayer, (Character) target, chooseOne, asZeroCost);
 
@@ -195,7 +195,7 @@ namespace SabberStoneCoreTest
 	    }
 
 		/// <summary>
-		/// Cast to <see cref="ICharacter"/>
+		/// Cast to <see cref="Character"/>
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns></returns>
@@ -221,7 +221,7 @@ namespace SabberStoneCoreTest
 				reason = "The attacker is a minion of the current player.";
 			else if (attacker.IsExhausted)
 			{
-				if (!(attacker is Hero hero) || hero.ExtraAttacksThisTurn <= 0 ||
+				if (!(attacker is HeroInPlay hero) || hero.ExtraAttacksThisTurn <= 0 ||
 					hero.ExtraAttacksThisTurn < hero.NumAttacksThisTurn)
 					reason = "The attacker is exhausted.";
 				else

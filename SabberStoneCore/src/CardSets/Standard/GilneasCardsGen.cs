@@ -12,7 +12,6 @@
 // GNU Affero General Public License for more details.
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Actions;
@@ -928,14 +927,14 @@ namespace SabberStoneCore.CardSets.Standard
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = new CustomTask((g, c, s, t, stack) =>
 					{
-						if (p.Zone?.Type != Zone.HAND)
-							return 0;
+						if (s.Zone?.Type != Zone.HAND)
+							return;
 
-						Card pick = p.Controller.Opponent.HandZone.Random?.Card;
-						if (pick == null) return 0;
-						Playable result = Generic.ChangeEntityBlock.Invoke(p.Controller, p, pick, true);
-						Generic.AddEnchantmentBlock.Invoke(p.Controller, Cards.FromId("GIL_142e"), p, result, 0, 0, false);
-						return 0;
+						Card pick = c.Opponent.HandZone.Random?.Card;
+						if (pick == null) return;
+						Playable result = Generic.ChangeEntityBlock.Invoke(c, (Playable)s, pick, true);
+						Generic.AddEnchantmentBlock(g, Cards.FromId("GIL_142e"), (Playable)s, result,
+							0, 0, 0);
 					}),
 					FastExecution = true
 				}
@@ -2890,14 +2889,14 @@ namespace SabberStoneCore.CardSets.Standard
 				DeathrattleTask = ComplexTask.Create(
 					new CustomTask((g,c,s,t,stack)=>
 						{
-							if (!(g.IdEntityDic[t[GameTag.TAG_SCRIPT_DATA_NUM_1]] is Minion m))
+							if (!(g.IdEntityDic[t[GameTag.TAG_SCRIPT_DATA_NUM_1]] is MinionInPlay m))
 								return;
 							if (m.IsSilenced ||
 							    !m.NativeTags.TryGetValue(GameTag.VOODOO_LINK, out int v) ||
 								v == 0 ||
 							    m.Zone.Type != Zone.PLAY) return;
 							stack.Flag = true;
-							stack.Playables = new IPlayable[] {m};
+							stack.Playables = new Playable[] {m};
 						}),
 					new FlagTask(true,
 					new DestroyTask(EntityType.STACK)))

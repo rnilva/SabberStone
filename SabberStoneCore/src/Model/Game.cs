@@ -226,7 +226,7 @@ namespace SabberStoneCore.Model
 		///// <summary>
 		///// Gets the dictionary containing all generated entities for this game.
 		///// </summary>
-		///// <value><see cref="IPlayable"/></value>
+		///// <value><see cref="Playable"/></value>
 		public EntityList IdEntityDic { get; private set; }
 
 		/// <summary>
@@ -265,11 +265,22 @@ namespace SabberStoneCore.Model
 			_gameConfig = gameConfig;
             _attrs = new GameAttributes();
 			Game = this;
-            Auras = new List<IAura>();
+
 
 			bool history = gameConfig.History;
+			// add power history create game
+			if (history)
+			{
+				History = true;
+				EntityChoicesMap = new Dictionary<int, PowerEntityChoices>();
+				AllOptionsMap = new Dictionary<int, PowerAllOptions>();
+				PowerHistory = new PowerHistory();
+			}
 			if (gameConfig.Logging)
+			{
+				Logging = true;
 				Logs = new Queue<LogEntry>();
+			}
 
 			EntityData p1Dict = history
 				? new EntityData(64)
@@ -307,20 +318,11 @@ namespace SabberStoneCore.Model
 					{GameTag.MAXRESOURCES, 10},
 					{GameTag.MAXHANDSIZE, 10}
 				};
-			_players[0] = new Controller(this, gameConfig.Player1Name, 1, 2, p1Dict);
-			_players[1] = new Controller(this, gameConfig.Player2Name, 2, 3, p2Dict);
+			Player1 = new Controller(this, gameConfig.Player1Name, 1, 2, p1Dict);
+			Player2 = new Controller(this, gameConfig.Player2Name, 2, 3, p2Dict);
 
 			Player1.Opponent = Player2;
 			Player2.Opponent = Player1;
-
-			// add power history create game
-			if (history)
-			{
-				EntityChoicesMap = new Dictionary<int, PowerEntityChoices>();
-				AllOptionsMap = new Dictionary<int, PowerAllOptions>();
-				PowerHistory = new PowerHistory();
-				PowerHistory.Add(PowerHistoryBuilder.CreateGame(this, _players));
-			}
 
 			if (setupHeroes)
 			{
@@ -331,11 +333,18 @@ namespace SabberStoneCore.Model
 				Player2.BaseClass = Player2.HeroClass;
 			}
 
+			Auras = new List<IAura>();
 			TaskQueue = new TaskQueue(this);
 			TriggerManager = new TriggerManager(this);
+			Triggers = new List<Trigger>();
 
 			OneTurnEffects = new List<(int, IEffect)>();
 			OneTurnEffectEnchantments = new List<Enchantment>();
+
+			if (history)
+			{
+				PowerHistory.Add(PowerHistoryBuilder.CreateGame(this, new []{Player1, Player2}));
+			}
 
 			if (!gameConfig.Shuffle && !gameConfig.DrawWithRandom)
 			{
@@ -363,8 +372,8 @@ namespace SabberStoneCore.Model
 			if (gameConfig.DrawWithRandom)
 			{
 				gameConfig.Shuffle = false;
-				_players[0].DeckZone.DrawWithRandom = true;
-				_players[1].DeckZone.DrawWithRandom = true;
+				Player1.DeckZone.DrawWithRandom = true;
+				Player2.DeckZone.DrawWithRandom = true;
 			}
 		}
 
@@ -376,7 +385,11 @@ namespace SabberStoneCore.Model
 			Game = this;
 
 			if (logging)
+			{
+				Logging = true;
 				Logs = new Queue<LogEntry>();	// Logs are not cloned.
+			}
+
 			if (game.History)
 			{
 				PowerHistory = new PowerHistory();
@@ -397,7 +410,6 @@ namespace SabberStoneCore.Model
 
 			// game._gameConfig is cloned here
 			_gameConfig = game._gameConfig;
-			_gameConfig.Logging = logging;
 			_attrs = game._attrs;
 
 			CloneIndex = game.CloneIndex + $"[{game.NextCloneIndex++}]";
@@ -585,7 +597,7 @@ namespace SabberStoneCore.Model
 			// getting first player
 			int first = _gameConfig.StartPlayer - 1;
 			if (first < 0)
-				first = Util.Random.Next(0, 2);
+				first = Random.Next(0, 2);
 
 			if (first == 0)
 				FirstPlayer = CurrentPlayer = Player1;
@@ -665,10 +677,17 @@ namespace SabberStoneCore.Model
 			void Draw(Controller p)
 			{
 				// quest draw if there is
-				int quest = p.DeckZone.FirstOrDefault(q => q.Card.IsQuest)?.Id ?? -1;
-				Generic.Draw(p, quest);
-				Generic.Draw(p);
-				Generic.Draw(p);
+				//int quest = p.DeckZone.FirstOrDefault(q => q.Card.IsQuest)?.Id ?? -1;
+				List<int> questIndices = p.DeckZone.FindAllIndices(q => q.Card.IsQuest);
+				int k = 0;
+				for (int i = 0; i < questIndices.Count; i++, k++)
+					Generic.Draw(p, questIndices[i]);
+				while (k < 3)
+				{
+					Generic.Draw(p);
+					k++;
+				}
+
 
 				if (p != FirstPlayer)
 				{
@@ -685,7 +704,7 @@ namespace SabberStoneCore.Model
 				}
 
 				p.NumTurnsLeft = 1;
-			};
+			}
 
 			Draw(Player1);
 			Draw(Player2);
@@ -727,7 +746,7 @@ namespace SabberStoneCore.Model
 		/// Part of the state machine.
 		/// Runs when STATE = RUNNING &amp;&amp; NEXTSTEP = MAIN_BEGIN
 		/// </summary>
-		public void MainBegin()
+		public void MainBegin(bool proceed = false)
 		{
 			Log(LogLevel.VERBOSE, BlockType.PLAY, "Game", !Logging ? "" : $"Main Begin.");
 
@@ -737,6 +756,13 @@ namespace SabberStoneCore.Model
 			ProcessTasks();
 
 			NextStep = Step.MAIN_READY;
+
+			if (proceed)
+			{
+				MainReady(FirstPlayer);
+				MainStartTriggers();
+				MainStart();
+			}
 		}
 
 		/// <summary>
@@ -1225,7 +1251,6 @@ namespace SabberStoneCore.Model
 			// Summon Resolution Step
 			if (TriggerManager.HasOnSummonTrigger)
 			{
-				List<Minion> minions = SummonedMinions;
 				TaskQueue.StartEvent();
 				for (int i = 0; i < SummonedMinions.Count; i++)
 					TriggerManager.OnSummonTrigger(SummonedMinions[i], true);
@@ -1263,7 +1288,7 @@ namespace SabberStoneCore.Model
 		/// <param name="text">The message itself.</param>
 		public void Log(LogLevel level, BlockType block, string location, string text)
 		{
-			if (!_gameConfig.Logging)
+			if (!Logging)
 				return;
 
 			Logs.Enqueue(new LogEntry()

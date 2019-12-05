@@ -2340,7 +2340,7 @@ namespace SabberStoneCore.CardSets
 			// Text: +3 Attack.
 			// --------------------------------------------------------
 			cards.Add("GVG_022a", new Power {
-				Enchant = new Enchant(GameTag.ATK, EffectOperator.ADD, 3)
+				Enchant = Enchants.Enchants.GetAutoEnchantFromText("GVG_022b")
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

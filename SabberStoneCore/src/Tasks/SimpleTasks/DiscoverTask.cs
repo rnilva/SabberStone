@@ -99,7 +99,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public DiscoverTask(CardType cardType = CardType.INVALID, CardClass cardClass = CardClass.INVALID,
 			(GameTag tag, RelaSign relaSign, int value) tagValueCriteria = default,
 			ChoiceAction choiceAction = ChoiceAction.HAND,
-			ISimpleTask afterDiscoverTask = null, int repeat = 1)
+			ISimpleTask afterDiscoverTask = null, int repeat = 1, Predicate<Card[]> keepAllCondition = null)
 		{
 			_discoverCriteria =
 				new DiscoverCriteria(cardType, cardClass, tagValueCriteria);
@@ -133,7 +133,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		}
 
 		public override TaskState Process(in Game game, in Controller controller, in Entity source,
-			in Playable target,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			Card[][] cardsToDiscover;
@@ -148,35 +148,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					? controller.Opponent.HeroClass
 					: controller.HeroClass;
 
-			//var resultCards = new List<Card>();
-			var resultCards = new Card[_numberOfChoices];
-
-			// standard discover takes 3 random cards from a set of cards
-			if (cardsToDiscover.Length < 3)
-			{
-				if (_numberOfChoices >= totcardsToDiscover.Count)
+				if (cls == CardClass.NEUTRAL)
 				{
-					//resultCards.AddRange(totcardsToDiscover);
-					if (_numberOfChoices != totcardsToDiscover.Count)
-						resultCards = new Card[totcardsToDiscover.Count];
-					totcardsToDiscover.CopyTo(resultCards);
+					if (source.Card.Class != CardClass.NEUTRAL)
+						cls = source.Card.Class;
+					else
+						cls = (CardClass) game.Random.Next(2, 11);
 				}
-				else
-				{
-					int count = 0;
-					//while (resultCards.Count < 3 && totcardsToDiscover.Count > 0)
-					while (count < 3 && totcardsToDiscover.Count > 0)
-					{
-						Card discoveredCard = Util.Choose(totcardsToDiscover);
-						//resultCards.Add(discoveredCard);
-						resultCards[count] = discoveredCard;
-						count++;
-						// remove all cards matching the discovered one, 
-						// need because class cards are duplicated 4 x times
-						// to have a balance to neutral cards
-						// http://hearthstone.gamepedia.com/Discover
-						totcardsToDiscover.RemoveAll(p => p == discoveredCard);
-					}
 
 				cardsToDiscover = Discover(game.FormatType, in _discoverCriteria, cls);
 				choiceAction = _choiceAction;
@@ -207,7 +185,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			{
 				for (int i = 0; i < result.Length && !controller.HandZone.IsFull; i++)
 				{
-					IPlayable entity = Entity.FromCard(in controller, result[i]);
+					Playable entity = Entity.FromCard(in controller, result[i]);
 					entity[GameTag.DISPLAYED_CREATOR] = source.Id;
 					Generic.AddHandPhase.Invoke(controller, entity);
 				}
@@ -238,9 +216,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			}
 
 			return TaskState.COMPLETE;
-		}
+			}
 
-		//private void ProcessSplit(Game game, Controller controller, IEntity source, Card[][] cardsToDiscover,
+		//private void ProcessSplit(Game game, Controller controller, Entity source, Card[][] cardsToDiscover,
 		//	ChoiceAction choiceAction)
 		//{
 		//	int neutralCnt = cardsToDiscover[0].Length;
@@ -533,6 +511,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						CachedDiscoverySets.TryAdd(discoverType, (cardSets, choiceAction));
 						return cardSets;
 					}
+
 					case DiscoverType.SIX_COST_SUMMON:
 					{
 						choiceAction = ChoiceAction.SUMMON;
@@ -552,22 +531,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						CachedDiscoverySets.TryAdd(discoverType, (cardSets, choiceAction));
 						return cardSets;
 					}
+
 					case DiscoverType.SPELL_COSTS_5_OR_MORE:
 					{
 						choiceAction = ChoiceAction.HAND;
 						Card[][] cardSets = GetFilter(in format, in controller,
 							list => list.Where(p => p.Type == CardType.SPELL && p.Cost >= 5));
 						
-						CachedDiscoverySets.TryAdd(discoverType, (cardSets, choiceAction));
-						return cardSets;
-					}
-
-					case DiscoverType.SPELL_COSTS_5_OR_MORE:
-					{
-						choiceAction = ChoiceAction.HAND;
-						Card[][] cardSets = GetFilter(in format, in controller,
-							list => list.Where(p => p.Type == CardType.SPELL && p.Cost >= 5));
-
 						CachedDiscoverySets.TryAdd(discoverType, (cardSets, choiceAction));
 						return cardSets;
 					}
@@ -639,7 +609,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						choiceAction = ChoiceAction.SUMMON;
 						Card[][] cardSets =
 						{
-							controller.GraveyardZone.Where(p => p.ToBeDestroyed && p.Card.Type == CardType.MINION)
+							controller.GraveyardZone.Where(p => p is Minion m && m.ToBeDestroyed)
 								.Select(p => p.Card).ToArray()
 						};
 						return cardSets;
@@ -979,7 +949,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			{
 				unchecked
 				{
-					var hashCode = (int) CardType;
+					int hashCode = (int) CardType;
 					hashCode = (hashCode * 397) ^ (int) CardClass;
 					hashCode = (hashCode * 397) ^ (int) Tag;
 					hashCode = (hashCode * 397) ^ (int) RelaSign;

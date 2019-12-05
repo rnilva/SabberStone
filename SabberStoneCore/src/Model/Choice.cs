@@ -107,7 +107,7 @@ namespace SabberStoneCore.Model
 		/// <summary>Gets or sets the next consecutive choice.</summary>
 		public Choice NextChoice { get; set;}
 
-		//internal IList<IPlayable> EntityStack { get; set; }
+		//internal IList<Playable> EntityStack { get; set; }
 		internal List<int> EntityStack { get; set; }
 
 		private readonly Card[][] _cardSets;

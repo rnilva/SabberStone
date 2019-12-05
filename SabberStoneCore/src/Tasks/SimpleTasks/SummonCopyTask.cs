@@ -74,7 +74,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (entities.Count < 1) return TaskState.STOP;
 
 			// shuffle list randomly if needed
-			entities = _randomFlag ? entities.Shuffle() : entities;
+			entities = _randomFlag ? entities.Shuffle(game.Random) : entities;
 
 			if (_randomFlag)
 				game.OnRandomHappened(true);
@@ -98,7 +98,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						});
 
 					Generic.SummonBlock(game, ref minion,
-						SummonTask.GetPosition(in source, _side, stack?.Number ?? 0, ref alternateCount));
+						SummonTask.GetPosition(in source, _side, stack?.Number ?? 0, ref alternateCount),
+											   (Playable) source);
 
 					if (_addToStack)
 						stack.AddPlayable(minion);

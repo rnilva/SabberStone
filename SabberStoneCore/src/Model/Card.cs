@@ -645,7 +645,7 @@ namespace SabberStoneCore.Model
 		/// <param name="c">The controller of the source.</param>
 		/// <param name="target">The proposed target.</param>
 		/// <returns><c>true</c> if the proposed target is valid, <c>false</c> otherwise.</returns>
-		public bool TargetingRequirements(in Controller c, in ICharacter target)
+		public bool TargetingRequirements(in Controller c, in Character target)
 		{
 			if (target.Card.Untouchable)
 				return false;
@@ -659,9 +659,9 @@ namespace SabberStoneCore.Model
 			return true;
 		}
 
-		public List<ICharacter> GetValidPlayTargets(in Controller c)
+		public List<Character> GetValidPlayTargets(in Controller c)
 		{
-			var output = new List<ICharacter>(2);
+			var output = new List<Character>(2);
 
 			if (!TargetingAvailabilityPredicate?.Invoke(c, this) ?? false)
 				return output;
@@ -709,7 +709,7 @@ namespace SabberStoneCore.Model
 
 			if (friendlyMinions)
 			{
-				var span = c.BoardZone.GetSpan();
+				ReadOnlySpan<MinionInPlay> span = c.BoardZone.GetSpan();
 				for (int i = 0; i < span.Length; i++)
 					if (TargetingRequirements(in c, span[i]))
 						output.Add(span[i]);
@@ -717,7 +717,7 @@ namespace SabberStoneCore.Model
 
 			if (enemyMinions)
 			{
-				var span = c.Opponent.BoardZone.GetSpan();
+				ReadOnlySpan<MinionInPlay> span = c.Opponent.BoardZone.GetSpan();
 				for (int i = 0; i < span.Length; i++)
 					if (TargetingRequirements(in c, span[i]))
 						output.Add(span[i]);
@@ -939,7 +939,7 @@ namespace SabberStoneCore.Model
 			}
 		}
 
-		private unsafe struct MinionAttributes
+		internal unsafe struct MinionAttributes
 		{
 			public const int NUM_INT_ATTRS = 1;
 			public const int NUM_BOOL_ATTRS = 11;
@@ -947,7 +947,7 @@ namespace SabberStoneCore.Model
 			public fixed int intAttrs[NUM_INT_ATTRS];
 			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
 		}
-		private MinionAttributes _minionAttrs;
+		internal MinionAttributes _minionAttrs;
 #pragma warning restore 649
 
 		internal unsafe void CopyMinionAttributes(int* intAttrs, bool* boolAttrs)
@@ -960,6 +960,7 @@ namespace SabberStoneCore.Model
 				Buffer.MemoryCopy(src, boolAttrs, BOOL_SIZE, BOOL_SIZE);
 		}
 
+		// ReSharper disable once UnusedMember.Local
 		private unsafe int[] _minionAttrsDebuggerView
 		{
 			get

@@ -105,7 +105,7 @@ namespace SabberStoneCoreTest.Cloning
 			clone.Process(PlayCardTask.SpellTarget(clone.CurrentPlayer, cSpell2, clone.CurrentOpponent.Hero));
 			clone.Process(PlayCardTask.SpellTarget(clone.CurrentPlayer, cSpell1, clone.CurrentOpponent.Hero));
 
-			GameTag[] ignored = new GameTag[] {GameTag.LAST_CARD_PLAYED, GameTag.ENTITY_ID};
+			GameTag[] ignored = new[] {GameTag.LAST_CARD_PLAYED, GameTag.ENTITY_ID};
 
 			string gameHash = game.Hash(ignored);
 			string cloneHash = clone.Hash(ignored);

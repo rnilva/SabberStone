@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using SabberStoneCore.Model.Entities;
 using System.Text;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace SabberStoneCoreConsole
 {
@@ -37,6 +38,9 @@ namespace SabberStoneCoreConsole
 			//SimpleTest();
 
 			Console.WriteLine("Start Test!");
+
+			SizeTest();
+			return;
 
 			//ChameleosPintSizedSummonerDouble();
 
@@ -1461,6 +1465,33 @@ namespace SabberStoneCoreConsole
 			Console.CursorLeft = 35;
 			Console.BackgroundColor = ConsoleColor.Black;
 			Console.Write(progress.ToString() + " of " + tot.ToString() + "    "); //blanks at the end remove any excess
+		}
+
+		private static void SizeTest()
+		{
+			var game = new Game(new GameConfig
+			{
+				Player1HeroClass = CardClass.ROGUE,
+				Player2HeroClass = CardClass.MAGE,
+				FillDecks = true,
+				Logging = true
+			});
+			game.StartGame();
+
+			Console.ReadLine();
+			int size = Marshal.ReadInt32(game.GetType().TypeHandle.Value, 4);
+			Console.WriteLine("Game size: " + size);
+			size = Marshal.ReadInt32(game.CurrentPlayer.GetType().TypeHandle.Value, 4);
+			Console.WriteLine("Controller size: " + size);
+			size = Marshal.ReadInt32(game.CurrentPlayer.HandZone[0].GetType().TypeHandle.Value, 4);
+			Console.WriteLine("Playable size: " + size);
+
+			Playable wisp = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
+			game.Process(PlayCardTask.Any(game.CurrentPlayer, wisp));
+			size = Marshal.ReadInt32(game.CurrentPlayer.BoardZone[0].GetType().TypeHandle.Value, 4);
+			Console.WriteLine("MinionInPlay size: " + size);
+			size = Marshal.ReadInt32(game.CurrentPlayer.Hero.GetType().TypeHandle.Value, 4);
+			Console.WriteLine("Hero size: " + size);
 		}
 	}
 }

@@ -101,10 +101,10 @@ namespace HSGrammar
         public override object VisitHsCreateGameGameEntity(HSGrammarParser.HsCreateGameGameEntityContext context)
         {
             PowerEntity entity = new PowerEntity();
-            entity.EntityId = int.Parse(VisitHsEntityIdAssign(context.hsEntityIdAssign()).ToString());
+            entity.EntityId = Int32.Parse(VisitHsEntityIdAssign(context.hsEntityIdAssign()).ToString());
             foreach(var hsTagValueExpr in context.hsTagValueExpr())
             {
-                var tagValueExpr = (String[]) VisitHsTagValueExpr(hsTagValueExpr);
+                var tagValueExpr = (string[]) VisitHsTagValueExpr(hsTagValueExpr);
                 entity[tagValueExpr[0]] = tagValueExpr[1];
             }
             return entity;
@@ -113,12 +113,12 @@ namespace HSGrammar
         public override object VisitHsCreateGamePlayer(HSGrammarParser.HsCreateGamePlayerContext context)
         {
             PowerEntity entity = new PowerEntity();
-            entity.EntityId = int.Parse(VisitHsEntityIdAssign(context.hsEntityIdAssign()).ToString());
+            entity.EntityId = Int32.Parse(VisitHsEntityIdAssign(context.hsEntityIdAssign()).ToString());
             //entity.PlayerId = int.Parse(VisitHsPlayerIdAssign(context.hsPlayerIdAssign()).ToString());
             //entity.GameAccount = VisitHsGameAccIdAssign(context.hsGameAccIdAssign()).ToString();
             foreach (var hsTagValueExpr in context.hsTagValueExpr())
             {
-                var tagValueExpr = (String[])VisitHsTagValueExpr(hsTagValueExpr);
+                var tagValueExpr = (string[])VisitHsTagValueExpr(hsTagValueExpr);
                 entity[tagValueExpr[0]] = tagValueExpr[1];
             }
             return entity;
@@ -128,7 +128,7 @@ namespace HSGrammar
         {
             if (context.INT() != null)
             {
-                return int.Parse(context.INT().GetText());
+                return Int32.Parse(context.INT().GetText());
             }
             else if (context.VALUE() != null || context.GameEntTag() != null)
             {
@@ -157,7 +157,7 @@ namespace HSGrammar
 
         public override object VisitHsPlayerIdAssign(HSGrammarParser.HsPlayerIdAssignContext context)
         {
-            return int.Parse(context.INT().GetText());
+            return Int32.Parse(context.INT().GetText());
         }
 
         public override object VisitHsGameAccIdAssign(HSGrammarParser.HsGameAccIdAssignContext context) { return VisitChildren(context); }
@@ -170,7 +170,7 @@ namespace HSGrammar
             powerFullEntity.Entity["CARDID"] = (string) VisitHsCardIdAssign(context.hsCardIdAssign());
             foreach (var hsTagValueExpr in context.hsTagValueExpr())
             {
-                var tagValueExpr = (String[])VisitHsTagValueExpr(hsTagValueExpr);
+                var tagValueExpr = (string[])VisitHsTagValueExpr(hsTagValueExpr);
                 powerFullEntity.Entity[tagValueExpr[0]] = tagValueExpr[1];
             }
             return powerFullEntity;
@@ -178,7 +178,7 @@ namespace HSGrammar
 
         public override object VisitHsIdAssign(HSGrammarParser.HsIdAssignContext context)
         {
-            return int.Parse(context.INT().GetText());
+            return Int32.Parse(context.INT().GetText());
         }
 
         public override object VisitHsCardIdAssign(HSGrammarParser.HsCardIdAssignContext context)
@@ -220,14 +220,14 @@ namespace HSGrammar
 
         public override object VisitHsEffectIndexAssign(HSGrammarParser.HsEffectIndexAssignContext context)
         {
-            return int.Parse(context.INT().GetText());
+            return Int32.Parse(context.INT().GetText());
         }
 
         public override object VisitHsTargetAssign(HSGrammarParser.HsTargetAssignContext context)
         {
             if (context.INT() != null)
             {
-                return int.Parse(context.INT().GetText());
+                return Int32.Parse(context.INT().GetText());
             }
             else if (context.hsEntityObject() != null)
             {
@@ -252,7 +252,7 @@ namespace HSGrammar
             powerShowEntity.Entity["CARDID"] = (string)VisitHsCardIdAssign(context.hsCardIdAssign());
             foreach (var hsTagValueExpr in context.hsTagValueExpr())
             {
-                var tagValueExpr = (String[])VisitHsTagValueExpr(hsTagValueExpr);
+                var tagValueExpr = (string[])VisitHsTagValueExpr(hsTagValueExpr);
                 powerShowEntity.Entity[tagValueExpr[0]] = tagValueExpr[1];
             }
             return powerShowEntity;
@@ -265,7 +265,7 @@ namespace HSGrammar
             powerHideEntity.Entity.EntityId = (int)VisitHsEntityIdAssign(context.hsEntityIdAssign());
             foreach (var hsTagValueExpr in context.hsTagValueExpr())
             {
-                var tagValueExpr = (String[])VisitHsTagValueExpr(hsTagValueExpr);
+                var tagValueExpr = (string[])VisitHsTagValueExpr(hsTagValueExpr);
                 powerHideEntity.Entity[tagValueExpr[0]] = tagValueExpr[1];
             }
             return powerHideEntity;
@@ -275,8 +275,8 @@ namespace HSGrammar
         {
             PowerMetaData powerMetaData = new PowerMetaData();
             powerMetaData.Meta = context.VALUE().GetText();
-            powerMetaData.Data = int.Parse(context.INT()[0].GetText());
-            powerMetaData.Info = int.Parse(context.INT()[1].GetText());
+            powerMetaData.Data = Int32.Parse(context.INT()[0].GetText());
+            powerMetaData.Info = Int32.Parse(context.INT()[1].GetText());
             return powerMetaData;
         }
 
@@ -336,7 +336,7 @@ namespace HSGrammar
         public override object VisitHsOption(HSGrammarParser.HsOptionContext context)
         {
             PowerOption powerOption = new PowerOption();
-            powerOption.Id = int.Parse(context.INT().GetText());
+            powerOption.Id = Int32.Parse(context.INT().GetText());
             powerOption.Type = context.VALUE().GetText();
             if (context.hsEntityObject() != null) {
                 powerOption.Entitiy = new PowerEntity();
@@ -357,7 +357,7 @@ namespace HSGrammar
         public override object VisitHsSubOption(HSGrammarParser.HsSubOptionContext context)
         {
             PowerSubOption powerSubOption = new PowerSubOption();
-            powerSubOption.Id = int.Parse(context.INT().GetText());
+            powerSubOption.Id = Int32.Parse(context.INT().GetText());
             powerSubOption.Entitiy = new PowerEntity();
             powerSubOption.Entitiy.EntityId = (int)VisitHsEntityObject(context.hsEntityObject());
             foreach (var target in context.hsTarget())
@@ -370,7 +370,7 @@ namespace HSGrammar
         public override object VisitHsTarget(HSGrammarParser.HsTargetContext context)
         {
             PowerTarget poweTarget = new PowerTarget();
-            poweTarget.Id = int.Parse(context.INT().GetText());
+            poweTarget.Id = Int32.Parse(context.INT().GetText());
             poweTarget.Entitiy = new PowerEntity();
             poweTarget.Entitiy.EntityId = (int)VisitHsEntityObject(context.hsEntityObject());
             return poweTarget;
@@ -379,16 +379,16 @@ namespace HSGrammar
         public override object VisitHsSendOptions(HSGrammarParser.HsSendOptionsContext context)
         {
             PowerSendOptions powerSendOptions = new PowerSendOptions();
-            powerSendOptions.SelectedOption = int.Parse(context.INT()[0].GetText());
-            powerSendOptions.SelectedSubOption = int.Parse(context.INT()[1].GetText());
-            powerSendOptions.SelectedTarget = int.Parse(context.INT()[2].GetText());
-            powerSendOptions.SelectedPosition = int.Parse(context.INT()[3].GetText());
+            powerSendOptions.SelectedOption = Int32.Parse(context.INT()[0].GetText());
+            powerSendOptions.SelectedSubOption = Int32.Parse(context.INT()[1].GetText());
+            powerSendOptions.SelectedTarget = Int32.Parse(context.INT()[2].GetText());
+            powerSendOptions.SelectedPosition = Int32.Parse(context.INT()[3].GetText());
             return powerSendOptions;
         }
 
         public override object VisitHsTagValueExpr(HSGrammarParser.HsTagValueExprContext context)
         {
-            return new string[] { (string)VisitHsTagExpr(context.hsTagExpr()) , (string)VisitHsValueExpr(context.hsValueExpr()) };
+            return new[] { (string)VisitHsTagExpr(context.hsTagExpr()) , (string)VisitHsValueExpr(context.hsValueExpr()) };
         }
 
         public override object VisitHsTagExpr(HSGrammarParser.HsTagExprContext context)

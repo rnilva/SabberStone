@@ -40,42 +40,42 @@ namespace SabberStoneCore.Model.Zones
 
 		private DeckZone(Controller c, DeckZone zone) : base(c, zone)
 		{
+			DrawWithRandom = zone.DrawWithRandom;
 			NoEvenCostCards = zone.NoEvenCostCards;
 			NoOddCostCards = zone.NoOddCostCards;
 		}
 
-		public Playable Draw(int cardIdToDraw = -1)
+		/// <summary>
+		/// Remove an entity from this deck and return the entity.
+		/// Note that the returned entity have not belong to any zone yet.
+		/// </summary>
+		/// <param name="id">Id of the entity to draw.
+		/// Negative number implies the top card of this deck.</param>
+		/// <returns>The drawn entity. Returns null if </returns>
+		public Playable Draw(int id = -1)
 		{
-			Playable draw;
-			if (cardIdToDraw > 0)
-			{
-				draw = Remove(cardIdToDraw);
-				if (draw == null)
-					return null;
-			}
-			else
-				draw = Remove(entity: _entities[_count - 1]);
+			Playable draw = id >= 0
+				? Remove(id)
+				: Remove(DrawWithRandom
+					? Game.Random.Next(_count)
+					: _count - 1);
 			return draw;
 		}
 
 		public override bool IsFull => _count == DeckMaximumCapcity;
 
-		public override int MaxSize => DeckMaximumCapcity;
-
-		public override Zone Type => Zone.DECK;
-
 		public override void Add(Playable entity, int zonePosition = -1)
 		{
 			base.Add(entity, zonePosition);
 
-			entity.Power?.Trigger?.Activate(entity, TriggerActivation.DECK);
+			entity.Power?.Trigger?.Activate(Game, entity, TriggerActivation.DECK);
 
 			CheckParity(entity.Cost);
 		}
 
 		public override void ChangeEntity(Playable oldEntity, Playable newEntity)
 		{
-			Span<IPlayable> span = new Span<Playable>(_entities, 0, _count);
+			Span<Playable> span = new Span<Playable>(_entities, 0, _count);
 			bool flag = false;
 			for (int i = 0; i < span.Length; i++)
 				if (span[i] == oldEntity)
@@ -88,7 +88,7 @@ namespace SabberStoneCore.Model.Zones
 			newEntity.Zone = this;
 		}
 
-		public IPlayable TopCard => _entities[_count - 1];
+		public Playable TopCard => _entities[_count - 1];
 
 		public void Fill(IReadOnlyCollection<string> excludeIds = null)
 		{
@@ -128,7 +128,7 @@ namespace SabberStoneCore.Model.Zones
 
 			Game.Log(LogLevel.INFO, BlockType.PLAY, "Deck", !Game.Logging ? "" : $"{Controller.Name} shuffles its deck.");
 
-			var entities = _entities;
+			Playable[] entities = _entities;
 			for (int i = 0; i < n; i++)
 			{
 				int r = rnd.Next(i, n);
@@ -138,7 +138,7 @@ namespace SabberStoneCore.Model.Zones
 			}
 		}
 
-		public void AddAtRandomPosition(IPlayable entity)
+		public void AddAtRandomPosition(Playable entity)
 		{
 			Add(entity, _count == 0 ? - 1 : Game.Random.Next(_count + 1));
 		}
@@ -155,7 +155,7 @@ namespace SabberStoneCore.Model.Zones
 			return new DeckZone(c, this);
 		}
 
-		internal void SetEntity(int index, IPlayable newEntity)
+		internal void SetEntity(int index, Playable newEntity)
 		{
 			_entities[index] = newEntity;
 			newEntity.Zone = this;
@@ -171,23 +171,22 @@ namespace SabberStoneCore.Model.Zones
 			else if (NoOddCostCards)
 				NoOddCostCards = false;
 		}
-	
-
-
-		private Playable Remove(int id)
+		
+		private Playable RemoveWithId(int id)
 		{
-			var entities = _entities;
-			var c = _count;
-			for (int i = _count - 1; i >= 0; i--)
+			Playable[] entities = _entities;
+			int c = _count;
+			for (int i = c - 1; i >= 0; i--)
 				if (entities[i].Id == id)
 				{
 					Playable p = entities[i];
 					p.ActivatedTrigger?.Remove();
 					p.Zone = null;
 
-					if (i != --_count)
-						Array.Copy(entities, i + 1, entities, i, _count - i);
+					if (i != --c)
+						Array.Copy(entities, i + 1, entities, i, c - i);
 
+					_count = c;
 					return p;
 				}
 

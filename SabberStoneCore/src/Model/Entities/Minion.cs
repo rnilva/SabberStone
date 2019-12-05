@@ -13,10 +13,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Zones;
-using SabberStoneCore.Tasks.SimpleTasks;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -177,18 +175,6 @@ namespace SabberStoneCore.Model.Entities
 			set { this[GameTag.BATTLECRY] = value ? 1 : 0; }
 		}
 
-		public override bool HasDeathrattle
-		{
-			//get { return this[GameTag.DEATHRATTLE] == 1; }
-			get
-			{
-				if (!_data.TryGetValue(GameTag.DEATHRATTLE, out int value))
-					return Card.Deathrattle;
-				return value > 0;
-			}
-			set => this[GameTag.DEATHRATTLE] = value ? 1 : 0;
-		}
-
 		public bool HasInspire
 		{
 			get { return this[GameTag.INSPIRE] == 1; }
@@ -216,6 +202,11 @@ namespace SabberStoneCore.Model.Entities
 		}
 
 		internal override ref bool GetRef(int index)
+		{
+			throw new NotImplementedException();
+		}
+
+		internal override ref int GetIntRef(int index)
 		{
 			throw new NotImplementedException();
 		}

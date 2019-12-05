@@ -25,7 +25,7 @@ namespace SabberStoneCore.Conditions
 	public class SelfCondition
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public static readonly SelfCondition IsDead = new SelfCondition(me => me.ToBeDestroyed && me.Card.Type == CardType.MINION);
+		public static readonly SelfCondition IsDead = new SelfCondition(me => me is Minion m && m.ToBeDestroyed);
         public static readonly SelfCondition IsNotImmune = new SelfCondition(me => (me as Character)?.IsImmune == false);
 		public static readonly SelfCondition IsSilenced = new SelfCondition(me => me is MinionInPlay m && m.IsSilenced);
 		public static readonly SelfCondition IsBoardFull = new SelfCondition(me => me.Controller.BoardZone.IsFull);
@@ -81,7 +81,7 @@ namespace SabberStoneCore.Conditions
 		public static readonly SelfCondition IsControllingTreant =
 			new SelfCondition(me => me.Controller.BoardZone.Any(m => m.Card.Name == "Treant"));
 		public static readonly SelfCondition IsControllingLackey =
-			new SelfCondition(me => me.Controller.BoardZone.Any(m => m.Card[Enums.GameTag.MARK_OF_EVIL] == 1));
+			new SelfCondition(me => me.Controller.BoardZone.Any(m => m.Card[GameTag.MARK_OF_EVIL] == 1));
 
 		public static readonly SelfCondition IsSpellDmgOnHero = new SelfCondition(me => me.Controller.CurrentSpellPower > 0);
 		public static readonly SelfCondition IsntSpellDmgOnHero = new SelfCondition(me => me.Controller.CurrentSpellPower == 0);
@@ -160,7 +160,7 @@ namespace SabberStoneCore.Conditions
 		public static readonly SelfCondition HoldingAnotherClassCard =
 			new SelfCondition(me => me.Controller.HandZone.Any(p => p.Card.Class != me.Controller.HeroClass));
 
-		//public static SelfCondition IsProposedDefender(CardType cardType) => new SelfCondition(me => me is ICharacter && me.Game.IdEntityDic[me.Game.ProposedDefender].Card.Type == cardType);
+		//public static SelfCondition IsProposedDefender(CardType cardType) => new SelfCondition(me => me is Character && me.Game.IdEntityDic[me.Game.ProposedDefender].Card.Type == cardType);
 		public static readonly SelfCondition IfAnyEnemyFrozen = new SelfCondition(p => p.Controller.Opponent.Hero.IsFrozen || p.Controller.Opponent.BoardZone.Any(m => m.IsFrozen));
 		//public static SelfCondition IsProposedDefender(CardType cardType) => new SelfCondition(me => me is Character && me.Game.IdEntityDic[me.Game.ProposedDefender].Card.Type == cardType);
 		public static SelfCondition IsProposedDefender(CardType cardType) => IsEventTargetIs(cardType);
@@ -323,7 +323,7 @@ namespace SabberStoneCore.Conditions
 			new SelfCondition(p => (p.Game.CurrentEventData?.EventTarget as Minion)?.ToBeDestroyed ?? false);
 
 		public static readonly SelfCondition IsDefenderNotDead =
-			new SelfCondition(p => !p.Game.CurrentEventData?.EventTarget.ToBeDestroyed ?? false);
+			new SelfCondition(p => (p.Game.CurrentEventData?.EventTarget as Minion)?.ToBeDestroyed ?? false);
 
 		public static SelfCondition IsStep(Step step)
 		{

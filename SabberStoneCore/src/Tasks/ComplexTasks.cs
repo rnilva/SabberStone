@@ -360,7 +360,7 @@ namespace SabberStoneCore.Tasks
 
 		public static ISimpleTask Secret(params ISimpleTask[] list)
 		{
-			var secretList = list.ToList();
+			List<ISimpleTask> secretList = list.ToList();
 			secretList.Add(new SetGameTagTask(GameTag.REVEALED, 1, EntityType.SOURCE));
 			secretList.Add(new MoveToGraveYard(EntityType.SOURCE));
 			return StateTaskList.Chain(secretList.ToArray());
@@ -440,13 +440,12 @@ namespace SabberStoneCore.Tasks
 				if (board.IsFull) return;
 
 				int num = c.NumFriendlyMinionsThatDiedThisTurn;
-				ReadOnlySpan<IPlayable> graveyard = c.GraveyardZone.GetSpan();
+				ReadOnlySpan<Playable> graveyard = c.GraveyardZone.GetSpan();
 				Span<int> buffer = stackalloc int[num]; int k = 0;
 
 				for (int i = graveyard.Length - 1, j = 0; j < num; --i)
 				{
-					if (!graveyard[i].ToBeDestroyed) continue;
-					if (graveyard[i].Card.Type != CardType.MINION) continue;
+					if (!(graveyard[i] is Minion m && m.ToBeDestroyed)) continue;
 					j++;
 					if ((!condition?.Eval(graveyard[i]) ?? false)) continue;
 					buffer[k++] = i;
@@ -504,7 +503,7 @@ namespace SabberStoneCore.Tasks
 
 		//		TaskQueue queue = stack[0].Game.TaskQueue;
 
-		//		foreach (IPlayable p in stack)
+		//		foreach (Playable p in stack)
 		//		{
 		//			queue.Enqueue(in task, )
 		//		}

@@ -22,6 +22,7 @@ using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 using SabberStoneCore.Triggers;
+using static SabberStoneCore.Tasks.ImplementationHelpers;
 using static SabberStoneCore.Tasks.SimpleTasks.RitualTask;
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
 
@@ -1218,8 +1219,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("OG_026", new Power {
 				PowerTask = ComplexTask.Create(
-					new SetControllerGameTagTask(GameTag.OVERLOAD_LOCKED, 0),
-					new SetControllerGameTagTask(GameTag.OVERLOAD_OWED, 0))
+					new SetControllerAttributeTask(ControllerAttributes.OverloadLocked, 0),
+					new SetControllerAttributeTask(ControllerAttributes.OverloadOwed, 0))
 			});
 
 			// ---------------------------------------- MINION - SHAMAN
@@ -2058,7 +2059,7 @@ namespace SabberStoneCore.CardSets
 								p[i].Destroy();
 							c.Game.GraveYard();	// forced death phase
 							var ancientOne = (Minion) Entity.FromCard(c, Cards.FromId("OG_173a"));
-							Generic.SummonBlock.Invoke(c.Game, ancientOne, c.BoardZone.Count, p[0]);
+							Generic.SummonBlock(c.Game, ancientOne, c.BoardZone.Count, p[0]);
 							return p;
 						}))
 

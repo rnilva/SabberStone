@@ -41,13 +41,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 	public class CustomTask : SimpleTask
 	{
-		private readonly Action<Game, Controller, Entity, Playable, TaskStack> _func;
-		public CustomTask(Action<Game, Controller, Entity, Playable, TaskStack> customFunction)
+		private readonly Action<Game, Controller, Entity, Entity, TaskStack> _func;
+		public CustomTask(Action<Game, Controller, Entity, Entity, TaskStack> customFunction)
 		{
 			_func = customFunction;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Playable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			_func(game, controller, source, target, stack);

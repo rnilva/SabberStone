@@ -11,9 +11,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
-using System.Collections.Generic;
+
 using System.Collections.Generic;
 using SabberStoneCore.Actions;
+using SabberStoneCore.Conditions;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
@@ -23,6 +24,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 	{
 		private readonly int _count;
 		private readonly bool _toStack;
+		//private readonly SelfCondition _condition;
 
 		public DrawTask(bool toStack = false, int count = 1)
 		{
@@ -34,27 +36,46 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		{
 		}
 
+		//public DrawTask(SelfCondition condition, bool toStack = false, int count = 1) : this(toStack, count)
+		//{
+		//	_condition = condition;
+		//}
 
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			//Model.Entities.Playable drawedCard = Generic.Draw(controller);
-			//bool nullFlag = false;
+			//if (_condition != null)
+			//{
+			//	SelfCondition cond = _condition;
+			//	ReadOnlySpan<Playable> deck = controller.DeckZone.GetSpan();
+			//	List<int> indices = new List<int>();
+			//	for (int i = 0; i < deck.Length; i++)
+			//		if (cond.Eval(deck[i]))
+			//			indices.Add(i);
+
+			//	if (indices.Count == 0)
+			//		return TaskState.STOP;
+
+			//	if (indices.Count == 1)
+			//	{
+					
+			//	}
+			//}
+
+
+
 			List<Playable> cards = _toStack ? new List<Playable>(_count) : null;
 			for (int i = 0; i < _count; i++)
 			{
 				Playable draw = Generic.Draw(controller);
 				if (draw == null)
-				{
-					//nullFlag = true;
 					break;
-				}
 
 				cards?.Add(draw);
 			}
 
 			if (cards != null)
-			{ 
+			{
 				//if (nullFlag)
 					//stack?.Playables.AddRange(cards.Where(p => p != null));
 				//else

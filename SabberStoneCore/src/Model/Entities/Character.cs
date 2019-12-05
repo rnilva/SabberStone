@@ -14,11 +14,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Tasks;
-using SabberStoneCore.Model.Zones;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -201,7 +201,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get
 			{
-				var span = Controller.Opponent.BoardZone.GetSpan();
+				ReadOnlySpan<MinionInPlay> span = Controller.Opponent.BoardZone.GetSpan();
 				for (int i = 0; i < span.Length; i++)
 				{
 					if (!(span[i].HasStealth || span[i].IsImmune))
@@ -274,8 +274,8 @@ namespace SabberStoneCore.Model.Entities
 				amount = game.CurrentEventData.EventNumber;
 				if (amount == 0 && armor == 0)
 				{
-					if (_history)
-						PreDamage = 0;
+					//if (_history)
+					//	PreDamage = 0;
 
 					game.TaskQueue.EndEvent();
 					game.CurrentEventData = temp;
@@ -288,14 +288,14 @@ namespace SabberStoneCore.Model.Entities
 				game.CurrentEventData = temp;
 
 				game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !game.Logging ? "" : $"{this} is immune.");
-                if (_history)
-                    PreDamage = 0;
+                //if (_history)
+                //    PreDamage = 0;
                 return 0;
 			}
 
-			// reset predamage
-			if (_history)
-				PreDamage = 0;
+			//// reset predamage
+			//if (_history)
+			//	PreDamage = 0;
 
 			// remove armor first from hero ....
 			if (armor > 0)
@@ -319,7 +319,7 @@ namespace SabberStoneCore.Model.Entities
             {
                 game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TakeDamage", !_logging ? "" : $"{source}' Overkill is triggered.");
 
-                ISimpleTask task = source is Hero h ? h.Weapon.Card.Power.OverkillTask : source.Card.Power.OverkillTask;
+                ISimpleTask task = source is HeroInPlay h ? h.Weapon.Card.Power.OverkillTask : source.Card.Power.OverkillTask;
                 game.TaskQueue.Enqueue(task, source.Controller, source, null);
             }
 
@@ -409,6 +409,13 @@ namespace SabberStoneCore.Model.Entities
 				Controller.AmountHeroHealedThisTurn += amount;
 		}
 
+		/// <summary>
+		/// Character is member of Race.
+		/// Characters of Race.ALL.  IE Amalgam.IsRace(Race.MULROC/Race.DRAGON/...) => true
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool IsRace(Race race) => Card.IsRace(race);
+
 		public void OnAfterAttackTrigger()
 		{
 			AfterAttackTrigger?.Invoke(this);
@@ -425,13 +432,6 @@ namespace SabberStoneCore.Model.Entities
 
 		private bool _lifestealChecker;
 
-		internal int? _modifiedATK;
-		internal int? _modifiedHealth;
-		internal bool? _modifiedStealth;
-		internal bool? _modifiedImmune;
-		internal bool? _modifiedTaunt;
-		internal bool? _modifiedCantBeTargetedBySpells;
-
 		public virtual int AttackDamage
 		{
 			get => _v1 ?? (_v1 = Card.ATK).Value;
@@ -445,10 +445,11 @@ namespace SabberStoneCore.Model.Entities
 		public virtual int Damage
 		{
 			get => default;
-			set{ return; }
+			// ReSharper disable once ValueParameterNotUsed
+			set{ }
 		}
 
-		public bool CantBeTargetedByHeroPowers
+		public int Health
 		{
 			get => BaseHealth - Damage;
 			set
@@ -458,6 +459,7 @@ namespace SabberStoneCore.Model.Entities
 				Damage = 0;
 			}
 		}
+
 		public virtual bool CantAttack
 		{
 			get => Card.CantAttack;
@@ -527,9 +529,10 @@ namespace SabberStoneCore.Model.Entities
 			get { return this[GameTag.DEFENDING] == 1; }
 			set { this[GameTag.DEFENDING] = value ? 1 : 0; }
 		}
-		public Race Race => Card.Race;
+		
 
 		internal abstract ref bool GetRef(int index);
+		internal abstract ref int GetIntRef(int index);
 		internal abstract bool GetAttribute(Attributes attr);
 		internal abstract void SetAttribute(Attributes attr, bool value);
 #pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element

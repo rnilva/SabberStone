@@ -1,17 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 
 namespace SabberStoneCore.Model.Entities
 {
+	/// <summary>
+	/// Internal mappings to indices.
+	/// </summary>
 	public enum Attributes
 	{
 		Invalid = - 1,
 		// # Integer attributes
-		// ## Minion-only attributes
+		// ## Character-only attributes
 		SpellPower = 0,
+		Damage = 1,
+		NumAttacksThisTurn = 2,
+
+
 		// ## Hero-only attributes
 		HeroPowerDamage = 3,
 
@@ -40,6 +45,9 @@ namespace SabberStoneCore.Model.Entities
 
 	public static class AttributeHelpers
 	{
+		/// <summary>
+		/// Maps GameTag to boolean attributes. Do not use integer tags.
+		/// </summary>
 		public static Attributes GameTagToAttribute(GameTag tag)
 		{
 			switch (tag)

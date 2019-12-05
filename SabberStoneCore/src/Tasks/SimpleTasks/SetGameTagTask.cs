@@ -11,10 +11,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
+
+using System.Collections.Generic;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
-using SabberStoneCore.Model;
-using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
@@ -53,6 +53,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						_effect = new AttributeEffect(attr, amount == 1);
 					break;
 			}
+
 			_type = entityType;
 		}
 
@@ -84,10 +85,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				effect.ApplyTo(entities[i]);
 			}
 
-		public ApplyEffectTask(EntityType entityType, params IEffect[] effects)
-		{
-			_type = entityType;
-			_effs = effects;
+			return TaskState.COMPLETE;
 		}
 	}
 

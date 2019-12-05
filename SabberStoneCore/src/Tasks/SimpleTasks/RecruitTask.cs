@@ -68,7 +68,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			int[] results = indices.ChooseNElements(amount, game.Random);
 
-			IPlayable[] entities = new Playable[results.Length];
+			Playable[] entities = new Playable[results.Length];
 			for (int i = 0; i < entities.Length; i++)
 				entities[i] = deck[results[i]];
 
@@ -78,7 +78,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			for (int i = 0; i < entities.Length; i++)
 			{
 				Generic.RemoveFromZone.Invoke(controller, entities[i]);
-				Generic.SummonBlock.Invoke(game, (Minion)entities[i], -1, source);
+				Generic.SummonBlock(game, ref entities[i], -1, (Playable) source);
 
 				if (controller.BoardZone.IsFull)
 					break;

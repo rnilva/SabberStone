@@ -1,5 +1,4 @@
-﻿using SabberStoneCore.Model;
-#region copyright
+﻿#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -43,8 +42,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//	{
 			//		Game = controller.Game,
 			//		Controller = in controller,
-			//		source = source as IPlayable,
-			//		target = target as IPlayable
+			//		source = source as Playable,
+			//		target = target as Playable
 			//	});
 
 			return TaskState.COMPLETE;

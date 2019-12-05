@@ -12,9 +12,6 @@
 // GNU Affero General Public License for more details.
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Text;
-using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
 
 namespace SabberStoneCore.Model.Entities
@@ -91,6 +88,11 @@ namespace SabberStoneCore.Model.Entities
 		#endregion
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 		internal override ref bool GetRef(int index)
+		{
+			throw new NotImplementedException();
+		}
+
+		internal override ref int GetIntRef(int index)
 		{
 			throw new NotImplementedException();
 		}

@@ -76,7 +76,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			PotionCards[4] = new[] { Cards.FromId("CFM_621t"), Cards.FromId("CFM_621t14"), Cards.FromId("CFM_621t15")};
 		}
 
-		internal static void CreateCostChoices(Controller c, IEntity source)
+		internal static void CreateCostChoices(Controller c, Entity source)
 		{
 			Generic.CreateChoiceCards(c, source, null, ChoiceType.GENERAL, ChoiceAction.KAZAKUS, PotionCards[0], null);
 		}

@@ -28,11 +28,11 @@ namespace SabberStoneCore.Model.Zones
 		{
 		}
 
-		public override Zone Type => Zone.GRAVEYARD;
-
 		public override void Add(Playable entity, int zonePosition = -1)
 		{
-			entity.Zone = this;
+			//entity.Zone = this;
+
+			base.Add(entity, zonePosition);
 
 			// Add enchantments here.
 			List<Enchantment> enchantments = entity.AppliedEnchantments;

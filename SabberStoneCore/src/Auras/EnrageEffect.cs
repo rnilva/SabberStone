@@ -12,7 +12,7 @@ namespace SabberStoneCore.Auras
 	public class EnrageEffect : Aura
 	{
 		private bool _enraged;
-		private IPlayable _target;
+		private Playable _target;
 		private Enchantment _currentInstance;
 
 		public EnrageEffect(AuraType type, params IEffect[] effects) : base(type, effects)
@@ -24,7 +24,7 @@ namespace SabberStoneCore.Auras
 
 		}
 
-		private EnrageEffect(EnrageEffect prototype, IPlayable owner) : base(prototype, owner)
+		private EnrageEffect(EnrageEffect prototype, Playable owner) : base(prototype, owner)
 		{
 			_enraged = prototype._enraged;
 			Restless = true;            //	can cause performance issue; should replace with heal trigger ?
@@ -39,10 +39,10 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		public override void Activate(IPlayable owner, bool cloning = false)
+		public override void Activate(Playable owner, bool cloning = false)
 		{
 			//if (owner is Enchantment e)
-			//	owner = (IPlayable)e.Target;
+			//	owner = (Playable)e.Target;
 
 			var instance = new EnrageEffect(this, owner);
 
@@ -120,7 +120,7 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		public override void Clone(IPlayable clone)
+		public override void Clone(Playable clone)
 		{
 			Activate(clone, true);
 		}

@@ -1250,7 +1250,7 @@ namespace SabberStoneCore.CardSets.Standard
 				{
 					SingleTask = ComplexTask.Secret(
 						new SetGameTagTask(GameTag.CANT_PLAY, 1, EntityType.TARGET),
-						new FuncNumberTask((IPlayable p) =>
+						new FuncNumberTask((Playable p) =>
 						{
 							Trigger.InvalidateAll(p.Game);
 							return 0;
@@ -3719,15 +3719,15 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.TURN_START)
 				{
 					Condition = SelfCondition.HasMinionInHand,
-					SingleTask = ComplexTask.Create(
-						new GetGameTagTask(GameTag.ZONE_POSITION, EntityType.SOURCE),
-						new MoveToSetaside(EntityType.SOURCE),
-						new IncludeTask(EntityType.HAND),
-						new FilterStackTask(SelfCondition.IsMinion),
-						new RandomTask(1, EntityType.STACK),
-						new RemoveFromHand(EntityType.STACK),
-						new SummonTask(SummonSide.NUMBER),
-						new ReturnHandTask(EntityType.SOURCE))
+					SingleTask = ComplexTask.Conditional(SelfCondition.IsNotDead, ComplexTask.Create(
+							new GetGameTagTask(GameTag.ZONE_POSITION, EntityType.SOURCE),
+							new MoveToSetaside(EntityType.SOURCE),
+							new IncludeTask(EntityType.HAND),
+							new FilterStackTask(SelfCondition.IsMinion),
+							new RandomTask(1, EntityType.STACK),
+							new RemoveFromHand(EntityType.STACK),
+							new SummonTask(SummonSide.NUMBER),
+							new ReturnHandTask(EntityType.SOURCE)))
 				}
 			});
 

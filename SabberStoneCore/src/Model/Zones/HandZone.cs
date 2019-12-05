@@ -21,7 +21,7 @@ namespace SabberStoneCore.Model.Zones
 	/// <summary>
 	/// Zone for all entities which are held 'in hand'.
 	/// </summary>
-	public class HandZone : PositioningZone<IPlayable>
+	public class HandZone : PositioningZone<Playable>
 	{
 		public HandZone(Controller controller) : base(Zone.HAND, Controller.MaxHandSize)
 		{
@@ -34,10 +34,6 @@ namespace SabberStoneCore.Model.Zones
 		}
 
 		public override bool IsFull => _count == Controller.MaxHandSize;
-
-		public override int MaxSize => Controller.MaxHandSize;
-
-		public override Zone Type => Zone.HAND;
 
 		public override void Add(Playable entity, int zonePosition = -1)
 		{

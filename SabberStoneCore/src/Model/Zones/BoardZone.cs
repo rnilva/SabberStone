@@ -274,16 +274,16 @@ namespace SabberStoneCore.Model.Zones
 			}
 		}
 
-		public int CountOf(Predicate<MinionInPlay> predicate)
-		{
-			int count = 0;
-			//var span = new Span<MinionInPlay>(_entities);
-			for (int i = 0; i < _count; i++)
-				if (predicate(_entities[i]))
-					count++;
+		//public int CountOf(Predicate<MinionInPlay> predicate)
+		//{
+		//	int count = 0;
+		//	//var span = new Span<MinionInPlay>(_entities);
+		//	for (int i = 0; i < _count; i++)
+		//		if (predicate(_entities[i]))
+		//			count++;
 
-			return count;
-		}
+		//	return count;
+		//}
 	}
 }
 

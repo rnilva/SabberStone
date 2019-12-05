@@ -962,7 +962,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			foreach (Playable card in game.CurrentPlayer.DeckZone)
 			{
 				Assert.NotNull(card);
-				Assert.IsType(typeof(Minion), card);
+				Assert.IsType<Minion>(card);
 				Minion m = (Minion) card;
 				Assert.Equal("Stonetusk Boar", m.Card.Name);
 				Assert.Equal(4, m.AttackDamage);
@@ -1507,7 +1507,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Minion testCard = game.CurrentPlayer.BoardZone[0];
 
 			Assert.False(testCard.HasTaunt);
-			Assert.False(testCard.HasLifesteal);
+			Assert.False(testCard.HasLifeSteal);
 
 			game.ProcessCard("Blessing of Might", testCard);
 
@@ -4606,7 +4606,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Voodoo Doll"));
 
 			Minion target = game.ProcessCard<Minion>("Stonetusk Boar");
-			Minion test = game.ProcessCard<Minion>("Voodoo Doll", target);
+			MinionInPlay test = game.ProcessCard<MinionInPlay>("Voodoo Doll", target);
 
 			test.Kill();
 
@@ -4619,7 +4619,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			// will not be killed when Voodoo Doll dies.
 			// Silencing the cursed minion will also break the curse,
 			// in addition to silencing the Voodoo Doll.
-			test = game.ProcessCard<Minion>("Wisp");
+			test = game.ProcessCard<MinionInPlay>("Wisp");
 
 			Minion silenceTest = game.ProcessCard<Minion>("Voodoo Doll", test, asZeroCost: true);
 			test.Silence();
@@ -4629,7 +4629,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Minion transformTest = game.ProcessCard<Minion>("Voodoo Doll", test, asZeroCost: true);
 			game.ProcessCard<Minion>("Master of Evolution", test, asZeroCost: true);
 			transformTest.Kill();
-			test = (Minion) game.IdEntityDic[test.Id];
+			test = (MinionInPlay) game.IdEntityDic[test.Id];
 			Assert.False(test.ToBeDestroyed);
 
 			Minion returnToHandTest = game.ProcessCard<Minion>("Voodoo Doll", test, asZeroCost: true);
@@ -4988,7 +4988,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			game.ProcessCard<Spell>("Earthen Might", testCard);
 			Assert.Single(game.CurrentPlayer.HandZone);
-			IPlayable card = game.CurrentPlayer.HandZone[0];
+			Playable card = game.CurrentPlayer.HandZone[0];
 			Assert.True(card.Card.IsRace(Race.ELEMENTAL));
 			Assert.Equal(7, testCard.AttackDamage);
 			Assert.Equal(9, testCard.Health);

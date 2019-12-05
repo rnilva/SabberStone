@@ -31,11 +31,23 @@ namespace SabberStoneCore.Model.Zones
 	/// <typeparam name="T"></typeparam>
 	/// <seealso cref="T:SabberStoneCore.Model.Zones.IZone" />
 	/// <seealso cref="T:System.Collections.Generic.IEnumerable`1" />
-	public abstract class Zone<T> : IZone, IEnumerable<T> where T : IPlayable
+	public abstract class Zone<T> : IZone, IEnumerable<T> where T : Playable
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		protected T[] _entities;
 		protected int _count;
+
+		/// <summary>Gets the game which contains the zone.</summary>
+		/// <value><see cref="Model.Game"/></value>
+		public Game Game { get; protected set; }
+
+		/// <summary>
+		/// Gets the owner of the zone.
+		/// </summary>
+		/// <value><see cref="SabberStoneCore.Model.Entities.Controller"/></value>
+		public Controller Controller { get; set; }
+
+		public Zone Type { get; }
 
 		protected Zone(Zone type)
 		{
@@ -48,7 +60,6 @@ namespace SabberStoneCore.Model.Zones
 			Game = c.Game;
 			Type = type;
 		}
-		public Zone Type { get; }
 
 		/// <inheritdoc />
 		/// <summary>
@@ -66,17 +77,6 @@ namespace SabberStoneCore.Model.Zones
 		/// Gets the size of available space of this zone.
 		/// </summary>
 		public abstract int FreeSpace { get; }
-
-
-
-		/// <summary>Gets the game which contains the zone.</summary>
-		/// <value><see cref="Model.Game"/></value>
-		public Game Game { get; protected set; }
-		/// <summary>
-		/// Gets the owner of the zone.
-		/// </summary>
-		/// <value><see cref="SabberStoneCore.Model.Entities.Controller"/></value>
-		public Controller Controller { get; set; }
 
 		public abstract void Add(T entity, int zonePosition = -1);
 
@@ -102,9 +102,9 @@ namespace SabberStoneCore.Model.Zones
 		public T Random => _count == 0 ? default : _entities[Game.Random.Next(_count)];
 
 		/// <summary>
-		/// Gets the <see cref="IPlayable"/> with the specified zone position.
+		/// Gets the <see cref="Playable"/> with the specified zone position.
 		/// </summary>
-		/// <value>The <see cref="IPlayable"/>.</value>
+		/// <value>The <see cref="Playable"/>.</value>
 		/// <param name="zonePosition">The zero-based position inside the zone.</param>
 		/// <returns></returns>
 		public T this[int zonePosition] => zonePosition >= _count ? throw new IndexOutOfRangeException() : _entities[zonePosition];
@@ -131,7 +131,7 @@ namespace SabberStoneCore.Model.Zones
 
 		/// <summary>
 		/// Returns the number of entities in this Zone
-		/// that matches the given predicate.
+		/// that satisfies a specified condition.
 		/// </summary>
 		/// <param name="predicate"></param>
 		/// <returns></returns>
@@ -143,6 +143,39 @@ namespace SabberStoneCore.Model.Zones
 				if (predicate(entities[i]))
 					count++;
 			return count;
+		}
+
+		/// <summary>
+		/// Returns the index of the first entity in this Zone
+		/// that satisfies a specified condition.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public int FindFirstIndex(Predicate<T> predicate)
+		{
+			T[] entities = _entities;
+			for (int i = 0; i < _count; i++)
+				if (predicate(entities[i]))
+					return i;
+
+			return -1;
+		}
+
+		/// <summary>
+		/// Returns the index of the first entity in this Zone
+		/// that satisfies a specified condition.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public List<int> FindAllIndices(Predicate<T> predicate)
+		{
+			List<int> result = new List<int>();
+			T[] entities = _entities;
+			for (int i = 0; i < _count; i++)
+				if (predicate(entities[i]))
+					result.Add(i);
+
+			return result;
 		}
 
 		/// <summary>
@@ -223,7 +256,7 @@ namespace SabberStoneCore.Model.Zones
 			str.Append("[Z:");
 			str.Append($"{Type} ");
 			//str.Append("][E:");
-			var list = this.ToList();
+			List<T> list = this.ToList();
 			if (Type != Zone.PLAY)
 			{
 				list = list.OrderBy(p => p.Id).ToList();
@@ -243,7 +276,7 @@ namespace SabberStoneCore.Model.Zones
 
 		public override string ToString()
 		{
-			return $"[ZONE {Type} '{Controller.Name}']";
+			return $"[ZONE {Type} '{Controller.Name}' Count = {Count}]";
 		}
 
 		public virtual IEnumerator<T> GetEnumerator()
@@ -270,18 +303,18 @@ namespace SabberStoneCore.Model.Zones
 			return str.ToString();
 		}
 
-		void IZone.Add(IPlayable entity, int zonePosition)
+		void IZone.Add(Playable entity, int zonePosition)
 		{
 			Add((T)entity, zonePosition);
 		}
 
-		IPlayable IZone.Remove(IPlayable entity)
+		Playable IZone.Remove(Playable entity)
 		{
 			return Remove((T)entity);
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		List<IPlayable> IZone.GetAll => this.Cast<IPlayable>().ToList();
+		List<Playable> IZone.GetAll => this.Cast<Playable>().ToList();
 
 		private struct Enumerator : IEnumerator<T>, IDisposable, IEnumerator
 		{
@@ -334,22 +367,22 @@ namespace SabberStoneCore.Model.Zones
 	/// Base implementation of <see cref="GraveyardZone"/> and <see cref="SetasideZone"/>.
 	/// This kind of zones never be full.
 	/// </summary>
-	public abstract class UnlimitedZone : Zone<IPlayable>
+	public abstract class UnlimitedZone : Zone<Playable>
 	{
 		protected UnlimitedZone(Controller controller, Zone type) : base(type)
 		{
-			_entities = new IPlayable[3];
+			_entities = new Playable[3];
 			Controller = controller;
 			Game = controller.Game;
 		}
 
 		protected UnlimitedZone(Controller c, UnlimitedZone zone) : base(c, zone.Type)
 		{
-			IPlayable[] src = zone._entities;
-			var entities = new IPlayable[src.Length];
+			Playable[] src = zone._entities;
+			var entities = new Playable[src.Length];
 			for (int i = 0; i < zone.Count; ++i)
 			{
-				IPlayable copy = src[i].Clone(c);
+				Playable copy = src[i].Clone(c);
 				copy.Zone = this;
 				//entities.Add(copy);
 				entities[i] = copy;
@@ -360,7 +393,7 @@ namespace SabberStoneCore.Model.Zones
 		public override bool IsFull => false;
 		public override int FreeSpace => int.MaxValue;
 
-		public override void Add(IPlayable entity, int zonePosition = -1)
+		public override void Add(Playable entity, int zonePosition = -1)
 		{
 			if (entity.Controller != Controller)
 				throw new ZoneException("Can't add an opponent's entity to own Zones");
@@ -369,13 +402,13 @@ namespace SabberStoneCore.Model.Zones
 			Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}'.");
 		}
 
-		public override IPlayable Remove(IPlayable entity)
+		public override Playable Remove(Playable entity)
 		{
 			if (entity.Zone == null || entity.Zone.Type != Type)
 				throw new ZoneException("Couldn't remove entity from zone.");
 
 			//_entities.Remove(entity);
-			IPlayable[] entities = _entities;
+			Playable[] entities = _entities;
 			int i = --_count;
 			for (; i >= 0; --i)
 				if (entities[i] == entity)
@@ -394,7 +427,7 @@ namespace SabberStoneCore.Model.Zones
 			return entity;
 		}
 
-		public override void MoveTo(IPlayable entity, int zonePosition = -1)
+		public override void MoveTo(Playable entity, int zonePosition = -1)
 		{
 			if (_entities.Length == _count) Resize();
 
@@ -404,21 +437,21 @@ namespace SabberStoneCore.Model.Zones
 				entity[GameTag.ZONE] = (int) Type;
 		}
 
-		public override void ChangeEntity(IPlayable oldEntity, IPlayable newEntity)
+		public override void ChangeEntity(Playable oldEntity, Playable newEntity)
 		{
 			int pos = Array.FindIndex(_entities, p => p == oldEntity);
 			_entities[pos] = newEntity;
 			newEntity.Zone = this;
 		}
 
-		public override IEnumerator<IPlayable> GetEnumerator()
+		public override IEnumerator<Playable> GetEnumerator()
 		{
 			return _entities.Take(_count).GetEnumerator();
 		}
 
 		private void Resize()
 		{
-			var newArray = new IPlayable[_count << 1];
+			var newArray = new Playable[_count << 1];
 			Array.Copy(_entities, 0, newArray, 0, _count);
 			_entities = newArray;
 		}
@@ -428,7 +461,7 @@ namespace SabberStoneCore.Model.Zones
 	/// Base implementation of zones which have a maximum size.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public abstract class LimitedZone<T> : Zone<T> where T: IPlayable
+	public abstract class LimitedZone<T> : Zone<T> where T: Playable
 	{
 		/// <summary>
 		/// The maximum amount of entities this zone can hold.
@@ -552,7 +585,7 @@ namespace SabberStoneCore.Model.Zones
 	/// Base implementation of zones performing strict recalculation of its containing entities' ZonePosition when any member comes and goes.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public abstract class PositioningZone<T> : LimitedZone<T> where T : IPlayable
+	public abstract class PositioningZone<T> : LimitedZone<T> where T : Playable
 	{
 		public readonly List<Aura> Auras = new List<Aura>();
 

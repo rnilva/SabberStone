@@ -19,6 +19,7 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 using SabberStoneCore.Triggers;
+using static SabberStoneCore.Tasks.ImplementationHelpers;
 
 namespace SabberStoneCore.CardSets
 {
@@ -377,8 +378,10 @@ namespace SabberStoneCore.CardSets
 			cards.Add("BRM_011", new Power {
 				PowerTask = ComplexTask.Create(
 					new DamageTask(2, EntityType.TARGET),
-					new SetControllerGameTagTask(GameTag.OVERLOAD_LOCKED, 0),
-					new SetControllerGameTagTask(GameTag.OVERLOAD_OWED, 0))
+					//new SetControllerGameTagTask(GameTag.OVERLOAD_LOCKED, 0),
+					//new SetControllerGameTagTask(GameTag.OVERLOAD_OWED, 0))
+					new SetControllerAttributeTask(ControllerAttributes.OverloadLocked, 0),
+					new SetControllerAttributeTask(ControllerAttributes.OverloadOwed, 0))
 			});
 
 		}

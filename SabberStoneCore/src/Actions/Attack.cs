@@ -23,7 +23,7 @@ namespace SabberStoneCore.Actions
 	public static partial class Generic
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public static Func<Controller, Character, Character, bool, bool> AttackBlock
+		public static Func<Controller, Character, Character, bool, bool, bool> AttackBlock
 			=> delegate (Controller c, Character source, Character target, bool skipPrePhase, bool skipDeathPhase)
 			{
 				Game g = c.Game;
@@ -142,7 +142,7 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		private static Func<Controller, Character, Character, bool> AttackPhase
+		private static Func<Controller, Character, Character, bool, bool> AttackPhase
 			=> delegate (Controller c, Character source, Character target, bool noExhaustion)
 			{
 				Game game = c.Game;
@@ -151,14 +151,6 @@ namespace SabberStoneCore.Actions
 
 				game.TriggerManager.OnTargetTrigger(source);
 				target = (Character) game.CurrentEventData.EventTarget;
-				//if (!game.IdEntityDic.TryGetValue(game.ProposedDefender, out Playable proposedDefender))
-				//{
-				//	game.Log(LogLevel.INFO, BlockType.ATTACK, "AttackPhase", !game.Logging? "":"target wasn't found by proposed defender call.");
-				//	source.IsAttacking = false;
-				//	source.IsDefending = false;
-				//	return false;
-				//}
-
 
 				// Force the game into MAIN_COMBAT step!
 				game.Step = Step.MAIN_COMBAT;
@@ -232,7 +224,7 @@ namespace SabberStoneCore.Actions
 					c.NumFriendlyMinionsThatAttackedThisTurn++;
 
 				// set exhausted ...
-				if (!noExhuastion && 
+				if (!noExhaustion && 
                     (numAtk > 0 && !source.HasWindfury ||
 					numAtk > 1 && source.HasWindfury))
 				{

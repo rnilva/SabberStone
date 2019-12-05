@@ -19,7 +19,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class DrawOpTask : SimpleTask
 	{
-		public DrawOpTask(bool toStack = false)
+		public DrawOpTask(Card card = null, bool toStack = false)
 		{
 			Card = card;
 			ToStack = toStack;
@@ -33,7 +33,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			in TaskStack stack = null)
 		{
 			Playable drawedCard = Card != null
-				? Generic.DrawCardBlock.Invoke(controller.Opponent, Card)
+				? Generic.DrawCard(controller.Opponent, Card)
 				: Generic.Draw(controller.Opponent);
 			if (ToStack && drawedCard != null) stack?.Playables.Add(drawedCard);
 

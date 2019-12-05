@@ -42,7 +42,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				game.Log(LogLevel.INFO, BlockType.PLAY, "LogTask",
 					!game.Logging
 						? ""
-						: $"stack?.Playables: {String.Join(",", stack?.Playables.Select(x => x.Card))} [{stack?.Playables.Count}]");
+						: $"stack: {string.Join(",", stack?.Playables.Select(x => x.Card) ?? new Card[]{})} [{stack?.Playables.Count}]");
 			}
 
 			if (CardTextPrint)

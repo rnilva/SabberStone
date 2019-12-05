@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
+using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks.PlayerTasks;
 
 namespace SabberStoneCore.Kettle
@@ -68,15 +69,18 @@ namespace SabberStoneCore.Kettle
 				PlayerTaskList = list
 			};
 
-			foreach (PlayerTask option in list.Where(p => p.PlayerTaskType == PlayerTaskType.END_TURN))
+			foreach (PlayerTask _ in list.Where(p => p.PlayerTaskType == PlayerTaskType.END_TURN))
 			{
 				result.PowerOptionList.Add(new PowerOption { OptionType = OptionType.END_TURN });
 			}
 
-			var playCards = list.Where(p => p.PlayerTaskType == PlayerTaskType.PLAY_CARD).ToList();
+			List<PlayerTask> playCards = list.Where(p => p.PlayerTaskType == PlayerTaskType.PLAY_CARD).ToList();
 			foreach (int sourceId in playCards.Select(p => p.Source.Id).Distinct())
 			{
-				IEnumerable<PlayerTask> targets = playCards.Where(p => p.Source.Id == sourceId && p.Target != null && p.ChooseOne == 0);
+				PlayerTask[] targets = playCards.Where(p => p.Source.Id == sourceId &&
+				                                            p.Target != null &&
+				                                            p.ChooseOne == 0)
+												.ToArray();
 				var mainOption = new PowerOption
 				{
 					OptionType = OptionType.POWER,
@@ -90,11 +94,11 @@ namespace SabberStoneCore.Kettle
 
 				for (int i = 1; i < 3; i++)
 				{
-					var subOptions = playCards.Where(p => p.Source.Id == sourceId && p.ChooseOne == i).ToList();
+					List<PlayerTask> subOptions = playCards.Where(p => p.Source.Id == sourceId && p.ChooseOne == i).ToList();
 					if (subOptions.Any())
 					{
 						int refCardId = subOptions.First().Source.ChooseOnePlayables[i - 1].Id;
-						var refCardTargets = subOptions.Where(p => p.Target != null).Select(p => p.Target).ToList();
+						List<Character> refCardTargets = subOptions.Where(p => p.Target != null).Select(p => p.Target).ToList();
 						mainOption.SubOptions.Add(new PowerSubOption
 						{
 							EntityId = refCardId,
@@ -104,7 +108,7 @@ namespace SabberStoneCore.Kettle
 				}
 			}
 
-			var minionAttacks = list.Where(p => p.PlayerTaskType == PlayerTaskType.MINION_ATTACK).ToList();
+			List<PlayerTask> minionAttacks = list.Where(p => p.PlayerTaskType == PlayerTaskType.MINION_ATTACK).ToList();
 			foreach (int sourceId in minionAttacks.Select(p => p.Source.Id).Distinct())
 			{
 				IEnumerable<PlayerTask> targets = minionAttacks.Where(p => p.Source.Id == sourceId);
@@ -121,10 +125,10 @@ namespace SabberStoneCore.Kettle
 					});
 			}
 
-			var heroAttacks = list.Where(p => p.PlayerTaskType == PlayerTaskType.HERO_ATTACK).ToList();
+			List<PlayerTask> heroAttacks = list.Where(p => p.PlayerTaskType == PlayerTaskType.HERO_ATTACK).ToList();
 			if (heroAttacks.Any())
 			{
-				IEnumerable<PlayerTask> targets = heroAttacks.Where(p => p.Target != null);
+				PlayerTask[] targets = heroAttacks.Where(p => p.Target != null).ToArray();
 				var mainOption = new PowerOption
 				{
 					OptionType = OptionType.POWER,
@@ -137,10 +141,10 @@ namespace SabberStoneCore.Kettle
 				result.PowerOptionList.Add(mainOption);
 			}
 
-			var heroPowers = list.Where(p => p.PlayerTaskType == PlayerTaskType.HERO_POWER).ToList();
+			List<PlayerTask> heroPowers = list.Where(p => p.PlayerTaskType == PlayerTaskType.HERO_POWER).ToList();
 			if (heroPowers.Any())
 			{
-				IEnumerable<PlayerTask> targets = heroPowers.Where(p => p.Target != null);
+				PlayerTask[] targets = heroPowers.Where(p => p.Target != null).ToArray();
 				var mainOption = new PowerOption
 				{
 					OptionType = OptionType.POWER,

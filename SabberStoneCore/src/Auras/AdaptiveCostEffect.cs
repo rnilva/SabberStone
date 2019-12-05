@@ -35,7 +35,7 @@ namespace SabberStoneCore.Auras
 		private readonly Playable _owner;
 		private readonly int _value;
 		private readonly EffectOperator _operator;
-		private readonly Func<IPlayable, int> _costFunction;
+		private readonly Func<Playable, int> _costFunction;
 
 		private readonly TriggerType _triggerType;
 		private readonly TriggerSource _triggerSource;
@@ -57,7 +57,7 @@ namespace SabberStoneCore.Auras
 		/// <param name="costFunc">The cost function to calculate the amount the owner costs varies.</param>
 		/// <param name="operator">This determines how cost varies.</param>
 		/// <param name="condition">The necessary condition for this effect.</param>
-		public AdaptiveCostEffect(Func<IPlayable, int> costFunc, EffectOperator @operator = EffectOperator.SUB,
+		public AdaptiveCostEffect(Func<Playable, int> costFunc, EffectOperator @operator = EffectOperator.SUB,
 			SelfCondition condition = null)
 		{
 			_type = Type.Variable;
@@ -93,7 +93,7 @@ namespace SabberStoneCore.Auras
 		/// <param name="trigger">A type of trigger that affects this effect.</param>
 		/// <param name="triggerSource">The source constraint for the trigger.</param>
 		/// <param name="triggerCondition">An additional condition for the trigger.</param>
-		public AdaptiveCostEffect(Func<Playable, int> initialisationFunction, Func<IPlayable, int> triggerValueFunction, TriggerType trigger,
+		public AdaptiveCostEffect(Func<Playable, int> initialisationFunction, Func<Playable, int> triggerValueFunction, TriggerType trigger,
 			TriggerSource triggerSource = TriggerSource.ALL, SelfCondition triggerCondition = null)
 		{
 			_type = Type.TriggeredWithInitialisation;
@@ -104,12 +104,9 @@ namespace SabberStoneCore.Auras
 			_condition = triggerCondition;
 		}
 
-		private AdaptiveCostEffect(AdaptiveCostEffect prototype, IPlayable owner)
+		private AdaptiveCostEffect(AdaptiveCostEffect prototype, Playable owner)
 		{
-			if (!(owner is Playable p))
-				throw new Exception($"Can't activate {this} to non-playable {owner}");
-
-			_owner = p;
+			_owner = owner;
 			_type = prototype._type;
 			switch (_type)
 			{
@@ -126,7 +123,7 @@ namespace SabberStoneCore.Auras
 					break;
 				case Type.TriggeredWithInitialisation:
 					_initialisationFunction = prototype._initialisationFunction;
-					_cachedValue = _initialisationFunction(p);
+					_cachedValue = _initialisationFunction(owner);
 					_costFunction = prototype._costFunction;
 					_triggerType = prototype._triggerType;
 					_triggerSource = prototype._triggerSource;
@@ -142,7 +139,7 @@ namespace SabberStoneCore.Auras
 			_isAppliedThisTurn = prototype._isAppliedThisTurn;
 		}
 
-		public IPlayable Owner => _owner;
+		public Playable Owner => _owner;
 
 		public void Activate(Playable owner, bool cloning = false)
 		{
@@ -247,9 +244,9 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		void IAura.Activate(IPlayable owner)
+		void IAura.Activate(Playable owner)
 		{
-			Activate((Playable)owner, false);
+			Activate(owner, false);
 		}
 
 		public void Update()
@@ -274,9 +271,9 @@ namespace SabberStoneCore.Auras
 				_owner._costManager.UpdateAdaptiveEffect();
 		}
 
-		public void Clone(IPlayable clone)
+		public void Clone(Playable clone)
 		{
-			Activate((Playable)clone, true);
+			Activate(clone, true);
 		}
 
 		public override string ToString()
@@ -291,7 +288,7 @@ namespace SabberStoneCore.Auras
 			= new AdaptiveCostEffect(p => p.Controller.NumFriendlyMinionsThatDiedThisTurn
 			                              + p.Controller.Opponent.NumFriendlyMinionsThatDiedThisTurn);
 
-		private void Trigger(IEntity sender)
+		private void Trigger(Entity sender)
 		{
 			if (_isTriggered)
 				return;
@@ -309,13 +306,13 @@ namespace SabberStoneCore.Auras
 
 			if (_condition != null)
 			{
-				if (!(sender is IPlayable p)) p = _owner;
+				if (!(sender is Playable p)) p = _owner;
 
 				if (!_condition.Eval(p)) return;
 			}
 
 			if (_initialisationFunction != null)
-				_cachedValue += _costFunction.Invoke((IPlayable)sender);
+				_cachedValue += _costFunction.Invoke((Playable)sender);
 			else
 			{
 				_isTriggered = true;
@@ -324,7 +321,7 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		private void RemoveAtEnd(IEntity sender)
+		private void RemoveAtEnd(Entity sender)
 		{
 			_owner._costManager?.UpdateAdaptiveEffect();
 			_isTriggered = false;

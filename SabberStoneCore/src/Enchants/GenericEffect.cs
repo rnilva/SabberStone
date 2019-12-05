@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using SabberStoneCore.Enums;
-using SabberStoneCore.Exceptions;
 using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Enchants
@@ -66,12 +64,7 @@ namespace SabberStoneCore.Enchants
 		void IEffect.ApplyTo(Entity entity, bool oneTurnEffect)
 		{
 			if (!(entity is T playable))
-			{
-				if (typeof(T) == typeof(Entity))
-					throw new SurrogateException($"Cannot apply {this} to an entity of type {entity.GetType()}");
-
 				throw new Exception($"Cannot apply {this} to an entity of type {entity.GetType()}");
-			}
 
 			ApplyTo(playable, oneTurnEffect);
 		}
@@ -430,7 +423,7 @@ namespace SabberStoneCore.Enchants
 
 		protected override ref int GetAuraRef(AuraEffects auraEffects)
 		{
-			return ref auraEffects._data[3];
+			return ref auraEffects._data[2];
 		}
 
 		public override void Apply(Playable entity, EffectOperator @operator, int value)
@@ -527,6 +520,47 @@ namespace SabberStoneCore.Enchants
 		//{
 		//	return Playable.GetFunction(Enums.GameTag.HEALTH, @operator, value);
 		//}
+	}
+
+	internal class SpellPower : IntAttr<SpellPower, MinionInPlay>
+	{
+		public override GameTag Tag => GameTag.SPELLPOWER;
+
+		protected override ref int GetAuraRef(AuraEffects auraEffects)
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override ref int? GetRef(MinionInPlay entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override int GetCardValue(MinionInPlay entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Apply(MinionInPlay entity, EffectOperator @operator, int value)
+		{
+			switch (@operator)
+			{
+				case EffectOperator.ADD:
+					entity.SpellPower += value;
+					break;
+				case EffectOperator.SUB:
+					entity.SpellPower -= value;
+					break;
+				case EffectOperator.MUL:
+					entity.SpellPower *= value;
+					break;
+				case EffectOperator.SET:
+					entity.SpellPower = value;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(@operator), @operator, null);
+			}
+		}
 	}
 
 	internal class Stealth : BoolAttr<Stealth, Character>

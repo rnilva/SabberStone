@@ -25,7 +25,7 @@ namespace SabberStoneCore.Kettle
 	{
 		public static PowerHistoryCreateGame CreateGame(Game game, Controller[] players)
 		{
-			return new PowerHistoryCreateGame()
+			return new PowerHistoryCreateGame
 			{
 				Game = new PowerEntity
 				{

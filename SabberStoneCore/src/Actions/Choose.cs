@@ -63,7 +63,7 @@ namespace SabberStoneCore.Actions
 					case ChoiceAction.SPELL_RANDOM:
 						if (RemoveFromZone(c, playable))
 						{
-							ICharacter randTarget = ((Playable) playable).GetRandomValidTarget();
+							Character randTarget = playable.GetRandomValidTarget();
 
 							g.TaskQueue.StartEvent();
 							CastSpell.Invoke(c, g, (Spell)playable, randTarget, 0);
@@ -75,7 +75,7 @@ namespace SabberStoneCore.Actions
 						if (!c.BoardZone.IsFull && RemoveFromZone(c, playable))
 						{
 							Minion m = (Minion) playable;
-							SummonBlock(g, ref m, -1);
+							SummonBlock(g, ref m, -1, g.IdEntityDic[c.Choice.SourceId]);
 						}
                         break;
 
@@ -138,7 +138,7 @@ namespace SabberStoneCore.Actions
 							c.Choice.EntityStack = new List<int> {playable.Id};
 							CreateChoiceCards(c, g.IdEntityDic[c.Choice.SourceId],
 								null, ChoiceType.GENERAL, ChoiceAction.BUILDABEAST,
-								SpecificTask.BuildABeast.SecondBeastsMemory.ChooseNElements(3), null);
+								SpecificTask.BuildABeast.SecondBeastsMemory.ChooseNElements(3, g.Random), null);
 							break;
 						}
 						else
@@ -158,8 +158,7 @@ namespace SabberStoneCore.Actions
 						throw new NotImplementedException();
 				}
 
-				if (g.IdEntityDic[choice] is Playable pp)
-					pp._data.Add(GameTag.DISPLAYED_CREATOR, c.Choice.SourceId);
+				g.IdEntityDic[choice]._data[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
 
 				// aftertask here
 				if (c.Choice.AfterChooseTask != null)
@@ -206,7 +205,7 @@ namespace SabberStoneCore.Actions
 						if (c.Game.History)
 							c.Game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, c.Id, "", 6, 0));
 
-						var mulliganList = c.HandZone.Where(p => !choices.Contains(p.Id) && !p.Card.Id.Equals("GAME_005")).ToList();
+						List<Playable> mulliganList = c.HandZone.Where(p => !choices.Contains(p.Id) && !p.Card.Id.Equals("GAME_005")).ToList();
 						mulliganList.ForEach(p =>
 						{
 							// drawing a new one

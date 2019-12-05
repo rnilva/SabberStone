@@ -677,7 +677,8 @@ namespace SabberStoneCore.CardSets
 			// - HEROPOWER_DAMAGE = 1
 			// --------------------------------------------------------
 			cards.Add("AT_003", new Power {
-				Aura = new Aura(AuraType.HERO, new Effect(GameTag.HEROPOWER_DAMAGE, EffectOperator.ADD, 1))
+				//Aura = new Aura(AuraType.HERO, new Effect(GameTag.HEROPOWER_DAMAGE, EffectOperator.ADD, 1))
+				//Aura = new Aura(AuraType.HERO, new AttributeAddEffect())
 			});
 
 			// ------------------------------------------ MINION - MAGE
@@ -965,8 +966,8 @@ namespace SabberStoneCore.CardSets
 			cards.Add("AT_078", new Power {
 				PowerTask = new FuncNumberTask(p =>
 				{
-					var minions = p.Controller.BoardZone.GetSpan();
-					var opMinions = p.Controller.Opponent.BoardZone.GetSpan();
+					ReadOnlySpan<MinionInPlay> minions = p.Controller.BoardZone.GetSpan();
+					ReadOnlySpan<MinionInPlay> opMinions = p.Controller.Opponent.BoardZone.GetSpan();
 
 					int max = -1;
 					int maxIndex = -1;
@@ -1951,7 +1952,7 @@ namespace SabberStoneCore.CardSets
 			// Text: Increased Attack.
 			// --------------------------------------------------------
 			cards.Add("AT_066e", new Power {
-				Enchant = new Enchant(GameTag.ATK, EffectOperator.ADD, 1)
+				Enchant = new Enchant(Effects.Attack_N(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - WARRIOR
@@ -2020,7 +2021,7 @@ namespace SabberStoneCore.CardSets
 				Aura = new AdaptiveCostEffect(p =>
 				{
 					int count = 0;
-					var board = p.Controller.BoardZone.GetSpan();
+					ReadOnlySpan<MinionInPlay> board = p.Controller.BoardZone.GetSpan();
 					for (int i = 0; i < board.Length; i++)
 						if (board[i].IsRace(Race.PIRATE))
 							count++;

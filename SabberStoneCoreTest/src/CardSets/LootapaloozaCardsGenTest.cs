@@ -1701,11 +1701,11 @@ namespace SabberStoneCoreTest.CardSets
 			Assert.Equal("Wisp", wisp.Card.Name);
 			Assert.Equal(5, wisp.AttackDamage);
 			Assert.Equal(3, wisp.Health);
-			Assert.True(wisp.HasDeathrattle);
+			//Assert.True(wisp.HasDeathrattle);
 
 			game.EndTurn();
 
-			game.ProcessCard(wisp);
+			wisp = game.ProcessCard(wisp);
 
 			wisp.Kill();
 
@@ -2103,7 +2103,7 @@ namespace SabberStoneCoreTest.CardSets
 			do
 			{
 				if (game.CurrentPlayer.DeckZone[i] is Minion m)
-					game.CurrentPlayer.BoardZone.Add(game.CurrentPlayer.DeckZone.Remove(m));
+					game.CurrentPlayer.BoardZone.Add(MinionInPlay.FromMinion(ref m));
 				i++;
 			} while (!game.CurrentPlayer.BoardZone.IsFull && i < 26);
 
@@ -2566,11 +2566,15 @@ namespace SabberStoneCoreTest.CardSets
 			game.Player2.BaseMana = 10;
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Kingsbane"));
-			game.ProcessCard("Deadly Poison");
-			game.ProcessCard("Deadly Poison");
-			game.ProcessCard("Leeching Poison");
-			var weapon = game.CurrentPlayer.Hero.Weapon;
-			Assert.True(weapon.AttackDamage == 5 && weapon.HasLifesteal);
+			game.ProcessCard("Deadly Poison");		// 3/3
+			game.ProcessCard("Deadly Poison");		// 5/3
+			game.ProcessCard("Envenom Weapon");		// 5/3, Poisonous
+			game.ProcessCard("Captain Greenskin", asZeroCost: true);	// 6/4, Poisonous
+
+			Weapon weapon = game.CurrentPlayer.Hero.Weapon;
+			Assert.Equal(6, weapon.AttackDamage);
+			Assert.Equal(4, weapon.Durability);
+			Assert.True(weapon.Poisonous);
 			game.EndTurn();
 
 			Playable target = game.ProcessCard("Acidic Swamp Ooze");
@@ -2581,18 +2585,22 @@ namespace SabberStoneCoreTest.CardSets
 			Assert.Equal("Kingsbane", game.CurrentPlayer.HandZone[0].Card.Name);
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Kingsbane"));
 			weapon = game.CurrentPlayer.Hero.Weapon;
-			Assert.True(weapon.AttackDamage == 5 && weapon.HasLifesteal);
+			Assert.Equal(6, weapon.AttackDamage);
+			Assert.Equal(4, weapon.Durability);
+			Assert.True(weapon.Poisonous);
 
 			int damage = game.CurrentPlayer.Hero.Damage;
 
+			game.ProcessCard("Leeching Poison");
 			game.ProcessCard("Doomerang", target);
 
-			Assert.Equal(damage - 5, game.CurrentPlayer.Hero.Damage);
+			Assert.Equal(damage - 6, game.CurrentPlayer.Hero.Damage);
 			Assert.Single(game.CurrentPlayer.HandZone);
 			Assert.Equal(Zone.HAND, weapon.Zone.Type);
-			Assert.True(weapon.AttackDamage == 5 && weapon.HasLifesteal);
+			Assert.Equal(6, weapon.AttackDamage);
+			Assert.Equal(4, weapon.Durability);
+			Assert.True(weapon.Poisonous);
 		}
-
 	}
 
 	public class ShamanLootapaloozaTest
@@ -3226,7 +3234,7 @@ namespace SabberStoneCoreTest.CardSets
 			for (int i = 0; i < demonsInDeck.Count; i++)
 			{
 				game.CurrentPlayer.TemporaryMana = 10;
-				var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Possessed Lackey"));
+				var testCard = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Possessed Lackey"));
 				var darkPact = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dark Pact"));
 				int previousBoardAmount = game.CurrentPlayer.BoardZone.Count;
 				//game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
@@ -3335,7 +3343,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Rin, the First Disciple"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Rin, the First Disciple"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 
 			game.ProcessCard("Twisting Nether", null, true);
@@ -3394,8 +3402,8 @@ namespace SabberStoneCoreTest.CardSets
 			int previousHealth = game.CurrentPlayer.Hero.Health;
 			var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dark Pact"));
 			var testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dark Pact"));
-			var silverback = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silverback Patriarch"));
-			var silverback2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silverback Patriarch"));
+			var silverback = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silverback Patriarch"));
+			var silverback2 = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silverback Patriarch"));
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, silverback));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard, silverback));
@@ -4018,10 +4026,10 @@ namespace SabberStoneCoreTest.CardSets
 			var testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Scorp-o-matic"));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			var elvenArcher = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elven Archer"));
+			var elvenArcher = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elven Archer"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, elvenArcher, game.CurrentPlayer.Opponent.Hero));
 
-			var frostwolfGrunt = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
+			var frostwolfGrunt = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, frostwolfGrunt, game.CurrentPlayer.Opponent.Hero));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -5706,7 +5714,7 @@ namespace SabberStoneCoreTest.CardSets
 
 			game.EndTurn();
 			if (game.CurrentPlayer.HandZone.Last().Card.Id != "LOOT_541t")
-				Generic.Draw(game.CurrentPlayer, game.CurrentPlayer.DeckZone.First(p => p.Card.Id == "LOOT_541t").Id);
+				Generic.Draw(game.CurrentPlayer, game.CurrentPlayer.DeckZone.First(p => p.Card.Id == "LOOT_541t"));
 
 			game.ProcessCard(game.CurrentPlayer.HandZone.Last());
 

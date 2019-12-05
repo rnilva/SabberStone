@@ -860,7 +860,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		}
 
 		// ------------------------------------------ SPELL - DRUID
-		// [CS2_013] Wild Growth - COST:2 
+		// [CS2_013] Wild Growth - COST:3 
 		// - Fac: neutral, Set: core, Rarity: free
 		// --------------------------------------------------------
 		// Text: Gain an empty Mana Crystal.
@@ -879,45 +879,25 @@ namespace SabberStoneCoreTest.CardSets.Standard
 				});
 			game.StartGame();
 
-			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			game.Process(EndTurnTask.Any(game.CurrentPlayer));
+			Controller p = game.CurrentPlayer;
+			p.BaseMana = 3;
+			game.ProcessCard("Wild Growth");
+			Assert.Equal(0, p.RemainingMana);
+			Assert.Equal(4, p.BaseMana);
+			Assert.Equal(4, p.HandZone.Count);
 
-			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			game.Process(EndTurnTask.Any(game.CurrentPlayer));
+			p.UsedMana = 0;
+			p.BaseMana = 9;
+			game.ProcessCard("Counterfeit Coin");
+			Assert.Equal(10, p.RemainingMana);
 
-			Playable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wild Growth"));
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, spell1));
+			game.ProcessCard("Wild Growth", asZeroCost: true);
+			Assert.Equal(10, p.RemainingMana);
+			Assert.Equal(5, p.HandZone.Count);
 
-			Assert.Equal(0, game.CurrentPlayer.RemainingMana);
-
-			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-
-			Assert.Equal(5, game.CurrentPlayer.RemainingMana);
-			game.CurrentPlayer.BaseMana = 10;
-			Playable spell2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wild Growth"));
-
-			Assert.Equal(8, game.CurrentPlayer.HandZone.Count);
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, spell2));
-			Assert.Equal(8, game.CurrentPlayer.HandZone.Count);
-			Assert.Equal("CS2_013t", game.CurrentPlayer.HandZone[7].Card.Id);
-
-			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-
-			game.CurrentPlayer.BaseMana = 9;
-			Playable spell3 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Innervate"));
-			Assert.Equal(9, game.CurrentPlayer.HandZone.Count);
-			Playable spell4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wild Growth"));
-			Assert.Equal(10, game.CurrentPlayer.HandZone.Count);
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, spell3));
-			Assert.Equal(9, game.CurrentPlayer.HandZone.Count);
-			IPlayable spell4 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wild Growth"));
-			Assert.Equal(10, game.CurrentPlayer.HandZone.Count);
-			spell4.Cost = 0;
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, spell4));
-			Assert.Equal(10, game.CurrentPlayer.RemainingMana);
-			Assert.Equal(10, game.CurrentPlayer.HandZone.Count);
+			Assert.Equal("CS2_013t", p.HandZone[p.HandZone.Count - 1].Card.Id);
+			game.ProcessCard(p.HandZone[p.HandZone.Count - 1]);
+			Assert.Equal(5, p.HandZone.Count);
 		}
 
 		// ------------------------------------------ SPELL - DRUID
@@ -1504,8 +1484,6 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(zonePosition, game.CurrentOpponent.BoardZone[0].ZonePosition);
 			Assert.Equal(zone, game.CurrentOpponent.BoardZone[0].Zone.Type);
-			Assert.NotEqual(game.CurrentOpponent.BoardZone[0].Zone.Type, m1.Zone.Type);
-			Assert.Equal(Zone.SETASIDE, m1.Zone.Type);
 			Assert.Equal("CS2_tk1", game.CurrentOpponent.BoardZone[0].Card.Id);
 		}
 
@@ -2130,7 +2108,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Playable spell1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hammer of Wrath"));
 
-			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell1, (ICharacter) minion1));
+			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell1, (Character) minion1));
 
 			Assert.Equal(2, game.CurrentPlayer.NumCardsDrawnThisTurn);
 			Assert.True(minion1.ToBeDestroyed);
@@ -2699,7 +2677,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Radiance"));
+			//Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Radiance"));
 			//Spell testCard = game.ProcessCard<Spell>("Radiance");
 		}
 
@@ -3510,8 +3488,6 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(zonePosition, game.CurrentOpponent.BoardZone[0].ZonePosition);
 			Assert.Equal(zone, game.CurrentOpponent.BoardZone[0].Zone.Type);
-			Assert.NotEqual(game.CurrentOpponent.BoardZone[0].Zone.Type, m1.Zone.Type);
-			Assert.Equal(Zone.SETASIDE, m1.Zone.Type);
 			Assert.Equal("hexfrog", game.CurrentOpponent.BoardZone[0].Card.Id);
 		}
 
@@ -4099,7 +4075,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			Playable minion1 = Generic.DrawCard(game.Player1, Cards.FromName("Succubus"));
+			Playable minion1 = Generic.DrawCard(game.Player1, Cards.FromName("Felstalker"));
 
 			Assert.Equal(0, game.Player1.NumCardsPlayedThisTurn);
 
@@ -4266,7 +4242,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		//       minions. *spelldmg
 		// --------------------------------------------------------
 		// PlayReq:
-		// - REQ_MINIMUM_ENEMY_MINIONS = 2
+		// - REQ_MINIMUM_ENEMY_MINIONS = 1
 		// --------------------------------------------------------
 		[Fact]
 		public void Cleave_CS2_114()
@@ -4284,7 +4260,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player2.BaseMana = 10;
 			game.StartGame();
 
-			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
+			Playable minion1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spider Tank"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, (Character)minion1));
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));

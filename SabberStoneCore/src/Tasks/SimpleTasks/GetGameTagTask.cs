@@ -59,7 +59,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						value = c.Damage;
 						break;
                     case GameTag.EXTRA_ATTACKS_THIS_TURN:
-                        if (c is Hero h)
+                        if (c is HeroInPlay h)
                             value = h.ExtraAttacksThisTurn;
                         else
                             value = 0;
@@ -150,7 +150,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		}
 
 		public override TaskState Process(in Game game, in Controller controller, in Entity source,
-			in Playable target,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			game.CurrentEventData.EventNumber = _num > 0 ? _num : stack.Number;

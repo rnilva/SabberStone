@@ -103,7 +103,11 @@ namespace SabberStoneCore.Model.Entities
 			set => _v1 = value;
 		}
 
-		public override bool CanAttack => AttackDamage > 0 && base.CanAttack;
+		public override bool CanAttack
+			=> AttackDamage > 0
+			   && (!IsExhausted || (ExtraAttacksThisTurn > 0 && ExtraAttacksThisTurn >= NumAttacksThisTurn))
+			   && !IsFrozen
+			   && HasAnyValidAttackTargets;
 
 		public override bool HasWindfury
 		{
@@ -111,7 +115,7 @@ namespace SabberStoneCore.Model.Entities
 			set => throw new NotImplementedException();
 		}
 
-		public override bool HasLifesteal => Weapon?.HasLifesteal ?? false;
+		public override bool HasLifeSteal => Weapon?.HasLifeSteal ?? false;
 
 		public override void Destroy()
 		{
@@ -253,6 +257,7 @@ namespace SabberStoneCore.Model.Entities
 			// 3 : Fatigue
 			// 4 : DamageTakenThisTurn
 			// 5 : HeroPowerDamage
+			// 6 : ExtraAttackThisTurn
 
 
 			// 0 : Immune
@@ -260,7 +265,7 @@ namespace SabberStoneCore.Model.Entities
 			// 2 : Stealth
 			// 3 : CantBeTargetedBySpells
 
-			private const int NUM_INT_ATTRS = 6;
+			private const int NUM_INT_ATTRS = 7;
 			private const int NUM_BOOL_ATTRS = 4;
 #pragma warning disable 649
 			public fixed int intAttrs[NUM_INT_ATTRS];
@@ -306,6 +311,11 @@ namespace SabberStoneCore.Model.Entities
 			get => _attrs.intAttrs[5];
 			set => _attrs.intAttrs[5] = value;
 		}
+		public unsafe int ExtraAttacksThisTurn
+		{
+			get => _attrs.intAttrs[6];
+			set => _attrs.intAttrs[6] = value;
+		}
 		public override unsafe bool IsImmune
 		{
 			get => (AuraEffects?.Immune ?? false) || _attrs.boolAttrs[0];
@@ -330,6 +340,10 @@ namespace SabberStoneCore.Model.Entities
 		internal override unsafe ref bool GetRef(int index)
 		{
 			return ref _attrs.boolAttrs[index];
+		}
+		internal override unsafe ref int GetIntRef(int index)
+		{
+			return ref _attrs.intAttrs[index];
 		}
 	}
 }

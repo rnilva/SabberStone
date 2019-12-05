@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Tasks.SimpleTasks;
@@ -45,6 +41,7 @@ namespace SabberStoneCore.Model.Entities
 				ChooseOnePlayables = minion.ChooseOnePlayables,
 				AppliedEnchantments = minion.AppliedEnchantments
 			};
+			inPlay.AppliedEnchantments?.ForEach(e => e.Target = inPlay);
 			minion.Game.IdEntityDic[minion.Id] = inPlay;
 			minion = inPlay;
 			return inPlay;
@@ -224,7 +221,7 @@ namespace SabberStoneCore.Model.Entities
 			get => _attrs.boolAttrs[8];
 			set => _attrs.boolAttrs[8] = value;
 		}
-		public override unsafe bool HasLifesteal
+		public override unsafe bool HasLifeSteal
 		{
 			get => (AuraEffects?.Lifesteal ?? false) ||
 			       _attrs.boolAttrs[9];
@@ -280,21 +277,13 @@ namespace SabberStoneCore.Model.Entities
 			HasDeathrattle = false;
 			HasBattleCry = false;
 			HasInspire = false;
-			HasLifesteal = false;
+			HasLifeSteal = false;
 			//CantBeTargetedByHeroPowers = false;
 			CantBeTargetedBySpells = false;
 			IsImmune = false;
 			AttackableByRush = false;
 			Poisonous = false;
 
-			//int sp = this[GameTag.SPELLPOWER];
-			//if (sp > 0)
-			//{
-			//	Controller.CurrentSpellPower -= sp;
-			//	this[GameTag.SPELLPOWER] = 0;
-			//}
-
-			Controller.CurrentSpellPower -= SpellPower;
 			SpellPower = 0;
 
 			// remove enchantments, aura and trigger
@@ -421,6 +410,7 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
+		// ReSharper disable once UnusedMember.Local
 		private unsafe int[] _attrsDebuggerView
 		{
 			get
@@ -475,6 +465,11 @@ namespace SabberStoneCore.Model.Entities
 			return ref _attrs.boolAttrs[index];
 		}
 
+		internal override unsafe ref int GetIntRef(int index)
+		{
+			return ref _attrs.intAttrs[index];
+		}
+
 		internal static unsafe ApplyingEffect GetFunction(Effect effect)
 		{
 			if (effect.Tag == GameTag.SPELLPOWER)
@@ -515,7 +510,7 @@ namespace SabberStoneCore.Model.Entities
 				throw new Exception();
 
 			for (int i = 0; i < Attributes.NUM_INT_ATTRS; i++)
-				destination[i] = (float) _attrs.intAttrs[i];
+				destination[i] = _attrs.intAttrs[i];
 
 			Span<float> slice = destination.Slice(Attributes.NUM_INT_ATTRS);
 			fixed (bool* src = _attrs.boolAttrs)

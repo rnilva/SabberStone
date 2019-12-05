@@ -1456,7 +1456,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elise Starseeker"));
+			//Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elise Starseeker"));
 			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("LOE_079"));
 			Assert.Equal(0, game.CurrentPlayer.DeckZone.Count);
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));

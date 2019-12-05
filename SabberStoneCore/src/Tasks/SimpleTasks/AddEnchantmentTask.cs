@@ -11,6 +11,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
+
+using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
@@ -33,7 +35,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		}
 
 		public override TaskState Process(in Game game, in Controller controller, in Entity source,
-			in Playable target,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			
@@ -73,10 +75,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//	stack?.Playables))
 			//	Generic.AddEnchantmentBlock.Invoke(controller, _enchantmentCard, (Playable) source, p, n1, n2, _useEntityId);
 
-			var entities = IncludeTask.GetEntities(in _entityType, in controller, source, target, stack?.Playables);
-			Playable p = (Playable)source;
+			IList<Playable> entities = IncludeTask.GetEntities(in _entityType, in controller, source, target, stack?.Playables);
+			var p = (Playable)source;
 			for (int i = 0; i < entities.Count; i++)
-				Generic.AddEnchantmentBlock.Invoke(game, enchantmentCard, p, entities[i], n1, n2, entityId);
+				Generic.AddEnchantmentBlock(game, _enchantmentCard, p, entities[i], n1, n2, entityId);
 
 			return TaskState.COMPLETE;
 		}

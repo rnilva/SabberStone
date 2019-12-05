@@ -12,7 +12,6 @@
 // GNU Affero General Public License for more details.
 #endregion
 using SabberStoneCore.Actions;
-using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
@@ -57,11 +56,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					var aggregatedTrigger = new MultiTrigger(t.ActivatedTrigger, s.Power.Trigger);
 					t.ActivatedTrigger.Remove();
 					t.ActivatedTrigger = null;
-					aggregatedTrigger.Activate(t);
+					aggregatedTrigger.Activate(game, t);
 				}
 				else
 				{
-					s.Power.Trigger.Activate(t);
+					s.Power.Trigger.Activate(game, t);
 				}
 			}
 

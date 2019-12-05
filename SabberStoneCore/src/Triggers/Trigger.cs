@@ -114,7 +114,7 @@ namespace SabberStoneCore.Triggers
 		/// <summary>
 		/// Create a new instance of <see cref="Trigger"/> object in source's Game. During activation, the instance's <see cref="Process(Entity)"/> subscribes to the events in <see cref="TriggerManager"/>.
 		/// </summary>
-		public virtual Trigger Activate(IPlayable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false)
+		public virtual Trigger Activate(Game game, Playable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
 		{
 			if (source.ActivatedTrigger != null && !IsAncillaryTrigger && !asAncillary)
 				throw new Exceptions.EntityException($"{source} already has an activated trigger.");
@@ -273,6 +273,10 @@ namespace SabberStoneCore.Triggers
 					break;
 			}
 
+			if (game.Logging)
+				game.Log(LogLevel.DEBUG, BlockType.POWER, "Trigger",
+					$"{source}'s {_triggerType} trigger is activated.");
+
 			return instance;
 		}
 
@@ -320,7 +324,7 @@ namespace SabberStoneCore.Triggers
 				    /*_owner is Enchantment ec ? ec : */_owner,
 				    source is Playable pSource?
 					    pSource :
-					    _owner is Enchantment ew && ew.Target is IPlayable p ?
+					    _owner is Enchantment ew && ew.Target is Playable p ?
 						    p :
 						    null);
 		    }

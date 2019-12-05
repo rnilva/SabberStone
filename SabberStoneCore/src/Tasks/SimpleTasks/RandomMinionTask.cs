@@ -92,7 +92,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				if (Tag == GameTag.CARDRACE && RelaSign == RelaSign.EQ)
 				{
 					cardsList = cards.Where(p => p.Type == CardType.MINION
-							 && p.IsRace((Race)Value)).ToList();;
+							 && p.IsRace((Race)Value)).ToList();
 				}
 				else
 				{

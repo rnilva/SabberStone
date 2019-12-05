@@ -405,7 +405,7 @@ namespace SabberStoneCore.CardSets
 						new FuncPlayablesTask(list =>
 						{
 							Controller controller = list[0].Controller;
-							return new List<IPlayable>
+							return new List<Playable>
 							{
 								Entity.FromCard(controller,
 									Cards.BasicTotems.Choose(controller.Game.Random))

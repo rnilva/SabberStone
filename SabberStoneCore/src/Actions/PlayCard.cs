@@ -48,17 +48,11 @@ namespace SabberStoneCore.Actions
 				if (!PayPhase.Invoke(g, c, source))
 					return false;
 
-				bool echo = source.IsEcho;
-
 				// remove from hand zone
 				if (!RemoveFromZone.Invoke(c, source))
 					return false;
 
 				bool echo = source.IsEcho;
-
-				//if (!RemoveFromZone.Invoke(c, source))
-				//	return false;
-				c.HandZone.Remove(source);
 
 				c.NumCardsPlayedThisTurn++;
 				c.LastCardPlayed = source.Id;
@@ -120,7 +114,7 @@ namespace SabberStoneCore.Actions
 				{
 					if (source[GameTag.GHOSTLY] == 1)
 						source[GameTag.GHOSTLY] = 0;
-					game.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
+					g.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
 				}
 
 				g.CurrentEventData = null;
@@ -283,7 +277,7 @@ namespace SabberStoneCore.Actions
 				{
 					minion.ActivateTask(PowerActivation.POWER, target, chooseOne);
 				}
-                OverloadBlock(c, minion, game.History);
+                OverloadBlock(c, minion, g.History);
                 
                 g.ProcessTasks();
 				g.TaskQueue.EndEvent();
@@ -299,18 +293,12 @@ namespace SabberStoneCore.Actions
 				triggerManager.OnAfterPlayMinionTrigger(minion);
 
 
-				switch (minion.Race)
-				{
-					case Race.ELEMENTAL:
-						c.NumElementalsPlayedThisTurn++;
-						break;
-					case Race.MURLOC:
-						c.NumMurlocsPlayedThisGame++;
-						break;
-					case Race.TOTEM:
-						c.NumTotemSummonedThisGame++;
-						break;
-				}
+				if (minion.IsRace(Race.ELEMENTAL))
+					c.NumElementalsPlayedThisTurn++;
+				else if (minion.IsRace(Race.MURLOC))
+					c.NumMurlocsPlayedThisGame++;
+				else if (minion.IsRace(Race.TOTEM))
+					c.NumTotemSummonedThisGame++;
 
 				return true;
 			};
@@ -389,7 +377,7 @@ namespace SabberStoneCore.Actions
 						target = (Character) g.IdEntityDic[weapon.CardTarget];
 				}
 
-				OverloadBlock(c, weapon, game.History);
+				OverloadBlock(c, weapon, g.History);
 
 				// - Equipping Phase --> Resolve Battlecry, OnDeathTrigger
 				// activate battlecry
@@ -404,7 +392,7 @@ namespace SabberStoneCore.Actions
 				g.TaskQueue.EndEvent();
 
 				if (g.History)
-					game.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
+					g.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
 
 				// equip new weapon here
 				g.TaskQueue.StartEvent();

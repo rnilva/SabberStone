@@ -1007,7 +1007,7 @@
 //                    //Enchant = Auras.SimpleInclSelf(GameTag.BATTLECRY, 1)
 //                    Area = PowerArea.CONTROLLER,
 //					Activation = PowerActivation.BOARD_ZONE,
-//					OldEnchant = Auras.SimpleInclSelf(GameTag.EXTRA_BATTLECRY, 1)
+//					OldEnchant = Auras.SimpleInclSelf(GameTag.EXTRA_BATTLECRIES_BASE, 1)
 //				}
 //			});
 

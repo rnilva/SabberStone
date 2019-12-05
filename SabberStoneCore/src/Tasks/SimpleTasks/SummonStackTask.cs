@@ -11,6 +11,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
+
+using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
@@ -41,7 +43,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		{
 			if (controller.BoardZone.IsFull || stack?.Playables.Count == 0) return TaskState.STOP;
 
-			for (int i = 0; i < stack?.Playables.Count; i++)
+			var playables = new List<Playable>(stack.Playables.Count);
+			for (int i = 0; i < stack.Playables.Count; i++)
 			{
 				Playable p = stack.Playables[i];
 
@@ -49,7 +52,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 				if (RemoveFromZone)
 					p.Zone.Remove(p);
-				Generic.SummonBlock(game, ref p, -1, source);
+				Generic.SummonBlock(game, ref p, -1, (Playable) source);
+				playables.Add(p);
 			}
 			stack.Playables = playables;
 

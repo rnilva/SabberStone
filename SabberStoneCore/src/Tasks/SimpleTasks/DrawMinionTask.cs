@@ -41,10 +41,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_addToStack = addToStack;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			var deck = controller.DeckZone.GetSpan();
+			ReadOnlySpan<Playable> deck = controller.DeckZone.GetSpan();
 
 			if (deck.Length == 0)
 				return TaskState.STOP;
@@ -53,7 +53,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			bool addToStack = _addToStack;
 			//int count = 0;
 			if (addToStack)
-				stack.Playables = new List<IPlayable>(_amount);
+				stack.Playables = new List<Playable>(_amount);
 
 			if (_lowestCost)
 			{

@@ -158,10 +158,10 @@ namespace SabberStoneCore.Actions
 		public static Func<Controller, CardType, Playable> JoustBlock
 			=> delegate (Controller c, CardType type)
 			{
-				IPlayable card, cardOp;
+				Playable card, cardOp;
 				{
-					var rnd = c.Game.Random;
-					var span = c.DeckZone.GetSpan();
+					Util.DeepCloneableRandom rnd = c.Game.Random;
+					ReadOnlySpan<Playable> span = c.DeckZone.GetSpan();
 					Span<int> buffer = stackalloc int[Math.Max(c.DeckZone.Count, c.Opponent.DeckZone.Count)];
 					int k = 0;
 					for (int i = 0; i < span.Length; i++)
@@ -248,17 +248,6 @@ namespace SabberStoneCore.Actions
 				//c.DeckZone.Add(playable, c.DeckZone.Count == 0 ? -1 : Util.Random.Next(c.DeckZone.Count + 1));
 				c.DeckZone.AddAtRandomPosition(playable);
 
-				if (sender is IPlayable p && c.Game.TriggerManager.HasShuffleIntoDeckTrigger)
-				{
-					EventMetaData temp = c.Game.CurrentEventData;
-
-					c.Game.CurrentEventData = new EventMetaData(p, playable);
-
-					c.Game.TriggerManager.OnShuffleIntoDeckTrigger(playable);
-
-					c.Game.CurrentEventData = temp;
-				}
-
 				if (sender is Playable p && c.Game.TriggerManager.HasShuffleIntoDeckTrigger)
 				{
 					EventMetaData temp = c.Game.CurrentEventData;
@@ -318,7 +307,7 @@ namespace SabberStoneCore.Actions
 			Power power = enchantmentCard.Power;
 
 			if (power.Enchant is OngoingEnchant &&
-			    target is IPlayable entity &&
+			    target is Playable entity &&
 			    entity.OngoingEffect is OngoingEnchant ongoingEnchant)
 			{	// Increment the count of existing OngoingEnchant
 				ongoingEnchant.Count++;
@@ -332,10 +321,10 @@ namespace SabberStoneCore.Actions
 				Enchantment enchantment = Enchantment.GetInstance(creator.Controller, in creator, in target, in enchantmentCard, num1, num2);
 
 				power.Aura?.Activate(enchantment);
-				power.Trigger?.Activate(enchantment);
+				power.Trigger?.Activate(g, enchantment);
 
 				if (power.Enchant?.RemoveWhenPlayed ?? false)
-					Enchant.RemoveWhenPlayedTrigger.Activate(enchantment);
+					Enchant.RemoveWhenPlayedTrigger.Activate(g, enchantment);
 
 				if (entityId > 0)
 				{
@@ -366,10 +355,10 @@ namespace SabberStoneCore.Actions
 						for (int i = p.AppliedEnchantments.Count - 1; i >= 0; i--)
 							p.AppliedEnchantments[i].Remove();
 
-					if (p is Minion m)
-						m.ResetAttributes();
-					else
-						((Playable) p).ResetCost();
+					//if (p is Minion m)
+					//	m.Reset();
+					//else
+					//	((Playable) p).ResetCost();
 				}
 
 				p.ActivatedTrigger?.Remove();
@@ -381,16 +370,14 @@ namespace SabberStoneCore.Actions
 
 				// Detach the target from Auras
 				if (hand != null)
-					hand.Auras.ForEach(a => a.DeApply(p));
+					foreach (Aura a in hand.Auras) a.DeApply(p);
 				else if
 					(board != null)
 				{
-					board.Auras.ForEach(a => a.DeApply(p));
+					foreach (Aura a in board.Auras) a.DeApply(p);
 
 					if (p.Card.Untouchable)
-					{
 						board.DecrementUntouchablesCount();
-					}
 				}
 
 
@@ -401,26 +388,29 @@ namespace SabberStoneCore.Actions
 				if (p.Card.Type == newCard.Type)
 				{
 					p.Card = newCard;
-					Playable pp = (Playable)p;
-					if (pp._costManager != null)
-						pp._modifiedCost = pp._costManager.EntityChanged(newCard.Cost);
+					//Playable pp = (Playable)p;
+					//if (pp._costManager != null)
+					//	pp._modifiedCost = pp._costManager.EntityChanged(newCard.Cost);
+					p.Reset();
+					p.ResetCost();
 				}
 				else
 				{
 					Playable entity;
+					EntityData data = p._data;
 					switch (newCard.Type)
 					{
 						case CardType.MINION:
-							entity = new Minion(c, newCard, p.NativeTags, id);
+							entity = new Minion(c, newCard, data, id);
 							break;
 						case CardType.SPELL:
-							entity = new Spell(c, newCard, p.NativeTags, id);
+							entity = new Spell(c, newCard, data, id);
 							break;
 						case CardType.HERO:
-							entity = new Hero(c, newCard, p.NativeTags, id);
+							entity = new Hero(c, newCard, data, id);
 							break;
 						case CardType.WEAPON:
-							entity = new Weapon(c, newCard, p.NativeTags, id);
+							entity = new Weapon(c, newCard, data, id);
 							break;
 						default:
 							throw new ArgumentNullException();
@@ -430,13 +420,13 @@ namespace SabberStoneCore.Actions
 						hand.ChangeEntity(p, entity);
 					else if
 						(board != null)
-						board.ChangeEntity((Minion)p, (Minion)entity);
+						board.ChangeEntity((MinionInPlay)p, (MinionInPlay)entity);
 					else if (p.Zone is DeckZone deck)
 						deck.ChangeEntity(p, entity);
 
 					c.Game.IdEntityDic[id] = entity;
 
-					Playable pp = (Playable)p;
+					Playable pp = p;
 					if (pp._costManager != null)
 						entity._modifiedCost = pp._costManager.EntityChanged(newCard.Cost);
 					entity._costManager = pp._costManager;
@@ -459,7 +449,7 @@ namespace SabberStoneCore.Actions
 
 					if (newCard.AssetId == 43310)
 					{
-						var chooseOnes = new IPlayable[4];
+						var chooseOnes = new Playable[4];
 						chooseOnes[0] = Entity.FromCard(in c, Cards.FromId("TRL_343at1"), tags, c.SetasideZone);
 						chooseOnes[1] = Entity.FromCard(in c, Cards.FromId("TRL_343ct1"), tags, c.SetasideZone);
 						chooseOnes[2] = Entity.FromCard(in c, Cards.FromId("TRL_343dt1"), tags, c.SetasideZone);
@@ -470,7 +460,7 @@ namespace SabberStoneCore.Actions
 					else
 					{
 						if (p.ChooseOnePlayables == null)
-							p.ChooseOnePlayables = new IPlayable[2];
+							p.ChooseOnePlayables = new Playable[2];
 
 
 						p.ChooseOnePlayables[0] = Entity.FromCard(c, Cards.FromId(newCard.Id + "a"), tags, c.SetasideZone);
@@ -497,14 +487,14 @@ namespace SabberStoneCore.Actions
 				// Reapply auras
 				if (hand != null)
 				{
-					p.Power?.Trigger?.Activate(p, TriggerActivation.HAND);
+					p.Power?.Trigger?.Activate(p.Game, p, TriggerActivation.HAND);
 					if (p.Power?.Aura is AdaptiveCostEffect e)
-						e.Activate((Playable) p);
+						e.Activate(p);
 					hand.Auras.ForEach(a => a.EntityAdded(p));
 				}
 				else if (board != null)
 				{
-					Minion m = (Minion)p;
+					MinionInPlay m = (MinionInPlay) p;
 					if (m.Controller == c.Game.CurrentPlayer)
 					{
 						if (m.HasCharge)
@@ -522,7 +512,7 @@ namespace SabberStoneCore.Actions
 				}
 				else if (p.Zone.Type == Zone.DECK)
 				{
-					p.Power?.Trigger?.Activate(p, TriggerActivation.DECK);
+					p.Power?.Trigger?.Activate(p.Game, p, TriggerActivation.DECK);
 				}
 
 				// Not sure C'Thun from Shifter Zerus will have Proxy's buffs
@@ -530,7 +520,7 @@ namespace SabberStoneCore.Actions
 				return p;
 			};
 
-		public static void OverloadBlock(Controller controller, IPlayable source, bool history)
+		public static void OverloadBlock(Controller controller, Playable source, bool history)
 		{
 			if (!source.Card.HasOverload)
 				return;

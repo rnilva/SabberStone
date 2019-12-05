@@ -81,7 +81,7 @@ namespace SabberStoneCore.Auras
 			p._costManager?.QueueUpdate();
 		}
 
-		private static void DeApply(Playable playable)
+		private new static void DeApply(Playable playable)
 		{
 			if (playable._modifiedCost == null) return;
 

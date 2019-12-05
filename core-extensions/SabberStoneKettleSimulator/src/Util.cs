@@ -41,8 +41,8 @@ namespace SabberStoneKettleSimulator
 				case OptionType.POWER:
 
 					SabberStoneCore.Kettle.PowerSubOption mainOption = powerOption.MainOption;
-					IPlayable source = Game.IdEntityDic[mainOption.EntityId];
-					ICharacter target = sendOptionTarget > 0 ? (ICharacter) Game.IdEntityDic[sendOptionTarget] : null;
+					Playable source = Game.IdEntityDic[mainOption.EntityId];
+					Character target = sendOptionTarget > 0 ? (Character) Game.IdEntityDic[sendOptionTarget] : null;
 					List<SabberStoneCore.Kettle.PowerSubOption> subObtions = powerOption.SubOptions;
 
 					if (source.Zone?.Type == Zone.PLAY)

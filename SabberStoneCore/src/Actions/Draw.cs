@@ -21,109 +21,37 @@ using SabberStoneCore.Tasks;
 namespace SabberStoneCore.Actions
 {
 	public static partial class Generic
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
+		/// <summary>
+		/// Create and add a new entity with a specified card.
+		/// </summary>
+		/// <param name="c"></param>
+		/// <param name="card"></param>
+		/// <returns></returns>
 		public static Playable DrawCard(Controller c, Card card)
 		{
-			return DrawCardBlock.Invoke(c, card);
+			Playable playable = card.Type == CardType.MINION
+				? MinionInPlay.FromCard(in c, in card)
+				: Entity.FromCard(in c, in card);
+
+			//c.NumCardsDrawnThisTurn++;
+			AddHandPhase.Invoke(c, playable);
+			return playable;
 		}
 
-		public static Playable Draw(Controller c, int cardIdToDraw = -1)
+		/// <summary>
+		/// Get an entity from a controller's deck.
+		/// </summary>
+		/// <param name="c">The controller.</param>
+		/// <param name="deckIndex">Index of the entity to draw in the deck.</param>
+		/// <returns>The drawn entity.</returns>
+		public static Playable Draw(Controller c, int deckIndex = -1)
 		{
-			return DrawBlock.Invoke(c, cardIdToDraw);
-		}
+			// Don't consider fatigue when trying to draw a specific card
+			if (deckIndex < 0 && !PreDrawPhase(c))
+				return null;
 
-		public static Func<Controller, Card, Playable> DrawCardBlock
-			=> delegate (Controller c, Card card)
-			{
-				Playable playable = card.Type == CardType.MINION
-					? MinionInPlay.FromCard(in c, in card)
-					: Entity.FromCard(in c, in card);
-
-				//c.NumCardsDrawnThisTurn++;
-				AddHandPhase.Invoke(c, playable);
-				return playable;
-			};
-
-		public static Func<Controller, int, Playable> DrawBlock
-			=> delegate (Controller c, int cardIdToDraw)
-			{
-				if (!PreDrawPhase.Invoke(c))
-					return null;
-
-				Playable playable = DrawPhase.Invoke(c, cardIdToDraw);
-				//c.NumCardsToDraw--; 
-
-				if (AddHandPhase.Invoke(c, playable))
-				{
-					// DrawTrigger vs TOPDECK ?? not sure which one is first
-
-					Game game = c.Game;
-
-					if (playable == null)
-					{
-						game.TriggerManager.OnDrawTrigger(playable);
-					}
-
-					ISimpleTask task = playable.Power?.TopdeckTask;
-					if (task != null)
-					{
-						if (game.History)
-						{
-							// TODO: triggerkeyword: TOPDECK
-							game.PowerHistory.Add(
-								PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, playable.Id, "", 0, 0));
-						}
-
-						c.SetasideZone.Add(c.HandZone.Remove(playable));
-
-						game.Log(LogLevel.INFO, BlockType.TRIGGER, "TOPDECK",
-							!game.Logging ? "" : $"{playable}'s TOPDECK effect is activated.");
-
-						task.Process(game, c, playable, null);
-
-						if (game.History)
-							game.PowerHistory.Add(
-								PowerHistoryBuilder.BlockEnd());
-					}
-				}
-
-				return playable;
-			};
-
-		private static Func<Controller, bool> PreDrawPhase
-			=> delegate (Controller c)
-			{
-				if (c.DeckZone.IsEmpty)
-				{
-					int fatigueDamage = c.Hero.Fatigue == 0 ? 1 : c.Hero.Fatigue + 1;
-					DamageCharFunc(c.Hero, c.Hero, fatigueDamage, false);
-					return false;
-				}
-				return true;
-			};
-
-		private static Func<Controller, int, Playable> DrawPhase
-			=> delegate (Controller c, int cardIdToDraw)
-			{
-				//Playable playable = c.DeckZone.Remove(cardToDraw ?? c.DeckZone.TopCard);
-				Playable playable = c.DeckZone.Draw(cardIdToDraw);
-
-				c.Game.Log(LogLevel.INFO, BlockType.ACTION, "DrawPhase", !c.Game.Logging ? "" : $"{c.Name} draws {playable}");
-
-				c.NumCardsDrawnThisTurn++;
-				c.LastCardDrawn = playable.Id;
-
-				return playable;
-			};
-
-		public static IPlayable Draw(Controller c, int index)
-		{
-			IPlayable playable = c.DeckZone.Remove(index);
-			c.Game.Log(LogLevel.INFO, BlockType.ACTION, "DrawPhase", !c.Game.Logging ? "" : $"{c.Name} draws {playable}");
-
-			c.NumCardsDrawnThisTurn++;
-			c.LastCardDrawn = playable.Id;
+			Playable playable = DrawPhase(c, deckIndex);
 
 			if (AddHandPhase.Invoke(c, playable))
 			{
@@ -131,11 +59,11 @@ namespace SabberStoneCore.Actions
 
 				Game game = c.Game;
 
-				game.TaskQueue.StartEvent();
-				game.TriggerManager.OnDrawTrigger(playable);
-				game.ProcessTasks();
-				game.TaskQueue.EndEvent();
-				
+				if (deckIndex < 0)
+				{
+					game.TriggerManager.OnDrawTrigger(playable);
+				}
+
 				ISimpleTask task = playable.Power?.TopdeckTask;
 				if (task != null)
 				{
@@ -161,6 +89,49 @@ namespace SabberStoneCore.Actions
 
 			return playable;
 		}
-	}
+
+		/// <summary>
+		/// Get an entity from a controller's deck.
+		/// </summary>
+		/// <param name="c">The controller.</param>
+		/// <param name="playable">The entity to draw.</param>
+		/// <returns>The drawn entity.</returns>
+		public static Playable Draw(Controller c, Playable playable)
+		{
+			ReadOnlySpan<Playable> deck = c.DeckZone.GetSpan();
+			for (int i = 0; i < deck.Length; i++)
+				if (deck[i] == playable)
+					return Draw(c, i);
+
+			throw new ArgumentOutOfRangeException($"Can't Find {playable} in {c}'s deckzone.");
+		}
+
+		private static bool PreDrawPhase(Controller c)
+		{
+			if (c.DeckZone.IsEmpty)
+			{
+				int fatigueDamage = c.Hero.Fatigue == 0 ? 1 : c.Hero.Fatigue + 1;
+				DamageCharFunc(c.Hero, c.Hero, fatigueDamage, false);
+				return false;
+			}
+
+			return true;
+		}
+
+		private static Playable DrawPhase(Controller c, int deckIndex)
+		{
+			Playable playable = c.DeckZone.Draw(deckIndex);
+
+			c.Game.Log(LogLevel.INFO, BlockType.ACTION, "DrawPhase",
+				!c.Game.Logging ? "" : $"{c.Name} draws {playable}");
+
+			c.NumCardsDrawnThisTurn++;
+			c.LastCardDrawn = playable.Id;
+
+			return playable;
+		}
+
+
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+	}
 }

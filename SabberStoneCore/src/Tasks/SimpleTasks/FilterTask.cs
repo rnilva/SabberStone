@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using SabberStoneCore.Conditions;
-using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 

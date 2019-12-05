@@ -78,7 +78,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			else
 			{
 				Playable toBeCopied;
-				int position = -1;
+				int zonePosition = -1;
 				switch (_entityType)
 				{
 					case EntityType.TARGET:
@@ -86,12 +86,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						break;
 					case EntityType.SOURCE:
 						toBeCopied = source as Playable;
-						if (_zoneType == Zone.PLAY && target is Enchantment e && e.Power?.DeathrattleTask != null)
-						{
-							position = ((Minion)source).LastBoardPosition;
-							if (position > controller.BoardZone.Count)
-								position = controller.BoardZone.Count;
-						}
+						zonePosition = (_zoneType == Zone.PLAY &&
+						                target is Enchantment e &&
+						                e.Power?.DeathrattleTask != null)
+							? ((Minion) source).LastBoardPosition
+							: -1;
 						break;
 					case EntityType.EVENT_SOURCE:
 						toBeCopied = game.CurrentEventData?.EventSource;
@@ -121,7 +120,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 				for (int i = 0; i < amount; i++)
 				{
-					Playable copied = Generic.Copy(in c, in source, in toBeCopied, zone, position);
+					Playable copied = Generic.Copy(in c, in source, in toBeCopied, zone, zonePosition);
 
 					if (addToStack)
 						result.Add(copied);

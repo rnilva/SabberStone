@@ -1894,7 +1894,7 @@ namespace SabberStoneCore.CardSets
 								minions.Add(pp);
 						});
 						return minions.Count > 0
-							? new Playable[1]{Entity.FromCard(c, minions.Choose(c.Game.Random).Card)}
+							? new[]{Entity.FromCard(c, minions.Choose(c.Game.Random).Card)}
 							: new Playable[0];
 					}),
 					new SummonTask())

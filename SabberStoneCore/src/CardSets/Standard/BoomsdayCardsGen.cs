@@ -1,4 +1,4 @@
-#region copyright
+﻿#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
-using SabberStoneCore.Enchants;
 using SabberStoneCore.Conditions;
+using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
@@ -400,7 +400,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: 3/4.
 			// --------------------------------------------------------
 			cards.Add("BOT_434e2", new Power {
-				Enchant = new Enchant(Effects.SetAttack(3), Effects.SetMaxHealth(4)),
+				Enchant = new Enchant(Effects.SetAttack(3), Effects.SetMaxHealth(4))
 			});
 
 			// ------------------------------------ ENCHANTMENT - DRUID
@@ -784,14 +784,12 @@ namespace SabberStoneCore.CardSets.Standard
 			// - REQ_NUM_MINION_SLOTS = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_254", new Power {
-				PowerTask = ComplexTask.Create(
-					//new GetGameTagControllerTask(GameTag.CURRENT_SPELLPOWER),
-					new GetPropertyTask(EntityType.CONTROLLER, "CurrentSpellPower"),
-					new MathAddTask(2),
-					new EnqueueNumberTask(
-						ComplexTask.Create(
-							new RandomMinionTask(GameTag.COST, 2),
-							new SummonTask())))
+				PowerTask = new EnqueueTask(2,
+					ComplexTask.Create(
+						new FuncNumberTask(p => 2 + p.Controller.CurrentSpellPower),
+						new RandomMinionNumberTask(GameTag.COST),
+						new SummonTask()))
+
 			});
 
 			// ------------------------------------------- SPELL - MAGE
@@ -866,7 +864,7 @@ namespace SabberStoneCore.CardSets.Standard
 				// Seems like there are some problems with Enchant SPELLPOWER effects not being removed
 				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 2))
 				{
-					RemoveTrigger = (TriggerType.TURN_END, null),
+					RemoveTrigger = (TriggerType.TURN_END, null)
 				},
 				Trigger = new Trigger(TriggerType.AFTER_CAST)
 				{
@@ -999,7 +997,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("BOT_436", new Power {
 				// TODO [BOT_436] Prismatic Lens && Test: Prismatic Lens_BOT_436
-				InfoCardId = "BOT_436e",
+				InfoCardId = "BOT_436e"
 				//PowerTask = null,
 				//Trigger = null,
 			});
@@ -1059,17 +1057,17 @@ namespace SabberStoneCore.CardSets.Standard
 					new RandomTask(3, EntityType.STACK),
 					new CustomTask((g, c, s, t, stack) =>
 					{
-						foreach (IPlayable deadMech in stack.Playables)
+						foreach (Playable deadMech in stack.Playables)
 						{
 							if (c.BoardZone.IsFull)
 								break;
 
 							// copy and summon the base card
-							IPlayable copied = Generic.Copy(in c, in s, in deadMech, Zone.PLAY);
+							Playable copied = Generic.Copy(in c, in s, in deadMech, Zone.PLAY);
 							if (deadMech.AppliedEnchantments == null) continue;
 							foreach (Enchantment magneticUpgrade in deadMech.AppliedEnchantments)
 							{	// copy magnetic enchantments
-								Generic.AddEnchantmentBlock(in g, magneticUpgrade.Card, (IPlayable) s, copied,
+								Generic.AddEnchantmentBlock(in g, magneticUpgrade.Card, (Playable) s, copied,
 									magneticUpgrade.ScriptTag1, magneticUpgrade.ScriptTag2);
 							}
 						}
@@ -1876,7 +1874,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("BOT_411e2", new Power {
 				Enchant = new Enchant(GameTag.CUSTOM_KEYWORD_EFFECT, EffectOperator.SET, 1)
 				{
-					IsOneTurnEffect = true,
+					IsOneTurnEffect = true
 				},
 				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
 				{
@@ -2113,7 +2111,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Discards at the end of your turn.
 			// --------------------------------------------------------
 			cards.Add("BOT_568e", new Power {
-				Enchant = new Enchant()
+				Enchant = new Enchant
 				{
 					RemoveWhenPlayed = true
 				},
@@ -2982,19 +2980,19 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_573", new Power {
-				PowerTask = new FuncNumberTask((Playable source) =>
+				PowerTask = new FuncNumberTask(source =>
 				{
                     Dictionary<int, int> secrets = new Dictionary<int, int>();
 					ReadOnlySpan<Playable> deck = source.Controller.DeckZone.GetSpan();
-					for (int i = 0; i < deck.Length; i++)
+					for (int i = deck.Length - 1; i >= 0; i--)
 					{
-						var deckCard = deck[i].Card;
+						Card deckCard = deck[i].Card;
 						if (deckCard.IsSecret && !secrets.ContainsKey(deckCard.AssetId))
-							secrets.Add(deckCard.AssetId, deck[i].Id);
+							secrets.Add(deckCard.AssetId, i);
 					}
 
-					foreach (var item in secrets)
-						Generic.DrawBlock.Invoke(source.Controller, item.Value);
+					foreach (KeyValuePair<int, int> item in secrets)
+						Generic.Draw(source.Controller, item.Value);
 
 					return 0;
 				})

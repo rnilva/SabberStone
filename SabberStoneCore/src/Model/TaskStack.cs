@@ -27,13 +27,13 @@ namespace SabberStoneCore.Model
 		public int Number3 { get; set; }
 		public int Number4 { get; set; }
 
-		public void AddPlayables(IEnumerable<IPlayable> playables)
+		public void AddPlayables(IEnumerable<Playable> playables)
 		{
 			if (Playables is List<Playable> list)
 				list.AddRange(playables);
 			else
 			{
-				var toList = Playables.ToList();
+				List<Playable> toList = Playables.ToList();
 				toList.AddRange(playables);
 				Playables = toList;
 			}

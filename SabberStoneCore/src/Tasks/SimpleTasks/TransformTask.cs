@@ -45,7 +45,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			if (_useOldMechanism)
 				for (int i = 0; i < entities.Count; i++)
-					Generic.TransformBlock(entities[i].Controller, _card, entities[i] as Minion);
+					Generic.TransformBlock(entities[i].Controller, _card, entities[i] as MinionInPlay);
 			else
 				for (int i = 0; i < entities.Count; i++)
 					Generic.ChangeEntityBlock(controller, entities[i], _card, true);

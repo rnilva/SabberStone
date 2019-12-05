@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
-using SabberStoneCore.Actions;
+
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
@@ -45,7 +45,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				return TaskState.STOP;
 
 			weapon.Card.Power?.Aura?.Activate(weapon);
-			weapon.Card.Power?.Trigger?.Activate(weapon);
+			weapon.Card.Power?.Trigger?.Activate(game, weapon);
 			c.Hero.AddWeapon(weapon);
 
 			return TaskState.COMPLETE;

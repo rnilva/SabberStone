@@ -26,7 +26,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private RemoveEnchantmentTask() {}
 
 		public override TaskState Process(in Game game, in Controller controller, in Entity source,
-			in Playable target,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			if (!(source is Enchantment e)) throw new NotImplementedException();

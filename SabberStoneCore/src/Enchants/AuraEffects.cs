@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Text;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Kettle;
+using SabberStoneCore.Model;
+using SabberStoneCore.Model.Entities;
 
 // ReSharper disable InconsistentNaming
 
 namespace SabberStoneCore.Enchants
 {
 	/// <summary>
-	/// A simple container for saving tag value perturbations from external Auras. Call indexer to get value for a particular Tag.
+	/// A simple container for saving tag value perturbations from external Auras.
+	/// Call indexer to get value for a particular Tag.
 	/// </summary>
 	public class AuraEffects
 	{
 		private const int PlayableLength = 2;
-		private const int WeaponLength = PlayableLength + 1;
 		private const int CharacterLength = PlayableLength + 2;
+		private const int WeaponLength = CharacterLength;
 		private const int HeroLength = CharacterLength + 2;
 		private const int MinionLength = CharacterLength + 7;
 
@@ -21,14 +25,12 @@ namespace SabberStoneCore.Enchants
 		// Playables
 		// 0 : CardCostHealth
 		// 1 : Echo
-		// Weapon
-		// 2 : Immune
 		// Characters
-		// 2 : CantBeTargetedBySpells
-		// 3 : ATK
+		// 2 : ATK
+		// 3 : Immune
 		// Hero
-		// 4 : CannotAttackHeroes
-		// 5 : Immune
+		// 4 : CantBeTargetedBySpells
+		// 5 : CannotAttackHeroes
 		// Minion
 		// 4 : Health
 		// 5 : Charge
@@ -82,14 +84,14 @@ namespace SabberStoneCore.Enchants
 
 		public bool CantBeTargetedBySpells
 		{
-			get => _data[2] > 0;
-			set => _data[2] = value ? 1 : 0;
+			get => _data[4] > 0;
+			set => _data[4] = value ? 1 : 0;
 		}
 
 		public int ATK
 		{
-			get => _data[3];
-			set => _data[3] = value;
+			get => _data[2];
+			set => _data[2] = value;
 		}
 
 		public int Health
@@ -135,36 +137,20 @@ namespace SabberStoneCore.Enchants
 			{
 				if (Type != CardType.HERO)
 					return false;
-				return _data[4] > 0;
+				return _data[5] > 0;
 			}
 			set
 			{
 				if (Type != CardType.HERO)
 					throw new NotImplementedException();
-				_data[4] = value ? 1 : 0;
+				_data[5] = value ? 1 : 0;
 			}
 		}
 
 		public bool Immune
 		{
-			get
-			{
-				if (Type == CardType.HERO)
-					return _data[5] > 0;
-				if (Type == CardType.WEAPON)
-					return _data[2] > 0;
-
-				return false;
-			}
-			set
-			{
-				if (Type == CardType.HERO)
-					_data[5] = value ? 1 : 0;
-				else if (Type == CardType.WEAPON)
-					_data[2] = value ? 1 : 0;
-				else
-					throw new NotImplementedException();
-			}
+			get => _data[3] > 0;
+			set => _data[3] = value ? 1 : 0;
 		}
 
 		public int this[in GameTag t]
@@ -274,6 +260,9 @@ namespace SabberStoneCore.Enchants
 	/// </summary>
 	public class ControllerAuraEffects
 	{
+		private Action<IPowerHistoryEntry> _sendHistory;
+		private int _controllerEntityId;
+
 		private int _timeOut;
 		private int _spellPowerDouble;
 		private int _heroPowerDouble;
@@ -284,6 +273,17 @@ namespace SabberStoneCore.Enchants
 		private int _extraEndTurnEffect;
 		private int _heroPowerDisabled;
 		private int _allHealingDouble;
+		private int _extraBattlecryAndCombo;
+		private int _spellPower;
+
+		public ControllerAuraEffects(in Game g, in Controller c)
+		{
+			if (g.History)
+			{
+				_sendHistory = g.PowerHistory.Add;
+				_controllerEntityId = c.Id;
+			}
+		}
 
 		public int this[GameTag t]
 		{
@@ -298,13 +298,13 @@ namespace SabberStoneCore.Enchants
 						return _spellPowerDouble;
 					case GameTag.HERO_POWER_DOUBLE:
 						return _heroPowerDouble;
-					case GameTag.RESTORE_TO_DAMAGE:
+					case GameTag.HEALING_DOES_DAMAGE:
 						return _restoreToDamage >= 1 ? 1 : 0;
 					case GameTag.CHOOSE_BOTH:
 						return _chooseBoth >= 1 ? 1 : 0;
 					case GameTag.SPELLS_COST_HEALTH:
 						return _spellsCostHealth >= 1 ? 1 : 0;
-					case GameTag.EXTRA_BATTLECRY:
+					case GameTag.EXTRA_BATTLECRIES_BASE:
 						return _extraBattecry;
 					case GameTag.EXTRA_END_TURN_EFFECT:
 						return _extraEndTurnEffect;
@@ -312,12 +312,17 @@ namespace SabberStoneCore.Enchants
 						return _heroPowerDisabled >= 1 ? 1 : 0;
 					case GameTag.ALL_HEALING_DOUBLE:
 						return _allHealingDouble;
+					case GameTag.EXTRA_MINION_BATTLECRIES_BASE:
+						return _extraBattlecryAndCombo;
+					case GameTag.SPELLPOWER:
+						return _spellPower;
 					default:
 						return 0;
 				}
 			}
 			set
 			{
+				_sendHistory?.Invoke(PowerHistoryBuilder.TagChange(_controllerEntityId, t, value));
 				switch (t)
 				{
 					case GameTag.TIMEOUT:
@@ -330,7 +335,7 @@ namespace SabberStoneCore.Enchants
 					case GameTag.HERO_POWER_DOUBLE:
 						_heroPowerDouble = value;
 						return;
-					case GameTag.RESTORE_TO_DAMAGE:
+					case GameTag.HEALING_DOES_DAMAGE:
 						_restoreToDamage = value;
 						return;
 					case GameTag.CHOOSE_BOTH:
@@ -339,7 +344,7 @@ namespace SabberStoneCore.Enchants
 					case GameTag.SPELLS_COST_HEALTH:
 						_spellsCostHealth = value;
 						return;
-					case GameTag.EXTRA_BATTLECRY:
+					case GameTag.EXTRA_BATTLECRIES_BASE:
 						_extraBattecry = value;
 						return;
 					case GameTag.EXTRA_END_TURN_EFFECT:
@@ -351,15 +356,26 @@ namespace SabberStoneCore.Enchants
 					case GameTag.ALL_HEALING_DOUBLE:
 						_allHealingDouble = value;
 						return;
+					case GameTag.EXTRA_MINION_BATTLECRIES_BASE:
+						_extraBattlecryAndCombo = value;
+						return;
+					case GameTag.SPELLPOWER:
+						_spellPower = value;
+						return;
 					default:
 						return;
 				}
 			}
 		}
 
-		public ControllerAuraEffects Clone()
+		public ControllerAuraEffects Clone(Controller c)
 		{
-			return (ControllerAuraEffects)MemberwiseClone();
+
+			var cae = (ControllerAuraEffects)MemberwiseClone();
+			cae._sendHistory = c.Game.History
+				? (Action<IPowerHistoryEntry>) c.Game.PowerHistory.Add
+				: null;
+			return cae;
 		}
 
 		public string Hash()
@@ -375,6 +391,8 @@ namespace SabberStoneCore.Enchants
 			sb.Append(_extraEndTurnEffect);
 			sb.Append(_heroPowerDisabled);
 			sb.Append(_allHealingDouble);
+			sb.Append(_extraBattlecryAndCombo);
+			sb.Append(_spellPower);
 			sb.Append("]");
 			return sb.ToString();
 		}

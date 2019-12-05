@@ -71,8 +71,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_protoType = protoType;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			if (_opClass)
@@ -82,7 +82,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			{
 				IReadOnlyList<Card> randCards =
 					RandomCardTask.GetCardList(source, _cardType, _cardClass, race: _race, rarity: _rarity);
-				foreach (IPlayable p in IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables))
+				foreach (Playable p in IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables))
 				{
 					Card pick = randCards.Choose(game.Random);
 
@@ -98,7 +98,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				? IncludeTask.GetEntities(_protoType, in controller, source, target, stack?.Playables)[0].Card
 				: _card;
 
-			foreach (IPlayable p in IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables))
+			foreach (Playable p in IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables))
 				Generic.ChangeEntityBlock.Invoke(controller, p, card, _removeEnchantments);
 
 			// TODO p[GameTag.DISPLAYED_CREATOR] = source.Id;

@@ -1236,6 +1236,7 @@ namespace SabberStoneCoreTest.CardSets
 				Player1HeroClass = CardClass.PALADIN,
 				Player2HeroClass = CardClass.PALADIN,
 				FillDecks = false,
+				History = true
 			});
 			game.StartGame();
 			game.Player1.BaseMana = 10;
