@@ -26,7 +26,7 @@ namespace SabberStoneCore.Conditions
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
 		public static readonly SelfCondition IsDead = new SelfCondition(me => me is Minion m && m.ToBeDestroyed);
-		public static readonly SelfCondition IsNotImmune = new SelfCondition(me => (me as Character)?.IsImmune == false);
+        public static readonly SelfCondition IsNotImmune = new SelfCondition(me => (me as Character)?.IsImmune == false);
 		public static readonly SelfCondition IsSilenced = new SelfCondition(me => me is MinionInPlay m && m.IsSilenced);
 		public static readonly SelfCondition IsBoardFull = new SelfCondition(me => me.Controller.BoardZone.IsFull);
 		public static readonly SelfCondition IsHandEmpty = new SelfCondition(me => me.Controller.HandZone.IsEmpty);
@@ -82,7 +82,7 @@ namespace SabberStoneCore.Conditions
 		public static readonly SelfCondition IsControllingTreant =
 			new SelfCondition(me => me.Controller.BoardZone.Any(m => m.Card.Name == "Treant"));
 		public static readonly SelfCondition IsControllingLackey =
-			new SelfCondition(me => me.Controller.BoardZone.Any(m => m.Card[Enums.GameTag.MARK_OF_EVIL] == 1));
+			new SelfCondition(me => me.Controller.BoardZone.Any(m => m.Card[GameTag.MARK_OF_EVIL] == 1));
 
 		public static readonly SelfCondition IsSpellDmgOnHero = new SelfCondition(me => me.Controller.CurrentSpellPower > 0);
 		public static readonly SelfCondition IsntSpellDmgOnHero = new SelfCondition(me => me.Controller.CurrentSpellPower == 0);
@@ -324,7 +324,7 @@ namespace SabberStoneCore.Conditions
 			new SelfCondition(p => (p.Game.CurrentEventData?.EventTarget as Minion)?.ToBeDestroyed ?? false);
 
 		public static readonly SelfCondition IsDefenderNotDead =
-			new SelfCondition(p => !p.Game.CurrentEventData?.EventTarget.ToBeDestroyed ?? false);
+			new SelfCondition(p => (p.Game.CurrentEventData?.EventTarget as Minion)?.ToBeDestroyed ?? false);
 
 		public static SelfCondition IsStep(Step step)
 		{

@@ -22,7 +22,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 	// Remove applied effects of this enchantment
 	public class RemoveEnchantmentTask : SimpleTask
 	{
-		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+		public static readonly RemoveEnchantmentTask Task = new RemoveEnchantmentTask();
+		private RemoveEnchantmentTask() {}
+
+		public override TaskState Process(in Game game, in Controller controller, in Entity source,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			if (!(source is Enchantment e)) throw new NotImplementedException();

@@ -49,7 +49,7 @@ namespace SabberStoneBasicAI.Score
 			return result;
 		}
 
-		public override Func<List<IPlayable>, List<int>> MulliganRule()
+		public override Func<List<Playable>, List<int>> MulliganRule()
 		{
 			return p => p.Where(t => t.Cost > 3).Select(t => t.Id).ToList();
 		}

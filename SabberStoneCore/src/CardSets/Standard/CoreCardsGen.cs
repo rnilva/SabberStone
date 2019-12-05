@@ -577,9 +577,9 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("DS1_184", new CardDef(new Power
 			{
 				PowerTask = ComplexTask.Create(
-					new FuncNumberTask((Playable p) =>
+					new FuncNumberTask(p =>
 					{
-						var deck = p.Controller.DeckZone;
+						DeckZone deck = p.Controller.DeckZone;
 						if (deck.IsEmpty) return 0;
 						List<int> ids = new List<int>(3);
 						for (int i = 0; i < 3 && deck.Count != 0; i++)

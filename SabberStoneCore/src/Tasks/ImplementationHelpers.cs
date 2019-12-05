@@ -1,0 +1,46 @@
+﻿namespace SabberStoneCore.Tasks
+{
+	public static class ImplementationHelpers
+	{
+		public enum ControllerAttributes
+		{
+			PlayerId,
+			HeroId,
+			PlayState,
+			BaseMana,
+			UsedMana,
+			TemporaryMana,
+			OverloadOwed,
+			OverloadLocked,
+			OverloadThisGame,
+			IsComboActive,
+			CurrentSpellPower,
+			NumTurnsLeft,
+			TimeOut,
+			TemporusFlag,
+			LastCardPlayed,
+			LastCardDrawn,
+			LastCardDiscarded,
+			NumCardsDrawnThisTurn,
+			NumCardsPlayedThisTurn,
+			NumMinionsPlayedThisTurn,
+			NumOptionsPlayedThisTurn,
+			NumFriendlyMinionsThatDiedThisTurn,
+			AmountHeroHealedThisTurn,
+			NumMinionsPlayerKilledThisTurn,
+			NumElementalsPlayedThisTurn,
+			NumElementalsPlayedLastTurn,
+			NumFriendlyMinionsThatAttackedThisTurn,
+			HeroPowerActivationsThisTurn,
+			TotalManaSpentThisGame,
+			NumTotemSummonedThisGame,
+			NumTimesHeroPowerUsedThisGame,
+			NumSecretsPlayedThisGame,
+			NumSpellsPlayedThisGame,
+			NumWeaponsPlayedThisGame,
+			NumMurlocsPlayedThisGame,
+			SeenCthun,
+			ProxyCthun,
+		}
+	}
+}

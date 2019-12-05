@@ -9,9 +9,9 @@
 //	internal readonly ref struct EntityContainer
 //	{
 //		private readonly ReadOnlySpan<Minion> _boardSpan;
-//		private readonly ReadOnlySpan<IPlayable> _zoneSpan;
-//		private readonly IPlayable _singleEntity;
-//		public EntityContainer(in Controller c, in IEntity source, in ICharacter target, in EntityType type)
+//		private readonly ReadOnlySpan<Playable> _zoneSpan;
+//		private readonly Playable _singleEntity;
+//		public EntityContainer(in Controller c, in Entity source, in Character target, in EntityType type)
 //		{
 //			switch (type)
 //			{
@@ -23,7 +23,7 @@
 //					_singleEntity = target;
 //					break;
 //				case EntityType.SOURCE:
-//					_singleEntity = (IPlayable)source;
+//					_singleEntity = (Playable)source;
 //					break;
 //				case EntityType.HERO:
 //					_singleEntity = c.Hero;

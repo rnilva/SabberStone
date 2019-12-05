@@ -18,7 +18,6 @@ using SabberStoneCore.Enchants;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
-using SabberStoneCore.Model.Zones;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
@@ -462,10 +461,10 @@ namespace SabberStoneCore.CardSets
 				DeathrattleTask = new FuncNumberTask(src =>
 				{
 					Controller c = src.Controller;
-					if ((c.GraveyardZone.Any(p => p.Card.AssetId == 1797 && p.ToBeDestroyed) ||
-						 c.Opponent.GraveyardZone.Any(p => p.Card.AssetId == 1797 && p.ToBeDestroyed)) &&
-						!c.BoardZone.IsFull)
-						Generic.SummonBlock.Invoke(c.Game, (Minion)Entity.FromCard(c, Cards.FromId("FP1_014t")), -1, src);
+					if ((c.GraveyardZone.Any(p => p.Card.AssetId == 1797 && ((Minion)p).ToBeDestroyed) ||
+					     c.Opponent.GraveyardZone.Any(p => p.Card.AssetId == 1797 && ((Minion)p).ToBeDestroyed)) &&
+					    !c.BoardZone.IsFull)
+						Generic.SummonBlock(c.Game, (Minion) Entity.FromCard(c, Cards.FromId("FP1_014t")), -1, src);
 
 					return 0;
 				})

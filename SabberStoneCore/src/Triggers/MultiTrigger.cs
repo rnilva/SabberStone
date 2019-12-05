@@ -30,7 +30,7 @@ namespace SabberStoneCore.Triggers
 			_triggers = triggers;
 		}
 
-		private MultiTrigger(Trigger[] triggers, MultiTrigger protoType, Playable owner) : base(protoType, owner)
+		private MultiTrigger(Trigger[] triggers, MultiTrigger protoType, Game game, Playable owner) : base(protoType, game, owner)
 		{
 			_triggers = triggers;
 		}

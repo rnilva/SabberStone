@@ -67,7 +67,7 @@ namespace SabberStoneCore.Loader
 				case Race.EGG:
 					return null;
 				default:
-					throw new System.IndexOutOfRangeException(
+					throw new IndexOutOfRangeException(
 						$@"Targeting Race {(Race)race} is not implemented! Please Check \Loader\TargetingPredicates.cs");
 			}
 		}
@@ -200,7 +200,7 @@ namespace SabberStoneCore.Loader
 		{
 			int count = c.BoardZone.Count;
 
-			if (count == Model.Game.MAX_MINIONS_ON_BOARD)
+			if (count == Game.MAX_MINIONS_ON_BOARD)
 				return false;
 			if (count < 4)
 				return true;
@@ -225,7 +225,7 @@ namespace SabberStoneCore.Loader
 		private static unsafe bool CheckEntourages(Controller c, int* ent, int count)
 		{
 			int* indices = stackalloc int[count];
-			ReadOnlySpan<Minion> span = c.BoardZone.GetSpan();
+			ReadOnlySpan<MinionInPlay> span = c.BoardZone.GetSpan();
 			for (int i = 0, j = span.Length, k = 0; i < span.Length; i++)
 			{
 				int index = -1;

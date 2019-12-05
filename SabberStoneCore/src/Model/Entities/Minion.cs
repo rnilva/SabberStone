@@ -13,10 +13,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Zones;
-using SabberStoneCore.Tasks.SimpleTasks;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -216,6 +214,11 @@ namespace SabberStoneCore.Model.Entities
 		}
 
 		internal override ref bool GetRef(int index)
+		{
+			throw new NotImplementedException();
+		}
+
+		internal override ref int GetIntRef(int index)
 		{
 			throw new NotImplementedException();
 		}

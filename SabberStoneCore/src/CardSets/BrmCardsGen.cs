@@ -20,6 +20,7 @@ using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 using SabberStoneCore.Triggers;
 using SabberStoneCore.src.Loader;
+using static SabberStoneCore.Tasks.ImplementationHelpers;
 
 namespace SabberStoneCore.CardSets
 {
@@ -393,9 +394,11 @@ namespace SabberStoneCore.CardSets
 			{
 				PowerTask = ComplexTask.Create(
 					new DamageTask(2, EntityType.TARGET),
-					new SetControllerGameTagTask(GameTag.OVERLOAD_LOCKED, 0),
-					new SetControllerGameTagTask(GameTag.OVERLOAD_OWED, 0))
-			}));
+					//new SetControllerGameTagTask(GameTag.OVERLOAD_LOCKED, 0),
+					//new SetControllerGameTagTask(GameTag.OVERLOAD_OWED, 0))
+					new SetControllerAttributeTask(ControllerAttributes.OverloadLocked, 0),
+					new SetControllerAttributeTask(ControllerAttributes.OverloadOwed, 0))
+			});
 
 		}
 

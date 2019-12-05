@@ -47,8 +47,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					return TaskState.STOP;
 			}
 
-			Playable playable = Entity.FromCard(controller, Util.Choose(cardsList));
-			stack.Playables = new List<Playable> {playable};
+			Playable playable = Entity.FromCard(controller, cardsList.Choose(game.Random));
+			stack.Playables = new[] {playable};
 
 			game.OnRandomHappened(true);
 

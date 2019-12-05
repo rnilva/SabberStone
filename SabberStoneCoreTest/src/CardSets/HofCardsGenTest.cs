@@ -226,7 +226,7 @@ namespace SabberStoneCoreTest.CardSets
 			// player 1 plays 7 minions
 			for (int i = 0; i < 7; i++)
 			{
-				IPlayable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
+				Playable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
 				game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
 			}
 
@@ -236,7 +236,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
 			// player 2 plays vanish
-			IPlayable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Vanish"));
+			Playable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Vanish"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, spell));
 
 			Assert.Equal(0, game.CurrentPlayer.Opponent.BoardZone.Count);

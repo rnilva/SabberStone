@@ -31,9 +31,9 @@ namespace SabberStoneCoreGui.Score
 
 		public int OpHeroHp => Controller.Opponent.Hero.Health;
 
-		public int HeroAtk => Controller.Hero.TotalAttackDamage;
+		public int HeroAtk => Controller.Hero.AttackDamage;
 
-		public int OpHeroAtk => Controller.Opponent.Hero.TotalAttackDamage;
+		public int OpHeroAtk => Controller.Opponent.Hero.AttackDamage;
 
 		public HandZone HandZone => Controller.HandZone;
 

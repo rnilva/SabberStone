@@ -30,32 +30,32 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_targetType = targetType;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			bool enqueueBase = _enqueueBase;
 
 			if (_targetType != EntityType.INVALID)
 			{
-				IList<IPlayable> targets = IncludeTask.GetEntities(in _targetType, in controller, source, target,
+				IList<Playable> targets = IncludeTask.GetEntities(in _targetType, in controller, source, target,
 					stack?.Playables);
 
-				foreach (IPlayable p in IncludeTask.GetEntities(in _sourceType, in controller, source, target,
+				foreach (Playable p in IncludeTask.GetEntities(in _sourceType, in controller, source, target,
 					stack?.Playables))
 				{
 					ISimpleTask task = p.Card.Power.PowerTask;
 
-					foreach (IPlayable t in targets)
+					foreach (Playable t in targets)
 					{
 						if (enqueueBase)
-							game.TaskQueue.EnqueueBase(in task, in controller, p, in t);
+							game.TaskQueue.EnqueueBase(in task, in controller, p, t);
 						else
-							game.TaskQueue.Enqueue(in task, in controller, p, in t);
+							game.TaskQueue.Enqueue(in task, in controller, p, t);
 					}
 				}
 			}
 			else
-				foreach (IPlayable p in IncludeTask.GetEntities(in _sourceType, in controller, source, target,
+				foreach (Playable p in IncludeTask.GetEntities(in _sourceType, in controller, source, target,
 					stack?.Playables))
 					if (enqueueBase)
 						game.TaskQueue.EnqueueBase(p.Card.Power.PowerTask, in controller, p, null);

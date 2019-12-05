@@ -275,6 +275,10 @@ namespace SabberStoneCore.Triggers
 					break;
 			}
 
+			if (game.Logging)
+				game.Log(LogLevel.DEBUG, BlockType.POWER, "Trigger",
+					$"{source}'s {_triggerType} trigger is activated.");
+
 			return instance;
 		}
 

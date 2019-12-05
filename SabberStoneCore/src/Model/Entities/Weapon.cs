@@ -11,11 +11,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
-﻿using System;
+using System;
 using SabberStoneCore.Enums;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using SabberStoneCore.Kettle;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -61,7 +58,11 @@ namespace SabberStoneCore.Model.Entities
 
 		public override int AttackDamage
 		{
-			get => _v1.Value;
+			get
+			{
+				int value = _v1.Value + (AuraEffects?.ATK ?? 0);
+				return value < 0 ? 0 : value;
+			}
 			set => _v1 = value;
 		}
 
@@ -97,6 +98,11 @@ namespace SabberStoneCore.Model.Entities
 			throw new NotImplementedException();
 		}
 
+		internal override ref int GetIntRef(int index)
+		{
+			throw new NotImplementedException();
+		}
+
 		internal override bool GetAttribute(Entities.Attributes attr)
 		{
 			return GetRef(attr);
@@ -117,8 +123,8 @@ namespace SabberStoneCore.Model.Entities
 			// 0 : IsImmune
 			// 1 : Poisonous
 			// 2 : Lifesteal
-			private const int NUM_INT_ATTRS = 1;
-			private const int NUM_BOOL_ATTRS = 3;
+			public const int NUM_INT_ATTRS = 1;
+			public const int NUM_BOOL_ATTRS = 3;
 #pragma warning disable 649
 			public fixed int intAttrs[NUM_INT_ATTRS];
 			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
@@ -154,7 +160,7 @@ namespace SabberStoneCore.Model.Entities
 			get => _attrs.boolAttrs[1];
 			set => _attrs.boolAttrs[1] = value;
 		}
-		public override unsafe bool HasLifesteal
+		public override unsafe bool HasLifeSteal
 		{
 			get => _attrs.boolAttrs[2];
 			set => _attrs.boolAttrs[2] = value;
@@ -172,6 +178,20 @@ namespace SabberStoneCore.Model.Entities
 					return ref _attrs.boolAttrs[2];
 				default:
 					throw new NotImplementedException();
+			}
+		}
+
+		private unsafe int[] _attrsDebuggerView
+		{
+			get
+			{
+				var array = new int[Attributes.NUM_INT_ATTRS + Attributes.NUM_BOOL_ATTRS];
+				for (int i = 0; i < Attributes.NUM_INT_ATTRS; i++)
+					array[i] = _attrs.intAttrs[i];
+				for (int j = Attributes.NUM_INT_ATTRS, i = 0; i < Attributes.NUM_BOOL_ATTRS; i++, j++)
+					array[j] = _attrs.boolAttrs[i] ? 1 : 0;
+
+				return array;
 			}
 		}
 		#endregion

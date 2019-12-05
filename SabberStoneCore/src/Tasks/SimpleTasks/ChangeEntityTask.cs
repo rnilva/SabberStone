@@ -61,7 +61,18 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_type = type;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+		/// <summary>
+		/// Creates a task that transforms the given type of entities
+		/// into the card of the another type of entity.
+		/// </summary>
+		public ChangeEntityTask(EntityType sourceType, EntityType protoType)
+		{
+			_type = sourceType;
+			_protoType = protoType;
+		}
+
+		public override TaskState Process(in Game game, in Controller controller, in Entity source,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			if (_opClass)
@@ -83,8 +94,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				return TaskState.COMPLETE;
 			}
 
+			Card card = _protoType != EntityType.INVALID
+				? IncludeTask.GetEntities(_protoType, in controller, source, target, stack?.Playables)[0].Card
+				: _card;
+
 			foreach (Playable p in IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables))
-				Generic.ChangeEntityBlock.Invoke(controller, p, _card, _removeEnchantments);
+				Generic.ChangeEntityBlock.Invoke(controller, p, card, _removeEnchantments);
 
 			// TODO p[GameTag.DISPLAYED_CREATOR] = source.Id;
 

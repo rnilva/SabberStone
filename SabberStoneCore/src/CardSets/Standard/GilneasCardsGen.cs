@@ -1,3 +1,17 @@
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -921,14 +935,14 @@ namespace SabberStoneCore.CardSets.Standard
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = new FuncNumberTask(p =>
 					{
-						if (p.Zone?.Type != Zone.HAND)
-							return 0;
+						if (s.Zone?.Type != Zone.HAND)
+							return;
 
-						Card pick = p.Controller.Opponent.HandZone.Random?.Card;
-						if (pick == null) return 0;
-						Playable result = Generic.ChangeEntityBlock.Invoke(p.Controller, p, pick, true);
-						Generic.AddEnchantmentBlock.Invoke(p.Controller, Cards.FromId("GIL_142e"), p, result, 0, 0, false);
-						return 0;
+						Card pick = c.Opponent.HandZone.Random?.Card;
+						if (pick == null) return;
+						Playable result = Generic.ChangeEntityBlock.Invoke(c, (Playable)s, pick, true);
+						Generic.AddEnchantmentBlock(g, Cards.FromId("GIL_142e"), (Playable)s, result,
+							0, 0, 0);
 					}),
 					FastExecution = true
 				}
@@ -2887,10 +2901,19 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("GIL_614e2", new Power {
 				DeathrattleTask = ComplexTask.Create(
-					new IncludeTask(EntityType.TARGET),
-					new FuncPlayablesTask(p => new List<Playable>{p[0].Game.IdEntityDic[p[0][GameTag.TAG_SCRIPT_DATA_NUM_1]]}),
-					new ConditionTask(EntityType.STACK, SelfCondition.IsTagValue(GameTag.VOODOO_LINK, 1)),
-					new FlagTask(true, new DestroyTask(EntityType.STACK)))
+					new CustomTask((g,c,s,t,stack)=>
+						{
+							if (!(g.IdEntityDic[t[GameTag.TAG_SCRIPT_DATA_NUM_1]] is MinionInPlay m))
+								return;
+							if (m.IsSilenced ||
+							    !m.NativeTags.TryGetValue(GameTag.VOODOO_LINK, out int v) ||
+								v == 0 ||
+							    m.Zone.Type != Zone.PLAY) return;
+							stack.Flag = true;
+							stack.Playables = new Playable[] {m};
+						}),
+					new FlagTask(true,
+					new DestroyTask(EntityType.STACK)))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

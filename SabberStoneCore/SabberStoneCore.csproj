@@ -37,7 +37,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DefineConstants />
-    <NoWarn>1701;1702;0008;0049;</NoWarn>
+    <NoWarn>1701;1702;0008;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\Data\CardDefs.xml">

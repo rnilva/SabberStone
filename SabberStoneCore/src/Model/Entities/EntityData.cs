@@ -574,8 +574,9 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		private struct S256Bit
-		{
+        // ReSharper disable once UnusedMember.Local
+        private struct S256Bit
+        {
 #pragma warning disable 169
 			private long a;
 			private long b;

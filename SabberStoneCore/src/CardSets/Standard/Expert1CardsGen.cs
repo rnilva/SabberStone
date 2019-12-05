@@ -1228,7 +1228,13 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("EX1_287", new Power {
 				Trigger = new Trigger(TriggerType.CAST_SPELL)
 				{
-					SingleTask = ComplexTask.Secret(new SetGameTagTask(GameTag.CANT_PLAY, 1, EntityType.TARGET)),
+					SingleTask = ComplexTask.Secret(
+						new SetGameTagTask(GameTag.CANT_PLAY, 1, EntityType.TARGET),
+						new FuncNumberTask((Playable p) =>
+						{
+							Trigger.InvalidateAll(p.Game);
+							return 0;
+						})),
 					FastExecution = true,
 				}
 			});
@@ -3650,16 +3656,15 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.TURN_START)
 				{
 					Condition = SelfCondition.HasMinionInHand,
-					SingleTask = ComplexTask.Conditional(EntityType.SOURCE,
-						SelfCondition.IsNotDead,
-							ComplexTask.Create(
+					SingleTask = ComplexTask.Conditional(SelfCondition.IsNotDead, ComplexTask.Create(
+							new GetGameTagTask(GameTag.ZONE_POSITION, EntityType.SOURCE),
+							new MoveToSetaside(EntityType.SOURCE),
 							new IncludeTask(EntityType.HAND),
 							new FilterStackTask(SelfCondition.IsMinion),
 							new RandomTask(1, EntityType.STACK),
 							new RemoveFromHand(EntityType.STACK),
-							new GetGameTagTask(GameTag.ZONE_POSITION, EntityType.SOURCE),
-							new ReturnHandTask(EntityType.SOURCE),
-							new SummonTask(SummonSide.NUMBER)))
+							new SummonTask(SummonSide.NUMBER),
+							new ReturnHandTask(EntityType.SOURCE)))
 				}
 			});
 

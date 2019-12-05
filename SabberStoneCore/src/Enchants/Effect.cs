@@ -145,8 +145,6 @@ namespace SabberStoneCore.Enchants
 					entity.Game.OneTurnEffects.Remove((entity.Id, this));
 
 				tags[Tag] = Value;
-
-				return;
 			}
 
 
@@ -385,7 +383,7 @@ namespace SabberStoneCore.Enchants
 		{
 			unchecked
 			{
-				var hashCode = (int) Tag;
+				int hashCode = (int) Tag;
 				hashCode = (hashCode * 397) ^ (int) Operator;
 				hashCode = (hashCode * 397) ^ Value;
 				return hashCode;
@@ -415,30 +413,30 @@ namespace SabberStoneCore.Enchants
 		public GameTag Tag => _tag;
 	}
 
-	public static class PropertyEffectGenerator
-	{
-		public static readonly HashSet<GameTag> UsedTags = new HashSet<GameTag>();
+	//public static class PropertyEffectGenerator
+	//{
+	//	public static readonly HashSet<GameTag> UsedTags = new HashSet<GameTag>();
 
-		public static void Generate()
-		{
-			PropertyInfo[] characterProperties = typeof(Character).GetProperties();
-			foreach (PropertyInfo property in characterProperties)
-			{
-				EquivalentGameTag tagAttr = property.GetCustomAttribute<EquivalentGameTag>();
-				if (tagAttr == null) continue;
+	//	public static void Generate()
+	//	{
+	//		PropertyInfo[] characterProperties = typeof(Character).GetProperties();
+	//		foreach (PropertyInfo property in characterProperties)
+	//		{
+	//			EquivalentGameTag tagAttr = property.GetCustomAttribute<EquivalentGameTag>();
+	//			if (tagAttr == null) continue;
 
-				if (!UsedTags.Contains(tagAttr.Tag)) continue;
+	//			if (!UsedTags.Contains(tagAttr.Tag)) continue;
 
-				string name = property.Name + "Effect";
-				var an = new AssemblyName(name);
-				//AssemblyBuilder
-			}
+	//			string name = property.Name + "Effect";
+	//			var an = new AssemblyName(name);
+	//			//AssemblyBuilder
+	//		}
 
-			foreach (GameTag tag in UsedTags)
-			{
-				string name = Enum.GetName(typeof(GameTag), tag);
+	//		foreach (GameTag tag in UsedTags)
+	//		{
+	//			string name = Enum.GetName(typeof(GameTag), tag);
 
-			}
-		}
-	}
+	//		}
+	//	}
+	//}
 }

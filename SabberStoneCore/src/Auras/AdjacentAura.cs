@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
-using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Model.Zones;

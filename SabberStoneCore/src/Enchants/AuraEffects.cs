@@ -17,36 +17,33 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
-// ReSharper disable InconsistentNaming
 
 // ReSharper disable InconsistentNaming
 
 namespace SabberStoneCore.Enchants
 {
 	/// <summary>
-	/// A simple container for saving tag value perturbations from external Auras. Call indexer to get value for a particular Tag.
+	/// A simple container for saving tag value perturbations from external Auras.
+	/// Call indexer to get value for a particular Tag.
 	/// </summary>
 	public class AuraEffects : IEquatable<AuraEffects>
 	{
 		private const int PlayableLength = 2;
-		private const int WeaponLength = PlayableLength + 1;
 		private const int CharacterLength = PlayableLength + 2;
-		private const int HeroLength = CharacterLength + 3;
+		private const int WeaponLength = CharacterLength;
+		private const int HeroLength = CharacterLength + 2;
 		private const int MinionLength = CharacterLength + 7;
 
 		// Indices:
 		// Playables
 		// 0 : CardCostHealth
 		// 1 : Echo
-		// Weapon
-		// 2 : Immune
 		// Characters
-		// 2 : CantBeTargetedBySpells
-		// 3 : ATK
+		// 2 : ATK
+		// 3 : Immune
 		// Hero
-		// 4 : CannotAttackHeroes
-		// 5 : Immune
-		// 6 : HEROPOWER_DAMAGE
+		// 4 : CantBeTargetedBySpells
+		// 5 : CannotAttackHeroes
 		// Minion
 		// 4 : Health
 		// 5 : Charge
@@ -100,14 +97,14 @@ namespace SabberStoneCore.Enchants
 
 		public bool CantBeTargetedBySpells
 		{
-			get => _data[2] > 0;
-			set => _data[2] = value ? 1 : 0;
+			get => _data[4] > 0;
+			set => _data[4] = value ? 1 : 0;
 		}
 
 		public int ATK
 		{
-			get => _data[3];
-			set => _data[3] = value;
+			get => _data[2];
+			set => _data[2] = value;
 		}
 
 		public int Health
@@ -153,36 +150,20 @@ namespace SabberStoneCore.Enchants
 			{
 				if (Type != CardType.HERO)
 					return false;
-				return _data[4] > 0;
+				return _data[5] > 0;
 			}
 			set
 			{
 				if (Type != CardType.HERO)
 					throw new NotImplementedException();
-				_data[4] = value ? 1 : 0;
+				_data[5] = value ? 1 : 0;
 			}
 		}
 
 		public bool Immune
 		{
-			get
-			{
-				if (Type == CardType.HERO)
-					return _data[5] > 0;
-				if (Type == CardType.WEAPON)
-					return _data[2] > 0;
-
-				return false;
-			}
-			set
-			{
-				if (Type == CardType.HERO)
-					_data[5] = value ? 1 : 0;
-				else if (Type == CardType.WEAPON)
-					_data[2] = value ? 1 : 0;
-				else
-					throw new NotImplementedException();
-			}
+			get => _data[3] > 0;
+			set => _data[3] = value ? 1 : 0;
 		}
 
 		public int HeroPowerDamage
@@ -471,8 +452,6 @@ namespace SabberStoneCore.Enchants
 		private int _allHealingDouble;
 		private int _extraBattlecryAndCombo;
 		private int _spellPower;
-
-		public ControllerAuraEffects() { }
 
 		public ControllerAuraEffects(in Game g, in Controller c)
 		{

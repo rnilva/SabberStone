@@ -30,6 +30,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			Blade
 		}
 
+		private static readonly Card CthunCard = Cards.FromId("OG_279");
 		private static readonly Card BuffEnchantmentCard = Cards.FromId("OG_281e");
 		private static readonly Card BladeofCThunEnchantmentCard = Cards.FromId("OG_282e");
 		private static readonly Card TauntEnchantmentCard = Cards.FromId("OG_284e");
@@ -62,7 +63,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			Playable proxyCthun;
 			if (!controller.SeenCthun)
 			{
-				proxyCthun = Entity.FromCard(in controller, Cards.FromId("OG_279"));
+				proxyCthun = MinionInPlay.FromCard(in controller, CthunCard);
 				proxyCthun[GameTag.REVEALED] = 1;
 				controller.SetasideZone.Add(proxyCthun);
 				controller.ProxyCthun = proxyCthun.Id;
@@ -96,8 +97,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					foreach (Playable p in entities)
 						if (p.OngoingEffect == null)
 						{
-							Generic.AddEnchantmentBlock.Invoke(controller, BuffEnchantmentCard, (Playable) source, p,
-								0, 0, false);
+							Generic.AddEnchantmentBlock(game, BuffEnchantmentCard, (Playable) source, p,
+								0, 0, 0);
 							((OngoingEnchant) p.OngoingEffect).Count += _amount - 1;
 						}
 						else
@@ -110,14 +111,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				case RitualType.Taunt:
 					if (proxyCthun[GameTag.TAUNT] == 1) break;
 					foreach (Playable p in entities)
-						Generic.AddEnchantmentBlock.Invoke(controller, TauntEnchantmentCard, (Playable) source, p, 0,
-							0, false);
+						Generic.AddEnchantmentBlock(game, TauntEnchantmentCard, (Playable) source, p, 0,
+							0, 0);
 
 					break;
 
 				case RitualType.Blade:
 					foreach (Playable p in entities)
-						Generic.AddEnchantmentBlock.Invoke(controller, BladeofCThunEnchantmentCard, (Playable) source,
+						Generic.AddEnchantmentBlock(game, BladeofCThunEnchantmentCard, (Playable) source,
 							p, stack.Number,
 							stack.Number1, 0);
 

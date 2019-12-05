@@ -2,7 +2,7 @@
 using SabberStoneCore.Model.Entities;
 using System.Collections.Generic;
 using SabberStoneCore.Enchants;
-using SabberStoneCore.Tasks.SimpleTasks;
+// ReSharper disable ArrangeStaticMemberQualifier
 
 namespace SabberStoneCore.Actions
 {
@@ -179,14 +179,7 @@ namespace SabberStoneCore.Actions
 					Generic.ShuffleIntoDeck.Invoke(controller, creator, copiedEntity);
 					break;
 				case Zone.PLAY:
-					int position = -1;
-					if (deathrattle)
-					{
-						position = ((Minion) source).LastBoardPosition;
-						if (position > controller.BoardZone.Count)
-							position = controller.BoardZone.Count;
-					}
-					Generic.SummonBlock.Invoke(controller.Game, (Minion) copiedEntity, position, creator);
+					Generic.SummonBlock(controller.Game, ref copiedEntity, zonePosition, (Playable) creator);
 					break;
 				case Zone.SETASIDE:
 					controller.SetasideZone.Add(copiedEntity);

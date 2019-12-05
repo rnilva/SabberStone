@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
-using System;
+
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
@@ -19,7 +19,7 @@ namespace SabberStoneCore.Tasks
 {
 	public interface ISimpleTask
 	{
-		TaskState State { get; set; }
+		//TaskState State { get; set; }
 
 		TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target, in TaskStack stack = null);
 
@@ -28,14 +28,14 @@ namespace SabberStoneCore.Tasks
 
 	public abstract class SimpleTask : ISimpleTask
 	{
-		public TaskState State { get; set; } = TaskState.READY;
+		//public TaskState State { get; set; } = TaskState.READY;
 
 		public abstract TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target, in TaskStack stack = null);
 
-		public void ResetState()
-		{
-			State = TaskState.READY;
-		}
+		//public void ResetState()
+		//{
+		//	State = TaskState.READY;
+		//}
 
 		public bool IsTrigger { get; set; }
 

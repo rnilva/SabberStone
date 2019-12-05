@@ -22,6 +22,7 @@ using SabberStoneCore.Kettle;
 using SabberStoneCore.Loader;
 using SabberStoneCore.Tasks.PlayerTasks;
 using SabberStoneCore.Model.Zones;
+// ReSharper disable CoVariantArrayConversion
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -188,6 +189,7 @@ namespace SabberStoneCore.Model.Entities
 
 			ControllerAuraEffects = new ControllerAuraEffects(in game, this);
 
+			DeckCards = new List<Card>(30);
 			DiscardedEntities = new List<int>();
 			CardsPlayedThisTurn = new List<Card>(10);
 			//cardsPlayedThisGame = new List<Card>(30);
@@ -428,10 +430,10 @@ namespace SabberStoneCore.Model.Entities
 			#region MinionAttackTasks
 			Minion[] attackTargets = null;
 			bool isOpHeroValidAttackTarget = false;
-			var boardSpan = BoardZone.GetSpan();
+			ReadOnlySpan<MinionInPlay> boardSpan = BoardZone.GetSpan();
 			for (int j = 0; j < boardSpan.Length; j++)
 			{
-				var minion = boardSpan[j];
+				MinionInPlay minion = boardSpan[j];
 
 				if (minion.IsExhausted && (!minion.HasCharge || minion.NumAttacksThisTurn != 0))
 					continue;
@@ -449,7 +451,7 @@ namespace SabberStoneCore.Model.Entities
 			#endregion
 
 			#region HeroAttackTaskts
-			Hero hero = Hero;
+			HeroInPlay hero = Hero;
 
 			if (!hero.IsExhausted && hero.AttackDamage > 0 && !hero.IsFrozen)
 			{
@@ -1227,7 +1229,5 @@ namespace SabberStoneCore.Model.Entities
 			get => this[GameTag.NUM_HERO_POWER_DAMAGE_THIS_GAME];
 			set => this[GameTag.NUM_HERO_POWER_DAMAGE_THIS_GAME] = value;
 		}
-
-		private Controller _opponent;
 	}
 }

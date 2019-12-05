@@ -388,7 +388,7 @@ namespace HSGrammar
 
         public override object VisitHsTagValueExpr(HSGrammarParser.HsTagValueExprContext context)
         {
-            return new string[] { (string)VisitHsTagExpr(context.hsTagExpr()) , (string)VisitHsValueExpr(context.hsValueExpr()) };
+            return new[] { (string)VisitHsTagExpr(context.hsTagExpr()) , (string)VisitHsValueExpr(context.hsValueExpr()) };
         }
 
         public override object VisitHsTagExpr(HSGrammarParser.HsTagExprContext context)

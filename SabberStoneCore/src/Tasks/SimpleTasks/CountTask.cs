@@ -30,6 +30,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		{
 			Type = type;
 			_numberIndex = numberIndex;
+			if (numberIndex < 0 || numberIndex > 4)
+				throw new ArgumentOutOfRangeException("numberIndex", "Number Index must be in range [0, 4]");
 		}
 
 		public CountTask(Zone zone, bool getFreeSpace, bool opponent)
@@ -41,7 +43,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public EntityType Type { get; set; }
 
-		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			if (stack == null)
@@ -80,8 +83,6 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					stack.Number4 = IncludeTask.GetEntities(Type, in controller, source, target, stack.Playables)
 						.Count;
 					break;
-				default:
-					throw new ArgumentOutOfRangeException("Number Index must be in range [0, 4]");
 			}
 
 			return TaskState.COMPLETE;

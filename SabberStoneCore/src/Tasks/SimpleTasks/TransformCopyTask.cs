@@ -31,7 +31,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_addToStack = addToStack;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			var minionTarget = (MinionInPlay) target;
@@ -44,7 +45,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 
 			//var copy = (Minion) Entity.FromCard(in controller, minionTarget.Card, tags);
-			var copy = MinionInPlay.FromCard(in controller, minionTarget.Card, tags);
+			MinionInPlay copy = MinionInPlay.FromCard(in controller, minionTarget.Card, tags);
 			//minionTarget.CopyInternalAttributes(copy);
 			copy.CopyAttributesFrom(minionTarget);
 

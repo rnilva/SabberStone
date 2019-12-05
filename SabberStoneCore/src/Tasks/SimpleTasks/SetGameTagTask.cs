@@ -15,7 +15,6 @@
 using System.Collections.Generic;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
-using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
@@ -54,6 +53,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						_effect = new AttributeEffect(attr, amount == 1);
 					break;
 			}
+
 			_type = entityType;
 		}
 

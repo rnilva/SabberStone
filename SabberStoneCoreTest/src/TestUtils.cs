@@ -119,7 +119,7 @@ namespace SabberStoneCoreTest
 			if (!game.Process(option))
 				throw new Exception($"{option} is not a valid task.");
 
-			return entity;
+			return (T) game.IdEntityDic[entity.Id];
 	    }
 
 		/// <summary>
@@ -229,7 +229,7 @@ namespace SabberStoneCoreTest
 				reason = "The attacker is a minion of the current player.";
 			else if (attacker.IsExhausted)
 			{
-				if (!(attacker is Hero hero) || hero.ExtraAttacksThisTurn <= 0 ||
+				if (!(attacker is HeroInPlay hero) || hero.ExtraAttacksThisTurn <= 0 ||
 					hero.ExtraAttacksThisTurn < hero.NumAttacksThisTurn)
 					reason = "The attacker is exhausted.";
 				else

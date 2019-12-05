@@ -44,8 +44,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
-				Generic.TransformBlock.Invoke(p.Controller, Card, p as MinionInPlay);
+			IList<Playable> entities = IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables);
+
+			if (_useOldMechanism)
+				for (int i = 0; i < entities.Count; i++)
+					Generic.TransformBlock(entities[i].Controller, _card, entities[i] as MinionInPlay);
+			else
+				for (int i = 0; i < entities.Count; i++)
+					Generic.ChangeEntityBlock(controller, entities[i], _card, true);
 
 			return TaskState.COMPLETE;
 		}

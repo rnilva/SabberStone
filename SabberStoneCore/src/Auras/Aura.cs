@@ -583,7 +583,7 @@ namespace SabberStoneCore.Auras
 			}
 
 			AppliedEntityIdCollection.Add(entity.Id);
-
+			
 			if (Game.Logging)
 				Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Aura.Apply", $"{Owner}'s aura is applied to {entity}.");
 		}
@@ -592,7 +592,7 @@ namespace SabberStoneCore.Auras
 		{
 			SelfCondition condition = Condition;
 			Util.SmallFastCollection collection = AppliedEntityIdCollection;
-			void Renew(IPlayable p)
+			void Renew(Playable p)
 			{
 				if (condition.Eval(p))
 				{
@@ -631,7 +631,7 @@ namespace SabberStoneCore.Auras
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected static void AddToGame(IPlayable owner, Aura aura)
+		protected static void AddToGame(Playable owner, Aura aura)
 		{
 			owner.Game.Auras.Add(aura);
 			owner.OngoingEffect = aura;

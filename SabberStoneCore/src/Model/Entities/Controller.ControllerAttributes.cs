@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -12,7 +11,7 @@ namespace SabberStoneCore.Model.Entities
 			private const int TURN_STATISTICS_COUNT = 7;
 
 #pragma warning disable 649
-			private fixed int _data[COUNT];
+			public fixed int _data[COUNT];
 #pragma warning restore 649
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -283,6 +282,11 @@ namespace SabberStoneCore.Model.Entities
 				set => _data[36] = value;
 			}
 			#endregion
+		}
+
+		internal unsafe ref int GetAttributeRef(int index)
+		{
+			return ref _attrs._data[index];
 		}
 	}
 }

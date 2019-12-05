@@ -81,11 +81,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			for (int i = 0; i < entities.Length; i++)
 			{
-				Playable p = entities[i];
-				Generic.RemoveFromZone.Invoke(controller, p);
-				Generic.SummonBlock(game, ref p, -1);
-
-				playables?.Add(p);
+				Generic.RemoveFromZone.Invoke(controller, entities[i]);
+				Generic.SummonBlock(game, ref entities[i], -1, (Playable) source);
 
 				if (controller.BoardZone.IsFull)
 					break;

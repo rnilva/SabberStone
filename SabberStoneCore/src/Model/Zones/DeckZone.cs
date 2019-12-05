@@ -41,6 +41,7 @@ namespace SabberStoneCore.Model.Zones
 
 		private DeckZone(Controller c, DeckZone zone) : base(c, zone)
 		{
+			DrawWithRandom = zone.DrawWithRandom;
 			NoEvenCostCards = zone.NoEvenCostCards;
 			NoOddCostCards = zone.NoOddCostCards;
 			DrawWithRandom = zone.DrawWithRandom;
@@ -57,17 +58,20 @@ namespace SabberStoneCore.Model.Zones
 			return Remove(Count - 1);
 		}
 
-		public Playable Draw(int cardIdToDraw = -1)
+		/// <summary>
+		/// Remove an entity from this deck and return the entity.
+		/// Note that the returned entity have not belong to any zone yet.
+		/// </summary>
+		/// <param name="id">Id of the entity to draw.
+		/// Negative number implies the top card of this deck.</param>
+		/// <returns>The drawn entity. Returns null if </returns>
+		public Playable Draw(int id = -1)
 		{
-			Playable draw;
-			if (cardIdToDraw > 0)
-			{
-				draw = Remove(cardIdToDraw);
-				if (draw == null)
-					return null;
-			}
-			else
-				draw = Remove(entity: _entities[_count - 1]);
+			Playable draw = id >= 0
+				? Remove(id)
+				: Remove(DrawWithRandom
+					? Game.Random.Next(_count)
+					: _count - 1);
 			return draw;
 		}
 
@@ -82,9 +86,9 @@ namespace SabberStoneCore.Model.Zones
 			CheckParity(entity.Cost);
 		}
 
-		public override void ChangeEntity(IPlayable oldEntity, IPlayable newEntity)
+		public override void ChangeEntity(Playable oldEntity, Playable newEntity)
 		{
-			Span<IPlayable> span = new Span<IPlayable>(_entities, 0, _count);
+			Span<Playable> span = new Span<Playable>(_entities, 0, _count);
 			bool flag = false;
 			for (int i = 0; i < span.Length; i++)
 				if (span[i] == oldEntity)
@@ -137,7 +141,7 @@ namespace SabberStoneCore.Model.Zones
 
 			Game.Log(LogLevel.INFO, BlockType.PLAY, "Deck", !Game.Logging ? "" : $"{Controller.Name} shuffles its deck.");
 
-			var entities = _entities;
+			Playable[] entities = _entities;
 			for (int i = 0; i < n; i++)
 			{
 				int r = rnd.Next(i, n);
@@ -180,21 +184,22 @@ namespace SabberStoneCore.Model.Zones
 			else if (NoOddCostCards)
 				NoOddCostCards = false;
 		}
-
-		private Playable Remove(int id)
+		
+		private Playable RemoveWithId(int id)
 		{
-			var entities = _entities;
-			var c = _count;
-			for (int i = _count - 1; i >= 0; i--)
+			Playable[] entities = _entities;
+			int c = _count;
+			for (int i = c - 1; i >= 0; i--)
 				if (entities[i].Id == id)
 				{
 					Playable p = entities[i];
 					p.ActivatedTrigger?.Remove();
 					p.Zone = null;
 
-					if (i != --_count)
-						Array.Copy(entities, i + 1, entities, i, _count - i);
+					if (i != --c)
+						Array.Copy(entities, i + 1, entities, i, c - i);
 
+					_count = c;
 					return p;
 				}
 

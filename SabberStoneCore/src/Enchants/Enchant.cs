@@ -52,7 +52,7 @@ namespace SabberStoneCore.Enchants
 			else
 				eff = new Effect(tag, @operator, value);
 
-			Effects = new IEffect[] {eff};
+			Effects = new[] {eff};
 	    }
 
 	    public Enchant(params IEffect[] effects)
@@ -104,7 +104,7 @@ namespace SabberStoneCore.Enchants
 			
 		}
 
-		public void RemoveEffect(in IEntity target)
+		public void RemoveEffect(in Entity target)
 		{
 			for (int i = 0; i < Effects.Length; i++)
 				Effects[i].RemoveFrom(target);
@@ -116,7 +116,7 @@ namespace SabberStoneCore.Enchants
                             target.Id, Effects[i].Tag, target[Effects[i].Tag]));
 		}
 
-		public void RemoveEffect(in IEntity target, int num1, int num2)
+		public void RemoveEffect(in Entity target, int num1, int num2)
 		{
 			Effects[0].ChangeValue(num1).RemoveFrom(target);
 			if (Effects.Length == 1) return;
@@ -175,7 +175,7 @@ namespace SabberStoneCore.Enchants
 		//}
 		public Playable Target { get; set; }
 
-		public override void ActivateTo(Entity entity, int num1 = 0, int num2 = -1)
+		public override void ActivateTo(Entity entity, int num1 = -1, int num2 = -1)
 		{
 			Clone((Playable) entity);
 

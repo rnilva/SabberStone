@@ -128,7 +128,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public IEnumerator<KeyValuePair<int, Playable>> GetEnumerator()
 		{
-			var list = _list;
+			Playable[] list = _list;
 			for (int i = 0; i < list.Length; i++)
 				if (list[i] != null)
 					yield return new KeyValuePair<int, Playable>(i, list[i]);
@@ -146,7 +146,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public void Clear()
 		{
-			var list = _list;
+			Playable[] list = _list;
 			for (int i = 0; i < list.Length; i++)
 				list[i] = null;
 		}

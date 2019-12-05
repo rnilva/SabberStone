@@ -101,7 +101,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					return TaskState.STOP;
 				}
 
-				Minion summonEntity = null;
+				Minion summonEntity;
 				int summonPosition = GetPosition(in source, Side, stack?.Number ?? 0, ref alternateCount);
 
 				if (summonPosition > controller.BoardZone.Count)
@@ -118,7 +118,6 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						return TaskState.STOP;
 					if (_addToStack)
 						stack.AddPlayable(summonEntity);
-					continue;
 				}
 				else if (stack?.Playables.Count > 0)
 				{
@@ -133,7 +132,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						}
 						return TaskState.STOP;
 					}
-					Generic.SummonBlock(game, ref summonEntity, summonPosition);
+					Generic.SummonBlock(game, ref summonEntity, summonPosition, (Playable) source);
 					if (RemoveFromStack)
 						stack.Playables.Remove(summonEntity);
 					else
@@ -174,7 +173,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					else goto default;
 					break;
 				case SummonSide.NUMBER:
-					summonPosition = number - 1;
+					summonPosition = number;
 					break;
 				case SummonSide.ALTERNATE:
 					if (alternateCount % 2 == 0)
@@ -206,9 +205,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		}
 
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
+			// TODO: To a factory method
+
 			if (_op)
 				return new SummonOpTask(_card, stack.Number)
 					.Process(in game, in controller, in source, in target, in stack);

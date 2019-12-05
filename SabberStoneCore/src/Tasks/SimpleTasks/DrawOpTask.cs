@@ -19,7 +19,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class DrawOpTask : SimpleTask
 	{
-		public DrawOpTask(bool toStack = false)
+		public DrawOpTask(Card card = null, bool toStack = false)
 		{
 			ToStack = toStack;
 		}
@@ -29,8 +29,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			Playable drawnCard = Generic.Draw(controller.Opponent);
-			if (ToStack && drawnCard != null) stack?.Playables.Add(drawnCard);
+			Playable drawedCard = Card != null
+				? Generic.DrawCard(controller.Opponent, Card)
+				: Generic.Draw(controller.Opponent);
+			if (ToStack && drawedCard != null) stack?.Playables.Add(drawedCard);
 
 			return TaskState.COMPLETE;
 		}

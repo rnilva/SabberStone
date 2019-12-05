@@ -75,7 +75,7 @@ namespace SabberStoneCore.Tasks
 			get
 			{
 				var sb = new StringBuilder();
-				foreach (var task in _tasks)
+				foreach (ISimpleTask task in _tasks)
 				{
 					sb.Append($"[{task.GetType().Name}]");
 				}

@@ -962,7 +962,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			foreach (Playable card in game.CurrentPlayer.DeckZone)
 			{
 				Assert.NotNull(card);
-				Assert.IsType(typeof(Minion), card);
+				Assert.IsType<Minion>(card);
 				Minion m = (Minion) card;
 				Assert.Equal("Stonetusk Boar", m.Card.Name);
 				Assert.Equal(4, m.AttackDamage);
@@ -1507,7 +1507,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Minion testCard = game.CurrentPlayer.BoardZone[0];
 
 			Assert.False(testCard.HasTaunt);
-			Assert.False(testCard.HasLifesteal);
+			Assert.False(testCard.HasLifeSteal);
 
 			game.ProcessCard("Blessing of Might", testCard);
 
@@ -4988,7 +4988,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			game.ProcessCard<Spell>("Earthen Might", testCard);
 			Assert.Single(game.CurrentPlayer.HandZone);
-			IPlayable card = game.CurrentPlayer.HandZone[0];
+			Playable card = game.CurrentPlayer.HandZone[0];
 			Assert.True(card.Card.IsRace(Race.ELEMENTAL));
 			Assert.Equal(7, testCard.AttackDamage);
 			Assert.Equal(9, testCard.Health);

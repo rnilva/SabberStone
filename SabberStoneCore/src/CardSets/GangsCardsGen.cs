@@ -21,6 +21,7 @@ using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 using SabberStoneCore.Triggers;
 using SabberStoneCore.src.Loader;
+using static SabberStoneCore.Tasks.ImplementationHelpers;
 
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
 
@@ -201,8 +202,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_308b", new CardDef(new Power
 			{
-				PowerTask = new SetControllerGameTagTask(GameTag.RESOURCES_USED, 0)
-			}));
+				//PowerTask = new SetControllerGameTagTask(GameTag.RESOURCES_USED, 0)
+				PowerTask = new SetControllerAttributeTask(ControllerAttributes.UsedMana, 0)
+			});
 
 			// ------------------------------------------ SPELL - DRUID
 			// [CFM_602a] Jade Idol (*) - COST:0
@@ -572,7 +574,10 @@ namespace SabberStoneCore.CardSets
 				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
 				{
 					SingleTask = ComplexTask.Create(
-						new ConditionTask(EntityType.EVENT_SOURCE, SelfCondition.IsInZone(Zone.PLAY), SelfCondition.IsNotDead, SelfCondition.IsNotUntouchable),
+						new ConditionTask(EntityType.EVENT_SOURCE,
+							SelfCondition.IsInZone(Zone.PLAY),
+							SelfCondition.IsNotDead,
+							SelfCondition.IsNotUntouchable),
 						new FlagTask(true, ComplexTask.Secret(
 						new TransformTask("CFM_621_m5", EntityType.EVENT_SOURCE))))
 				}

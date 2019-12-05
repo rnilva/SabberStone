@@ -307,8 +307,8 @@ namespace SabberStoneBasicAI
 			int maxGames = 1000;
 			int maxDepth = 10;
 			int maxWidth = 14;
-			int[] player1Stats = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-			int[] player2Stats = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			int[] player1Stats = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			int[] player2Stats = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 			var gameConfig = new GameConfig()
 			{

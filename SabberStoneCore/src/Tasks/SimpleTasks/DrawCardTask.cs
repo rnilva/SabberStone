@@ -24,7 +24,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		{
 			if (stack?.Playables.Count != 1) return TaskState.STOP;
 
-			Playable drawnCard = Generic.Draw(controller, stack.Playables[0].Id);
+			Playable drawnCard = Generic.Draw(controller, stack.Playables[0]);
 
 			if (drawnCard == null) return TaskState.STOP;
 

@@ -19,7 +19,6 @@ using System;
 #endif
 using System.Linq;
 using System.Collections.Generic;
-using System.Xml.Linq;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
@@ -1093,22 +1092,22 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ELITE = 1
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
-			cards.Add("TRL_260", new CardDef(new Power
-			{
-				PowerTask = ComplexTask.Create(
-					new IncludeTask(EntityType.DECK),
-					new FilterStackTask(SelfCondition.IsCost(1), SelfCondition.IsMinion),
-					new FuncPlayablesTask(stack =>
+			cards.Add("TRL_260", new Power {
+				PowerTask = new CustomTask((g, c, s, t, stack) =>
+				{
+					ReadOnlySpan<Playable> deck = c.DeckZone.GetSpan();
+					for (int i = deck.Length - 1; i >= 0; i--)
 					{
-						if (stack.Count == 0)
-							return stack;
-						Controller c = stack[0].Controller;
-						int count = c.HandZone.FreeSpace;
-						for (int i = 0; i < stack.Count && i < count; i++)
-							Generic.Draw(c, stack[i]);
-						return stack;
-					}))
-			}));
+						if (c.HandZone.IsFull)
+							break;
+
+						if (deck[i].Cost != 1 || deck[i].Card.Type != CardType.MINION)
+							continue;
+
+						c.HandZone.Add(c.DeckZone.Remove(i));
+					}
+				})
+			});
 
 			// ---------------------------------------- MINION - PRIEST
 			// [TRL_408] Grave Horror - COST:12 [ATK:7/HP:8]
@@ -1584,7 +1583,7 @@ namespace SabberStoneCore.CardSets.Standard
 					.SetTask(new CustomTask((g, c, s, t, stack) =>
 					{
 						int cost = t[GameTag.TAG_LAST_KNOWN_COST_IN_HAND] + 1;
-						ReadOnlySpan<IPlayable> deck = c.DeckZone.GetSpan();
+						ReadOnlySpan<Playable> deck = c.DeckZone.GetSpan();
 						List<int> indices = new List<int>();
 						for (int i = 0; i < deck.Length; i++)
 							if (deck[i].Card.Type == CardType.SPELL && deck[i].Cost == cost)
@@ -1592,12 +1591,12 @@ namespace SabberStoneCore.CardSets.Standard
 						if (indices.Count == 0) return;
 						if (indices.Count == 1)
 						{
-							Generic.Draw(c, deck[indices[0]]);
+							Generic.Draw(c, indices[0]);
 							return;
 						}
 
 						g.OnRandomHappened(true);
-						Generic.Draw(c, deck[indices.Choose(g.Random)]);
+						Generic.Draw(c, indices.Choose(g.Random));
 					}))
 					.SetSource(TriggerSource.FRIENDLY)
 					.GetTrigger())
@@ -2120,7 +2119,7 @@ namespace SabberStoneCore.CardSets.Standard
 				PowerTask = ComplexTask.Create(
 					new GetGameTagTask(GameTag.ARMOR, EntityType.HERO),
 					new NumberConditionTask(11, RelaSign.GEQ),
-					new FlagTask(true, new FuncNumberTask((IPlayable p) => 10)),
+					new FlagTask(true, new FuncNumberTask((Playable p) => 10)),
 					new RandomMinionNumberTask(GameTag.COST),
 					new SummonTask())
 			}));
@@ -2271,13 +2270,13 @@ namespace SabberStoneCore.CardSets.Standard
 					{
 						for (int i = stack.Playables.Count - 1; i >= 0; i--)
 						{
-							IPlayable p = stack.Playables[i];
+							Playable p = stack.Playables[i];
 							c.SetasideZone.Remove(p);
 						}
 
 						g.OnRandomHappened(true);
 						int pick = g.Random.Next(2);
-						IPlayable giveaway = stack.Playables[pick];
+						Playable giveaway = stack.Playables[pick];
 						giveaway.Controller = c.Opponent;
 						giveaway[GameTag.CONTROLLER] = c.Opponent.PlayerId;
 						Generic.AddHandPhase(c.Opponent, giveaway);
@@ -2831,7 +2830,7 @@ namespace SabberStoneCore.CardSets.Standard
 					new CustomTask((g, c, s, t, stack) =>
 					{
 						Card eCard = Cards.FromId("TRL_537e");
-						IPlayable source = (IPlayable)s;
+						Playable source = (Playable)s;
 
 						for (int i = 0; i < stack.Playables.Count; i++)
 							Generic.AddEnchantmentBlock(g, eCard, source, s, 0, 0, stack.Playables[i].Id);
@@ -2951,9 +2950,12 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = TriggerBuilder.Type(TriggerType.HEAL)
 					.SetTask(new DrawTask())
 					.SetSource(TriggerSource.HERO)
-					.SetCondition(
-						SelfCondition.IsCurrentEventNumber(3, RelaSign.GEQ) +
-						SelfCondition.IsEventSourceFriendly)
+					.SetCondition(new SelfCondition(p =>
+					{
+						EventMetaData eventData = p.Game.CurrentEventData;
+						return eventData.EventNumber >= 3 &&
+						       eventData.EventSource.Controller == p.Controller;
+					}))
 					.GetTrigger()
 			}));
 

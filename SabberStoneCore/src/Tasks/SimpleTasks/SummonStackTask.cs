@@ -1,4 +1,18 @@
-﻿using System.Collections.Generic;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+
+using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
@@ -29,8 +43,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		{
 			if (controller.BoardZone.IsFull || stack?.Playables.Count == 0) return TaskState.STOP;
 
-			List<Playable> playables = new List<Playable>(stack.Playables.Count);
-			for (int i = 0; i < stack?.Playables.Count && !controller.BoardZone.IsFull; i++)
+			var playables = new List<Playable>(stack.Playables.Count);
+			for (int i = 0; i < stack.Playables.Count; i++)
 			{
 				Playable p = stack.Playables[i];
 
@@ -38,8 +52,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 				if (RemoveFromZone)
 					p.Zone.Remove(p);
-
-				Generic.SummonBlock(game, ref p, -1);
+				Generic.SummonBlock(game, ref p, -1, (Playable) source);
 				playables.Add(p);
 			}
 			stack.Playables = playables;

@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
+// ReSharper disable PossibleNullReferenceException
 
 namespace SabberStoneCore.Loader
 {
@@ -32,7 +33,7 @@ namespace SabberStoneCore.Loader
 
 		public List<int> LoadPlayReqOrder()
 		{
-			var playErr =
+			XDocument playErr =
 				XDocument.Load(Assembly.GetManifestResourceStream("SabberStoneCore.Resources.PlayErrors.xml"));
 			var playReqOrder = (from r in playErr.Descendants("PlayErrors")
 								select new
@@ -54,7 +55,7 @@ namespace SabberStoneCore.Loader
 
 		public Dictionary<int, PlayerReqDesc> LoadPlayReqDesc()
 		{
-			var playErr =
+			XDocument playErr =
 				XDocument.Load(Assembly.GetManifestResourceStream("SabberStoneCore.Resources.PlayErrors.xml"));
 
 			var playReqDesc = (from r in playErr.Descendants("PlayErrors")
@@ -84,7 +85,7 @@ namespace SabberStoneCore.Loader
 		public Card[] Load()
 		{
 			// Get XML definitions from assembly embedded resource
-			var cardDefsXml =
+			XDocument cardDefsXml =
 				XDocument.Load(Assembly.GetManifestResourceStream("SabberStoneCore.Resources.CardDefs.xml"));
 			//var cardDefsXml = XDocument.Load(@"C:\Users\admin\Source\Repos\SabberStone\SabberStoneCore\Loader\Data\CardDefs.xml");
 			//var cardXml = XDocument.Load(Assembly.GetManifestResourceStream("SabberStoneCore.Loader.Data.CARD.xml"));

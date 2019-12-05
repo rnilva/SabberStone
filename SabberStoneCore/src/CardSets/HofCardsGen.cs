@@ -3,6 +3,7 @@ using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 // ReSharper disable RedundantEmptyObjectOrCollectionInitializer
@@ -190,7 +191,7 @@ namespace SabberStoneCore.CardSets
 				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p =>
 				{
 					int count = 0;
-					var span = p.Controller.BoardZone.GetSpan();
+					ReadOnlySpan<MinionInPlay> span = p.Controller.BoardZone.GetSpan();
 					for (int i = 0; i < span.Length; i++)
 						if (span[i].Race == Race.MURLOC)
 							count++;

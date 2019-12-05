@@ -91,5 +91,10 @@ namespace SabberStoneCore.Model.Entities
 		{
 			throw new NotImplementedException();
 		}
+
+		internal override ref int GetIntRef(int index)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

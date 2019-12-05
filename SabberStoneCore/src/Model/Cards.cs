@@ -18,7 +18,6 @@ using System.Linq;
 using System.Text;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Loader;
-using static SabberStoneCore.Model.Cards;
 
 namespace SabberStoneCore.Model
 {
@@ -161,6 +160,8 @@ namespace SabberStoneCore.Model
 			// Temporary fix for Lotus Assassin
 			Data.Cards["CFM_634"].Stealth = true;
 			Data.Cards["CFM_634"].Tags.Add(GameTag.STEALTH, 1);
+			unsafe { Data.Cards["CFM_634"]._minionAttrs.boolAttrs[0] = true; }
+			
 
 			// Basic Totems
 			BasicTotems = new[]

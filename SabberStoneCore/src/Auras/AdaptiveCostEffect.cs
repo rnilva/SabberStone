@@ -106,10 +106,7 @@ namespace SabberStoneCore.Auras
 
 		private AdaptiveCostEffect(AdaptiveCostEffect prototype, Playable owner)
 		{
-			if (!(owner is Playable p))
-				throw new Exception($"Can't activate {this} to non-playable {owner}");
-
-			_owner = p;
+			_owner = owner;
 			_type = prototype._type;
 			switch (_type)
 			{
@@ -126,7 +123,7 @@ namespace SabberStoneCore.Auras
 					break;
 				case Type.TriggeredWithInitialisation:
 					_initialisationFunction = prototype._initialisationFunction;
-					_cachedValue = _initialisationFunction(p);
+					_cachedValue = _initialisationFunction(owner);
 					_costFunction = prototype._costFunction;
 					_triggerType = prototype._triggerType;
 					_triggerSource = prototype._triggerSource;
@@ -274,13 +271,6 @@ namespace SabberStoneCore.Auras
 			_isTriggered = true;
 		}
 
-		private void RemoveAtEnd(Entity sender)
-		{
-			_owner._costManager?.UpdateAdaptiveEffect();
-			_isTriggered = false;
-			_isAppliedThisTurn = false;
-		}
-
 		public void Clone(Playable clone)
 		{
 			Activate(clone, true);
@@ -298,7 +288,7 @@ namespace SabberStoneCore.Auras
 			= new AdaptiveCostEffect(p => p.Controller.NumFriendlyMinionsThatDiedThisTurn
 			                              + p.Controller.Opponent.NumFriendlyMinionsThatDiedThisTurn);
 
-		private void Trigger(IEntity sender)
+		private void Trigger(Entity sender)
 		{
 			if (_isTriggered)
 				return;
@@ -316,13 +306,13 @@ namespace SabberStoneCore.Auras
 
 			if (_condition != null)
 			{
-				if (!(sender is IPlayable p)) p = _owner;
+				if (!(sender is Playable p)) p = _owner;
 
 				if (!_condition.Eval(p)) return;
 			}
 
 			if (_initialisationFunction != null)
-				_cachedValue += _costFunction.Invoke((IPlayable)sender);
+				_cachedValue += _costFunction.Invoke((Playable)sender);
 			else
 			{
 				_isTriggered = true;
@@ -331,7 +321,7 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		private void RemoveAtEnd(IEntity sender)
+		private void RemoveAtEnd(Entity sender)
 		{
 			_owner._costManager?.UpdateAdaptiveEffect();
 			_isTriggered = false;

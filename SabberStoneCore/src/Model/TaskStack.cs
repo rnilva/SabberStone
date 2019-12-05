@@ -33,7 +33,7 @@ namespace SabberStoneCore.Model
 				list.AddRange(playables);
 			else
 			{
-				var toList = Playables.ToList();
+				List<Playable> toList = Playables.ToList();
 				toList.AddRange(playables);
 				Playables = toList;
 			}

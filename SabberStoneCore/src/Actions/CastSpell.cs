@@ -45,7 +45,7 @@ namespace SabberStoneCore.Actions
 				game.TaskQueue.StartEvent();
 			    if (spell.IsSecret || spell.IsQuest)
 			    {
-				    spell.Power.Trigger?.Activate(c.Game, spell);
+				    spell.Power.Trigger?.Activate(game, spell);
 				    c.SecretZone.Add(spell);
 				    spell.IsExhausted = true;
 			    }
@@ -53,7 +53,7 @@ namespace SabberStoneCore.Actions
 			    {
 				    //spell.Power?.Trigger?.Activate(spell);
 				    if (spell.Power?.Trigger != null && spell.ActivatedTrigger == null)
-					    spell.Power.Trigger.Activate(spell);
+					    spell.Power.Trigger.Activate(game, spell);
 				    spell.Power?.Aura?.Activate(spell);
 
 				    if (spell.Combo && c.IsComboActive)

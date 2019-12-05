@@ -25,8 +25,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		{
 			if (stack == null || stack.Playables.Count == 0) return TaskState.STOP;
 
-			var list = new List<Playable>();
-			foreach (Playable p in stack.Playables) list.Add(Generic.DrawBlock(controller, p.Id));
+			for (int i = 0; i < stack.Playables.Count; i++)
+				Generic.Draw(controller, stack.Playables[i]);
 
 			return TaskState.COMPLETE;
 		}

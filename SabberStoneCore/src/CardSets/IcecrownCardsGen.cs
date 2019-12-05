@@ -1,4 +1,18 @@
-﻿using System;
+﻿#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Actions;
@@ -6,6 +20,7 @@ using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
@@ -1221,7 +1236,7 @@ namespace SabberStoneCore.CardSets.Standard
 							if (!deck[i].Card.IsSecret) continue;
 							if (ids.Contains(deck[i].Card.AssetId)) continue;
 							var spell = (Spell) c.DeckZone.Remove(deck[i]);
-							Generic.CastSpell(c, spell, null, 0, true);
+							Generic.CastSpell(c, g, spell, null, 0);
 							ids.Add(spell.Card.AssetId);
 
 							if (c.SecretZone.IsFull) return 0;
@@ -2504,7 +2519,10 @@ namespace SabberStoneCore.CardSets.Standard
 				PowerTask = ComplexTask.Create(
 					new GetGameTagTask(GameTag.ATK, EntityType.WEAPON),
 					new GetGameTagTask(GameTag.DURABILITY, EntityType.WEAPON, 0, 1),
-					new AddEnchantmentTask("ICC_018e", EntityType.SOURCE))
+					//new GetGameTagTask(GameTag.DAMAGE, EntityType.WEAPON, 0, 2),
+					//new GetIntegerAttributeTask(
+					new MathNumberIndexTask(1, 2, MathOperation.SUB, 1),
+					new AddEnchantmentTask("ICC_018e", EntityType.SOURCE, true))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -2720,11 +2738,11 @@ namespace SabberStoneCore.CardSets.Standard
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.HAND),
 					new FilterStackTask(SelfCondition.IsWeapon),
-					new FuncNumberTask(p => p.Sum(w => ((Weapon) w).Durability)),
+					new FuncNumberTask(p => p.Sum(w => ((Weapon) w).Durability) + 1),
 					new MathNumberIndexTask(1, 0, MathOperation.ADD, 1),
 					new FuncNumberTask(p =>
 					{
-						return p.Sum(w => w[GameTag.ATK]);
+						return p.Sum(w => ((Weapon) w).AttackDamage);
 					}),
 					new DiscardTask(EntityType.STACK),
 					new AddEnchantmentTask("ICC_096e", EntityType.SOURCE, true))

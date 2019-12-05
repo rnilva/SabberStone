@@ -428,6 +428,7 @@ namespace SabberStoneCore.CardSets.Standard
 						if (board.Count == 0)
 							return new List<Playable>(0);
 						if (board.Count < 3)
+							// ReSharper disable once CoVariantArrayConversion
 							return board.GetAll();
 
 						var list = new List<Playable>(2);
@@ -3690,8 +3691,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Your next <b>Battlecry</b> this turn triggers twice.
 			// --------------------------------------------------------
 			cards.Add("LOOT_517e", new Power {
-				//Enchant = new Enchant(GameTag.EXTRA_BATTLECRY, EffectOperator.SET, 1)
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_BATTLECRY, EffectOperator.SET, 1))
+				//Enchant = new Enchant(GameTag.EXTRA_BATTLECRIES_BASE, EffectOperator.SET, 1)
+				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_BATTLECRIES_BASE, EffectOperator.SET, 1))
 				{
 					RemoveTrigger = (TriggerType.TURN_END, null),
 				},

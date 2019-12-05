@@ -120,7 +120,7 @@ namespace SabberStoneKettleSimulator
 				&& Game.Player1.MulliganState == Mulligan.DONE
 				&& Game.Player2.MulliganState == Mulligan.DONE)
 			{
-				Game.MainBegin();
+				Game.MainBegin(true);
 
 				while (Game.Step != Step.MAIN_ACTION)
 					Thread.Sleep(500);

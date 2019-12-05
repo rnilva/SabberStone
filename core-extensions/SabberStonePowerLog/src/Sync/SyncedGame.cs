@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
-using System.Collections.Generic;
+
 using System.Linq;
 using System.Text;
 using SabberStoneCore.Config;

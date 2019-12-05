@@ -13,15 +13,14 @@
 #endregion
 //#define LOGEVENT
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Exceptions;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
-using SabberStoneCore.Exceptions;
 
-//using TaskInstance = System.ValueTuple<SabberStoneCore.Tasks.ISimpleTask, SabberStoneCore.Model.Entities.Controller, SabberStoneCore.Model.Entities.IEntity, SabberStoneCore.Model.Entities.IEntity>;
+//using TaskInstance = System.ValueTuple<SabberStoneCore.Tasks.ISimpleTask, SabberStoneCore.Model.Entities.Controller, SabberStoneCore.Model.Entities.Entity, SabberStoneCore.Model.Entities.Entity>;
 
 namespace SabberStoneCore.Model
 {
@@ -31,10 +30,10 @@ namespace SabberStoneCore.Model
 		{
 			public readonly ISimpleTask Task;
 			public readonly Controller Controller;
-			public readonly IEntity Source;
-			public readonly IPlayable Target;
+			public readonly Entity Source;
+			public readonly Entity Target;
 
-			public TaskInstance(in ISimpleTask task, in Controller controller, in IEntity source, in IPlayable target)
+			public TaskInstance(in ISimpleTask task, in Controller controller, in Entity source, in Entity target)
 			{
 				Task = task;
 				Controller = controller;
@@ -42,17 +41,22 @@ namespace SabberStoneCore.Model
 				Target = target;
 			}
 
-			public static implicit operator (ISimpleTask, Controller, IEntity, IPlayable) (TaskInstance t)
+			public static implicit operator (ISimpleTask, Controller, Entity, Entity) (TaskInstance t)
 			{
 				return (t.Task, t.Controller, t.Source, t.Target);
 			}
 
-			public void Deconstruct(out ISimpleTask simpleTask, out Controller controller, out IEntity entity, out IPlayable target)
+			public void Deconstruct(out ISimpleTask simpleTask, out Controller controller, out Entity entity, out Entity target)
 			{
 				simpleTask = Task;
 				controller = Controller;
 				entity = Source;
 				target = Target;
+			}
+
+			public override string ToString()
+			{
+				return $"({Controller.PlayerId}) [{Task.GetType().Name}] {Source} => {Target}";
 			}
 		}
 
@@ -200,7 +204,7 @@ namespace SabberStoneCore.Model
 		/// Queue a task that will be processed after a task is queued and processed.
 		/// </summary>
 		/// <param name="task"></param>
-		public void EnqueuePendingTask(in ISimpleTask task, in Controller controller, in IEntity source, in IPlayable target)
+		public void EnqueuePendingTask(in ISimpleTask task, in Controller controller, in Entity source, in Entity target)
 		{
 			_pendingTasks.Enqueue(new TaskInstance(in task, in controller, in source, in target));
 			_hasPendingTask = true;
@@ -219,7 +223,8 @@ namespace SabberStoneCore.Model
 
 		public TaskState Process()
 		{
-			(ISimpleTask task, Controller controller, Entity source, Entity target) = CurrentQueue.Dequeue();
+			(ISimpleTask task, Controller controller, Entity source, Entity target) = CurrentQueue.Peek();
+			ISimpleTask temp = CurrentTask;
 			CurrentTask = task;
 
 			//if (currentTask is StateTaskList tasks)
@@ -257,7 +262,7 @@ namespace SabberStoneCore.Model
 			return success;
 		}
 
-		public void Execute(in ISimpleTask task, in Controller controller, in Playable source, in Playable target, int number = 0)
+		public void Execute(in ISimpleTask task, in Controller controller, in Playable source, in Entity target, int number = 0)
 		{
 
 			_game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TaskQueue", !_game.Logging ? "" : $"PriorityTask[{source}]: '{task.GetType().Name}' is processed!" +

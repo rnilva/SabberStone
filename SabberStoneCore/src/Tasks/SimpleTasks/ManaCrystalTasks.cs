@@ -31,13 +31,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public int Amount { get; set; }
 
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			if (_both)
 				Generic.ChangeManaCrystal.Invoke(controller.Opponent, Amount, true);
-			bool success = Generic.ChangeManaCrystal.Invoke(controller, Amount, true);
+			Generic.ChangeManaCrystal.Invoke(controller, Amount, true);
 			return TaskState.COMPLETE;
 		}
 	}
@@ -55,14 +55,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_useNumber = useNumber;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source,
+			in Entity target,
 			in TaskStack stack = null)
 		{
 			int amount = _useNumber ? stack.Number : _amount;
 
-			bool success =
-				Generic.ChangeManaCrystal.Invoke(!_opponent ? controller : controller.Opponent, amount, false);
+			Generic.ChangeManaCrystal.Invoke(!_opponent ? controller : controller.Opponent, amount, false);
 			return TaskState.COMPLETE;
 		}
 	}
@@ -76,7 +75,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_amount = amount;
 			_both = both;
 		}
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			if (game.History)

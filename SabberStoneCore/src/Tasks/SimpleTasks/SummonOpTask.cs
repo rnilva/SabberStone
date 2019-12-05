@@ -39,15 +39,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_amount = amount;
 		}
 
-		public Card Card { get; set; }
-
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			//if (controller.Opponent.BoardZone.IsFull)
-			//	return TaskState.STOP;
-
-			if (_card == null && stack?.Playables.Count < 1)
+			if (controller.Opponent.BoardZone.IsFull)
 				return TaskState.STOP;
 
 			for (int i = 0; i < _amount; i++)
@@ -68,7 +63,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				else
 					summonEntity = (Minion) Entity.FromCard(controller.Opponent, in _card);
 
-			Generic.SummonBlock(game, summonEntity, -1);
+				Generic.SummonBlock(game, ref summonEntity, -1, (Playable) source);
+			}
 
 			return TaskState.COMPLETE;
 		}

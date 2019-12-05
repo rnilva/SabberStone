@@ -160,8 +160,8 @@ namespace SabberStoneCore.Actions
 			{
 				Playable card, cardOp;
 				{
-					var rnd = c.Game.Random;
-					var span = c.DeckZone.GetSpan();
+					Util.DeepCloneableRandom rnd = c.Game.Random;
+					ReadOnlySpan<Playable> span = c.DeckZone.GetSpan();
 					Span<int> buffer = stackalloc int[Math.Max(c.DeckZone.Count, c.Opponent.DeckZone.Count)];
 					int k = 0;
 					for (int i = 0; i < span.Length; i++)
@@ -355,10 +355,10 @@ namespace SabberStoneCore.Actions
 						for (int i = p.AppliedEnchantments.Count - 1; i >= 0; i--)
 							p.AppliedEnchantments[i].Remove();
 
-					if (p is Minion m)
-						m.ResetAttributes();
-					else
-						((Playable) p).ResetCost();
+					//if (p is Minion m)
+					//	m.Reset();
+					//else
+					//	((Playable) p).ResetCost();
 				}
 
 				p.ActivatedTrigger?.Remove();
@@ -370,16 +370,14 @@ namespace SabberStoneCore.Actions
 
 				// Detach the target from Auras
 				if (hand != null)
-					hand.Auras.ForEach(a => a.DeApply(p));
+					foreach (Aura a in hand.Auras) a.DeApply(p);
 				else if
 					(board != null)
 				{
-					board.Auras.ForEach(a => a.DeApply(p));
+					foreach (Aura a in board.Auras) a.DeApply(p);
 
 					if (p.Card.Untouchable)
-					{
 						board.DecrementUntouchablesCount();
-					}
 				}
 
 
@@ -412,27 +410,29 @@ namespace SabberStoneCore.Actions
 
 
 					p.Card = newCard;
-					Playable pp = (Playable)p;
-					if (pp._costManager != null)
-						pp._modifiedCost = pp._costManager.EntityChanged(newCard.Cost);
+					//Playable pp = (Playable)p;
+					//if (pp._costManager != null)
+					//	pp._modifiedCost = pp._costManager.EntityChanged(newCard.Cost);
+					p.Reset();
+					p.ResetCost();
 				}
 				else
 				{
 					Playable entity;
-					EntityData data = (EntityData) p.NativeTags;
+					EntityData data = p._data;
 					switch (newCard.Type)
 					{
 						case CardType.MINION:
-							entity = new Minion(c, newCard, p.NativeTags, id);
+							entity = new Minion(c, newCard, data, id);
 							break;
 						case CardType.SPELL:
-							entity = new Spell(c, newCard, p.NativeTags, id);
+							entity = new Spell(c, newCard, data, id);
 							break;
 						case CardType.HERO:
-							entity = new Hero(c, newCard, p.NativeTags, id);
+							entity = new Hero(c, newCard, data, id);
 							break;
 						case CardType.WEAPON:
-							entity = new Weapon(c, newCard, p.NativeTags, id);
+							entity = new Weapon(c, newCard, data, id);
 							break;
 						default:
 							throw new ArgumentNullException();
@@ -465,15 +465,15 @@ namespace SabberStoneCore.Actions
 
 					if (hand != null)
 						hand.ChangeEntity(p, entity);
-					//else if
-					//	(board != null)
-					//	board.ChangeEntity((MinionInPlay)p, (Minion)entity);
+					else if
+						(board != null)
+						board.ChangeEntity((MinionInPlay)p, (MinionInPlay)entity);
 					else if (p.Zone is DeckZone deck)
 						deck.ChangeEntity(p, entity);
 
 					c.Game.IdEntityDic[id] = entity;
 
-					Playable pp = (Playable)p;
+					Playable pp = p;
 					if (pp._costManager != null)
 						entity._modifiedCost = pp._costManager.EntityChanged(newCard.Cost);
 					entity._costManager = pp._costManager;
@@ -532,14 +532,14 @@ namespace SabberStoneCore.Actions
 				// Reapply auras
 				if (hand != null)
 				{
-					p.Power?.Trigger?.Activate(p, TriggerActivation.HAND);
+					p.Power?.Trigger?.Activate(p.Game, p, TriggerActivation.HAND);
 					if (p.Power?.Aura is AdaptiveCostEffect e)
-						e.Activate((Playable) p);
+						e.Activate(p);
 					hand.Auras.ForEach(a => a.EntityAdded(p));
 				}
 				else if (board != null)
 				{
-					Minion m = (Minion)p;
+					MinionInPlay m = (MinionInPlay) p;
 					if (m.Controller == c.Game.CurrentPlayer)
 					{
 						if (!m.HasCharge)
@@ -564,7 +564,7 @@ namespace SabberStoneCore.Actions
 				}
 				else if (p.Zone.Type == Zone.DECK)
 				{
-					p.Power?.Trigger?.Activate(p, TriggerActivation.DECK);
+					p.Power?.Trigger?.Activate(p.Game, p, TriggerActivation.DECK);
 				}
 
 				// Reapply auras
@@ -579,7 +579,7 @@ namespace SabberStoneCore.Actions
 				return p;
 			};
 
-		public static void OverloadBlock(Controller controller, IPlayable source, bool history)
+		public static void OverloadBlock(Controller controller, Playable source, bool history)
 		{
 			if (!source.Card.HasOverload)
 				return;

@@ -68,7 +68,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_targetType = targetType;
 		}
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source, in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			IList<IPlayable> targets = IncludeTask.GetEntities(in _targetType, in controller, source, target, stack?.Playables);
@@ -89,19 +89,20 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					    && !id.Equals("ICC_051")	// ICC_051t3
 					    && !id.Equals("ICC_047"))	// using choose one 0 option
 					{
-						foreach (IPlayable p in targets)
+						ISimpleTask task1 = ((Playable) target).ChooseOnePlayables[0].Card.Power.PowerTask;
+						ISimpleTask task2 = ((Playable) target).ChooseOnePlayables[1].Card.Power.PowerTask;
+
+						foreach (Playable p in targets)
 						{
-							game.TaskQueue.EnqueuePendingTask(target.ChooseOnePlayables[0].Card.Power.PowerTask,
-								in controller, target, in p);
-							game.TaskQueue.EnqueuePendingTask(target.ChooseOnePlayables[1].Card.Power.PowerTask,
-								in controller, target, in p);
+							game.TaskQueue.EnqueuePendingTask(task1, in controller, target, p);
+							game.TaskQueue.EnqueuePendingTask(task2,in controller, target, p);
 						}
 
 						return TaskState.COMPLETE;
 					}
 
 					if (!controller.ChooseBoth && chooseOne > 0)
-						task = target.ChooseOnePlayables[chooseOne - 1].Card.Power.PowerTask;
+						task = ((Playable)target).ChooseOnePlayables[chooseOne - 1].Card.Power.PowerTask;
 					else
 						return TaskState.STOP;
 				}
@@ -110,12 +111,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 				if (target.Card.HasOverload)
 					task = ComplexTask.Create(task, OverloadTask.Task);
-				foreach (IPlayable p in targets)
-					game.TaskQueue.EnqueuePendingTask(in task, in controller, target, in p);
+				foreach (Playable p in targets)
+					game.TaskQueue.EnqueuePendingTask(in task, in controller, target, p);
 			}
 			else
-				foreach (IPlayable p in targets)
-					game.TaskQueue.EnqueuePendingTask(in _task, in controller, target, in p);
+				foreach (Playable p in targets)
+					game.TaskQueue.EnqueuePendingTask(in _task, in controller, target, p);
 
 			return TaskState.COMPLETE;
 		}
@@ -127,11 +128,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		public static readonly OverloadTask Task = new OverloadTask();
 
-		public override TaskState Process(in Game game, in Controller controller, in IEntity source,
-			in IPlayable target,
+		public override TaskState Process(in Game game, in Controller controller, in Entity source,
+			in Entity target,
 			in TaskStack stack = null)
 		{
-			Generic.OverloadBlock(controller, (IPlayable) source, game.History);
+			Generic.OverloadBlock(controller, (Playable) source, game.History);
 			return TaskState.COMPLETE;
 		}
 	}

@@ -12,7 +12,6 @@
 // GNU Affero General Public License for more details.
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Actions;
@@ -458,7 +457,7 @@ namespace SabberStoneCoreTest.Basic
 			Assert.Equal(8, game.Player1.HandZone.Count);
 			Assert.All(game.Player1.HandZone, hz => hz.Card.Name.Equals("Wisp"));
 
-			IPlayable wondrousWand = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("LOOT_998l"));
+			Playable wondrousWand = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("LOOT_998l"));
 			// expect:
 			//   draw Chillwind Yeti for cost 0
 			//   draw Bomb and take 5 damage
@@ -517,7 +516,7 @@ namespace SabberStoneCoreTest.Basic
 
 			// Play Golden Kobold to ChangeEntity the whole hand.
 			//game.ProcessCard("Golden Kobold", asZeroCost: true);
-			IPlayable kobold = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("LOOT_998k"));
+			Playable kobold = Generic.DrawCard(game.CurrentPlayer, Cards.FromId("LOOT_998k"));
 			kobold.Cost = 0;
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, kobold));
 			Assert.True(game.CurrentPlayer.HandZone.ToList()
@@ -558,6 +557,57 @@ namespace SabberStoneCoreTest.Basic
 			Assert.Equal(worgen.Card.Cost + 3, worgen.Cost);
 			auraGenerator.Kill();
 			Assert.Equal(worgen.Card.Cost, worgen.Cost);
+		}
+
+		[Fact]
+		public static void AuraReverse()
+		{
+			var game = new Game(new GameConfig
+			{
+				StartPlayer = 1,
+				Player1HeroClass = CardClass.ROGUE,
+				Player2HeroClass = CardClass.MAGE,
+				FillDecks = true,
+				Logging = true
+			});
+
+			game.StartGame();
+			game.Player1.BaseMana = 10;
+
+			Minion m = game.ProcessCard<Minion>("Wisp");
+			game.ProcessCard<Minion>("Stormwind Champion");
+			Assert.Equal(2, m.AttackDamage);
+			Assert.Equal(2, m.Health);
+			game.ProcessCard<Minion>("Crazed Alchemist", m);
+			Assert.Equal(3, m.AttackDamage);
+			Assert.Equal(3, m.Health);
+		}
+
+		[Fact]
+		public static void AuraMultiply()
+		{
+			var game = new Game(new GameConfig
+			{
+				StartPlayer = 1,
+				Player1HeroClass = CardClass.ROGUE,
+				Player2HeroClass = CardClass.MAGE,
+				FillDecks = true,
+				Logging = true
+			});
+
+			game.StartGame();
+			game.Player1.BaseMana = 10;
+
+			Minion m = game.ProcessCard<Minion>("Wisp");
+			game.ProcessCard<Minion>("Stormwind Champion");
+			Assert.Equal(2, m.AttackDamage);
+			Assert.Equal(2, m.Health);
+			game.ProcessCard<Spell>("Blessed Champion", m, asZeroCost: true);
+			Assert.Equal(4, m.AttackDamage);
+			Assert.Equal(3, m.Health);
+			game.CurrentPlayer.BoardZone[2].Kill();
+			Assert.Equal(3, m.AttackDamage);
+			Assert.Equal(2, m.Health);
 		}
 	}
 }

@@ -50,7 +50,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 							c.Damage = stack.Number;
 							break;
 						case GameTag.EXTRA_ATTACKS_THIS_TURN:
-							if (c is Hero h)
+							if (c is HeroInPlay h)
 								h.ExtraAttacksThisTurn = stack.Number;
 							break;
 						default:

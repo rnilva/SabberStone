@@ -15,9 +15,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
-using SabberStoneCore.Conditions;
 using SabberStoneCore.Config;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -880,7 +878,7 @@ namespace SabberStoneCoreTest.Basic
 				StartPlayer = 1,
 				FillDecks = true,
 				History = false,
-				Logging = false
+				Logging = true
 
 			});
 			game.StartGame();
@@ -892,8 +890,6 @@ namespace SabberStoneCoreTest.Basic
 
 			Minion target = game.ProcessCard<Minion>("Doomsayer", null, true);
 			Assert.False(target.IsDead);
-			//Assert.Equal(Zone.SETASIDE, target.Zone.Type);
-			Assert.Equal(1, target.Health);
 			Assert.Single(game.CurrentPlayer.BoardZone);
 			Assert.Equal("Sheep", game.CurrentPlayer.BoardZone[0].Card.Name);
 			game.EndTurn();
@@ -991,7 +987,7 @@ namespace SabberStoneCoreTest.Basic
 			Assert.Equal(testTarget.Card.Health + 2, testTarget.Health);
 			Assert.True(testTarget.HasDivineShield);
 			Assert.True(testTarget.HasTaunt);
-			Assert.True(testTarget.HasLifesteal);
+			Assert.True(testTarget.HasLifeSteal);
 			Assert.True(((MinionInPlay)testTarget).AttackableByRush);
 
 			game.ProcessCard("Spellbreaker", testTarget, true);
@@ -1000,7 +996,7 @@ namespace SabberStoneCoreTest.Basic
 			Assert.Equal(testTarget.Card.Health, testTarget.Health);
 			Assert.False(testTarget.HasDivineShield);
 			Assert.False(testTarget.HasTaunt);
-			Assert.False(testTarget.HasLifesteal);
+			Assert.False(testTarget.HasLifeSteal);
 			Assert.False(((MinionInPlay)testTarget).AttackableByRush);
 		}
 
@@ -1165,7 +1161,7 @@ namespace SabberStoneCoreTest.Basic
 			Minion testTarget = game.ProcessCard<Minion>("Wisp");
 			game.EndTurn();
 
-			IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crowd Roaster"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crowd Roaster"));
 			Assert.Equal(1, game.CurrentPlayer.HandZone.Count(p => p.Card.IsRace(Race.DRAGON)));
 			Assert.False(testCard.IsValidPlayTarget(testTarget));
 			Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crowd Roaster"));

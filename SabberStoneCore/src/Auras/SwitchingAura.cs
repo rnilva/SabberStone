@@ -12,9 +12,7 @@
 // GNU Affero General Public License for more details.
 #endregion
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
@@ -44,7 +42,7 @@ namespace SabberStoneCore.Auras
 			_offTrigger = offTrigger;
 		}
 
-		protected SwitchingAura(SwitchingAura prototype, IPlayable owner) : base(prototype, owner)
+		protected SwitchingAura(SwitchingAura prototype, Playable owner) : base(prototype, owner)
 		{
 			_initialisationCondtion = prototype._initialisationCondtion;
 			_offTrigger = prototype._offTrigger;
@@ -52,7 +50,7 @@ namespace SabberStoneCore.Auras
 			_onHandler = TurnOn;
 		}
 
-		public override void Activate(IPlayable owner, bool cloning = false)
+		public override void Activate(Playable owner, bool cloning = false)
 		{
 			if (Effects == null)
 				Effects = EnchantmentCard.Power.Enchant.Effects;
@@ -119,7 +117,7 @@ namespace SabberStoneCore.Auras
 			AppliedEntityIdCollection.ForEach(Game.IdEntityDic, Effects,
 				(id, idDict, effs) =>
 				{
-					IPlayable entity = idDict[id];
+					Playable entity = idDict[id];
 					for (int i = 0; i < effs.Length; i++)
 						effs[i].RemoveAuraFrom(entity);
 				});
@@ -137,7 +135,7 @@ namespace SabberStoneCore.Auras
 					$"{string.Join(",", AppliedEntityIdCollection.Select(i => Game.IdEntityDic[i]))})");
 		}
 
-		private void TurnOff(IEntity source)
+		private void TurnOff(Entity source)
 		{
 			if (!On) return;
 			On = false;
@@ -148,7 +146,7 @@ namespace SabberStoneCore.Auras
 			AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.RemoveAll), 0);
 		}
 
-		private void TurnOn(IEntity source)
+		private void TurnOn(Entity source)
 		{
 			if (On) return;
 

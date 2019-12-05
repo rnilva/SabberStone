@@ -12,15 +12,12 @@
 // GNU Affero General Public License for more details.
 #endregion
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model.Zones;
-using SabberStoneCore.Triggers;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -68,7 +65,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// The entity that this enchantment is attached to.
 		/// </summary>
-		public Entity Target { get; private set; }
+		public Entity Target { get; set; }
 
 		/// <summary>
 		/// <see cref="SabberStoneCore.Model.Card"/> information captured in this instance.
@@ -155,8 +152,8 @@ namespace SabberStoneCore.Model.Entities
 			if (controller.Game.History)
 			{
 				//tags.Add(GameTag.ENTITY_ID, id);
-				//tags.Add(GameTag.CONTROLLER, controller.PlayerId);
 				tags.Add(GameTag.ZONE, (int)Enums.Zone.SETASIDE);
+				//tags.Add(GameTag.CONTROLLER, controller.PlayerId);
 
 				controller.Game.PowerHistory.Add(new PowerHistoryFullEntity
 				{

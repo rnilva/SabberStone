@@ -307,7 +307,7 @@ namespace SabberStoneCore.Model.Entities
 									}
 								case PlayReq.REQ_ENTIRE_ENTOURAGE_NOT_IN_PLAY:
 									{
-										var ids = Controller.BoardZone.Select(p => p.Card.Id).ToList();
+										List<string> ids = Controller.BoardZone.Select(p => p.Card.Id).ToList();
 										bool containsAll = true;
 										for (int i = 0; i < Card.Entourage.Length; i++)
 											containsAll &= ids.Contains(Card.Entourage[i]);
@@ -442,6 +442,24 @@ namespace SabberStoneCore.Model.Entities
 	public abstract partial class Playable
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
+		///// <summary>
+		///// Gets integer/boolean value of a specified <see cref="Attributes"/>.
+		///// If the given attribute does not exist for the type of this entity,
+		///// throws an exception.
+		///// </summary>
+		///// <exception cref="ArgumentException"></exception>
+		///// <typeparam name="T"><see cref="int"/> or <see cref="bool"/></typeparam>
+		//internal abstract T GetAttribute<T>(Attributes attribute) where T: struct;
+
+		///// <summary>
+		///// Gets integer/boolean value of a specified <see cref="Attributes"/> index.
+		///// If the given attribute does not exist for the type of this entity,
+		///// throws an exception.
+		///// </summary>
+		///// <exception cref="ArgumentException"></exception>
+		///// <typeparam name="T"><see cref="int"/> or <see cref="bool"/></typeparam>
+		//internal abstract T GetAttribute<T>(int attributeIndex) where T: struct;
+
 		internal int? _v1;
 		internal int? _v2;
 
@@ -474,18 +492,6 @@ namespace SabberStoneCore.Model.Entities
 
 		public bool ChooseOne => Card.ChooseOne;
 
-		//public bool JustPlayed
-		//{
-		//	get { return this[GameTag.JUST_PLAYED] == 1; }
-		//	set { this[GameTag.JUST_PLAYED] = value ? 1 : 0; }
-		//}
-
-		//public bool IsSummoned
-		//{
-		//	get { return this[GameTag.SUMMONED] == 1; }
-		//	set { this[GameTag.SUMMONED] = value ? 1 : 0; }
-		//}
-
 		public bool IsExhausted
 		{
 			get => _exhausted;
@@ -511,145 +517,19 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		public virtual bool HasOverkill => Card.Overkill;
-		public virtual bool HasLifesteal
+		public virtual bool HasLifeSteal
 		{
 			get => Card.LifeSteal;
 			set => throw new NotImplementedException();
 		}
 
-		internal static ApplyingEffect GetFunction(GameTag tag, EffectOperator @operator, int value)
+		public bool HasOverkill => Card.Overkill;
+
+		internal virtual void CopyAttributesTo(Playable target)
 		{
-			switch (tag)
-			{
-				case GameTag.ATK:
-					switch (@operator)
-					{
-						case EffectOperator.ADD:
-							return p =>
-							{
-								ref int? target = ref p._v1;
-								int v = target ?? p.Card.ATK;
-								target = v + value;
-							};
-						case EffectOperator.SUB:
-							return p =>
-							{
-								ref int? target = ref p._v1;
-								int v = target ?? p.Card.ATK;
-								target = v - value;
-							};
-						case EffectOperator.MUL:
-							return p =>
-							{
-								ref int? target = ref p._v1;
-								int v = target ?? p.Card.ATK;
-								target = v * value;
-							};
-						case EffectOperator.SET:
-							return p =>
-							{
-								for (int i = p.Game.OneTurnEffects.Count - 1; i >= 0; i--)
-								{
-									(int id, IEffect eff) = p.Game.OneTurnEffects[i];
-									if (id != p.Id || !(eff is GenericEffect<Character>)) continue;
-									p.Game.OneTurnEffects.RemoveAt(i);
-								}
-
-								p._v1 = value;
-							};
-						default:
-							throw new ArgumentOutOfRangeException(nameof(@operator), @operator, null);
-					}
-				case GameTag.HEALTH:
-					switch (@operator)
-					{
-						case EffectOperator.ADD:
-							return p =>
-							{
-								ref int? target = ref p._v2;
-								int v = target ?? p.Card.Health;
-								target = v + value;
-							};
-						case EffectOperator.SUB:
-							return p =>
-							{
-								ref int? target = ref p._v2;
-								int v = target ?? p.Card.Health;
-								target = v - value;
-							};
-						case EffectOperator.MUL:
-							return p =>
-							{
-								ref int? target = ref p._v2;
-								int v = target ?? p.Card.Health;
-								target = v * value;
-							};
-						case EffectOperator.SET:
-							return p =>
-							{
-								if (p is HeroInPlay h)
-								{
-									int hbh = h.BaseHealth;
-									if (hbh > value)
-										h.Damage = hbh - value;
-									else
-										h.Health = value;
-									return;
-								}
-
-								if (p is MinionInPlay m)
-								{
-									m.Health = value;
-								}
-							};
-						default:
-							throw new ArgumentOutOfRangeException(nameof(@operator), @operator, null);
-					}
-				case GameTag.COST:
-					switch (@operator)
-					{
-						case EffectOperator.ADD:
-							return p =>
-							{
-								ref int? target = ref p._modifiedCost;
-								int v = target ?? p.Card.Cost;
-								target = v + value;
-								p._costManager?.AddCostEnchantment(@operator, value);
-							};
-						case EffectOperator.SUB:
-							return p =>
-							{
-								ref int? target = ref p._modifiedCost;
-								int v = target ?? p.Card.Cost;
-								target = v - value;
-								p._costManager?.AddCostEnchantment(@operator, value);
-							};
-						case EffectOperator.MUL:
-							return p =>
-							{
-								ref int? target = ref p._modifiedCost;
-								int v = target ?? p.Card.Cost;
-								target = v * value;
-								p._costManager?.AddCostEnchantment(@operator, value);
-							};
-						case EffectOperator.SET:
-							return p =>
-							{
-								p._modifiedCost = value;
-								p._costManager?.AddCostEnchantment(@operator, value);
-							};
-						default:
-							throw new ArgumentOutOfRangeException(nameof(@operator), @operator, null);
-					}
-				default:
-					throw new ArgumentOutOfRangeException(nameof(@operator), @operator, null);
-			}
+			target._v1 = _v1;
+			target._v2 = _v2;
 		}
-
-		//internal virtual bool GetBoolAttribute(Attributes attribute) => throw new NotImplementedException();
-		//internal virtual int GetIntAttribute(Attributes attribute) => throw new NotImplementedException();
-		private static void AddAttackDamage(Playable p, int value) => p._v1 += value;
 	}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

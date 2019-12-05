@@ -146,8 +146,8 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		private static Func<Controller, Character, bool, bool> AttackPhase
-			=> delegate (Controller c, Character source, bool noExhaustion)
+		private static Func<Controller, Character, Character, bool, bool> AttackPhase
+			=> delegate (Controller c, Character source, Character target, bool noExhaustion)
 			{
 				Game game = c.Game;
 				var hero = source as HeroInPlay;
@@ -155,14 +155,6 @@ namespace SabberStoneCore.Actions
 
 				game.TriggerManager.OnTargetTrigger(source);
 				target = (Character) game.CurrentEventData.EventTarget;
-				//if (!game.IdEntityDic.TryGetValue(game.ProposedDefender, out Playable proposedDefender))
-				//{
-				//	game.Log(LogLevel.INFO, BlockType.ATTACK, "AttackPhase", !game.Logging? "":"target wasn't found by proposed defender call.");
-				//	source.IsAttacking = false;
-				//	source.IsDefending = false;
-				//	return false;
-				//}
-
 
 				// Force the game into MAIN_COMBAT step!
 				game.Step = Step.MAIN_COMBAT;
@@ -236,7 +228,8 @@ namespace SabberStoneCore.Actions
 					c.NumFriendlyMinionsThatAttackedThisTurn++;
 
 				// set exhausted ...
-				if (!noExhaustion && (numAtk > 0 && !source.HasWindfury ||
+				if (!noExhaustion && 
+                    (numAtk > 0 && !source.HasWindfury ||
 					numAtk > 1 && source.HasWindfury))
 				{
 					game.Log(LogLevel.INFO, BlockType.ATTACK, "AttackPhase", !game.Logging? "":$"{source} is now exhausted.");

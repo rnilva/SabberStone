@@ -100,7 +100,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						});
 
 					Generic.SummonBlock(game, ref minion,
-						SummonTask.GetPosition(in source, _side, stack?.Number ?? 0, ref alternateCount));
+						SummonTask.GetPosition(in source, _side, stack?.Number ?? 0, ref alternateCount),
+											   (Playable) source);
 
 					if (_addToStack)
 						stack.AddPlayable(minion);
