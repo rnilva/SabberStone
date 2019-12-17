@@ -647,8 +647,7 @@ namespace SabberStoneCore.CardSets
 			// - HEROPOWER_DAMAGE = 1
 			// --------------------------------------------------------
 			cards.Add("AT_003", new Power {
-				//Aura = new Aura(AuraType.HERO, new Effect(GameTag.HEROPOWsER_DAMAGE, EffectOperator.ADD, 1))
-				//Aura = new Aura(AuraType.HERO, new AttributeAddEffect())
+				Aura = new Aura(AuraType.HERO, new Effect(GameTag.HEROPOWER_DAMAGE, EffectOperator.ADD, 1))
 			});
 
 			// ------------------------------------------ MINION - MAGE
@@ -801,7 +800,7 @@ namespace SabberStoneCore.CardSets
 			// Text: Increased Spell Damage.
 			// --------------------------------------------------------
 			cards.Add("AT_006e", new Power {
-				Enchant = new OngoingEnchant(new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 1))
+				Enchant = new OngoingEnchant(new AddSpellPower(1))
 			});
 
 		}
@@ -2522,8 +2521,7 @@ namespace SabberStoneCore.CardSets
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("AT_117", new Power {
-				PowerTask = ComplexTask.Conditional(EntityType.SOURCE,
-					SelfCondition.HasBoardMinion(GameTag.SPELLPOWER, 1, RelaSign.GEQ),
+				PowerTask = ComplexTask.Conditional(SelfCondition.HasBoardMinion(IntAttributes.SpellPower, 1, RelaSign.GEQ),
 					new AddEnchantmentTask("AT_117e", EntityType.SOURCE))
 			});
 

@@ -554,7 +554,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public override string ToString()
 		{
-			return Hash();
+			return $"Count = {_count}";
 		}
 
 		private unsafe struct Initialiser

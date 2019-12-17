@@ -43,12 +43,12 @@ namespace SabberStoneCore.Model.Entities
 		///// <param name="minion">The source <see cref="Minion"/>.</param>
 		protected internal Minion(in Controller controller, Minion minion) : base(in controller, minion) { }
 
-		internal override bool GetAttribute(Attributes attr)
+		internal override bool GetAttribute(BoolAttributes attr)
 		{
 			throw new NotImplementedException();
 		}
 
-		internal override void SetAttribute(Attributes attr, bool value)
+		internal override void SetAttribute(BoolAttributes attr, bool value)
 		{
 			throw new NotImplementedException();
 		}
@@ -122,20 +122,17 @@ namespace SabberStoneCore.Model.Entities
 		/// a result for the current state of the game.
 		/// </summary>
 		/// <value><c>true</c> if this entity is playable; otherwise, <c>false</c>.</value>
-		public override bool IsPlayableByPlayer
+		public override bool IsPlayableByPlayer()
 		{
-			get
+			// check if we got a slot on board for minions
+			if (Controller.BoardZone.IsFull)
 			{
-				// check if we got a slot on board for minions
-				if (Controller.BoardZone.IsFull)
-				{
-					Game.Log(LogLevel.VERBOSE, BlockType.PLAY, "Playable",
-						!Game.Logging? "":$"{this} isn't playable, because not enough place on board.");
-					return false;
-				}
-
-				return base.IsPlayableByPlayer;
+				Game.Log(LogLevel.VERBOSE, BlockType.PLAY, "Playable",
+					!Game.Logging ? "" : $"{this} isn't playable, because not enough place on board.");
+				return false;
 			}
+
+			return base.IsPlayableByPlayer();
 		}
 
 		public override Playable Clone(in Controller controller)

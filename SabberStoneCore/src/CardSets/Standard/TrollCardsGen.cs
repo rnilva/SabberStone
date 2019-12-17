@@ -3129,10 +3129,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// GameTag:
 			// - ENRAGED = 1
 			// --------------------------------------------------------
-			cards.Add("TRL_312e", new CardDef(new Power
-			{
-				Enchant = new Enchant(GameTag.SPELLPOWER, EffectOperator.ADD, 2)
-			}));
+			cards.Add("TRL_312e", new Power {
+				Enchant = new Enchant(new AddSpellPower(2))
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [TRL_319e] Power of the Dragonhawk (*) - COST:0

@@ -726,7 +726,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.NotNull(rush);
 			Assert.False(rush.IsExhausted);
 			Assert.True(rush.AttackableByRush);
-			Assert.Single(rush.ValidAttackTargets);
+			Assert.Single(rush.GetValidAttackTargets());
 			Assert.False(rush.IsValidAttackTarget(game.CurrentPlayer.Opponent.Hero));
 
 			game.EndTurn();

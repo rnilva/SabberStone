@@ -1,4 +1,5 @@
-﻿#region copyright
+﻿
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -60,7 +61,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get
 			{
-				int value = _v1.Value + (AuraEffects?.ATK ?? 0);
+				int value = _v1.Value /*+ (AuraEffects?.ATK ?? 0)*/;
 				return value < 0 ? 0 : value;
 			}
 			set => _v1 = value;
@@ -103,12 +104,12 @@ namespace SabberStoneCore.Model.Entities
 			throw new NotImplementedException();
 		}
 
-		internal override bool GetAttribute(Entities.Attributes attr)
+		internal override bool GetAttribute(Entities.BoolAttributes attr)
 		{
 			return GetRef(attr);
 		}
 
-		internal override void SetAttribute(Entities.Attributes attr, bool value)
+		internal override void SetAttribute(Entities.BoolAttributes attr, bool value)
 		{
 			GetRef(attr) = value;
 		}
@@ -150,7 +151,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public override unsafe bool IsImmune
 		{
-			get => (AuraEffects?.Immune ?? false) ||
+			get => /*(AuraEffects?.Immune ?? false) ||*/
 			       _attrs.boolAttrs[0];
 			set => _attrs.boolAttrs[0] = value;
 		}
@@ -166,15 +167,15 @@ namespace SabberStoneCore.Model.Entities
 			set => _attrs.boolAttrs[2] = value;
 		}
 
-		private unsafe ref bool GetRef(Entities.Attributes attr)
+		private unsafe ref bool GetRef(Entities.BoolAttributes attr)
 		{
 			switch (attr)
 			{
-				case Entities.Attributes.Immune:
+				case Entities.BoolAttributes.Immune:
 					return ref _attrs.boolAttrs[0];
-				case Entities.Attributes.Poisonous:
+				case Entities.BoolAttributes.Poisonous:
 					return ref _attrs.boolAttrs[1];
-				case Entities.Attributes.Lifesteal:
+				case Entities.BoolAttributes.Lifesteal:
 					return ref _attrs.boolAttrs[2];
 				default:
 					throw new NotImplementedException();

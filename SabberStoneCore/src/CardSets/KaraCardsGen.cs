@@ -372,8 +372,8 @@ namespace SabberStoneCore.CardSets
 					new FlagTask(true, ComplexTask.Create(
 						new IncludeTask(EntityType.HAND),
 						new FilterStackTask(SelfCondition.IsNotCardClass(CardClass.ROGUE)),
-						new AddAuraEffect(Effects.ReduceCost(2), EntityType.STACK))))
-			}));
+						new ChangeCostTask(Effects.ReduceCost(2), EntityType.STACK))))
+			});
 
 			// ----------------------------------------- MINION - ROGUE
 			// [KAR_094] Deadly Fork - COST:3 [ATK:3/HP:2]

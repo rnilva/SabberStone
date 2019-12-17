@@ -7,27 +7,19 @@ namespace SabberStoneCore.Model.Entities
 	/// <summary>
 	/// Internal mappings to indices.
 	/// </summary>
-	public enum Attributes
+	public enum BoolAttributes
 	{
 		Invalid = - 1,
-		// # Integer attributes
-		// ## Character-only attributes
-		SpellPower = 0,
-		Damage = 1,
-		NumAttacksThisTurn = 2,
-
-
-		// ## Hero-only attributes
-		HeroPowerDamage = 3,
 
 		// # Boolean attributes
-		// ## Common attributes
+		// ## Character attributes
 		// ### Effect-only attributes
 		Immune = 0,
 		Frozen,
 		// ### Card attributes
 		Stealth,
-		Elusive = 3,
+		Elusive,
+		CannotAttackHeroes,
 		// ## Minion-only attributes
 		Taunt,
 		DivineShield,
@@ -38,69 +30,136 @@ namespace SabberStoneCore.Model.Entities
 		Rush,
 		CantAttack,
 		Deathrattle,
-
-		CannotAttackHeroes = 15,
 		// ## Hero-only attributes
+	}
+
+	public enum IntAttributes
+	{
+		Invalid = -1,
+
+		// # Character attributes
+		SpellPower = 0,
+		Damage = 1,
+		NumAttacksThisTurn = 2,
+		// ## Hero attributes
+		HeroPowerDamage = 5
 	}
 
 	public static class AttributeHelpers
 	{
-		/// <summary>
-		/// Maps GameTag to boolean attributes. Do not use integer tags.
-		/// </summary>
-		public static Attributes GameTagToAttribute(GameTag tag)
+		public static BoolAttributes GameTagToBoolAttribute(GameTag tag)
 		{
 			switch (tag)
 			{
 				case GameTag.IMMUNE:
-					return Attributes.Immune;
+					return BoolAttributes.Immune;
 				case GameTag.FROZEN:
-					return Attributes.Frozen;
+					return BoolAttributes.Frozen;
 				case GameTag.DIVINE_SHIELD:
-					return Attributes.DivineShield;
+					return BoolAttributes.DivineShield;
 				case GameTag.WINDFURY:
-					return Attributes.Windfury;
+					return BoolAttributes.Windfury;
 				case GameTag.CHARGE:
-					return Attributes.Charge;
+					return BoolAttributes.Charge;
 				case GameTag.POISONOUS:
-					return Attributes.Poisonous;
+					return BoolAttributes.Poisonous;
 				case GameTag.LIFESTEAL:
-					return Attributes.Lifesteal;
+					return BoolAttributes.Lifesteal;
 				case GameTag.RUSH:
-					return Attributes.Rush;
+					return BoolAttributes.Rush;
 				case GameTag.CANT_ATTACK:
-					return Attributes.CantAttack;
+					return BoolAttributes.CantAttack;
 				case GameTag.CANNOT_ATTACK_HEROES:
-					return Attributes.CannotAttackHeroes;
+					return BoolAttributes.CannotAttackHeroes;
 				case GameTag.DEATHRATTLE:
-					return Attributes.Deathrattle;
+					return BoolAttributes.Deathrattle;
 				default:
-					return Attributes.Invalid;
+					return BoolAttributes.Invalid;
+			}
+		}
+
+		public static IntAttributes GameTagToIntAttribute(GameTag tag)
+		{
+			switch (tag)
+			{
+				case GameTag.SPELLPOWER:
+					return IntAttributes.SpellPower;
+				case GameTag.DAMAGE:
+					return IntAttributes.Damage;
+				case GameTag.NUM_ATTACKS_THIS_TURN:
+					return IntAttributes.NumAttacksThisTurn;
+				case GameTag.HEROPOWER_DAMAGE:
+					return IntAttributes.HeroPowerDamage;
+				default:
+					return IntAttributes.Invalid;
+			}
+		}
+
+		public static ControllerIntAttributes GameTagToControllerIntAttribute(GameTag tag)
+		{
+			switch (tag)
+			{
+				case GameTag.SPELLPOWER_DOUBLE:
+				case GameTag.SPELL_HEALING_DOUBLE:
+					return ControllerIntAttributes.SpellPowerDouble;
+				case GameTag.HERO_POWER_DOUBLE:
+					return ControllerIntAttributes.HeroPowerDouble;
+				case GameTag.ALL_HEALING_DOUBLE:
+					return ControllerIntAttributes.AllHealingDouble;
+				case GameTag.TIMEOUT:
+					return ControllerIntAttributes.TimeOut;
+				default:
+					return ControllerIntAttributes.Invalid;
+			}
+		}
+
+		public static ControllerBoolAttributes GameTagToControllerBoolAttribute(GameTag tag)
+		{
+			switch (tag)
+			{
+				case GameTag.HEALING_DOES_DAMAGE:
+					return ControllerBoolAttributes.RestoreToDamage;
+				case GameTag.EXTRA_BATTLECRIES_BASE:
+					return ControllerBoolAttributes.ExtraBattlecry;
+				case GameTag.EXTRA_DEATHRATTLES_BASE:
+					return ControllerBoolAttributes.ExtraDeathrattle;
+				case GameTag.CHOOSE_BOTH:
+					return ControllerBoolAttributes.ChooseBoth;
+				case GameTag.SPELLS_COST_HEALTH:
+					return ControllerBoolAttributes.SpellsCostHealth;
+				case GameTag.EXTRA_END_TURN_EFFECT:
+					return ControllerBoolAttributes.ExtraEndTurnEffect;
+				case GameTag.HERO_POWER_DISABLED:
+					return ControllerBoolAttributes.HeroPowerDisabled;
+				case GameTag.EXTRA_MINION_BATTLECRIES_BASE:
+					return ControllerBoolAttributes.ExtraBattleCryAndCombo;
+				default:
+					return ControllerBoolAttributes.Invalid;
 			}
 		}
 	}
 
 	public readonly struct AttributeEffect : IEffect
 	{
-		private readonly Attributes _attr;
+		private readonly BoolAttributes _attr;
 		private readonly bool _value;
 		private readonly Action<Character> _afterApplyTask;
 
-		public AttributeEffect(Attributes attr, bool value)
+		public AttributeEffect(BoolAttributes attr, bool value)
 		{
 			_attr = attr;
 			_value = value;
 			switch (attr)
 			{
-				case Attributes.DivineShield:
+				case BoolAttributes.DivineShield:
 					Tag = GameTag.DIVINE_SHIELD;
 					_afterApplyTask = null;
 					break;
-				case Attributes.Frozen:
+				case BoolAttributes.Frozen:
 					Tag = GameTag.FROZEN;
 					_afterApplyTask = null;
 					break;
-				case Attributes.Charge:
+				case BoolAttributes.Charge:
 					Tag = default;
 					_afterApplyTask = c =>
 					{
@@ -111,7 +170,7 @@ namespace SabberStoneCore.Model.Entities
 							m.AttackableByRush = false;
 					};
 					break;
-				case Attributes.Windfury:
+				case BoolAttributes.Windfury:
 					Tag = default;
 					_afterApplyTask = c =>
 					{
@@ -119,7 +178,7 @@ namespace SabberStoneCore.Model.Entities
 							c.IsExhausted = false;
 					};
 					break;
-				case Attributes.Rush:
+				case BoolAttributes.Rush:
 					Tag = default;
 					_afterApplyTask = c =>
 					{
@@ -162,49 +221,34 @@ namespace SabberStoneCore.Model.Entities
 			_afterApplyTask?.Invoke(c);
 		}
 
-		public void ApplyAuraTo(Playable playable)
-		{
-			AuraEffects auraEffects;
-			if (playable.AuraEffects != null)
-				auraEffects = playable.AuraEffects;
-			else
-			{
-				auraEffects = new AuraEffects(playable.Card.Type);
-				playable.AuraEffects = auraEffects;
-			}
+		//public void ApplyAuraTo(Playable playable)
+		//{
+		//	AuraEffects auraEffects;
+		//	if (playable.AuraEffects != null)
+		//		auraEffects = playable.AuraEffects;
+		//	else
+		//	{
+		//		auraEffects = new AuraEffects(playable.Card.Type);
+		//		playable.AuraEffects = auraEffects;
+		//	}
 
-			switch (_attr)
-			{
-				case Attributes.Rush:
-					auraEffects.Rush = true;
-					break;
-				case Attributes.Lifesteal:
-					auraEffects.Lifesteal = true;
-					break;
-				default:
-					throw new NotImplementedException();
-			}
-		}
+		//	switch (_attr)
+		//	{
+		//		case Attributes.Rush:
+		//			auraEffects.Rush = true;
+		//			break;
+		//		case Attributes.Lifesteal:
+		//			auraEffects.Lifesteal = true;
+		//			break;
+		//		default:
+		//			throw new NotImplementedException();
+		//	}
+		//}
 
 		public void RemoveFrom(Entity entity)
 		{
 			var c = (Character) entity;
 			c.SetAttribute(_attr, !_value);
-		}
-
-		public void RemoveAuraFrom(Playable playable)
-		{
-			switch (_attr)
-			{
-				case Attributes.Rush:
-					playable.AuraEffects.Rush = false;
-					break;
-				case Attributes.Lifesteal:
-					playable.AuraEffects.Lifesteal = false;
-					break;
-				default:
-					throw new NotImplementedException();
-			}
 		}
 
 		public IEffect ChangeValue(int newValue)

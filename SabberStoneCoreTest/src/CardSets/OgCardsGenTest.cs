@@ -2411,12 +2411,12 @@ namespace SabberStoneCoreTest.CardSets
 			Playable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Twisting Nether"));
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
-			Assert.Equal(1, game.CurrentPlayer[GameTag.SPELLS_COST_HEALTH]);
+			Assert.True(game.CurrentPlayer.SpellsCostHelath);
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, spell));
 
 			Assert.Equal(0, game.CurrentPlayer.BoardZone.Count);
 			Assert.Equal(8, game.CurrentPlayer.Hero.Damage);
-			Assert.Equal(0, game.CurrentPlayer[GameTag.SPELLS_COST_HEALTH]);
+			Assert.False(game.CurrentPlayer.SpellsCostHelath);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
@@ -3763,7 +3763,7 @@ namespace SabberStoneCoreTest.CardSets
 			Assert.Equal(3, ((Minion)testCard).AttackDamage);
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
-			Assert.Equal(5, ((Minion)testCard).AttackDamage);
+			Assert.Equal(6, ((Minion)testCard).AttackDamage);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

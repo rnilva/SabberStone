@@ -1,120 +1,376 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Text;
-//using SabberStoneCore.Model.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using SabberStoneCore.Enums;
+using SabberStoneCore.Model.Entities;
 
-//namespace SabberStoneCore.Enchants
-//{
-//	public abstract class AbstractEffect
-//	{
-//		public virtual void ApplyTo(Playable playable)
-//		{
-//			throw new NotImplementedException();
-//		}
-//		public virtual void RemoveFrom(Playable playable)
-//		{
-//			throw new NotImplementedException();
-//		}
-//		public virtual void ApplyTo(Character character)
-//		{
-//			throw new NotImplementedException();
-//		}
-//		public virtual void RemoveFrom(Character character)
-//		{
-//			throw new NotImplementedException();
-//		}
-//		public virtual void ApplyTo(HeroInPlay hero)
-//		{
-//			throw new NotImplementedException();
-//		}
-//		public virtual void RemoveFrom(HeroInPlay hero)
-//		{
-//			throw new NotImplementedException();
-//		}
-//		public virtual void ApplyTo(MinionInPlay minion)
-//		{
-//			throw new NotImplementedException();
-//		}
-//		public virtual void RemoveFrom(MinionInPlay minion)
-//		{
-//			throw new NotImplementedException();
-//		}
-//		//internal static AbstractEffect IEffectToAbstract<T>(GenericEffect<T> eff) where T: Playable
-//		//{
-//		//	switch (eff._attr)
-//		//	{
-//		//		case ATK atk:
-//		//			switch (eff._operator)
-//		//			{
-//		//				case EffectOperator.ADD:
-//		//					return Attribte
-//		//					break;
-//		//				case EffectOperator.SUB:
-//		//					break;
-//		//				case EffectOperator.MUL:
-//		//					break;
-//		//				case EffectOperator.SET:
-//		//					break;
-//		//				default:
-//		//					throw new ArgumentOutOfRangeException();
-//		//			}
-//		//			break;
-//		//	}
-//		//}
-//	}
+namespace SabberStoneCore.Enchants
+{
+	public abstract class AbstractEffect
+	{
+		public virtual void ApplyTo(Playable playable)
+		{
+			throw new NotImplementedException();
+		}
+		public virtual void RemoveFrom(Playable playable)
+		{
+			throw new NotImplementedException();
+		}
+		public virtual void ApplyTo(Character character)
+		{
+			throw new NotImplementedException();
+		}
+		public virtual void RemoveFrom(Character character)
+		{
+			throw new NotImplementedException();
+		}
+		public virtual void ApplyTo(HeroInPlay hero)
+		{
+			throw new NotImplementedException();
+		}
+		public virtual void RemoveFrom(HeroInPlay hero)
+		{
+			throw new NotImplementedException();
+		}
+		public virtual void ApplyTo(MinionInPlay minion)
+		{
+			throw new NotImplementedException();
+		}
+		public virtual void RemoveFrom(MinionInPlay minion)
+		{
+			throw new NotImplementedException();
+		}
+		//internal static AbstractEffect IEffectToAbstract<T>(GenericEffect<T> eff) where T: Playable
+		//{
+		//	switch (eff._attr)
+		//	{
+		//		case ATK atk:
+		//			switch (eff._operator)
+		//			{
+		//				case EffectOperator.ADD:
+		//					return Attribte
+		//					break;
+		//				case EffectOperator.SUB:
+		//					break;
+		//				case EffectOperator.MUL:
+		//					break;
+		//				case EffectOperator.SET:
+		//					break;
+		//				default:
+		//					throw new ArgumentOutOfRangeException();
+		//			}
+		//			break;
+		//	}
+		//}
+	}
 
-//	public class AttributeAddEffect : AbstractEffect
-//	{
-//		public readonly int Attribute;
-//		public readonly int Value;
+	public class AttributeAddEffect : AbstractEffect, IEffect
+	{
+		public readonly int Attribute;
+		public readonly int _value;
+		private GameTag _tag;
+		private EffectOperator _operator;
 
-//		public AttributeAddEffect(Attributes attr, int value)
-//		{
-//			Attribute = (int) attr;
-//			Value = value;
-//		}
+		public AttributeAddEffect(IntAttributes attr, int value)
+		{
+			Attribute = (int)attr;
+			_value = value;
+		}
 
-//		public override void ApplyTo(Character playable)
-//		{
-//			playable.GetIntRef(Attribute) += Value;
-//		}
+		public override void ApplyTo(Character playable)
+		{
+			playable.GetIntRef(Attribute) += Value;
+		}
 
-//		public override void RemoveFrom(Character playable)
-//		{
-//			playable.GetIntRef(Attribute) -= Value;
-//		}
-//	}
+		public override void RemoveFrom(Character playable)
+		{
+			playable.GetIntRef(Attribute) -= Value;
+		}
 
-//	public class AttributeAddAuraEffect : AbstractEffect
-//	{
-//		private readonly int Attribute;
-//		private readonly int Value;
-//		public AttributeAddAuraEffect(Attributes attr, int value)
-//		{
-//			Attribute = (int) attr;
-//			Value = value;
-//		}
-//	}
+		public GameTag Tag => _tag;
 
-//	public class AttributeSetEffect : AbstractEffect
-//	{
-//		private readonly int _attribute;
-//		private readonly int _value;
-//		public AttributeSetEffect(Attributes attr, int value)
-//		{
-//			_attribute = (int) attr;
-//			_value = value;
-//		}
-//		public override void ApplyTo(Character playable)
-//		{
-//			playable.GetIntRef(_attribute) = _value;
-//		}
-//	}
+		public EffectOperator Operator => _operator;
 
-//	public class BooleanAttributeEffect : AbstractEffect
-//	{
-//		private readonly int _attribute;
-//		private readonly bool _value;
-//		private readonly Action<Character> _afterApplyTask;
-//	}
-//}
+		public int Value => _value;
+
+		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			((Character) entity).GetIntRef(Attribute) += Value;
+		}
+
+		public void RemoveFrom(Entity entity)
+		{
+			((Character) entity).GetIntRef(Attribute) -= Value;
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class AttributeAddAuraEffect : AbstractEffect
+	{
+		private readonly int Attribute;
+		private readonly int Value;
+		public AttributeAddAuraEffect(BoolAttributes attr, int value)
+		{
+			Attribute = (int)attr;
+			Value = value;
+		}
+	}
+
+	public class AttributeSetEffect : AbstractEffect
+	{
+		private readonly int _attribute;
+		private readonly int _value;
+		public AttributeSetEffect(BoolAttributes attr, int value)
+		{
+			_attribute = (int)attr;
+			_value = value;
+		}
+		public override void ApplyTo(Character playable)
+		{
+			playable.GetIntRef(_attribute) = _value;
+		}
+	}
+
+	public class BooleanAttributeEffect : AbstractEffect
+	{
+		private readonly int _attribute;
+		private readonly bool _value;
+		private readonly Action<Character> _afterApplyTask;
+	}
+
+	public class CardCostsHealth : AbstractEffect, IEffect
+	{
+		private GameTag _tag;
+		private EffectOperator _operator;
+		private int _value;
+
+		public override void ApplyTo(Playable playable)
+		{
+			playable.GetCostManager().CardCostsHealth = true;
+		}
+
+		public override void RemoveFrom(Playable playable)
+		{
+			Playable.CostManager costManager = playable.GetCostManager();
+			if (costManager != null)
+				costManager.CardCostsHealth = false;
+		}
+
+		public GameTag Tag => _tag;
+
+		public EffectOperator Operator => _operator;
+
+		public int Value => _value;
+
+		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			((Playable)entity).GetCostManager().CardCostsHealth = true;
+		}
+
+		public void RemoveFrom(Entity entity)
+		{
+			Playable.CostManager manager = ((Playable) entity).GetCostManager();
+			if (manager != null)
+				manager.CardCostsHealth = false;
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class Echo : AbstractEffect, IEffect
+	{
+		private GameTag _tag;
+		private EffectOperator _operator;
+		private int _value;
+
+		public GameTag Tag => GameTag.ECHO;
+
+		public EffectOperator Operator => EffectOperator.ADD;
+
+		public int Value => 1;
+
+		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			((Playable) entity).IsEcho = true;
+		}
+
+		public void RemoveFrom(Entity entity)
+		{
+			((Playable) entity).IsEcho = false;
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class VaryCost : AbstractEffect, IEffect
+	{
+		private GameTag _tag;
+		private EffectOperator _operator;
+		private int _value;
+
+		public GameTag Tag => GameTag.COST;
+
+		public EffectOperator Operator => EffectOperator.ADD;
+
+		public int Value => _value;
+
+		public VaryCost(int value) { _value = value;}
+
+		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			((Playable) entity).VaryCost(_value);
+		}
+
+		public void RemoveFrom(Entity entity)
+		{
+			((Playable) entity).RemoveCostEffect(_value);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class SetCost : AbstractEffect, IEffect
+	{
+		private GameTag _tag;
+		private EffectOperator _operator;
+		private int _value;
+
+		public GameTag Tag => GameTag.COST;
+
+		public EffectOperator Operator => EffectOperator.SET;
+
+		public int Value => _value;
+
+		public SetCost(int value) { _value = value;}
+
+		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			((Playable) entity).SetCost(_value);
+		}
+
+		public void RemoveFrom(Entity entity)
+		{
+			((Playable) entity).RemoveSetCostEffect(_value);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class AddSpellPower : AbstractEffect, IEffect
+	{
+		private int _value;
+
+		public GameTag Tag => GameTag.SPELLPOWER;
+
+		public EffectOperator Operator => EffectOperator.ADD;
+
+		public int Value => _value;
+
+		public AddSpellPower(int value)
+		{
+			_value = value;
+		}
+
+		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			((Character) entity).GetIntRef((int) IntAttributes.SpellPower) += _value;
+		}
+
+		public void RemoveFrom(Entity entity)
+		{
+			((Character) entity).GetIntRef((int) IntAttributes.SpellPower) -= _value;
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class AddControllerIntAttr : AbstractEffect, IEffect
+	{
+		private GameTag _tag;
+		private EffectOperator _operator;
+		private int _value;
+
+		public GameTag Tag => _tag;
+
+		public EffectOperator Operator => EffectOperator.ADD;
+
+		public int Value => 1;
+
+		private readonly ControllerIntAttributes _attr;
+
+		public AddControllerIntAttr(ControllerIntAttributes attr, int value)
+		{
+			_attr = attr;
+			_value = value;
+		}
+
+		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			((Controller)entity)[_attr] += _value;
+		}
+
+		public void RemoveFrom(Entity entity)
+		{
+			((Controller) entity)[_attr] -= _value;
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class SetControllerBoolAttr : AbstractEffect, IEffect
+	{
+		private GameTag _tag;
+		private EffectOperator _operator;
+		private int _value;
+
+		public GameTag Tag => _tag;
+
+		public EffectOperator Operator => EffectOperator.ADD;
+
+		public int Value => 1;
+
+		private readonly ControllerBoolAttributes _attr;
+
+		public SetControllerBoolAttr(ControllerBoolAttributes attr)
+		{
+			_attr = attr;
+		}
+
+		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			((Controller)entity)[_attr] = true;
+		}
+
+		public void RemoveFrom(Entity entity)
+		{
+			((Controller) entity)[_attr] = false;
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+}

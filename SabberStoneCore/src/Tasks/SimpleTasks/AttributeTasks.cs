@@ -11,7 +11,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private readonly int _entityIndex;
 		private readonly int _stackIndex;
 
-		public GetIntegerAttributeTask(Attributes attribute, EntityType type, int entityIndex = 0, int stackIndex = 0)
+		public GetIntegerAttributeTask(BoolAttributes attribute, EntityType type, int entityIndex = 0, int stackIndex = 0)
 		{
 			_attribute = (int)attribute;
 			_type = type;
@@ -63,7 +63,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		/// <param name="attribute"></param>
 		/// <param name="type"></param>
 		/// <param name="entityIndex"></param>
-		public GetBooleanAttributeTask(Attributes attribute, EntityType type, int entityIndex = 0)
+		public GetBooleanAttributeTask(BoolAttributes attribute, EntityType type, int entityIndex = 0)
 		{
 			_attribute = (int)attribute;
 			_type = type;
@@ -82,36 +82,36 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 	public class GetControllerAttributeTask : SimpleTask
 	{
-		private readonly int _attribute;
+		private readonly ControllerIntAttributes _attribute;
 
-		public GetControllerAttributeTask(ControllerAttributes attribute)
+		public GetControllerAttributeTask(ControllerIntAttributes attribute)
 		{
-			_attribute = (int)attribute;
+			_attribute = attribute;
 		}
 
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			stack.Number = controller.GetAttributeRef(_attribute);
+			stack.Number = controller[_attribute];
 			return TaskState.COMPLETE;
 		}
 	}
 
 	public class SetControllerAttributeTask : SimpleTask
 	{
-		private readonly int _attribute;
+		private readonly ControllerIntAttributes _attribute;
 		private readonly int _value;
 
-		public SetControllerAttributeTask(ControllerAttributes attribute, int value)
+		public SetControllerAttributeTask(ControllerIntAttributes attribute, int value)
 		{
-			_attribute = (int)attribute;
+			_attribute = attribute;
 			_value = value;
 		}
 
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			controller.GetAttributeRef(_attribute) = _value;
+			controller[_attribute] = _value;
 			return TaskState.COMPLETE;
 		}
 	}

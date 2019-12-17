@@ -2465,7 +2465,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			Playable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Murloc Raider"));
 			game.AuraUpdate();
-			Assert.True(minion.IsPlayableByPlayer);
+			Assert.True(minion.IsPlayableByPlayer());
 			//Assert.Equal(0, minion.Cost);
 			int mana = game.CurrentPlayer.RemainingMana;
 			int health = game.CurrentPlayer.Hero.Health;

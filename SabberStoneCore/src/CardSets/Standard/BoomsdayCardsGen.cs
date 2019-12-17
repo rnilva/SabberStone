@@ -858,8 +858,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAG_ONE_TURN_EFFECT = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_531e", new Power {
-				Enchant = new Enchant(new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 2)),
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				// Seems like there are some problems with Enchant SPELLPOWER effects not being removed
+				Aura = new Aura(AuraType.HERO, new AddSpellPower(2))
 				{
 					RemoveTrigger = (TriggerType.TURN_END, null)
 				},

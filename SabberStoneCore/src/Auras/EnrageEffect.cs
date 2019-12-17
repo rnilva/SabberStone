@@ -51,26 +51,26 @@ namespace SabberStoneCore.Auras
 			owner.OngoingEffect = instance;
 		}
 
-		public override void Update()
+		public override bool Update()
 		{
 			var m = (Minion) Owner;
 
 			// Remove this EnrageEffect from the target
 			if (!On)
 			{
-				Game.Auras.Remove(this);
+				//Game.Auras.Remove(this);
 
-				if (!_enraged) return;
+				if (!_enraged) return false;
 
 				// Spiteful Smith
 				if (Type == AuraType.WEAPON)
 				{
 					Weapon weapon = m.Controller.Hero.Weapon;
 					if (weapon == null)
-						return;
+						return false;
 
 					if (_target != weapon)
-						return;
+						return false;
 				}
 
 				foreach (IEffect eff in EnchantmentCard.Power.Enchant.Effects)
@@ -87,13 +87,15 @@ namespace SabberStoneCore.Auras
 				//if (_target != null)
 				//	for (int i = 0; i < Effects.Length; i++)
 				//		Effects[i].RemoveFrom(_target.AuraEffects);
+
+				return false;
 			}
 
 			if (Type == AuraType.WEAPON)
 			{
 				Weapon weapon = m.Controller.Hero.Weapon;
 				if (weapon == null)
-					return;
+					return true;
 
 				if (_target != weapon)
 				{
@@ -106,7 +108,7 @@ namespace SabberStoneCore.Auras
 
 			if (!_enraged)
 			{
-				if (m.Damage == 0) return;
+				if (m.Damage == 0) return true;
 				//if (_target != null)
 				//	for (int i = 0; i < Effects.Length; i++)
 				//		Effects[i].ApplyTo(_target.AuraEffects);
@@ -117,7 +119,7 @@ namespace SabberStoneCore.Auras
 			}
 			else
 			{
-				if (m.Damage != 0) return;
+				if (m.Damage != 0) return true;
 
 				for (int i = 0; i < EnchantmentCard.Power.Enchant.Effects.Length; i++)
 					EnchantmentCard.Power.Enchant.Effects[i].RemoveFrom(m);
@@ -131,6 +133,8 @@ namespace SabberStoneCore.Auras
 				}
 				_enraged = false;
 			}
+
+			return true;
 		}
 
 		public override void Clone(Playable clone)

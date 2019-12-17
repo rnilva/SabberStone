@@ -511,9 +511,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// GameTag:
 			// - TAG_ONE_TURN_EFFECT = 1
 			// --------------------------------------------------------
-			cards.Add("DAL_379e", new CardDef(new Power
-			{
-				Enchant = new Enchant(new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 2))
+			cards.Add("DAL_379e", new Power {
+				Enchant = new Enchant(new AddSpellPower(2))
 				{
 					IsOneTurnEffect = true
 				}
@@ -3080,10 +3079,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Increased <b>Spell Damage</b>.
 			// --------------------------------------------------------
-			cards.Add("DAL_548e", new CardDef(new Power
-			{
-				Enchant = new OngoingEnchant(new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 2))
-			}));
+			cards.Add("DAL_548e", new Power {
+				Enchant = new OngoingEnchant(new AddSpellPower(2))
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [DAL_560e2] Protect the Brews! (*) - COST:0

@@ -365,10 +365,11 @@ namespace SabberStoneCoreTest.CardSets
 			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silvermoon Portal"));
 			Playable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion));
+			game.ProcessCard("Wisp");	// Prevent testCard from getting adjacent buff from the wolf.
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, testCard, (Character) minion));
-			Assert.Equal(3, ((Minion)minion).AttackDamage - (minion.AuraEffects?.ATK ?? 0));
+			Assert.Equal(3, ((Minion)minion).AttackDamage);
 			Assert.Equal(3, ((Minion)minion).Health);
-			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
+			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
 
 			// This test rarely fails when the summoned minion has Aura, for example, Dire Wolf Alpha can interrupt this test.
 		}

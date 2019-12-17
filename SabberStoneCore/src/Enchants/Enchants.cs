@@ -26,6 +26,7 @@ namespace SabberStoneCore.Enchants
 	    private static Regex SetAttackHealth = new Regex(@"(\d)[/](\d)");
 	    private static Regex Attack = new Regex(@"[+](\d) Attack");
 	    private static Regex Health = new Regex(@"[+](\d) Health");
+	    private static Regex SpellPower = new Regex(@"Spell Damage [+](\d)");
 
 	    public static readonly Enchant AddAttackScriptTag =
 		    new Enchant(Effects.Attack_N(0))
@@ -128,13 +129,13 @@ namespace SabberStoneCore.Enchants
 		    if (text.Contains(@"<b>Divine Shield</b>"))
 		    {
 			    //effects.Add(new Effect(GameTag.DIVINE_SHIELD, EffectOperator.SET, 1));
-			    effects.Add(new AttributeEffect(Attributes.DivineShield, true));
+			    effects.Add(new AttributeEffect(BoolAttributes.DivineShield, true));
 		    }
 
 		    if (text.Contains(@"<b>Poisonous</b>"))
 		    {
 			    //effects.Add(new Effect(GameTag.POISONOUS, EffectOperator.SET, 1));
-			    effects.Add(new AttributeEffect(Attributes.Poisonous, true));
+			    effects.Add(new AttributeEffect(BoolAttributes.Poisonous, true));
 		    }
 
 		    if (text.Contains(@"<b>Lifesteal</b>"))
@@ -151,6 +152,12 @@ namespace SabberStoneCore.Enchants
 		    {
 				oneTurn = true;
 		    }
+
+			Match spellPower = SpellPower.Match(text);
+			if (spellPower.Success)
+			{
+				effects.Add(new AddSpellPower(Int32.Parse(spellPower.Groups[1].Value)));
+			}
 
 			var output = new Enchant(effects.ToArray())
 			{
@@ -204,17 +211,20 @@ namespace SabberStoneCore.Enchants
 
 		internal static IEffect ReduceCost(int n)
 		{
-			return Cost.Effect(EffectOperator.SUB, n);
+			//return Cost.Effect(EffectOperator.SUB, n);
+			return new VaryCost(-n);
 		}
 
 		internal static IEffect SetCost(int n)
 		{
-			return Cost.Effect(EffectOperator.SET, n);
+			//return Cost.Effect(EffectOperator.SET, n);
+			return new SetCost(n);
 		}
 
 		internal static IEffect AddCost(int n)
 		{
-			return Cost.Effect(EffectOperator.ADD, n);
+			//return Cost.Effect(EffectOperator.ADD, n);
+			return new VaryCost(n);
 		}
 
 		internal static IEffect TauntEff => Taunt.Effect();

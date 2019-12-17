@@ -1310,8 +1310,8 @@ namespace SabberStoneCore.CardSets.Adventure
 			cards.Add("LOOTA_BOSS_23p", new CardDef(new Power
 			{
 				// TODO Test: Hunter's Call_LOOTA_BOSS_23p
-				PowerTask = new AddAuraEffect(Effects.ReduceCost(1), EntityType.HAND)
-			}));
+				PowerTask = new ChangeCostTask(Effects.ReduceCost(1), EntityType.HAND)
+			});
 
 			// ----------------------------------- HERO_POWER - NEUTRAL
 			// [LOOTA_BOSS_24p] Gloop (*) - COST:2
@@ -1492,7 +1492,7 @@ namespace SabberStoneCore.CardSets.Adventure
 					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = ComplexTask.Create(
 						new DrawTask(true),
-						new AddAuraEffect(Effects.ReduceCost(1), EntityType.STACK))
+						new ChangeCostTask(Effects.ReduceCost(1), EntityType.STACK))
 				}
 			}));
 

@@ -12,6 +12,7 @@
 // GNU Affero General Public License for more details.
 #endregion
 using System.Collections.Generic;
+using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -57,6 +58,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 				ATK.Effect(EffectOperator.SET, health).ApplyTo(m);
 				Health.Effect(EffectOperator.SET, atk).ApplyTo(m);
+
+				foreach (Aura aura in controller.BoardZone.Auras)
+				{
+					if (aura.Deregister(p))
+						aura.EntityAdded(p);
+				}
 			}
 
 			return TaskState.COMPLETE;

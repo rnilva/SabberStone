@@ -1207,8 +1207,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("OG_026", new Power {
 				PowerTask = ComplexTask.Create(
-					new SetControllerAttributeTask(ControllerAttributes.OverloadLocked, 0),
-					new SetControllerAttributeTask(ControllerAttributes.OverloadOwed, 0))
+					new SetControllerAttributeTask(ControllerIntAttributes.OverloadLocked, 0),
+					new SetControllerAttributeTask(ControllerIntAttributes.OverloadOwed, 0))
 			});
 
 			// ---------------------------------------- MINION - SHAMAN

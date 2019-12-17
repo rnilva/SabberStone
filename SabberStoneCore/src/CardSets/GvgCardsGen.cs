@@ -515,7 +515,7 @@ namespace SabberStoneCore.CardSets
 				PowerTask = ComplexTask.Create(
 					new RandomCardTask(CardType.MINION, CardClass.INVALID),
 					new AddStackTo(EntityType.HAND),
-					new AddAuraEffect(Effects.ReduceCost(3), EntityType.STACK))
+					new ChangeCostTask(Effects.ReduceCost(3), EntityType.STACK))
 			});
 
 			// ------------------------------------------- SPELL - MAGE
@@ -2295,10 +2295,7 @@ namespace SabberStoneCore.CardSets
 			// Text: +2/+4 and <b>Spell Damage +1</b>.
 			// --------------------------------------------------------
 			cards.Add("GVG_010b", new Power {
-				Enchant = new Enchant(
-					Effects.Attack_N(2),
-					Effects.Health_N(4),
-					new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 1))
+				Enchant = Enchants.Enchants.GetAutoEnchantFromText("GVG_010b")
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

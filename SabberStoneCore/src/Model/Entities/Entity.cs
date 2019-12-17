@@ -101,7 +101,7 @@ namespace SabberStoneCore.Model.Entities
 			_data = new EntityData(entity._data);
 			Card = entity.Card;
 			Id = entity.Id;
-			AuraEffects = entity.AuraEffects?.Clone();
+			//AuraEffects = entity.AuraEffects?.Clone();
 		}
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -111,7 +111,7 @@ namespace SabberStoneCore.Model.Entities
 			var str = new StringBuilder();
 			str.Append($"[{Card.Id}]");
 			str.Append(_data.Hash(ignore));
-			str.Append(AuraEffects?.Hash());
+			//str.Append(AuraEffects?.Hash());
 			//str.Append("[O:");
 			//str.Append(OrderOfPlay);
 			//str.Append("]");
@@ -151,7 +151,7 @@ namespace SabberStoneCore.Model.Entities
 				if (!_data.TryGetValue(t, out int value))
 					Card.Tags.TryGetValue(t, out value);
 
-				value += AuraEffects?[in t] ?? 0;
+				//value += AuraEffects?[in t] ?? 0;
 
 				return value > 0 ? value : 0;
 			}
@@ -160,7 +160,7 @@ namespace SabberStoneCore.Model.Entities
 				if (_logging)
 					Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Entity", !Game.Logging? "":$"{this} set data {t} to {value}");
 				if (_history && (int)t < 1000)
-					if (value + (AuraEffects?[t] ?? 0) != this[t])
+					if (value /*+ (AuraEffects?[t] ?? 0)*/ != this[t])
 						Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, t, value));
 
 				_data[t] = value;
@@ -362,7 +362,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// A simple container for saving tag value perturbations from external Auras. Call indexer to get value for a particular Tag.
 		/// </summary>
-		public AuraEffects AuraEffects { get; set; }
+		//public AuraEffects AuraEffects { get; set; }
 
 		/// <summary>
 		/// Gets or sets a list for enchantments applied to this entity.

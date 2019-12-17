@@ -16,6 +16,7 @@ using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 using SabberStoneCore.Triggers;
@@ -394,10 +395,8 @@ namespace SabberStoneCore.CardSets
 			{
 				PowerTask = ComplexTask.Create(
 					new DamageTask(2, EntityType.TARGET),
-					//new SetControllerGameTagTask(GameTag.OVERLOAD_LOCKED, 0),
-					//new SetControllerGameTagTask(GameTag.OVERLOAD_OWED, 0))
-					new SetControllerAttributeTask(ControllerAttributes.OverloadLocked, 0),
-					new SetControllerAttributeTask(ControllerAttributes.OverloadOwed, 0))
+					new SetControllerAttributeTask(ControllerIntAttributes.OverloadLocked, 0),
+					new SetControllerAttributeTask(ControllerIntAttributes.OverloadOwed, 0))
 			});
 
 		}

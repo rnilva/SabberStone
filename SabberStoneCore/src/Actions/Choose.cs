@@ -88,8 +88,8 @@ namespace SabberStoneCore.Actions
 					case ChoiceAction.SUMMON:
 						if (!c.BoardZone.IsFull && RemoveFromZone(c, playable))
 						{
-							Minion m = (Minion) playable;
-							SummonBlock(g, ref m, -1, g.IdEntityDic[c.Choice.SourceId]);
+							//Minion m = (Minion) playable;
+							SummonBlock(g, ref playable, -1, g.IdEntityDic[c.Choice.SourceId]);
 						}
 						//if (RemoveFromZone(c, playable))
 						//{

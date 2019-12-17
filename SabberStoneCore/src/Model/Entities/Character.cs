@@ -133,7 +133,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// Character can attack.
 		/// </summary>
-		public virtual bool CanAttack => !IsExhausted && !IsFrozen && HasAnyValidAttackTargets && !CantAttack;
+		public virtual bool CanAttack => !IsExhausted && !IsFrozen && HasAnyValidAttackTargets() && !CantAttack;
 
 		/// <summary>
 		/// Indicates if the provided character can be attacked by this character.
@@ -143,7 +143,7 @@ namespace SabberStoneCore.Model.Entities
 		public virtual bool IsValidAttackTarget(Character target)
 		{
 			// got target but isn't contained in valid targets
-			if (!ValidAttackTargets.Contains(target))
+			if (!GetValidAttackTargets().Contains(target))
 			{
 				Game.Log(LogLevel.WARNING, BlockType.ACTION, "Character", !Game.Logging? "":$"{this} has an invalid target {target}.");
 				return false;
@@ -164,58 +164,52 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// Returns a sequence of characters which are attackable.
 		/// </summary>
-		public IEnumerable<Character> ValidAttackTargets
+		public IEnumerable<Character> GetValidAttackTargets()
 		{
-			get
+			bool tauntFlag = false;
+			var allTargets = new List<Character>(4);
+			var allTargetsTaunt = new List<Character>(2);
+			foreach (Minion minion in Controller.Opponent.BoardZone.GetAll())
 			{
-				bool tauntFlag = false;
-				var allTargets = new List<Character>(4);
-				var allTargetsTaunt = new List<Character>(2);
-				foreach (Minion minion in Controller.Opponent.BoardZone.GetAll())
+				if (!minion.HasStealth)
 				{
-					if (!minion.HasStealth)
+					if (minion.HasTaunt)
 					{
-						if (minion.HasTaunt)
-						{
-							allTargetsTaunt.Add(minion);
-							tauntFlag = true;
-							continue;
-						}
-						if (!tauntFlag)
-							allTargets.Add(minion);
+						allTargetsTaunt.Add(minion);
+						tauntFlag = true;
+						continue;
 					}
+					if (!tauntFlag)
+						allTargets.Add(minion);
 				}
-				if (tauntFlag)
-					return allTargetsTaunt;
-
-				Hero opHero = Controller.Opponent.Hero;
-
-				if (!(this is MinionInPlay m && m.AttackableByRush) && !CantAttackHeroes && !opHero.IsImmune && !opHero.HasStealth)
-					allTargets.Add(opHero);
-
-				return allTargets;
 			}
+			if (tauntFlag)
+				return allTargetsTaunt;
+
+			Hero opHero = Controller.Opponent.Hero;
+
+			if (!(this is MinionInPlay m && m.AttackableByRush) && !CantAttackHeroes && !opHero.IsImmune && !opHero.HasStealth)
+				allTargets.Add(opHero);
+
+			return allTargets;
 		}
 
-		public bool HasAnyValidAttackTargets
+		public bool HasAnyValidAttackTargets()
 		{
-			get
+			ReadOnlySpan<MinionInPlay> span = Controller.Opponent.BoardZone.GetSpan();
+			for (int i = 0; i < span.Length; i++)
 			{
-				ReadOnlySpan<MinionInPlay> span = Controller.Opponent.BoardZone.GetSpan();
-				for (int i = 0; i < span.Length; i++)
-				{
-					if (!(span[i].HasStealth || span[i].IsImmune))
-						return true;
-				}
-
-				bool isOpHeroValidPlayTarget =
-					!Controller.Opponent.Hero.HasStealth && !Controller.Opponent.Hero.IsImmune;
-
-				if (isOpHeroValidPlayTarget && (!CantAttackHeroes || this is MinionInPlay m && m.AttackableByRush))
-					return true; // Op Hero is a valid attack target
-
-				return false;
+				if (!(span[i].HasStealth || span[i].IsImmune))
+					return true;
 			}
+
+			bool isOpHeroValidPlayTarget =
+				!Controller.Opponent.Hero.HasStealth && !Controller.Opponent.Hero.IsImmune;
+
+			if (isOpHeroValidPlayTarget && (!CantAttackHeroes || this is MinionInPlay m && m.AttackableByRush))
+				return true; // Op Hero is a valid attack target
+
+			return false;
 		}
 
 		/// <summary>
@@ -368,13 +362,13 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="heal"></param>
 		public void TakeHeal(Playable source, int heal)
 		{
-			if ((source is Spell || source is HeroPower) && source.Controller.ControllerAuraEffects[GameTag.SPELL_HEALING_DOUBLE] > 0)
+			if ((source is Spell || source is HeroPower) && source.Controller.SpellHealingDouble > 0)
 			{
-				heal *= (int) Math.Pow(2, source.Controller.ControllerAuraEffects[GameTag.SPELL_HEALING_DOUBLE]);
+				heal *= (int) Math.Pow(2, source.Controller.SpellHealingDouble);
 			}
 
-			if (source.Controller.ControllerAuraEffects[GameTag.ALL_HEALING_DOUBLE] > 0)
-				heal *= (int) Math.Pow(2, source.Controller.ControllerAuraEffects[GameTag.ALL_HEALING_DOUBLE]);
+			if (source.Controller.AllHealingDouble > 0)
+				heal *= (int) Math.Pow(2, source.Controller.AllHealingDouble);
 
 			if (source.Controller.RestoreToDamage)
 			{
@@ -534,8 +528,8 @@ namespace SabberStoneCore.Model.Entities
 
 		internal abstract ref bool GetRef(int index);
 		internal abstract ref int GetIntRef(int index);
-		internal abstract bool GetAttribute(Attributes attr);
-		internal abstract void SetAttribute(Attributes attr, bool value);
+		internal abstract bool GetAttribute(BoolAttributes attr);
+		internal abstract void SetAttribute(BoolAttributes attr, bool value);
 #pragma warning restore CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
 	}
 }

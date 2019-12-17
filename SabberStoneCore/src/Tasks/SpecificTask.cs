@@ -201,7 +201,7 @@ namespace SabberStoneCore.Tasks
 									? c.Controller.Opponent.BoardZone.GetAll(null)[index]
 									: c.Controller.Opponent.BoardZone[index];
 
-				t.CardTarget = ((Playable)t).ValidPlayTargets.RandomElement(g.Random).Id;
+				t.CardTarget = ((Playable)t).GetValidPlayTargets().RandomElement(g.Random).Id;
 				g.OnRandomHappened(true);
 			});
 
@@ -420,7 +420,7 @@ namespace SabberStoneCore.Tasks
 						var target = (Minion) list[1];
 						int health = target.Health;
 						int amount = 6 + target.Controller.CurrentSpellPower;
-						amount *= (int) Math.Pow(2, target.Controller.ControllerAuraEffects[GameTag.SPELLPOWER_DOUBLE]);
+						amount *= (int) Math.Pow(2, target.Controller.SpellPowerDouble);
 						if (health >= amount)
 						{
 							Generic.DamageCharFunc(list[0], target, 6, true);

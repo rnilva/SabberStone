@@ -34,12 +34,12 @@ namespace SabberStoneCore.Enchants
 		int Value { get; }
 
 		void ApplyTo(Entity entity, bool isOneTurnEffect = false);
-		void ApplyAuraTo(Playable playable);
+		//void ApplyAuraTo(Playable playable);
 		//void ApplyTo(AuraEffects auraEffects);
 		//void ApplyTo(ControllerAuraEffects controllerAuraEffects);
 
 		void RemoveFrom(Entity entity);
-		void RemoveAuraFrom(Playable playable);
+		//void RemoveAuraFrom(Playable playable);
 		//void RemoveFrom(AuraEffects auraEffects);
 		//void RemoveFrom(ControllerAuraEffects controllerAuraEffects);
 
@@ -78,8 +78,8 @@ namespace SabberStoneCore.Enchants
 			if (oneTurnEffect)
 				entity.Game.OneTurnEffects.Add((entity.Id, this));
 
-			Attributes attr = AttributeHelpers.GameTagToAttribute(Tag);
-			if (attr != Attributes.Invalid)
+			BoolAttributes attr = AttributeHelpers.GameTagToBoolAttribute(Tag);
+			if (attr != BoolAttributes.Invalid)
 			{
 				new AttributeEffect(attr, Value == 1).ApplyTo(entity);
 				return;
@@ -190,86 +190,67 @@ namespace SabberStoneCore.Enchants
 			}
 		}
 
-		/// <summary>
-		/// Apply this effect to the target as an aura effect.
-		/// </summary>
-		public void ApplyAuraTo(Playable playable)
-		{
-			AuraEffects auraEffects = playable.AuraEffects;
-			if (auraEffects == null)
-			{
-				auraEffects = new AuraEffects(playable.Card.Type);
-				playable.AuraEffects = auraEffects;
-			}
+		///// <summary>
+		///// Apply this effect to the target as an aura effect.
+		///// </summary>
+		//public void ApplyAuraTo(Playable playable)
+		//{
+		//	//AuraEffects auraEffects = playable.AuraEffects;
+		//	//if (auraEffects == null)
+		//	//{
+		//	//	auraEffects = new AuraEffects(playable.Card.Type);
+		//	//	playable.AuraEffects = auraEffects;
+		//	//}
 
-			switch (Operator)
-			{
-				case EffectOperator.ADD:
-					auraEffects[Tag] += Value;
-					return;
-				case EffectOperator.SUB:
-					auraEffects[Tag] -= Value;
-					return;
-				// TODO: SET Aura
-				case EffectOperator.SET:
-					//playable[Tag] = 0;
-					auraEffects[Tag] = Value;
+		//	switch (Operator)
+		//	{
+		//		case EffectOperator.ADD:
+		//			auraEffects[Tag] += Value;
+		//			return;
+		//		case EffectOperator.SUB:
+		//			auraEffects[Tag] -= Value;
+		//			return;
+		//		// TODO: SET Aura
+		//		case EffectOperator.SET:
+		//			//playable[Tag] = 0;
+		//			auraEffects[Tag] = Value;
 
-					if (playable is MinionInPlay m)
-					{
-						switch (Tag)
-						{
-							case GameTag.CHARGE:
-								if (m.IsExhausted && m.NumAttacksThisTurn < 1)
-									m.IsExhausted = false;
-								if (m.AttackableByRush)
-									m.AttackableByRush = false;
-								break;
-							case GameTag.RUSH:
-								if (m.IsExhausted && m.NumAttacksThisTurn == 0)
-								{
-									m.IsExhausted = false;
-									m.AttackableByRush = true;
-									playable.Game.RushMinions.Add(playable.Id);
-								}
-								break;
-							case GameTag.HEALTH_MINIMUM:
-								m[GameTag.HEALTH_MINIMUM] = Value;
-								break;
-						}
-					}
-					return;
-				default:
-					throw new NotImplementedException();
-			}
-		}
-
-		/// <summary>
-		/// Apply this effect to the target controller as an aura effect.
-		/// </summary>
-		public void ApplyTo(ControllerAuraEffects auraEffects)
-		{
-			switch (Operator)
-			{
-				case EffectOperator.ADD:
-				case EffectOperator.SET:
-					auraEffects[Tag] += Value;
-					return;
-				case EffectOperator.SUB:
-					auraEffects[Tag] += Value;
-					return;
-				default:
-					throw new NotImplementedException();
-			}
-		}
+		//			if (playable is MinionInPlay m)
+		//			{
+		//				switch (Tag)
+		//				{
+		//					case GameTag.CHARGE:
+		//						if (m.IsExhausted && m.NumAttacksThisTurn < 1)
+		//							m.IsExhausted = false;
+		//						if (m.AttackableByRush)
+		//							m.AttackableByRush = false;
+		//						break;
+		//					case GameTag.RUSH:
+		//						if (m.IsExhausted && m.NumAttacksThisTurn == 0)
+		//						{
+		//							m.IsExhausted = false;
+		//							m.AttackableByRush = true;
+		//							playable.Game.RushMinions.Add(playable.Id);
+		//						}
+		//						break;
+		//					case GameTag.HEALTH_MINIMUM:
+		//						m[GameTag.HEALTH_MINIMUM] = Value;
+		//						break;
+		//				}
+		//			}
+		//			return;
+		//		default:
+		//			throw new NotImplementedException();
+		//	}
+		//}
 
 		/// <summary>
 		/// Remove this effect from the target entity.
 		/// </summary>
 		public void RemoveFrom(Entity entity)
 		{
-			Attributes attr = AttributeHelpers.GameTagToAttribute(Tag);
-			if (attr != Attributes.Invalid)
+			BoolAttributes attr = AttributeHelpers.GameTagToBoolAttribute(Tag);
+			if (attr != BoolAttributes.Invalid)
 			{
 				new AttributeEffect(attr, Value == 1).RemoveFrom(entity);
 				return;
@@ -299,58 +280,43 @@ namespace SabberStoneCore.Enchants
 			}
 		}
 
-		/// <summary>
-		/// Remove ths aura effect from the target entity.
-		/// </summary>
-		public void RemoveAuraFrom(Playable playable)
-		{
-			switch (Operator)
-			{
-				case EffectOperator.ADD:
-					playable.AuraEffects[Tag] -= Value;
-					return;
-				case EffectOperator.SUB:
-					playable.AuraEffects[Tag] += Value;
-					return;
-				case EffectOperator.SET:
-					playable.AuraEffects[Tag] -= Value;
-					if (Tag == GameTag.RUSH)
-					{
-						if (!(playable is MinionInPlay m)) return;
-						if (m.AttackableByRush && !m.IsExhausted)
-						{
-							if (m.IsRush || m.Card.Rush)
-								return;
+		///// <summary>
+		///// Remove ths aura effect from the target entity.
+		///// </summary>
+		//public void RemoveAuraFrom(Playable playable)
+		//{
+		//	switch (Operator)
+		//	{
+		//		case EffectOperator.ADD:
+		//			playable.AuraEffects[Tag] -= Value;
+		//			return;
+		//		case EffectOperator.SUB:
+		//			playable.AuraEffects[Tag] += Value;
+		//			return;
+		//		case EffectOperator.SET:
+		//			playable.AuraEffects[Tag] -= Value;
+		//			if (Tag == GameTag.RUSH)
+		//			{
+		//				if (!(playable is MinionInPlay m)) return;
+		//				if (m.AttackableByRush && !m.IsExhausted)
+		//				{
+		//					if (m.IsRush || m.Card.Rush)
+		//						return;
 
-							m.AttackableByRush = false;
-							m.IsExhausted = true;
-							m.Game.RushMinions.Remove(m.Id);
-						}
-					}
-					else if
-						(Tag == GameTag.HEALTH_MINIMUM)
-					{
-						playable.NativeTags.Remove(GameTag.HEALTH_MINIMUM);
-					}
-					return;
-			}
-		}
+		//					m.AttackableByRush = false;
+		//					m.IsExhausted = true;
+		//					m.Game.RushMinions.Remove(m.Id);
+		//				}
+		//			}
+		//			else if
+		//				(Tag == GameTag.HEALTH_MINIMUM)
+		//			{
+		//				playable.NativeTags.Remove(GameTag.HEALTH_MINIMUM);
+		//			}
+		//			return;
+		//	}
+		//}
 
-		public void RemoveFrom(ControllerAuraEffects auraEffects)
-		{
-			switch (Operator)
-			{
-				case EffectOperator.ADD:
-				case EffectOperator.SET:
-					auraEffects[Tag] -= Value;
-					return;
-				case EffectOperator.SUB:
-					auraEffects[Tag] += Value;
-					return;
-				default:
-					throw new NotImplementedException();
-			}
-		}
 
 		/// <summary>
 		/// Creates a new Effect having changed amount of <see cref="Value"/>.

@@ -21,7 +21,7 @@ namespace SabberStoneCore.Auras
 				instance.AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
 		}
 
-		public override void Update()
+		public override bool Update()
 		{
 			bool addAllProcessed = false;
 			while (AuraUpdateInstructionsQueue.Count > 0)
@@ -31,7 +31,7 @@ namespace SabberStoneCore.Auras
 				{
 					case Instruction.RemoveAll:
 						RemoveAll();
-						return;
+						return false;
 					case Instruction.AddAll:
 						addAllProcessed = true;
 						AddAll();
@@ -48,6 +48,7 @@ namespace SabberStoneCore.Auras
 						break;
 				}
 			}
+			return true;
 		}
 
 		private void AddAll()
@@ -63,7 +64,7 @@ namespace SabberStoneCore.Auras
 		{
 			AppliedEntityIdCollection.ForEach(Game.IdEntityDic,
 				(i, dict) => DeApply(dict[i]));
-			Game.Auras.Remove(this);
+			//Game.Auras.Remove(this);
 		}
 
 		private static void Apply(Playable playable)
@@ -80,7 +81,7 @@ namespace SabberStoneCore.Auras
 
 			m.Cost = eValue.HasValue ? cost - cardValue + eValue.Value : cost;
 
-			m._costManager?.QueueUpdate();
+			p.GetCostManager()?.QueueUpdate();
 		}
 
 		private new static void DeApply(Playable playable)
@@ -92,7 +93,7 @@ namespace SabberStoneCore.Auras
 
 			playable.Cost = playable._modifiedCost.Value + delta;
 
-			playable._costManager?.QueueUpdate();
+			playable.GetCostManager()?.QueueUpdate();
 
 			//playable[GameTag.COST] += delta;
 			//playable.AuraEffects.ToBeUpdated = true;

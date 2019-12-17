@@ -39,15 +39,15 @@ namespace SabberStoneCore.Actions
 					amount += ((Spell)source).ReceveivesDoubleSpellDamage
 						? source.Controller.CurrentSpellPower * 2
 						: source.Controller.CurrentSpellPower;
-					if (source.Controller.ControllerAuraEffects[GameTag.SPELLPOWER_DOUBLE] > 0)
-						amount *= (int)Math.Pow(2, source.Controller.ControllerAuraEffects[GameTag.SPELLPOWER_DOUBLE]);
+					if (source.Controller.SpellPowerDouble > 0)
+						amount *= (int)Math.Pow(2, source.Controller.SpellPowerDouble);
 				}
 				else if (source is HeroPower)
 				{
 					// TODO: Consider this part only when TGT or Rumble is loaded
-					amount += source.Controller.Hero.HeroPowerDamage;
-					if (source.Controller.ControllerAuraEffects[GameTag.HERO_POWER_DOUBLE] > 0)
-						amount *= (int)Math.Pow(2, source.Controller.ControllerAuraEffects[GameTag.HERO_POWER_DOUBLE]);
+					amount += source.Controller.Hero.HeroPowerDamage; 
+					if (source.Controller.HeroPowerDouble > 0)
+						amount *= (int)Math.Pow(2, source.Controller.HeroPowerDouble);
 				}
 				return target.TakeDamage(source, amount);
 			};
@@ -340,10 +340,10 @@ namespace SabberStoneCore.Actions
 		}
 
 		public static Func<Controller, Playable, Card, bool, Playable> ChangeEntityBlock
-			=> delegate (Controller c, Playable p, Card newCard, bool removeEnchantments)
+			=> delegate(Controller c, Playable source, Card newCard, bool removeEnchantments)
 			{
 				c.Game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "ChangeEntityBlock",
-					!c.Game.Logging ? "" : $"{p} is changed into {newCard}.");
+					!c.Game.Logging ? "" : $"{source} is changed into {newCard}.");
 
 				//if (!(p.Zone is HandZone hand))
 				//	throw new InvalidOperationException($"{p} is not in Hand. ({p.Zone})");
@@ -351,9 +351,9 @@ namespace SabberStoneCore.Actions
 				if (removeEnchantments)
 				{
 					// 12.0 Game Mechanics Update: Clear all applied enchantments when shifting
-					if (p.AppliedEnchantments != null)
-						for (int i = p.AppliedEnchantments.Count - 1; i >= 0; i--)
-							p.AppliedEnchantments[i].Remove();
+					if (source.AppliedEnchantments != null)
+						for (int i = source.AppliedEnchantments.Count - 1; i >= 0; i--)
+							source.AppliedEnchantments[i].Remove();
 
 					//if (p is Minion m)
 					//	m.Reset();
@@ -361,27 +361,27 @@ namespace SabberStoneCore.Actions
 					//	((Playable) p).ResetCost();
 				}
 
-				p.ActivatedTrigger?.Remove();
-				p.OngoingEffect?.Remove();
+				source.ActivatedTrigger?.Remove();
+				source.OngoingEffect?.Remove();
 
-				HandZone hand = p.Zone as HandZone;
-				BoardZone board = p.Zone as BoardZone;
-				int id = p.Id;
+				HandZone hand = source.Zone as HandZone;
+				BoardZone board = source.Zone as BoardZone;
+				int id = source.Id;
 
 				// Detach the target from Auras
 				if (hand != null)
-					foreach (Aura a in hand.Auras) a.DeApply(p);
+					foreach (Aura a in hand.Auras) a.DeApply(source);
 				else if
 					(board != null)
 				{
-					foreach (Aura a in board.Auras) a.DeApply(p);
+					foreach (Aura a in board.Auras) a.DeApply(source);
 
-					if (p.Card.Untouchable)
+					if (source.Card.Untouchable)
 						board.DecrementUntouchablesCount();
 				}
 
 
-				if (p.Card.Type == newCard.Type)
+				if (source.Card.Type == newCard.Type)
 				{
 					if (c.Game.History)
 					{
@@ -409,30 +409,34 @@ namespace SabberStoneCore.Actions
 					}
 
 
-					p.Card = newCard;
+					source.Card = newCard;
 					//Playable pp = (Playable)p;
 					//if (pp._costManager != null)
 					//	pp._modifiedCost = pp._costManager.EntityChanged(newCard.Cost);
-					p.Reset();
-					p.ResetCost();
+
+					if (removeEnchantments)
+					{
+						source.Reset();
+						source.ResetCost();
+					}
 				}
 				else
 				{
-					Playable entity;
-					EntityData data = p._data;
+					Playable newEntity;
+					EntityData data = source._data;
 					switch (newCard.Type)
 					{
 						case CardType.MINION:
-							entity = new Minion(c, newCard, data, id);
+							newEntity = new Minion(c, newCard, data, id);
 							break;
 						case CardType.SPELL:
-							entity = new Spell(c, newCard, data, id);
+							newEntity = new Spell(c, newCard, data, id);
 							break;
 						case CardType.HERO:
-							entity = new Hero(c, newCard, data, id);
+							newEntity = new Hero(c, newCard, data, id);
 							break;
 						case CardType.WEAPON:
-							entity = new Weapon(c, newCard, data, id);
+							newEntity = new Weapon(c, newCard, data, id);
 							break;
 						default:
 							throw new ArgumentNullException();
@@ -464,20 +468,23 @@ namespace SabberStoneCore.Actions
 					}
 
 					if (hand != null)
-						hand.ChangeEntity(p, entity);
+					{
+						hand.ChangeEntity(source, newEntity);
+					}
 					else if
 						(board != null)
-						board.ChangeEntity((MinionInPlay)p, (MinionInPlay)entity);
-					else if (p.Zone is DeckZone deck)
-						deck.ChangeEntity(p, entity);
+						board.ChangeEntity((MinionInPlay)source, (MinionInPlay)newEntity);
+					else if (source.Zone is DeckZone deck)
+						deck.ChangeEntity(source, newEntity);
 
-					c.Game.IdEntityDic[id] = entity;
+					c.Game.IdEntityDic[id] = newEntity;
 
-					Playable pp = p;
-					if (pp._costManager != null)
-						entity._modifiedCost = pp._costManager.EntityChanged(newCard.Cost);
-					entity._costManager = pp._costManager;
-					p = entity;
+					//if (pp._costManager != null)
+					//	newEntity._modifiedCost = pp._costManager.EntityChanged(newCard.Cost);
+					//source.GetCostManager()?.EntityChanged(newCard.Cost) 
+					//newEntity._costManager = pp._costManager;
+
+					source = newEntity;
 				}
 
 				if (newCard.ChooseOne)
@@ -500,16 +507,16 @@ namespace SabberStoneCore.Actions
 						chooseOnes[2] = Entity.FromCard(in c, Cards.FromId("TRL_343dt1"), tags, c.SetasideZone);
 						chooseOnes[3] = Entity.FromCard(in c, Cards.FromId("TRL_343bt1"), tags, c.SetasideZone);
 
-						p.ChooseOnePlayables = chooseOnes;
+						source.ChooseOnePlayables = chooseOnes;
 					}
 					else
 					{
-						if (p.ChooseOnePlayables == null)
-							p.ChooseOnePlayables = new Playable[2];
+						if (source.ChooseOnePlayables == null)
+							source.ChooseOnePlayables = new Playable[2];
 
 
-						p.ChooseOnePlayables[0] = Entity.FromCard(c, Cards.FromId(newCard.Id + "a"), tags, c.SetasideZone);
-						p.ChooseOnePlayables[1] = Entity.FromCard(c, Cards.FromId(newCard.Id + "b"), tags, c.SetasideZone);
+						source.ChooseOnePlayables[0] = Entity.FromCard(c, Cards.FromId(newCard.Id + "a"), tags, c.SetasideZone);
+						source.ChooseOnePlayables[1] = Entity.FromCard(c, Cards.FromId(newCard.Id + "b"), tags, c.SetasideZone);
 					}
 				}
 
@@ -532,14 +539,14 @@ namespace SabberStoneCore.Actions
 				// Reapply auras
 				if (hand != null)
 				{
-					p.Power?.Trigger?.Activate(p.Game, p, TriggerActivation.HAND);
-					if (p.Power?.Aura is AdaptiveCostEffect e)
-						e.Activate(p);
-					hand.Auras.ForEach(a => a.EntityAdded(p));
+					source.Power?.Trigger?.Activate(source.Game, source, TriggerActivation.HAND);
+					if (source.Power?.Aura is AdaptiveCostEffect e)
+						e.Activate(source);
+					hand.Auras.ForEach(a => a.EntityAdded(source));
 				}
 				else if (board != null)
 				{
-					MinionInPlay m = (MinionInPlay) p;
+					MinionInPlay m = (MinionInPlay) source;
 					if (m.Controller == c.Game.CurrentPlayer)
 					{
 						if (!m.HasCharge)
@@ -559,12 +566,12 @@ namespace SabberStoneCore.Actions
 					else
 						m.IsExhausted = true;
 					BoardZone.ActivateAura(m);
-					board.Auras.ForEach(a => a.EntityAdded(p));
+					board.Auras.ForEach(a => a.EntityAdded(source));
 					board.AdjacentAuras.ForEach(a => a.BoardChanged = true);
 				}
-				else if (p.Zone.Type == Zone.DECK)
+				else if (source.Zone.Type == Zone.DECK)
 				{
-					p.Power?.Trigger?.Activate(p.Game, p, TriggerActivation.DECK);
+					source.Power?.Trigger?.Activate(source.Game, source, TriggerActivation.DECK);
 				}
 
 				// Reapply auras
@@ -576,7 +583,7 @@ namespace SabberStoneCore.Actions
 
 				// Not sure C'Thun from Shifter Zerus will have Proxy's buffs
 
-				return p;
+				return source;
 			};
 
 		public static void OverloadBlock(Controller controller, Playable source, bool history)

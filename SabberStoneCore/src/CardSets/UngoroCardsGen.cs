@@ -672,7 +672,7 @@ namespace SabberStoneCore.CardSets.Standard
 						new ConditionTask(EntityType.SOURCE, SelfCondition.IsHandFull),
 						new FlagTask(false, ComplexTask.Secret(
 						new CopyTask(EntityType.TARGET, Zone.HAND, addToStack: true),
-						new AddAuraEffect(Effects.SetCost(0), EntityType.STACK))))
+						new ChangeCostTask(Effects.SetCost(0), EntityType.STACK))))
 				}
 			});
 

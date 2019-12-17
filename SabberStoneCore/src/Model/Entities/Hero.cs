@@ -59,12 +59,12 @@ namespace SabberStoneCore.Model.Entities
 
 		#region Overrides of Character
 
-		internal override bool GetAttribute(Attributes attr)
+		internal override bool GetAttribute(BoolAttributes attr)
 		{
 			throw new NotImplementedException();
 		}
 
-		internal override void SetAttribute(Attributes attr, bool value)
+		internal override void SetAttribute(BoolAttributes attr, bool value)
 		{
 			throw new NotImplementedException();
 		}

@@ -26,7 +26,6 @@ using SabberStoneCore.Model.Zones;
 
 namespace SabberStoneCoreTest.Basic
 {
-
 	public class BasicTest
 	{
 		[Fact]
@@ -683,13 +682,15 @@ namespace SabberStoneCoreTest.Basic
 			game.Player1.UsedMana = 0;
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion3));
 			game.Player1.UsedMana = 0;
+			// [ {Murloc Raider (5/2)} {Murloc Warleader (4/4)} {Stormwind Champion} (6/6)]
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell1, minion1));
-
+			// [ {Murloc Raider (5/4)} {Murloc Warleader (4/4)} {Stormwind Champion} (6/6)]
 			Assert.Equal(4, minion1.Health);
 			Assert.Equal(4, minion2.Health);
 			Assert.Equal(6, ((Character)minion3).Health);
 
 			game.Process(PlayCardTask.MinionTarget(game.CurrentPlayer, minion4, minion2));
+			// [ {Murloc Raider (3/4)} {Murloc Warleader (4/4)(Silenced)} {Stormwind Champion} (6/6)]
 
 			Assert.Equal(4, minion1.Health);
 			Assert.Equal(4, minion2.Health);
@@ -723,6 +724,26 @@ namespace SabberStoneCoreTest.Basic
 			Assert.Equal(7, target.AttackDamage);
 			game.ProcessCard("Silence", target);
 			Assert.Equal(1, target.AttackDamage);
+		}
+
+		[Fact]
+		public void AdaptiveCostEffectTest()
+		{
+			var game = new Game(new GameConfig());
+			game.StartGame();
+
+			Spell testCard = (Spell) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Scorch"));
+			Minion apprentice = game.ProcessCard<Minion>("Sorcerer's Apprentice", asZeroCost: true);
+			Assert.Equal(3, testCard.Cost);
+
+			game.ProcessCard("Water Elemental", asZeroCost: true);
+			game.EndTurn();
+			game.EndTurn();
+			Assert.Equal(1, testCard.Cost);
+
+			game.ProcessCard("Kalecgos", asZeroCost: true);
+			game.ChooseNthChoice(1);
+			Assert.Equal(1, testCard.Cost);
 		}
 
 		[Fact]
@@ -1088,7 +1109,8 @@ namespace SabberStoneCoreTest.Basic
 			Minion lifestealAttacker = game.ProcessCard<Minion>("Acolyte of Agony", asZeroCost: true);
 			lifestealAttacker.HasCharge = true;
 
-			game.Process(MinionAttackTask.Any(game.CurrentPlayer, lifestealAttacker, game.CurrentOpponent.Hero));
+			Assert.True(game.Process(MinionAttackTask.Any(game.CurrentPlayer, lifestealAttacker,
+				game.CurrentOpponent.Hero)));
 
 			Assert.Equal(3, game.CurrentPlayer.Hero.Damage);
 		}
@@ -1117,55 +1139,6 @@ namespace SabberStoneCoreTest.Basic
 
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
 			Assert.Equal(2, game.CurrentPlayer.NumOptionsPlayedThisTurn);
-		}
-
-		[Fact]
-		public void CantBeTargetedBy()
-		{
-			var game = new Game(new GameConfig
-			{
-				StartPlayer = 1,
-				Player1HeroClass = CardClass.MAGE,
-			});
-			game.StartGame();
-
-			Minion target = game.ProcessCard<Minion>("Faerie Dragon", asZeroCost: true);
-
-			Assert.False(game.CurrentPlayer.Hero.HeroPower.IsValidPlayTarget(target));
-
-			var spell = (Spell)Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
-
-			Assert.False(spell.IsValidPlayTarget(target));
-
-			Minion target2 = game.ProcessCard<Minion>("Stonetusk Boar", asZeroCost: true);
-
-			game.ProcessCard(Generic.DrawCard(game.CurrentPlayer, Cards.FromId("ICC_314t7")), asZeroCost: true);
-
-			Assert.True(target2.CantBeTargetedBySpells);
-			Assert.True(target2.CantBeTargetedByHeroPowers);
-			Assert.False(game.CurrentPlayer.Hero.HeroPower.IsValidPlayTarget(target2));
-			Assert.False(spell.IsValidPlayTarget(target2));
-		}
-
-		[Fact]
-		public void DragonInHand()
-		{
-			Game game = new Game(new GameConfig
-			{
-				History = false,
-				Logging = false,
-				FillDecks = false
-			});
-			game.StartGame();
-
-			Minion testTarget = game.ProcessCard<Minion>("Wisp");
-			game.EndTurn();
-
-			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crowd Roaster"));
-			Assert.Equal(1, game.CurrentPlayer.HandZone.Count(p => p.Card.IsRace(Race.DRAGON)));
-			Assert.False(testCard.IsValidPlayTarget(testTarget));
-			Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crowd Roaster"));
-			Assert.True(testCard.IsValidPlayTarget(testTarget));
 		}
 
 		[Fact]
@@ -1331,5 +1304,83 @@ namespace SabberStoneCoreTest.Basic
 			game.EndTurn();
 			game.EndTurn();
 		}
+
+        [Fact]
+        public void DragonInHand()
+        {
+            Game game = new Game(new GameConfig
+            {
+                History = false,
+                Logging = false,
+                FillDecks = false
+            });
+            game.StartGame();
+
+            Minion testTarget = game.ProcessCard<Minion>("Wisp");
+            game.EndTurn();
+
+            Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crowd Roaster"));
+            Assert.Equal(1, game.CurrentPlayer.HandZone.Count(p => p.Card.IsRace(Race.DRAGON)));
+            Assert.False(testCard.IsValidPlayTarget(testTarget));
+            Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crowd Roaster"));
+            Assert.True(testCard.IsValidPlayTarget(testTarget));
+        }
+
+        [Fact]
+        public void CopyWithAdjacentAuras()
+        {
+	        Game game = new Game(new GameConfig());
+	        game.StartGame();
+
+	        Minion target = game.ProcessCard<Minion>("Wisp");
+	        Minion aura = game.ProcessCard<Minion>("Dire Wolf Alpha", asZeroCost: true);
+			Minion filler = game.ProcessCard<Minion>("Wisp");
+	        Assert.Equal(2, target.AttackDamage);
+	        Assert.Equal(2, filler.AttackDamage);
+
+			Minion copied = game.ProcessCard<Minion>("Faceless Manipulator", target, true);
+			Assert.Equal(1, copied.AttackDamage);	// Aura effects shouldn't be copied;
+
+			Minion copied2 = game.ProcessCard<Minion>("Faceless Manipulator", target, true,
+													  zonePosition: 1);
+			// [ {target} {copied2} {aura} {filler} {copied} ]
+			Assert.Equal(1, target.AttackDamage);
+			Assert.Equal(2, copied2.AttackDamage);	// Adjacent aura updated.;
+        }
+
+		[Fact]
+        public void GenericCopyWithAuras()
+        {
+	        var game = new Game(new GameConfig());
+	        game.StartGame();
+
+	        Minion target = game.ProcessCard<Minion>("Wisp");
+	        Minion aura = game.ProcessCard<Minion>("Dire Wolf Alpha", asZeroCost: true);
+	        Minion aura2 = game.ProcessCard<Minion>("Raid Leader", asZeroCost: true);
+
+	        Assert.Equal(3, target.AttackDamage);
+
+	        Minion copied = (Minion) Generic.Copy(game.CurrentPlayer, target, target, Zone.PLAY);
+	        Assert.Equal(2, copied.AttackDamage);
+        }
+
+        [Fact]
+        public void SetEffectWithAura()
+        {
+	        var game = new Game(new GameConfig());
+	        game.StartGame();
+
+	        Minion target = game.ProcessCard<Minion>("Bloodfen Raptor", asZeroCost: true);
+	        Minion aura = game.ProcessCard<Minion>("Stormwind Champion", asZeroCost: true);
+
+	        Assert.Equal(4, target.AttackDamage);
+
+			game.ProcessCard("Shrink Ray", asZeroCost: true);
+			Assert.Equal(2, target.AttackDamage);
+			Assert.Equal(2, target.Health);
+
+			game.ProcessCard("Humility", target, asZeroCost: true);
+			Assert.Equal(2, target.AttackDamage);
+        }
 	}
 }

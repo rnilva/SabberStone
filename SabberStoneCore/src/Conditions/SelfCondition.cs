@@ -198,6 +198,22 @@ namespace SabberStoneCore.Conditions
 				       || relaSign == RelaSign.LEQ && me.Controller.BoardZone.Any(p => GetTagValue(p, tag) <= amount);
 			});
 
+		public static SelfCondition HasBoardMinion(IntAttributes attr, int amount, RelaSign relaSign = RelaSign.EQ)
+		{
+			return new SelfCondition(me =>
+			{
+				return relaSign == RelaSign.EQ && me.Controller.BoardZone.Any(p => p[attr] == amount) ||
+				       relaSign == RelaSign.GEQ && me.Controller.BoardZone.Any(p => p[attr] >= amount) ||
+				       relaSign == RelaSign.LEQ && me.Controller.BoardZone.Any(p => p[attr] <= amount);
+			});
+		}
+
+		
+		public static SelfCondition HasBoardMinion(BoolAttributes attr, bool value)
+		{
+			return new SelfCondition(me => { return me.Controller.BoardZone.Any(p => p[attr] == value); });
+		}
+
 		public static SelfCondition HasOpBoardMinion(GameTag tag, int amount, RelaSign relaSign = RelaSign.EQ)
 			=> new SelfCondition(me =>
 			{

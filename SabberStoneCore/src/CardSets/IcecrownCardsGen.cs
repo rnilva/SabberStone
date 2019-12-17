@@ -826,7 +826,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: <b>Deathrattle:</b> Give all minions +2/+2.
 			// --------------------------------------------------------
 			cards.Add("ICC_047a", new Power {
-				PowerTask = new ChangeEntityTask("ICC_047t")
+				PowerTask = new ChangeEntityTask("ICC_047t", removeEnchantments: true)
 			});
 
 			// ------------------------------------------ SPELL - DRUID
@@ -836,7 +836,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: <b>Deathrattle:</b> Deal 3 damage to all minions.
 			// --------------------------------------------------------
 			cards.Add("ICC_047b", new Power {
-				PowerTask = new ChangeEntityTask("ICC_047t2")
+				PowerTask = new ChangeEntityTask("ICC_047t2", removeEnchantments: true)
 			});
 
 			// ------------------------------------------ SPELL - DRUID
@@ -3353,7 +3353,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: <b>Spell Damage +1</b>.
 			// --------------------------------------------------------
 			cards.Add("ICC_093e", new Power {
-				Enchant = new Enchant(GameTag.SPELLPOWER, EffectOperator.ADD, 1)
+				Enchant = Enchants.Enchants.GetAutoEnchantFromText("ICC_093e")
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
