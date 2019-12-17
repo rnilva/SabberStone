@@ -610,7 +610,7 @@ namespace SabberStoneCore.CardSets
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.HAND),
 					new FilterStackTask(SelfCondition.IsNotStartInDeck),
-					new AddAuraEffect(Effects.ReduceCost(2), EntityType.STACK))
+					new ChangeCostTask(Effects.ReduceCost(2), EntityType.STACK))
 			});
 
 			// ------------------------------------------- SPELL - MAGE
@@ -1521,7 +1521,7 @@ namespace SabberStoneCore.CardSets
 					SingleTask = ComplexTask.Create(
 						new CopyTask(EntityType.TARGET, Zone.HAND, addToStack: true),
 						new AddEnchantmentTask("LOOT_165e", EntityType.STACK),
-						new AddAuraEffect(Effects.SetCost(1), EntityType.STACK))
+						new ChangeCostTask(Effects.SetCost(1), EntityType.STACK))
 				}
 			});
 

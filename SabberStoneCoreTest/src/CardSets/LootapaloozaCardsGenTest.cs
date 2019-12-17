@@ -4285,7 +4285,7 @@ namespace SabberStoneCoreTest.CardSets
 
 			game.EndTurn();
 
-			Assert.Equal(testCard.Cost, testCard.Card.Cost);
+			Assert.Equal(testCard.Card.Cost, testCard.Cost);
 
 			game.ProcessCard("Pyroblast", game.CurrentOpponent.Hero);
 

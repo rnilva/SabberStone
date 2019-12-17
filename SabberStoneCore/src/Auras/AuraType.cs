@@ -33,6 +33,8 @@ namespace SabberStoneCore.Auras
 
 		HERO,
 
+		OP_HERO,
+
 		HEROPOWER,
 
 		OP_HEROPOWER,

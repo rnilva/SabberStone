@@ -925,7 +925,7 @@ namespace SabberStoneCore.CardSets.Standard
 						new ConditionTask(EntityType.TARGET, SelfCondition.IsNotDead),
 						new FlagTask(true, ComplexTask.Secret(
 							new ReturnHandTask(EntityType.TARGET),
-							new AddAuraEffect(Effects.AddCost(2), EntityType.TARGET))))
+							new ChangeCostTask(Effects.AddCost(2), EntityType.TARGET))))
 				}
 			});
 
@@ -2275,7 +2275,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("EX1_144", new Power {
 				PowerTask = ComplexTask.Create(
 					new ReturnHandTask(EntityType.TARGET),
-					new AddAuraEffect(Effects.ReduceCost(2), EntityType.TARGET))
+					new ChangeCostTask(Effects.ReduceCost(2), EntityType.TARGET))
 			});
 
 			// ------------------------------------------ SPELL - ROGUE
@@ -3721,6 +3721,7 @@ namespace SabberStoneCore.CardSets.Standard
 					Condition = SelfCondition.HasMinionInHand,
 					SingleTask = ComplexTask.Conditional(SelfCondition.IsNotDead, ComplexTask.Create(
 							new GetGameTagTask(GameTag.ZONE_POSITION, EntityType.SOURCE),
+							new MathSubstractionTask(1),
 							new MoveToSetaside(EntityType.SOURCE),
 							new IncludeTask(EntityType.HAND),
 							new FilterStackTask(SelfCondition.IsMinion),
@@ -5467,7 +5468,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: <b>Spell Damage +1</b>.
 			// --------------------------------------------------------
 			cards.Add("EX1_584e", new Power {
-				Enchant = new Enchant(GameTag.SPELLPOWER, EffectOperator.ADD, 1)
+				Enchant = new Enchant(new AddSpellPower(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

@@ -1154,7 +1154,7 @@ namespace SabberStoneCore.CardSets.Adventure
 			// --------------------------------------------------------
 			cards.Add("LOOTA_BOSS_23p", new Power {
 				// TODO Test: Hunter's Call_LOOTA_BOSS_23p
-				PowerTask = new AddAuraEffect(Effects.ReduceCost(1), EntityType.HAND)
+				PowerTask = new ChangeCostTask(Effects.ReduceCost(1), EntityType.HAND)
 			});
 
 			// ----------------------------------- HERO_POWER - NEUTRAL
@@ -1306,7 +1306,7 @@ namespace SabberStoneCore.CardSets.Adventure
 					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = ComplexTask.Create(
 						new DrawTask(true),
-						new AddAuraEffect(Effects.ReduceCost(1), EntityType.STACK))
+						new ChangeCostTask(Effects.ReduceCost(1), EntityType.STACK))
 				}
 			});
 

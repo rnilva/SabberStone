@@ -112,20 +112,17 @@ namespace SabberStoneCore.Auras
 		//	base.UpdateInternal();
 		//}
 
-		protected override void RemoveInternal()
+		protected override bool RemoveInternal()
 		{
 			AppliedEntityIdCollection.ForEach(Game.IdEntityDic, Effects,
 				(id, idDict, effs) =>
 				{
 					Playable entity = idDict[id];
 					for (int i = 0; i < effs.Length; i++)
-						effs[i].RemoveAuraFrom(entity);
+						effs[i].RemoveFrom(entity);
 				});
 
 			AppliedEntityIdCollection.Clear();
-
-			if (_removed)
-				Game.Auras.Remove(this);
 
 			// TODO: EnchantmentCard, if there is a case
 
@@ -133,6 +130,8 @@ namespace SabberStoneCore.Auras
 				Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Aura.RemoveInternal",
 					$"{Owner}'s aura is removed from " +
 					$"{string.Join(",", AppliedEntityIdCollection.Select(i => Game.IdEntityDic[i]))})");
+
+			return !_removed;
 		}
 
 		private void TurnOff(Entity source)

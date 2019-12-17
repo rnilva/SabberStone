@@ -11,7 +11,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
+
+using System;
 using System.Collections.Generic;
+using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
@@ -37,35 +40,44 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (minionTarget == null)
 				return TaskState.STOP;
 
-			var sourceTarget = (MinionInPlay) source;
-			if (sourceTarget.Zone?.Type != Zone.PLAY)
+			var minionSource = (MinionInPlay) source;
+			if (minionSource.Zone?.Type != Zone.PLAY)
 				return TaskState.STOP;
 
-			var tags = new EntityData
+			{	// Copy Tags from target to source.
+				EntityData sourceTags = minionSource._data;
+				sourceTags.CopyFrom(in minionTarget._data);
+				if (game.History)
+				{
+					sourceTags[GameTag.ENTITY_ID] = minionSource.Id;
+					sourceTags[GameTag.CONTROLLER] = minionSource.Controller.PlayerId;
+					sourceTags[GameTag.ZONE_POSITION] = minionSource.ZonePosition + 1;
+				}
+			}
+
+			minionSource = (MinionInPlay) Generic.ChangeEntityBlock(controller, minionSource, minionTarget.Card, true);
+
+			minionSource.CopyAttributesFrom(minionTarget);
+
 			{
-				{GameTag.CREATOR, sourceTarget.Id}
-			};
-			if (game.History)
-				tags.Add(GameTag.PREMIUM, minionTarget[GameTag.PREMIUM]);
+				int id = minionTarget.Id;
+				foreach (AdjacentAura adjAura in controller.BoardZone.AdjacentAuras)
+				foreach (MinionInPlay minion in adjAura.AppliedEntities)
+					if (minion.Id == id)
+					{
+						// De-apply effects from adjacent auras affecting the target
+						adjAura.DeApply(minionSource, true);
+						break;
+					}
+			}
 
-			//var copy = (Minion) Entity.FromCard(in controller, minionTarget.Card, tags);
-			MinionInPlay copy = MinionInPlay.FromCard(in controller, minionTarget.Card, tags);
-			//minionTarget.CopyInternalAttributes(copy);
-			copy.CopyAttributesFrom(minionTarget);
-
-			//Trigger trigger = minionTarget.ActivatedTrigger;
 			IAura aura = minionTarget.OngoingEffect;
-
-			// LINKED_ENTITY
-			if (sourceTarget == game.CurrentEventData.EventSource)
-				game.CurrentEventData.EventSource = copy;
-			sourceTarget.Controller.BoardZone.Replace(sourceTarget, copy);
 
 			// Copy Enchantments
 			if (minionTarget.AppliedEnchantments != null)
 				foreach (Enchantment e in minionTarget.AppliedEnchantments)
 				{
-					Enchantment instance = Enchantment.GetInstance(in controller, copy, copy, e.Card);
+					Enchantment instance = Enchantment.GetInstance(in controller, minionSource, minionSource, e.Card);
 					if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
 					{
 						instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
@@ -77,40 +89,23 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						game.OneTurnEffectEnchantments.Add(instance);
 				}
 
-			foreach (KeyValuePair<GameTag, int> kvp in minionTarget._data)
-				switch (kvp.Key)
-				{
-					case GameTag.ENTITY_ID:
-					case GameTag.CONTROLLER:
-					case GameTag.ZONE:
-					case GameTag.ZONE_POSITION:
-					case GameTag.CREATOR:
-					case GameTag.PREMIUM:
-					case GameTag.EXHAUSTED:
-					case GameTag.DEATHRATTLE:
-						continue;
-					default:
-						copy._data[kvp.Key] = kvp.Value;
-						break;
-				}
+			// Register the copied entity to auras; this will prevent duplication.
+			foreach (Aura boardAura in controller.BoardZone.Auras)
+				boardAura.Register(minionSource);
 
-			if (aura != null && copy.OngoingEffect == null)
-				aura.Clone(copy);
+			if (aura != null && minionSource.OngoingEffect == null)
+				aura.Clone(minionSource);
 
-			List<(int entityId, IEffect effect)> oneTurnEffects = controller.Game.OneTurnEffects;
-			for (int i = oneTurnEffects.Count - 1; i >= 0; i--)
+			if (minionTarget.HasCharge)
+				minionSource.IsExhausted = false;
+			else if (minionTarget.IsRush)
 			{
-				(int id, IEffect effect) = oneTurnEffects[i];
-
-				if (id == target.Id)
-					oneTurnEffects.Add((copy.Id, effect));
+				minionSource.AttackableByRush = true;
+				game.RushMinions.Add(minionSource.Id);
 			}
 
-			if (!minionTarget.HasCharge)
-				copy.IsExhausted = true;
-
 			if (_addToStack)
-				stack.Playables = new []{copy};
+				stack.Playables = new Playable[]{minionSource};
 
 			return TaskState.COMPLETE;
 		}

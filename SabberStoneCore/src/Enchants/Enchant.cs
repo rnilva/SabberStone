@@ -45,8 +45,8 @@ namespace SabberStoneCore.Enchants
 		public Enchant(GameTag tag, EffectOperator @operator, int value)
 	    {
 			IEffect eff;
-			Attributes attr = AttributeHelpers.GameTagToAttribute(tag);
-			if (attr != Attributes.Invalid)
+			BoolAttributes attr = AttributeHelpers.GameTagToBoolAttribute(tag);
+			if (attr != BoolAttributes.Invalid)
 				eff = new AttributeEffect(attr, value == 1);
 			else
 				eff = new Effect(tag, @operator, value);
@@ -162,9 +162,9 @@ namespace SabberStoneCore.Enchants
 			base.ActivateTo(entity, num1, num2);
 		}
 
-		public void Update()
+		public bool Update()
 		{
-			if (!_toBeUpdated) return;
+			if (!_toBeUpdated) return true;
 
 			int delta = _count - _lastCount;
 
@@ -174,6 +174,8 @@ namespace SabberStoneCore.Enchants
 			_lastCount = _count;
 
 			_toBeUpdated = false;
+
+			return true;
 		}
 
 		public void Remove()

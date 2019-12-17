@@ -21,13 +21,17 @@ namespace SabberStoneCore.Auras
 			_auras = auras;
 		}
 
-		public void Update()
+		public bool Update()
 		{
 			if (!On)
-				Owner.Game.Auras.Remove(this);
-			else
-				for (int i = 0; i < _auras.Count; i++)
-					_auras[i].Update();
+			{
+				//Owner.Game.Auras.Remove(this);
+				return false;
+			}
+			
+			for (int i = 0; i < _auras.Count; i++)
+				_auras[i].Update();
+			return true;
 		}
 
 		public void Remove()

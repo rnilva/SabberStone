@@ -483,7 +483,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAG_ONE_TURN_EFFECT = 1
 			// --------------------------------------------------------
 			cards.Add("DAL_379e", new Power {
-				Enchant = new Enchant(new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 2))
+				Enchant = new Enchant(new AddSpellPower(2))
 				{
 					IsOneTurnEffect = true
 				}
@@ -2915,7 +2915,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Increased <b>Spell Damage</b>.
 			// --------------------------------------------------------
 			cards.Add("DAL_548e", new Power {
-				Enchant = new OngoingEnchant(new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 2))
+				Enchant = new OngoingEnchant(new AddSpellPower(2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

@@ -52,7 +52,7 @@ namespace SabberStoneCore.CardSets
 			// - SPELLPOWER = 2
 			// --------------------------------------------------------
 			cards.Add("LOE_051", new Power {
-				Aura = new Aura(AuraType.OPPONENT, new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 2))
+				Aura = new Aura(AuraType.OP_HERO, new AddSpellPower(2))
 			});
 
 			// ------------------------------------------ SPELL - DRUID

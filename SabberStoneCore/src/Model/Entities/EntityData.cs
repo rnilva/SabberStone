@@ -377,8 +377,8 @@ namespace SabberStoneCore.Model.Entities
 						break;
 					}
 
-				if (flag)
-					continue;
+					if (flag)
+						continue;
 
 					for (int j = 0; j < newHash; j += 2)
 					{
@@ -507,6 +507,21 @@ namespace SabberStoneCore.Model.Entities
 		}
 
 		/// <summary>
+		/// Replace all elements in this dictionary with
+		/// the elements of another EntityData.
+		/// </summary>
+		/// <param name="other"></param>
+		public void CopyFrom(in EntityData other)
+		{
+			int[] otherBucket = other._buckets;
+			int[] bucket = new int[otherBucket.Length];
+			Array.Copy(otherBucket, bucket, bucket.Length);
+			_buckets = bucket;
+			_size = other._size;
+			_count = other._count;
+		}
+
+		/// <summary>
 		/// Returns a string uniquely identifying this object.
 		/// </summary>
 		/// <param name="ignore">The tags to ignore during hashing.</param>
@@ -528,7 +543,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public override string ToString()
 		{
-			return Hash();
+			return $"Count = {_count}";
 		}
         
         private unsafe struct Initialiser

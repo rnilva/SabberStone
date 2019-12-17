@@ -4030,8 +4030,8 @@ namespace SabberStoneCoreTest.CardSets
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, hoarder));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			Playable devilsoar = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Charged Devilsaur"));
-			game.Process(PlayCardTask.Minion(game.CurrentPlayer, devilsoar));
+			Playable devilsaur = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Charged Devilsaur"));
+			game.Process(PlayCardTask.Minion(game.CurrentPlayer, devilsaur));
 			Assert.Single(game.CurrentPlayer.Options().Where(option => option is MinionAttackTask));
 			Assert.Equal(hoarder, game.CurrentPlayer.Options().Where(option => option is MinionAttackTask).Cast<MinionAttackTask>().First().Target);
 
@@ -4039,6 +4039,37 @@ namespace SabberStoneCoreTest.CardSets
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
 			Assert.Equal(2, game.CurrentPlayer.Options().Where(option => option is MinionAttackTask).Count());
+		}
+
+		[Fact]
+		public void ChargedDevilsaur_UNG_099_2()
+		{
+			var game = new Game(new GameConfig
+			{
+				StartPlayer = 1,
+				Player1HeroClass = CardClass.MAGE,
+				Player2HeroClass = CardClass.MAGE,
+				FillDecks = false,
+				Shuffle = false,
+				Player1Deck = new List<Card>
+				{
+					Cards.FromName("Wisp"),
+					Cards.FromName("Wisp"),
+					Cards.FromName("Wisp"),
+					Cards.FromName("Wisp"),
+					Cards.FromName("Charged Devilsaur")
+				}
+			});
+			game.StartGame();
+			game.Player1.BaseMana = 10;
+			game.Player2.BaseMana = 10;
+
+			game.ProcessCard("Kathrena Winterwisp");
+			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
+			MinionInPlay devilsaur = game.CurrentPlayer.BoardZone[1];
+			Assert.Equal("Charged Devilsaur", devilsaur.Card.Name);
+			Assert.True(devilsaur.CanAttack);
+			Assert.False(devilsaur.CantAttackHeroes);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

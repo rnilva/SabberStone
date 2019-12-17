@@ -11,7 +11,7 @@ namespace SabberStoneCore.Auras
 		Playable Owner { get; }
 
 		/// <summary> Refreshes this effect. </summary>
-		void Update();
+		bool Update();
 
 		/// <summary> Removes this effect from the game. </summary>
 		void Remove();

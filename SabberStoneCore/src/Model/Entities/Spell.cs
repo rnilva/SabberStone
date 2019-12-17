@@ -62,26 +62,24 @@ namespace SabberStoneCore.Model.Entities
 		/// a result for the current state of the game.
 		/// </summary>
 		/// <value><c>true</c> if this entity is playable; otherwise, <c>false</c>.</value>
-		public override bool IsPlayableByPlayer
+		public override bool IsPlayableByPlayer()
 		{
-			get
+			// check if we can play this secret
+			if (IsSecret && (Controller.SecretZone.IsFull || Controller.SecretZone.Any(p => p.Card.Id == Card.Id)))
 			{
-				// check if we can play this secret
-				if (IsSecret && (Controller.SecretZone.IsFull || Controller.SecretZone.Any(p => p.Card.Id == Card.Id)))
-				{
-					Game.Log(LogLevel.VERBOSE, BlockType.PLAY, "Playable",
-						!Game.Logging? "":$"{this} isn't playable, because secret already active on controller.");
-					return false;
-				}
-				if (IsQuest && Controller.SecretZone.Quest != null)
-				{
-					Game.Log(LogLevel.VERBOSE, BlockType.PLAY, "Playable",
-						!Game.Logging ? "" : $"{this} isn't playable, because controller already has a quest in play.");
-					return false;
-				}
-
-				return base.IsPlayableByPlayer;
+				Game.Log(LogLevel.VERBOSE, BlockType.PLAY, "Playable",
+					!Game.Logging ? "" : $"{this} isn't playable, because secret already active on controller.");
+				return false;
 			}
+
+			if (IsQuest && Controller.SecretZone.Quest != null)
+			{
+				Game.Log(LogLevel.VERBOSE, BlockType.PLAY, "Playable",
+					!Game.Logging ? "" : $"{this} isn't playable, because controller already has a quest in play.");
+				return false;
+			}
+
+			return base.IsPlayableByPlayer();
 		}
 
 		public override Playable Clone(in Controller controller)

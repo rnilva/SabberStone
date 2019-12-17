@@ -11,88 +11,45 @@ namespace SabberStoneCore.Model.Entities
 	{
 		internal class CostManager
 		{
-			private readonly List<(EffectOperator Operator, int Value)> _costEffects =
-				new List<(EffectOperator @operator, int value)>();
-			private readonly List<(EffectOperator Operator, int Value)> _costEnchantments =
-				new List<(EffectOperator Operator, int Value)>();
-
+			private readonly List<int> _setEffects = new List<int>();
 			private int _cachedValue;
-			private bool _toBeUpdated;	
+			private bool _toBeUpdated;
 			private AdaptiveCostEffect _adaptiveCostEffect;
 
-			public CostManager()
-			{
-				_toBeUpdated = true;
-			}
+			public bool CardCostsHealth;
 
-			public CostManager(AdaptiveCostEffect adaptiveEffect)
+			public CostManager(int initValue)
 			{
-				_adaptiveCostEffect = adaptiveEffect;
+				_cachedValue = initValue;
+				_toBeUpdated = true;
 			}
 
 			private CostManager(CostManager original)
 			{
 				_cachedValue = original._cachedValue;
 				_toBeUpdated = original._toBeUpdated;
-				_costEffects.AddRange(original._costEffects);
+				_setEffects.AddRange(original._setEffects);
 			}
 
-			public int CachedValue
+			public void VaryCost(int value)
 			{
-				get => _cachedValue;
-				set => _cachedValue = value;
+				_cachedValue += value;
 			}
 
-			/// <summary>
-			/// Apply a new Cost effect of an <see cref="Aura"/>
-			/// </summary>
-			public void AddCostAura(EffectOperator @operator, int value)
+			public void SetCost(int value)
 			{
-				_costEffects.Add((@operator, value));
-
-				switch (@operator)
-				{
-					case EffectOperator.ADD:
-						_cachedValue += value;
-						break;
-					case EffectOperator.SUB:
-						_cachedValue -= value;
-						break;
-					case EffectOperator.SET:
-						_cachedValue = value;
-						break;
-				}
+				_setEffects.Add(value);
+				_cachedValue = value;
+				if (_adaptiveCostEffect != null)
+					_toBeUpdated = true;
 			}
 
-			/// <summary>
-			/// Remove an applied Cost effect of an <see cref="Aura"/>.
-			/// </summary>
-			/// <exception cref="KeyNotFoundException"></exception>
-			public void RemoveCostAura(EffectOperator @operator, int value)
+			public void RemoveSetEffect(int value)
 			{
-				// TODO: Fix the behaviour when adaptive cost effect + redraw
-				if (!_costEffects.Remove((@operator, value)))
-					// throw new KeyNotFoundException($"Can't remove cost aura [{@operator} {value}]");
-					return;
-
-				switch (@operator)
-				{
-					case EffectOperator.SUB:
-						_cachedValue += value;
-						break;
-					case EffectOperator.ADD:
-						_cachedValue -= value;
-						break;
-					case EffectOperator.SET:
-						_toBeUpdated = true;
-						break;
-				}
-
+				_setEffects.Remove(value);
+				_toBeUpdated = true;
 			}
 
-			/// <summary>
-			/// Activate <see cref="AdaptiveCostEffect"/> to calculate and reflect its result.
-			/// </summary>
 			public void ActivateAdaptiveEffect(AdaptiveCostEffect adaptiveCostEffect)
 			{
 				_adaptiveCostEffect = adaptiveCostEffect;
@@ -100,7 +57,7 @@ namespace SabberStoneCore.Model.Entities
 
 			public void UpdateAdaptiveEffect(int setValue = -1)
 			{
-				if (setValue > 0)
+				if (setValue >= 0)
 					_cachedValue = setValue;
 				else
 					_toBeUpdated = true;
@@ -111,34 +68,11 @@ namespace SabberStoneCore.Model.Entities
 				_adaptiveCostEffect = null;
 			}
 
-			/// <summary>
-			/// Add a new permanent cost enchantment effect
-			/// </summary>
-			public void AddCostEnchantment(EffectOperator @operator, int value)
+			public int GetCost(int? cost)
 			{
-				ref int c = ref _cachedValue;
+				int result = _toBeUpdated ? GetCostInternal(cost.Value) : _cachedValue;
 
-				switch (@operator)
-				{
-					case EffectOperator.SUB:
-						c -= value;
-						break;
-					case EffectOperator.ADD:
-						c += value;
-						break;
-					case EffectOperator.SET:
-						_toBeUpdated = true;
-						break;
-				}
-
-				_costEnchantments.Add((@operator, value));
-			}
-
-			public int GetCost(int c)
-			{
-				int cost = _toBeUpdated ? GetCostInternal(c) : _cachedValue;
-
-				return cost > 0 ? cost : 0;
+				return result > 0 ? result : 0;
 			}
 
 			internal void QueueUpdate()
@@ -146,61 +80,19 @@ namespace SabberStoneCore.Model.Entities
 				_toBeUpdated = true;
 			}
 
-			internal int EntityChanged(int newCardCost)
-			{
-				for (int i = 0; i < _costEnchantments.Count; i++)
-				{
-					(EffectOperator @operator, int value) = _costEnchantments[i];
-					switch (@operator)
-					{
-						case EffectOperator.SUB:
-							newCardCost -= value;
-							break;
-						case EffectOperator.ADD:
-							newCardCost += value;
-							break;
-						case EffectOperator.SET:
-							newCardCost = value;
-							break;
-					}
-				}
-
-				newCardCost = GetCostInternal(newCardCost);
-
-				return newCardCost > 0 ? newCardCost : 0;
-			}
-
 			private int GetCostInternal(int c)
 			{
-				// 1. Get cost with enchantments first (c)
-				// e.g. Emperor Thaurissan
-
-				// 2. Apply cost aura effects next. (e.g. Naga Sea Witch, Sorcerer's Apprentice)
-				List<(EffectOperator Operator, int Value)> effects = _costEffects;
-				for (int i = 0; i < effects.Count; i++)
+				if (_adaptiveCostEffect?.IsSetEffect ?? false)
+					_adaptiveCostEffect.Apply(ref c);
+				else
 				{
-					(EffectOperator Operator, int Value) e = effects[i];
-					switch (e.Operator)
-					{
-						case EffectOperator.ADD:
-							c += e.Value;
-							break;
-						case EffectOperator.SUB:
-							c -= e.Value;
-							break;
-						case EffectOperator.SET:
-							c = e.Value;
-							break;
-						default:
-							throw new ArgumentOutOfRangeException();
-					}
+					if (_setEffects.Count > 0)
+						c = _setEffects[_setEffects.Count - 1];
+
+					_adaptiveCostEffect?.Apply(ref c);
 				}
 
-				// 3. Lastly apply Adaptive Cost Effect (e.g. Giants)
-				c = _adaptiveCostEffect?.Apply(c) ?? c;
-
 				_cachedValue = c;
-
 				_toBeUpdated = false;
 
 				return c;
@@ -212,14 +104,66 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		internal CostManager _costManager;
+		private CostManager _costManager;
 		internal int? _modifiedCost;
+
+		internal CostManager GetCostManager()
+		{
+			if (Zone?.Type != Enums.Zone.HAND) return null;
+
+			return _costManager ??= new CostManager(_modifiedCost ?? (_modifiedCost = Card.Cost).Value);
+		}
+
+		internal void VaryCost(int value)
+		{
+			ref int? cost = ref _modifiedCost;
+			if (!cost.HasValue) cost = Card.Cost;
+
+			cost += value;
+
+			_costManager?.VaryCost(value);
+		}
+
+		internal void RemoveCostEffect(int value)
+		{
+			_modifiedCost -= value;
+			//_costManager?.RemoveCostAura(EffectOperator.ADD, value);
+			_costManager?.QueueUpdate();
+		}
+
+		internal void SetCost(int value)
+		{
+			if (Zone?.Type == Enums.Zone.HAND || Card.Type == CardType.HERO_POWER)
+			{
+				if (_costManager == null)
+				{
+					_modifiedCost ??= Card.Cost;
+					_costManager = new CostManager(value);
+				}
+
+				_costManager.SetCost(value);
+			}
+			else
+			{
+				_modifiedCost = value;
+			}
+		}
+
+		internal void RemoveSetCostEffect(int value)
+		{
+			_costManager?.RemoveSetEffect(value);
+		}
 
 		public int Cost
 		{
 			get =>
-				_costManager?.GetCost(_modifiedCost ?? (_modifiedCost = Card.Cost).Value) ??
-				(_modifiedCost.HasValue ? _modifiedCost < 0 ? 0 : _modifiedCost.Value : (_modifiedCost = Card.Cost).Value);
+				_costManager?.GetCost(_modifiedCost) ??
+					(_modifiedCost.HasValue
+						? _modifiedCost < 0
+							? 0
+							: _modifiedCost.Value
+						: (_modifiedCost = Card.Cost).Value);
+
 			set
 			{
 				_modifiedCost = value;
@@ -239,5 +183,7 @@ namespace SabberStoneCore.Model.Entities
 			if (_history)
 				Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.COST, Card.Cost));
 		}
+
+		public bool CardCostsHealth => _costManager?.CardCostsHealth ?? false;
 	}
 }

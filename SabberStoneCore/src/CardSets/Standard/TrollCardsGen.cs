@@ -2974,7 +2974,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ENRAGED = 1
 			// --------------------------------------------------------
 			cards.Add("TRL_312e", new Power {
-				Enchant = new Enchant(GameTag.SPELLPOWER, EffectOperator.ADD, 2)
+				Enchant = new Enchant(new AddSpellPower(2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

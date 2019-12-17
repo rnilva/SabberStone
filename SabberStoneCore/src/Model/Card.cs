@@ -402,15 +402,16 @@ namespace SabberStoneCore.Model
 
                 _minionAttrs.boolAttrs[0] = Stealth;
                 _minionAttrs.boolAttrs[1] = CantBeTargetedBySpells;
-                _minionAttrs.boolAttrs[2] = Taunt;
-                _minionAttrs.boolAttrs[3] = DivineShield;
-                _minionAttrs.boolAttrs[4] = Windfury;
-                _minionAttrs.boolAttrs[5] = Charge;
-                _minionAttrs.boolAttrs[6] = Poisonous;
-                _minionAttrs.boolAttrs[7] = LifeSteal;
-                _minionAttrs.boolAttrs[8] = Rush;
-                _minionAttrs.boolAttrs[9] = CantAttack;
-                _minionAttrs.boolAttrs[10] = Deathrattle;
+                //_minionAttrs.boolAttrs[2] = CannotAttackHeroes;
+                _minionAttrs.boolAttrs[3] = Taunt;
+                _minionAttrs.boolAttrs[4] = DivineShield;
+                _minionAttrs.boolAttrs[5] = Windfury;
+                _minionAttrs.boolAttrs[6] = Charge;
+                _minionAttrs.boolAttrs[7] = Poisonous;
+                _minionAttrs.boolAttrs[8] = LifeSteal;
+                _minionAttrs.boolAttrs[9] = Rush;
+                _minionAttrs.boolAttrs[10] = CantAttack;
+                _minionAttrs.boolAttrs[11] = Deathrattle;
             }
             #endregion
 		}
@@ -942,7 +943,7 @@ namespace SabberStoneCore.Model
 		internal unsafe struct MinionAttributes
 		{
 			public const int NUM_INT_ATTRS = 1;
-			public const int NUM_BOOL_ATTRS = 11;
+			public const int NUM_BOOL_ATTRS = 12;
 #pragma warning disable 649
 			public fixed int intAttrs[NUM_INT_ATTRS];
 			public fixed bool boolAttrs[NUM_BOOL_ATTRS];

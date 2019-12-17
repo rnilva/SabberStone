@@ -1218,8 +1218,9 @@ namespace SabberStoneCore.Model
 		public void AuraUpdate()
 		{
 			List<IAura> auras = Auras;
-			for (int i = auras.Count - 1; i >= 0; i--)
-				auras[i].Update();
+			for (int i = 0; i < auras.Count; ++i)
+				if (!auras[i].Update())
+					auras.RemoveAt(i--);
 		}
 
 		/// <summary>

@@ -35,7 +35,7 @@ namespace SabberStoneCore.Actions
 				Game game = c.Game;
 
 				if (!skipPrePhase)
-					if (!heroPower.IsPlayable || !heroPower.IsValidPlayTarget(target))
+					if (!heroPower.IsPlayable() || !heroPower.IsValidPlayTarget(target))
 						return false;
 
 				PayPhase.Invoke(game, c, heroPower);

@@ -357,7 +357,7 @@ namespace SabberStoneCore.CardSets
 					new FlagTask(true, ComplexTask.Create(
 						new IncludeTask(EntityType.HAND),
 						new FilterStackTask(SelfCondition.IsNotCardClass(CardClass.ROGUE)),
-						new AddAuraEffect(Effects.ReduceCost(2), EntityType.STACK))))
+						new ChangeCostTask(Effects.ReduceCost(2), EntityType.STACK))))
 			});
 
 			// ----------------------------------------- MINION - ROGUE

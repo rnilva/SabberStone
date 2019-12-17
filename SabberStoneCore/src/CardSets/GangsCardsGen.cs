@@ -175,7 +175,7 @@ namespace SabberStoneCore.CardSets
 				PowerTask = new EnqueueTask(2, ComplexTask.Create(
 					new DrawTask(true),
 					new FilterStackTask(SelfCondition.IsMinion),
-					new AddAuraEffect(Effects.ReduceCost(2), EntityType.STACK)))
+					new ChangeCostTask(Effects.ReduceCost(2), EntityType.STACK)))
 			});
 
 		}
@@ -201,8 +201,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_308b", new Power
 			{
-				//PowerTask = new SetControllerGameTagTask(GameTag.RESOURCES_USED, 0)
-				PowerTask = new SetControllerAttributeTask(ControllerAttributes.UsedMana, 0)
+				PowerTask = new SetControllerAttributeTask(ControllerIntAttributes.UsedMana, 0)
 			});
 
 			// ------------------------------------------ SPELL - DRUID
@@ -2894,7 +2893,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_699e", new Power
 			{
-				Aura = new Aura(AuraType.HAND, new Effect(GameTag.CARD_COSTS_HEALTH, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.HAND, new CardCostsHealth())
 				{
 					Condition = SelfCondition.IsRace(Race.MURLOC),
 					RemoveTrigger = (TriggerType.PLAY_MINION, SelfCondition.IsRace(Race.MURLOC))

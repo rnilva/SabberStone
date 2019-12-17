@@ -862,7 +862,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("BOT_531e", new Power {
 				// Seems like there are some problems with Enchant SPELLPOWER effects not being removed
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.SPELLPOWER, EffectOperator.ADD, 2))
+				Aura = new Aura(AuraType.HERO, new AddSpellPower(2))
 				{
 					RemoveTrigger = (TriggerType.TURN_END, null)
 				},

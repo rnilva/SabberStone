@@ -118,14 +118,14 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get
 			{
-				int value = _v1.Value + (AuraEffects?.ATK ?? 0);
+				int value = _v1.Value;/* + (AuraEffects?.ATK ?? 0);*/
 				return value < 0 ? 0 : value;
 			}
 			set => _v1 = value;
 		}
 		public override int BaseHealth
 		{
-			get => _v2.Value + (AuraEffects?.Health ?? 0);
+			get => _v2.Value/* + (AuraEffects?.Health ?? 0)*/;
 			set => _v2 = value;
 		}
 		public unsafe int SpellPower
@@ -179,81 +179,81 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override unsafe bool CantBeTargetedBySpells
 		{
-			get => (AuraEffects?.CantBeTargetedBySpells ?? false) ||
+			get => /*(AuraEffects?.CantBeTargetedBySpells ?? false) ||*/
 			       _attrs.boolAttrs[3];
 			set => _attrs.boolAttrs[3] = value;
 		}
+		public override unsafe bool CantAttackHeroes
+		{
+			get => _attrs.boolAttrs[4];
+			set => _attrs.boolAttrs[4] = value;
+		}
 		public override unsafe bool HasTaunt
 		{
-			get => (AuraEffects?.Taunt ?? false) ||
-			       _attrs.boolAttrs[4];
-			set => _attrs.boolAttrs[4] = value;
+			get => /*(AuraEffects?.Taunt ?? false) ||*/
+			       _attrs.boolAttrs[5];
+			set => _attrs.boolAttrs[5] = value;
 		}
 		public override unsafe bool HasDivineShield
 		{
-			get => _attrs.boolAttrs[5];
+			get => _attrs.boolAttrs[6];
 			set
 			{
 				bool oldValue = HasDivineShield;
-				_attrs.boolAttrs[5] = value;
+				_attrs.boolAttrs[6] = value;
 				if (oldValue && !value)
 					Game.TriggerManager.OnLoseDivineShield(this);
 			}
 		}
 		public override unsafe bool HasWindfury
 		{
-			get => _attrs.boolAttrs[6];
-			set => _attrs.boolAttrs[6] = value;
+			get => _attrs.boolAttrs[7];
+			set => _attrs.boolAttrs[7] = value;
 		}
 		public override unsafe bool HasCharge
 		{
-			get => (AuraEffects?.Charge ?? 0) > 0 ||
-			       _attrs.boolAttrs[7];
+			get => /*(AuraEffects?.Charge ?? 0) > 0 ||*/
+			       _attrs.boolAttrs[8];
 			set
 			{
 				if (value && IsExhausted && NumAttacksThisTurn == 0)
 					IsExhausted = false;
-				_attrs.boolAttrs[7] = value;
+				_attrs.boolAttrs[8] = value;
 			}
 		}
 		public override unsafe bool Poisonous
 		{
-			get => _attrs.boolAttrs[8];
-			set => _attrs.boolAttrs[8] = value;
+			get => _attrs.boolAttrs[9];
+			set => _attrs.boolAttrs[9] = value;
 		}
 		public override unsafe bool HasLifeSteal
 		{
-			get => (AuraEffects?.Lifesteal ?? false) ||
-			       _attrs.boolAttrs[9];
-			set => _attrs.boolAttrs[9] = value;
-		}
-		public override unsafe bool IsRush
-		{
-			get => (AuraEffects?.Rush ?? false) ||
+			get => /*(AuraEffects?.Lifesteal ?? false) ||*/
 			       _attrs.boolAttrs[10];
 			set => _attrs.boolAttrs[10] = value;
 		}
-		public override unsafe bool CantAttack
+		public override unsafe bool IsRush
 		{
-			get => _attrs.boolAttrs[11];
+			get => /*(AuraEffects?.Rush ?? false) ||*/
+			       _attrs.boolAttrs[11];
 			set => _attrs.boolAttrs[11] = value;
 		}
-		public override unsafe bool HasDeathrattle
+		public override unsafe bool CantAttack
 		{
 			get => _attrs.boolAttrs[12];
 			set => _attrs.boolAttrs[12] = value;
 		}
-		public unsafe bool IsSilenced
+		public override unsafe bool HasDeathrattle
 		{
 			get => _attrs.boolAttrs[13];
 			set => _attrs.boolAttrs[13] = value;
 		}
-		public unsafe bool AttackableByRush
+		public unsafe bool IsSilenced
 		{
 			get => _attrs.boolAttrs[14];
 			set => _attrs.boolAttrs[14] = value;
 		}
-		public override unsafe bool CantAttackHeroes
+		public unsafe bool AttackableByRush
 		{
 			get => _attrs.boolAttrs[15];
 			set => _attrs.boolAttrs[15] = value;
@@ -325,6 +325,13 @@ namespace SabberStoneCore.Model.Entities
 			IsSilenced = true;
 
 			Game.Log(LogLevel.INFO, BlockType.PLAY, "Minion", !Game.Logging? "":$"{this} got silenced!");
+
+			// Send aura update instruction
+			Controller.BoardZone.Auras.ForEach(a =>
+			{
+				if (a.Deregister(this))
+					a.EntityAdded(this);
+			});
 		}
 
 		public override void Destroy()
@@ -333,6 +340,7 @@ namespace SabberStoneCore.Model.Entities
 			_toBeDestroyed = true;
 			Game.DeadMinions.Add(this);
 		}
+
 		public override void Reset()
 		{
 			base.Reset();
@@ -368,6 +376,7 @@ namespace SabberStoneCore.Model.Entities
 
 		#region Attribute Implementation
 		private Attributes _attrs;
+
 		private unsafe struct Attributes
 		{
 			// 0 : SpellPower
@@ -380,19 +389,19 @@ namespace SabberStoneCore.Model.Entities
 
 			// 2 : Stealth
 			// 3 : CantBeTargetedBySpells
-			// 4 : Taunt
-			// 5 : DivineShield
-			// 6 : Windfury
-			// 7 : Charge
-			// 8 : Poisonous
-			// 9 : Lifesteal
-			// 10 : Rush
-			// 11 : CantAttack
-			// 12 : Deathrattle
+			// 4 : CannotAttackHeroes
+			// 5 : Taunt
+			// 6 : DivineShield
+			// 7 : Windfury
+			// 8 : Charge
+			// 9 : Poisonous
+			// 10 : Lifesteal
+			// 11 : Rush
+			// 12 : CantAttack
+			// 13 : Deathrattle
 
-			// 13 : Silenced
-			// 14 : AttackableByRush
-			// 15 : CannotAttackHeroes
+			// 14 : Silenced
+			// 15 : AttackableByRush
 
 			public const int NUM_INT_ATTRS = 4;
 			public const int NUM_BOOL_ATTRS = 16;
@@ -479,14 +488,14 @@ namespace SabberStoneCore.Model.Entities
 		}
 		#endregion
 
-		internal override bool GetAttribute(Entities.Attributes attr)
+		internal override bool GetAttribute(Entities.BoolAttributes attr)
 		{
 			unsafe
 			{
 				return _attrs.boolAttrs[(int) attr];
 			}
 		}
-		internal override void SetAttribute(Entities.Attributes attr, bool value)
+		internal override void SetAttribute(Entities.BoolAttributes attr, bool value)
 		{
 			unsafe
 			{
@@ -520,5 +529,8 @@ namespace SabberStoneCore.Model.Entities
 					slice[i] = ptr[i];
 			}
 		}
+
+		public unsafe ref int this[IntAttributes attr] => ref _attrs.intAttrs[(int) attr];
+		public unsafe ref bool this[BoolAttributes attr] => ref _attrs.boolAttrs[(int) attr];
 	}
 }

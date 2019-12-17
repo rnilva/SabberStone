@@ -46,8 +46,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					_effect = CantBeTargetedBySpells.Effect(amount > 0);
 					break;
 				default:
-					Attributes attr = AttributeHelpers.GameTagToAttribute(tag);
-					if (attr == Attributes.Invalid)
+					BoolAttributes attr = AttributeHelpers.GameTagToBoolAttribute(tag);
+					if (attr == BoolAttributes.Invalid)
 						_effect = new Effect(tag, EffectOperator.SET, amount);
 					else
 						_effect = new AttributeEffect(attr, amount == 1);

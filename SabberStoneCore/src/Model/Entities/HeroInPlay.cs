@@ -39,14 +39,14 @@ namespace SabberStoneCore.Model.Entities
 		/// <value><see cref="Entities.Weapon"/></value>
 		public Weapon Weapon { get; set; }
 
-		internal override bool GetAttribute(Entities.Attributes attr)
+		internal override bool GetAttribute(Entities.BoolAttributes attr)
 		{
 			unsafe
 			{
 				return _attrs.boolAttrs[(int) attr];
 			}
 		}
-		internal override void SetAttribute(Entities.Attributes attr, bool value)
+		internal override void SetAttribute(Entities.BoolAttributes attr, bool value)
 		{
 			unsafe
 			{
@@ -95,7 +95,7 @@ namespace SabberStoneCore.Model.Entities
 			get
 			{
 				int value = _v1 ?? (_v1 = 0).Value;
-				value += (AuraEffects?.ATK ?? 0);
+				//value += (AuraEffects?.ATK ?? 0);
 				if (Weapon != null && Game.CurrentPlayer == Controller)
 					return Weapon.AttackDamage + value;
 				return value;
@@ -107,7 +107,7 @@ namespace SabberStoneCore.Model.Entities
 			=> AttackDamage > 0
 			   && (!IsExhausted || (ExtraAttacksThisTurn > 0 && ExtraAttacksThisTurn >= NumAttacksThisTurn))
 			   && !IsFrozen
-			   && HasAnyValidAttackTargets;
+			   && HasAnyValidAttackTargets();
 
 		public override bool HasWindfury
 		{
@@ -234,17 +234,6 @@ namespace SabberStoneCore.Model.Entities
 			get { return this[GameTag.WEAPON]; }
 			set { this[GameTag.WEAPON] = value; }
 		}
-		public override bool CantAttackHeroes
-		{
-			get
-			{
-				if (AuraEffects?.CannotAttackHeroes ?? false)
-					return true;
-
-				return base.CantAttackHeroes;
-			}
-			set => base.CantAttackHeroes = value;
-		}
 
 		private Attributes _attrs;
 
@@ -264,9 +253,10 @@ namespace SabberStoneCore.Model.Entities
 			// 1 : Frozen
 			// 2 : Stealth
 			// 3 : CantBeTargetedBySpells
+			// 4 : CannotAttackHeroes
 
 			private const int NUM_INT_ATTRS = 7;
-			private const int NUM_BOOL_ATTRS = 4;
+			private const int NUM_BOOL_ATTRS = 5;
 #pragma warning disable 649
 			public fixed int intAttrs[NUM_INT_ATTRS];
 			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
@@ -318,7 +308,7 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override unsafe bool IsImmune
 		{
-			get => (AuraEffects?.Immune ?? false) || _attrs.boolAttrs[0];
+			get => _attrs.boolAttrs[0];
 			set => _attrs.boolAttrs[0] = value;
 		}
 		public override unsafe bool IsFrozen
@@ -333,9 +323,14 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override unsafe bool CantBeTargetedBySpells
 		{
-			get => (AuraEffects?.CantBeTargetedBySpells ?? false) ||
+			get => /*(AuraEffects?.CantBeTargetedBySpells ?? false) ||*/
 			       _attrs.boolAttrs[3];
 			set => _attrs.boolAttrs[3] = value;
+		}
+		public override unsafe bool CantAttackHeroes
+		{
+			get => _attrs.boolAttrs[4];
+			set => _attrs.boolAttrs[4] = value;
 		}
 		internal override unsafe ref bool GetRef(int index)
 		{

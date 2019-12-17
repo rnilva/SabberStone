@@ -11,18 +11,20 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
+
+using System.Collections.Generic;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Tasks.SimpleTasks
 {
-	public class AddAuraEffect : SimpleTask
+	public class ChangeCostTask : SimpleTask
 	{
 		private readonly IEffect _effect;
 		private readonly EntityType _type;
 
-		public AddAuraEffect(IEffect effect, EntityType entityType)
+		public ChangeCostTask(IEffect effect, EntityType entityType)
 		{
 			_effect = effect;
 			_type = entityType;
@@ -31,8 +33,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			foreach (Playable p in IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables))
-				_effect.ApplyAuraTo(p);
+			IList<Playable> entities = IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables);
+			for (int i = 0; i < entities.Count; i++)
+				_effect.ApplyTo(entities[i]);
 
 			return TaskState.COMPLETE;
 		}

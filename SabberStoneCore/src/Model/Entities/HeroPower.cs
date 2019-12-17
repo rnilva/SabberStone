@@ -58,8 +58,8 @@ namespace SabberStoneCore.Model.Entities
 		/// a result for the current state of the game.
 		/// </summary>
 		/// <value><c>true</c> if this entity is playable; otherwise, <c>false</c>.</value>
-		public override bool IsPlayableByPlayer =>
-			!IsExhausted && !Controller.HeroPowerDisabled && base.IsPlayableByPlayer && !IsPassiveHeroPower;
+		public override bool IsPlayableByPlayer() =>
+			!IsExhausted && !Controller.HeroPowerDisabled && base.IsPlayableByPlayer() && !IsPassiveHeroPower;
 
 		public bool IsPassiveHeroPower => Card.HideStat;
 

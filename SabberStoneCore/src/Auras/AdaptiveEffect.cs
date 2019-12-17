@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Enchants;
@@ -25,7 +26,8 @@ namespace SabberStoneCore.Auras
 		private int _lastValue;
 
 		/// <summary>
-		/// Defines a kind of effects in which the given tag varies with the value from the given function. (e.g. giants)
+		/// Defines an effect of a kind in which a tag varies with the value from a specified function.
+		/// (e.g. Spirit Claws)
 		/// </summary>
 		public AdaptiveEffect(GameTag tag, EffectOperator @operator, Func<Playable, int> valueFunc)
 		{
@@ -35,7 +37,8 @@ namespace SabberStoneCore.Auras
 		}
 
 		/// <summary>
-		/// Defines a kind of effects in which the given tags are boolean and determined by a specific condition. (e.g. Southsea Deckhand)
+		/// Defines an effect of a kind in which the value of a tag is boolean and determined by a specified condition.
+		/// (e.g. Southsea Deckhand)
 		/// </summary>
 		public AdaptiveEffect(SelfCondition condition, GameTag tag)
 		{
@@ -64,23 +67,11 @@ namespace SabberStoneCore.Auras
 		{
 			IAura instance = new AdaptiveEffect(this, owner);
 
-			if (!_isSwitching)
-			{
-				//if (owner is Weapon)
-				//{
-				//	if (owner.Controller.Hero.AuraEffects == null)
-				//		owner.Controller.Hero.AuraEffects = new AuraEffects(CardType.HERO);
-				//}
-				//else
-				if (owner.AuraEffects == null)
-					owner.AuraEffects = new AuraEffects(CardType.MINION);
-			}
-
 			owner.Game.Auras.Add(instance);
 			owner.OngoingEffect = instance;
 		}
 
-		public void Update()
+		public bool Update()
 		{
 			if (_on)
 			{
@@ -91,7 +82,7 @@ namespace SabberStoneCore.Auras
 					value = _condition.Eval(_owner) ? 1 : 0;
 
 					if (value == _lastValue)
-						return;
+						return true;
 
 
 					if (_tag == GameTag.ATK)
@@ -111,37 +102,35 @@ namespace SabberStoneCore.Auras
 
 					if (_tag == GameTag.ATK)
 					{
-						//if (!(_owner is Character c))
-						//{
-						//	if (_owner is Weapon)
-						//		c = _owner.Controller.Hero;
-						//	else
-						//		throw new Exception($"Can't apply ATK aura {this} to entity {_owner}");
-						//}
-
 						Playable owner = _owner;
 
 						if (_operator == EffectOperator.SET)
 						{
-							owner._v1 = 0;
-							ATK.Effect(EffectOperator.ADD, _lastValue).RemoveAuraFrom(owner);
-							value = value - (owner.AuraEffects?.ATK ?? 0);
-							ATK.Effect(EffectOperator.ADD, value).ApplyAuraTo(owner);
+							owner._v1 = value;
+
+							List<(int entityId, IEffect effect)> oneTurnEffects = owner.Game.OneTurnEffects;
+							for (int i = oneTurnEffects.Count - 1; i >= 0; --i)
+							{
+								(int id, IEffect eff) = oneTurnEffects[i];
+								if (id == owner.Id && eff.Tag == GameTag.ATK)
+									oneTurnEffects.RemoveAt(i);
+							}
 						}
 						else
 						{
-							ATK.Effect(_operator, _lastValue).RemoveAuraFrom(owner);
-							ATK.Effect(_operator, value).ApplyAuraTo(owner);
+							ATK.Effect(_operator, _lastValue).RemoveFrom(owner);
+							ATK.Effect(_operator, value).ApplyTo(owner);
 						}
 					}
 					else
 					{
-						new Effect(_tag, _operator, _lastValue).RemoveAuraFrom(_owner);
-						new Effect(_tag, _operator, value).ApplyAuraTo(_owner);
+						new Effect(_tag, _operator, _lastValue).RemoveFrom(_owner);
+						new Effect(_tag, _operator, value).ApplyTo(_owner);
 					}
 				}
 
 				_lastValue = value;
+				return true;
 			}
 			else
 			{
@@ -154,13 +143,14 @@ namespace SabberStoneCore.Auras
 				}
 				else
 				{
-					if (_tag == GameTag.ATK)
-						ATK.Effect(_operator, _lastValue).RemoveAuraFrom(_owner);
-					else
-						new Effect(_tag, _operator, _lastValue).RemoveAuraFrom(_owner);
+					//if (_tag == GameTag.ATK)
+					//	ATK.Effect(_operator, _lastValue).RemoveFrom(_owner);
+					//else
+					//	new Effect(_tag, _operator, _lastValue).RemoveFrom(_owner);
 				}
 
-				_owner.Game.Auras.Remove(this);
+				//_owner.Game.Auras.Remove(this);
+				return false;
 			}
 		}
 

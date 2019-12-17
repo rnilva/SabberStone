@@ -64,6 +64,7 @@ namespace SabberStoneCore.Auras
 			_costFunction = costFunc;
 			_operator = @operator;
 			_condition = condition;
+			IsSetEffect = @operator == EffectOperator.SET;
 		}
 
 		/// <summary>
@@ -82,6 +83,7 @@ namespace SabberStoneCore.Auras
 			_triggerType = trigger;
 			_triggerSource = triggerSource;
 			_condition = triggerCondition;
+			IsSetEffect = true;
 		}
 
 		/// <summary>
@@ -114,12 +116,14 @@ namespace SabberStoneCore.Auras
 					_costFunction = prototype._costFunction;
 					_operator = prototype._operator;
 					_condition = prototype._condition;
+					IsSetEffect = prototype.IsSetEffect;
 					return;
 				case Type.Triggered:
 					_value = prototype._value;
 					_triggerType = prototype._triggerType;
 					_triggerSource = prototype._triggerSource;
 					_condition = prototype._condition;
+					IsSetEffect = true;
 					break;
 				case Type.TriggeredWithInitialisation:
 					_initialisationFunction = prototype._initialisationFunction;
@@ -141,16 +145,15 @@ namespace SabberStoneCore.Auras
 
 		public Playable Owner => _owner;
 
+		public bool IsSetEffect { get; }
+
 		public void Activate(Playable owner, bool cloning = false)
 		{
 			if (!cloning && !(owner.Zone is HandZone)) return;
 
 			var instance = new AdaptiveCostEffect(this, owner);
 
-			if (owner._costManager == null)
-				owner._costManager = new Playable.CostManager();
-
-			owner._costManager.ActivateAdaptiveEffect(instance);
+			owner.GetCostManager().ActivateAdaptiveEffect(instance);
 			owner.OngoingEffect = instance;
 
 			switch (_triggerType)
@@ -185,34 +188,32 @@ namespace SabberStoneCore.Auras
 			owner.Game.Auras.Add(instance);
 		}
 
-		public int Apply(int value)
+		public void Apply(ref int value)
 		{
 			if (_initialisationFunction != null)
-				return value + _cachedValue;
-
+				value += _cachedValue;
+			
 			if (_costFunction != null && (_condition == null || _condition.Eval(_owner)))
 			{
 				if (_operator == EffectOperator.SUB)
-					return value - _costFunction.Invoke(_owner);
-				if (_operator == EffectOperator.SET)
-					return _costFunction.Invoke(_owner);
-				if (_operator == EffectOperator.ADD)
-					return value + _costFunction.Invoke(_owner);
-				if (_operator == EffectOperator.MUL)
-					return value * _costFunction.Invoke(_owner);
+					value -= _costFunction.Invoke(_owner);
+				else if (_operator == EffectOperator.SET)
+					value = _costFunction.Invoke(_owner);
+				else if (_operator == EffectOperator.ADD)
+					value += _costFunction.Invoke(_owner);
+				else
+					value *= _costFunction.Invoke(_owner);
 			}
 
 			if (_isAppliedThisTurn)
-				return _value;
-
-			return value;
+				value = _value;
 		}
 
 		public void Remove()
 		{
 			_owner.OngoingEffect = null;
 			_owner.Game.Auras.Remove(this);
-			_owner._costManager?.DeactivateAdaptiveEffect();
+			_owner.GetCostManager()?.DeactivateAdaptiveEffect();
 
 			switch (_triggerType)
 			{
@@ -249,26 +250,28 @@ namespace SabberStoneCore.Auras
 			Activate(owner, false);
 		}
 
-		public void Update()
+		public bool Update()
 		{
 			if (_triggerType != TriggerType.NONE)
 			{
 				if (_initialisationFunction != null)
 				{
-					_owner._costManager.UpdateAdaptiveEffect(_cachedValue);
-					return;
+					_owner.GetCostManager().UpdateAdaptiveEffect(_cachedValue);
+					return true;
 				}
 
-				if (!_isTriggered) return;
+				if (!_isTriggered) return true;
 
-				if (_isAppliedThisTurn) return;
+				if (_isAppliedThisTurn) return true;
 
-				_owner._costManager.UpdateAdaptiveEffect(_value);
+				_owner.GetCostManager().UpdateAdaptiveEffect();
 
 				_isAppliedThisTurn = true;
 			}
 			else
-				_owner._costManager.UpdateAdaptiveEffect();
+				_owner.GetCostManager().UpdateAdaptiveEffect();
+
+			return true;
 		}
 
 		public void Clone(Playable clone)
@@ -323,7 +326,7 @@ namespace SabberStoneCore.Auras
 
 		private void RemoveAtEnd(Entity sender)
 		{
-			_owner._costManager?.UpdateAdaptiveEffect();
+			_owner.GetCostManager()?.UpdateAdaptiveEffect();
 			_isTriggered = false;
 			_isAppliedThisTurn = false;
 			_owner.Game.TriggerManager.EndTurnTrigger -= _removedHandler;

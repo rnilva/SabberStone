@@ -55,10 +55,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		/// Creates a task that transforms the given type of entities
 		/// into the given card.
 		/// </summary>
-		public ChangeEntityTask(string cardId, EntityType type = EntityType.SOURCE)
+		public ChangeEntityTask(string cardId, EntityType type = EntityType.SOURCE, bool removeEnchantments = false)
 		{
 			_card = Cards.FromId(cardId);
 			_type = type;
+			_removeEnchantments = removeEnchantments;
 		}
 
 		/// <summary>

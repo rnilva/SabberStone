@@ -98,6 +98,33 @@ namespace SabberStoneCore.Auras
 		public Aura(AuraType type, params IEffect[] effects)
 		{
 			Type = type;
+			//Effects = effects;
+			for (int i = 0; i < effects.Length; ++i)
+			{
+				if (effects[i] is Effect eff)
+				{
+					int attr = (int) AttributeHelpers.GameTagToIntAttribute(eff.Tag);
+					if (attr != -1)
+					{
+						effects[i] = new AttributeAddEffect((IntAttributes) attr, eff.Value);
+						continue;
+					}
+
+					attr = (int) AttributeHelpers.GameTagToControllerBoolAttribute(eff.Tag);
+					if (attr != -1)
+					{
+						effects[i] = new SetControllerBoolAttr((ControllerBoolAttributes) attr);
+						continue;
+					}
+
+					attr = (int) AttributeHelpers.GameTagToControllerIntAttribute(eff.Tag);
+					if (attr != -1)
+					{
+						effects[i] = new AddControllerIntAttr((ControllerIntAttributes) attr, eff.Value);
+						continue;
+					}
+				}
+			}
 			Effects = effects;
 		}
 
@@ -231,7 +258,7 @@ namespace SabberStoneCore.Auras
 		/// <summary>
 		/// Apply this aura to the target entities or remove this aura if the owner is nullified.
 		/// </summary>
-		public virtual void Update()
+		public virtual bool Update()
 		{
 			bool addAllProcessed = false;
 
@@ -249,8 +276,7 @@ namespace SabberStoneCore.Auras
 				switch (inst.Instruction)
 				{
 					case Instruction.RemoveAll:
-						RemoveInternal();
-						return;
+						return RemoveInternal();
 					case Instruction.AddAll:
 						addAllProcessed = true;
 						UpdateInternal();
@@ -266,6 +292,7 @@ namespace SabberStoneCore.Auras
 						throw new ArgumentOutOfRangeException();
 				}
 			}
+			return true;
 		}
 
 		/// <summary>
@@ -363,6 +390,52 @@ namespace SabberStoneCore.Auras
 			AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(playable, Instruction.Remove), 1);
 		}
 
+		/// <summary>
+		/// Try register a playable to this aura.
+		/// Registered playable is treated as this aura is applied but
+		/// the actual value update will not happen.
+		/// </summary>
+		/// <param name="playable"></param>
+		public void Register(Playable playable)
+		{
+			if (!On) return;
+
+			if (playable == Owner ||
+			    (!Condition?.Eval(playable) ?? false))
+				return;
+
+			AppliedEntityIdCollection.Add(playable.Id);
+		}
+
+		public bool Deregister(Playable playable)
+		{
+			if (!On) return false;
+
+			if (AppliedEntityIdCollection.Remove(playable.Id))
+			{
+				if (EnchantmentCard != null && (Game.History || EnchantmentCard.Power.Trigger != null))
+				{
+					int cardId = EnchantmentCard.AssetId;
+					List<Enchantment> enchantments = playable.AppliedEnchantments;
+					for (int i = enchantments.Count - 1; i >= 0; i--)
+						if (enchantments[i].Creator == Owner && enchantments[i].Card.AssetId == cardId)
+						{
+							enchantments.RemoveAt(i);
+							break;
+						}
+				}
+
+				return true;
+			}
+			    
+			return false;
+		}
+
+		public bool Registered(Playable playable)
+		{
+			return AppliedEntityIdCollection.Contains(playable.Id);
+		}
+
 		private void UpdateInternal()
 		{
 			if (!On) return;
@@ -414,21 +487,24 @@ namespace SabberStoneCore.Auras
 					break;
 				case AuraType.CONTROLLER:
 					for (int i = 0; i < Effects.Length; i++)
-						((Effect)Effects[i]).ApplyTo(Owner.Controller.ControllerAuraEffects);
+						Effects[i].ApplyTo(Owner.Controller);
 					break;
 				case AuraType.OPPONENT:
 					for (int i = 0; i < Effects.Length; i++)
-						((Effect)Effects[i]).ApplyTo(Owner.Controller.Opponent.ControllerAuraEffects);
+						Effects[i].ApplyTo(Owner.Controller.Opponent);
 					break;
 				case AuraType.CONTROLLERS:
 					for (int i = 0; i < Effects.Length; i++)
 					{
-						((Effect)Effects[i]).ApplyTo(Owner.Controller.ControllerAuraEffects);
-						((Effect)Effects[i]).ApplyTo(Owner.Controller.Opponent.ControllerAuraEffects);
+						Effects[i].ApplyTo(Owner.Controller);
+						Effects[i].ApplyTo(Owner.Controller.Opponent);
 					}
 					break;
 				case AuraType.HERO:
 					Apply(Owner.Controller.Hero);
+					break;
+				case AuraType.OP_HERO:
+					Apply(Owner.Controller.Opponent.Hero);
 					break;
 				case AuraType.HEROPOWER:
 					Apply(Owner.Controller.Hero.HeroPower);
@@ -444,7 +520,7 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		protected virtual void RemoveInternal()
+		protected virtual bool RemoveInternal()
 		{
 			IEffect[] effects = Effects;
 
@@ -452,19 +528,19 @@ namespace SabberStoneCore.Auras
 			if (Type == AuraType.CONTROLLER)
 			{
 				for (int i = 0; i < effects.Length; i++)
-					((Effect)effects[i]).RemoveFrom(Owner.Controller.ControllerAuraEffects);
+					effects[i].RemoveFrom(Owner.Controller);
 			}
 			else if (Type == AuraType.OPPONENT)
 			{
 				for (int i = 0; i < effects.Length; i++)
-					((Effect)effects[i]).RemoveFrom(Owner.Controller.Opponent.ControllerAuraEffects);
+					effects[i].RemoveFrom(Owner.Controller.Opponent);
 			}
 			else if (Type == AuraType.CONTROLLERS)
 			{
 				for (int i = 0; i < effects.Length; i++)
 				{
-					((Effect)effects[i]).RemoveFrom(Owner.Controller.ControllerAuraEffects);
-					((Effect)effects[i]).RemoveFrom(Owner.Controller.Opponent.ControllerAuraEffects);
+					effects[i].RemoveFrom(Owner.Controller);
+					effects[i].RemoveFrom(Owner.Controller.Opponent);
 				}
 			}
 			else
@@ -474,12 +550,12 @@ namespace SabberStoneCore.Auras
 					{
 						Playable entity = idDict[id];
 						for (int i = 0; i < effs.Length; i++)
-							effs[i].RemoveAuraFrom(entity);
+							effs[i].RemoveFrom(entity);
 					});
 			}
 
 			// Remove this Aura from the Game
-			Game.Auras.Remove(this);
+			//Game.Auras.Remove(this);
 
 			// Remove enchantments from applied entities
 			if (EnchantmentCard != null && (Game.History || EnchantmentCard.Power.Trigger != null))
@@ -498,6 +574,8 @@ namespace SabberStoneCore.Auras
 				Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Aura.RemoveInternal",
 					$"{Owner}'s aura is removed from game and " +
 					$"{string.Join(",", AppliedEntityIdCollection.Select(i => Game.IdEntityDic[i]))})");
+
+			return false;
 		}
 
 		private void TriggeredRemove(Entity source)
@@ -520,7 +598,7 @@ namespace SabberStoneCore.Auras
 
 			for (int i = 0; i < Effects.Length; i++)
 			{
-				Effects[i].RemoveAuraFrom(entity);
+				Effects[i].RemoveFrom(entity);
 			}
 
 			if (EnchantmentCard != null && (Game.History || EnchantmentCard.Power.Trigger != null))
@@ -540,6 +618,12 @@ namespace SabberStoneCore.Auras
 					$"{Owner}'s aura is removed from {entity}.");
 		}
 
+		internal void RemoveEffects(Playable entity)
+		{
+			for (int i = 0; i < Effects.Length; i++)
+				Effects[i].RemoveFrom(entity);
+		}
+
 		/// <summary>
 		/// Apply this aura's effect(s) to the target entity.
 		/// </summary>
@@ -548,6 +632,9 @@ namespace SabberStoneCore.Auras
 			if (entity == null)
 				throw new ArgumentNullException();
 
+			if (AppliedEntityIdCollection.Contains(entity.Id))
+				return;
+
 			IEffect[] effects = Effects;
 
 			if (Condition != null)
@@ -555,7 +642,7 @@ namespace SabberStoneCore.Auras
 					return;
 
 			for (int i = 0; i < effects.Length; i++)
-				effects[i].ApplyAuraTo(entity);
+				effects[i].ApplyTo(entity);
 
 			if (EnchantmentCard != null && ((Game.History /*&& _tempList == null*/) || EnchantmentCard.Power.Trigger != null))
 			{

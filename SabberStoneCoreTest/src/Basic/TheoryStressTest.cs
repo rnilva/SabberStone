@@ -604,10 +604,86 @@ namespace SabberStoneCoreTest.Basic
 			Assert.Equal(2, m.Health);
 			game.ProcessCard<Spell>("Blessed Champion", m, asZeroCost: true);
 			Assert.Equal(4, m.AttackDamage);
-			Assert.Equal(3, m.Health);
-			game.CurrentPlayer.BoardZone[2].Kill();
-			Assert.Equal(3, m.AttackDamage);
 			Assert.Equal(2, m.Health);
+			game.CurrentPlayer.BoardZone[1].Kill();
+			Assert.Equal(3, m.AttackDamage);
+			Assert.Equal(1, m.Health);
+		}
+
+		[Fact]
+		public static void CostAuraOrderOfPlay()
+		{
+			var game = new Game(new GameConfig
+			{
+				StartPlayer = 1,
+				Player1Deck = new List<Card>
+				{
+					Cards.FromName("Flamestrike"),
+					Cards.FromName("Flamestrike"),
+					Cards.FromName("Flamestrike"),
+					Cards.FromName("Flamestrike"),
+					Cards.FromName("Flamestrike")
+				},
+				Shuffle = false
+			});
+			game.StartGame();
+
+			Minion nerubian = game.ProcessCard<Minion>("Nerubian Unraveler", asZeroCost: true);
+			Spell testCard = (Spell) game.CurrentPlayer.HandZone[0];
+			Assert.Equal(9, testCard.Cost);
+
+			Minion kalecgos = game.ProcessCard<Minion>("Kalecgos", asZeroCost: true);
+			game.ChooseNthChoice(1);
+			Assert.Equal(0, testCard.Cost);
+
+			game.ProcessCard(game.CurrentPlayer.HandZone[1]);
+			Assert.Equal(9, testCard.Cost);
+
+			nerubian.Kill();
+			Assert.Equal(7, testCard.Cost);
+
+			game.EndTurn();
+			game.EndTurn();
+			Assert.Equal(0, testCard.Cost);
+
+			Minion nerubian2 = game.ProcessCard<Minion>("Nerubian Unraveler", asZeroCost: true);
+			Assert.Equal(2, testCard.Cost);
+			game.ProcessCard(game.CurrentPlayer.HandZone[1]);
+			Assert.Equal(9, testCard.Cost);
+		}
+
+		[Fact]
+		public static void CostAuraCombined()
+		{
+			var game = new Game(new GameConfig());
+			game.StartGame();
+
+			Spell secret = (Spell) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Counterspell"));
+
+			Minion apprentice = game.ProcessCard<Minion>("Sorcerer's Apprentice", asZeroCost: true);
+			Assert.Equal(2, secret.Cost);
+
+			game.ProcessCard("Kirin Tor Mage", asZeroCost: true);
+			Assert.Equal(0, secret.Cost);
+
+			apprentice.Kill();
+			Assert.Equal(0, secret.Cost);
+
+			game.ProcessCard("Kalecgos", asZeroCost: true);
+			game.ChooseNthChoice(1);
+			Assert.Equal(0, secret.Cost);
+
+			game.ProcessCard("Frostbolt", game.CurrentOpponent.Hero);
+			Assert.Equal(0, secret.Cost);
+
+			Minion apprentice2 = game.ProcessCard<Minion>("Sorcerer's Apprentice", asZeroCost: true);
+			Assert.Equal(0, secret.Cost);
+
+			game.ProcessCard("Mirror Entity", asZeroCost: true);
+			Assert.Equal(2, secret.Cost);
+
+			apprentice2.Kill();
+			Assert.Equal(3, secret.Cost);
 		}
 	}
 }

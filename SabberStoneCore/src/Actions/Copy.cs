@@ -1,6 +1,7 @@
 ﻿using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 using System.Collections.Generic;
+using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 // ReSharper disable ArrangeStaticMemberQualifier
 
@@ -46,13 +47,30 @@ namespace SabberStoneCore.Actions
 
                 if (targetZone == Zone.PLAY)
                 {
-                    MinionInPlay mip = MinionInPlay.FromCard(in controller, source.Card, tags);
-                    if (sourceZone == Zone.PLAY)
-                        mip.CopyAttributesFrom((MinionInPlay) source);
-                    else
+	                MinionInPlay mip = MinionInPlay.FromCard(in controller, source.Card, tags);
+	                if (sourceZone == Zone.PLAY)
+	                {
+		                mip.CopyAttributesFrom((MinionInPlay) source);
+		                {
+			                int id = source.Id;
+			                foreach (AdjacentAura adjAura in controller.BoardZone.AdjacentAuras)
+			                foreach (MinionInPlay minion in adjAura.AppliedEntities)
+				                if (minion.Id == id)
+				                {
+					                // De-apply effects from adjacent auras affecting the target
+					                adjAura.DeApply(mip, true);
+					                break;
+				                }
+		                }
+		                // Register the copied entity to auras; this will prevent duplication.
+		                foreach (Aura boardAura in controller.BoardZone.Auras)
+			                boardAura.Register(mip);
+	                }
+	                else
                     {
-                        mip._v1 = source._v1;
-                        mip._v2 = source._v2;
+						// Copy Modified ATK / Health
+						if (source._v1.HasValue) mip._v1 = source._v1;
+						if (source._v2.HasValue) mip._v2 = source._v2;
                     }
                     copiedEntity = mip;
                 }
@@ -66,7 +84,17 @@ namespace SabberStoneCore.Actions
 
                     if (modifiedCost.HasValue)
                         copiedEntity.Cost = modifiedCost.Value;
+
+                    if (sourceZone == Zone.HAND)
+                    {
+	                    // Remove effects from the auras affecting the target
+	                    foreach (Aura handAura in source.Controller.HandZone.Auras)
+		                    if (handAura.Registered(source))
+			                    handAura.RemoveEffects(copiedEntity);
+                    }
                 }
+
+				
 
                 if (source.AppliedEnchantments != null)
 				{
@@ -87,31 +115,7 @@ namespace SabberStoneCore.Actions
 					
 				}
 
-				//var kvps = new KeyValuePair<GameTag, int>[source.NativeTags.Count];
-				//source.NativeTags.CopyTo(kvps, 0);
-
-				//for (int i = 0; i < kvps.Length; i++)
-				//{
-				//	switch (kvps[i].Key)
-				//	{
-				//		case GameTag.ENTITY_ID:
-				//		case GameTag.CONTROLLER:
-				//		case GameTag.ZONE:
-				//		case GameTag.ZONE_POSITION:
-				//		case GameTag.CREATOR:
-				//		case GameTag.DISPLAYED_CREATOR:
-				//		case GameTag.EXHAUSTED:
-				//			continue;
-				//		case GameTag.COST:
-				//			copiedEntity.AuraEffects.ToBeUpdated = true;
-				//			goto default;
-				//		default:
-				//			tags.Add(kvps[i]);
-				//			break;
-				//	}
-				//}
-
-				List<(int entityId, IEffect effect)> oneTurnEffects = controller.Game.OneTurnEffects;
+                List<(int entityId, IEffect effect)> oneTurnEffects = controller.Game.OneTurnEffects;
 				for (int i = oneTurnEffects.Count - 1; i >= 0; i--)
 				{
 					(int id, IEffect effect) = oneTurnEffects[i];

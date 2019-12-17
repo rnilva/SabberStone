@@ -136,7 +136,7 @@ namespace SabberStoneCore.Actions
 				Playable subSource = chooseOne > 0 ? source.ChooseOnePlayables[chooseOne - 1] : source;
 
 				// check if we can play this card and the target is valid
-				if (!source.IsPlayableByPlayer || !subSource.IsPlayableByCardReq || !subSource.IsValidPlayTarget(target))
+				if (!source.IsPlayableByPlayer() || !subSource.IsPlayableByCardReq() || !subSource.IsValidPlayTarget(target))
 				{
 					return false;
 				}
@@ -152,13 +152,13 @@ namespace SabberStoneCore.Actions
 				{
 					source[GameTag.TAG_LAST_KNOWN_COST_IN_HAND] = cost;
 
-					if (source is Spell && c.ControllerAuraEffects[GameTag.SPELLS_COST_HEALTH] == 1)
+					if (source is Spell && c.SpellsCostHelath)
 					{
 						c.Hero.TakeDamage(c.Hero, cost);
 						return true;
 					}
 
-					if (source.AuraEffects?.CardCostHealth ?? false)
+					if (source.CardCostsHealth)
 					{
 						c.Hero.TakeDamage(c.Hero, cost);
 						return true;
@@ -266,14 +266,14 @@ namespace SabberStoneCore.Actions
 				if (minion.Combo && c.IsComboActive)
 				{
 					minion.ActivateTask(PowerActivation.COMBO, target);
-					if (c.ControllerAuraEffects[GameTag.EXTRA_MINION_BATTLECRIES_BASE] == 1)
+					if (c.ExtraBattleCryAndCombo)
 						minion.ActivateTask(PowerActivation.COMBO, target);
 				}
 				else
 					minion.ActivateTask(PowerActivation.POWER, target, chooseOne);
 
 				// check if [LOE_077] Brann Bronzebeard aura is active
-				if (c.ExtraBattlecry && minion.HasBattleCry)
+				if ((c.ExtraBattlecry || c.ExtraBattleCryAndCombo) && minion.HasBattleCry)
 				{
 					minion.ActivateTask(PowerActivation.POWER, target, chooseOne);
 				}
