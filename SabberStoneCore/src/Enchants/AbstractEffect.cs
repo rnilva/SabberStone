@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
+#pragma warning disable 169
+#pragma warning disable 649
 
 namespace SabberStoneCore.Enchants
 {
