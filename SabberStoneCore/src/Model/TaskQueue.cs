@@ -24,16 +24,16 @@
 //{
 //	public class TaskQueue
 //	{
-//		//public List<ISimpleTask> TaskList = new List<ISimpleTask>();
-//		public Queue<ISimpleTask> TaskList = new Queue<ISimpleTask>();
+//		//public List<SimpleTask> TaskList = new List<SimpleTask>();
+//		public Queue<SimpleTask> TaskList = new Queue<SimpleTask>();
 
-//		public readonly Queue<ISimpleTask> CurrentEventTasks = new Queue<ISimpleTask>();
+//		public readonly Queue<SimpleTask> CurrentEventTasks = new Queue<SimpleTask>();
 
 //		public int Count => (CurrentTask != null || CurrentEventTasks.Count > 0) ? CurrentEventTasks.Count : TaskList.Count;
 
 //		public Game Game { get; set; }
 
-//		public ISimpleTask CurrentTask { get; set; }
+//		public SimpleTask CurrentTask { get; set; }
 
 //		public TaskQueue(Game game)
 //		{
@@ -42,12 +42,12 @@
 
 //		public void Stamp(TaskQueue taskQueue)
 //		{
-//			//TaskList = new List<ISimpleTask>();
+//			//TaskList = new List<SimpleTask>();
 //			//taskQueue.TaskList.ForEach(p => TaskList.Add(p.Clone()));
-//			TaskList = new Queue<ISimpleTask>(taskQueue.TaskList.Count);
-//			foreach (ISimpleTask task in taskQueue.TaskList)
+//			TaskList = new Queue<SimpleTask>(taskQueue.TaskList.Count);
+//			foreach (SimpleTask task in taskQueue.TaskList)
 //				TaskList.Enqueue(task.Clone());
-//			foreach (ISimpleTask task in TaskList)
+//			foreach (SimpleTask task in TaskList)
 //				task.Game = Game;
 //			if (taskQueue.CurrentTask != null)
 //			{
@@ -61,9 +61,9 @@
 //			//});
 //		}
 
-//		public void Execute(ISimpleTask task, Controller controller, Playable source, Playable target, int number = 0)
+//		public void Execute(SimpleTask task, Controller controller, Playable source, Playable target, int number = 0)
 //		{
-//			ISimpleTask clone = task.Clone();
+//			SimpleTask clone = task.Clone();
 //			clone.Game = controller.Game;
 //			clone.Controller = controller;
 //			clone.Source = source;
@@ -90,7 +90,7 @@
 //		/// IMPORTANT: only enqueue cloned tasks ....
 //		/// </summary>
 //		/// <param name="task"></param>
-//		public void Enqueue(ISimpleTask task)
+//		public void Enqueue(SimpleTask task)
 //		{
 //			// TODO ... check if necessary ... frothing beserker ... check for duplicates, ex. auras
 //			//if (_lazyTaskQueue.Contains(task))
@@ -142,11 +142,11 @@
 //			return success;
 //		}
 
-//		private ISimpleTask FirstByOrderOfPlay(List<ISimpleTask> list)
+//		private SimpleTask FirstByOrderOfPlay(List<SimpleTask> list)
 //		{
-//			ISimpleTask result = null;
+//			SimpleTask result = null;
 //			int oop = Int32.MaxValue;
-//			foreach (ISimpleTask task in list)
+//			foreach (SimpleTask task in list)
 //			{
 //				int temp = task.Source.OrderOfPlay;
 //				if (oop > temp)

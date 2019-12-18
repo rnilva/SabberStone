@@ -20,7 +20,7 @@ using SabberStoneCore.Kettle;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks;
 
-//using TaskInstance = System.ValueTuple<SabberStoneCore.Tasks.ISimpleTask, SabberStoneCore.Model.Entities.Controller, SabberStoneCore.Model.Entities.Entity, SabberStoneCore.Model.Entities.Entity>;
+//using TaskInstance = System.ValueTuple<SabberStoneCore.Tasks.SimpleTask, SabberStoneCore.Model.Entities.Controller, SabberStoneCore.Model.Entities.Entity, SabberStoneCore.Model.Entities.Entity>;
 
 namespace SabberStoneCore.Model
 {
@@ -28,12 +28,12 @@ namespace SabberStoneCore.Model
 	{
 		private class TaskInstance
 		{
-			public readonly ISimpleTask Task;
+			public readonly SimpleTask Task;
 			public readonly Controller Controller;
 			public readonly Entity Source;
 			public readonly Entity Target;
 
-			public TaskInstance(in ISimpleTask task, in Controller controller, in Entity source, in Entity target)
+			public TaskInstance(in SimpleTask task, in Controller controller, in Entity source, in Entity target)
 			{
 				Task = task;
 				Controller = controller;
@@ -41,12 +41,12 @@ namespace SabberStoneCore.Model
 				Target = target;
 			}
 
-			public static implicit operator (ISimpleTask, Controller, Entity, Entity) (TaskInstance t)
+			public static implicit operator (SimpleTask, Controller, Entity, Entity) (TaskInstance t)
 			{
 				return (t.Task, t.Controller, t.Source, t.Target);
 			}
 
-			public void Deconstruct(out ISimpleTask simpleTask, out Controller controller, out Entity entity, out Entity target)
+			public void Deconstruct(out SimpleTask simpleTask, out Controller controller, out Entity entity, out Entity target)
 			{
 				simpleTask = Task;
 				controller = Controller;
@@ -96,7 +96,7 @@ namespace SabberStoneCore.Model
 		//public bool IsEmpty => _eventFlag || CurrentQueue.Count == 0;
 		public bool IsEmpty => CurrentQueue == null || CurrentQueue.Count == 0;
 
-		public ISimpleTask CurrentTask { get; private set; }
+		public SimpleTask CurrentTask { get; private set; }
 
 		public void StartEvent()
 		{
@@ -158,7 +158,7 @@ namespace SabberStoneCore.Model
 			CurrentQueue = _eventStack.Pop();
 		}
 
-		public void Enqueue(in ISimpleTask task, in Controller controller, in Entity source, in Entity target)
+		public void Enqueue(in SimpleTask task, in Controller controller, in Entity source, in Entity target)
 		{
 			//if (_eventFlag)	// flag = true means Event starts and no tasks queue yet
 			//{
@@ -185,7 +185,7 @@ namespace SabberStoneCore.Model
 #endif
 		}
 
-		public void EnqueueBase(in ISimpleTask task, in Controller controller, in Entity source, in Entity target)
+		public void EnqueueBase(in SimpleTask task, in Controller controller, in Entity source, in Entity target)
 		{
 			//_baseQueue.Enqueue((task, controller, source, target));
 			//if (!_eventFlag && _eventStack.Count == 0)
@@ -204,7 +204,7 @@ namespace SabberStoneCore.Model
 		/// Queue a task that will be processed after a task is queued and processed.
 		/// </summary>
 		/// <param name="task"></param>
-		public void EnqueuePendingTask(in ISimpleTask task, in Controller controller, in Entity source, in Entity target)
+		public void EnqueuePendingTask(in SimpleTask task, in Controller controller, in Entity source, in Entity target)
 		{
 			_pendingTasks.Enqueue(new TaskInstance(in task, in controller, in source, in target));
 			_hasPendingTask = true;
@@ -223,8 +223,8 @@ namespace SabberStoneCore.Model
 
 		public TaskState Process()
 		{
-			(ISimpleTask task, Controller controller, Entity source, Entity target) = CurrentQueue.Peek();
-			ISimpleTask temp = CurrentTask;
+			(SimpleTask task, Controller controller, Entity source, Entity target) = CurrentQueue.Peek();
+			SimpleTask temp = CurrentTask;
 			CurrentTask = task;
 
 			//if (currentTask is StateTaskList tasks)
@@ -262,7 +262,7 @@ namespace SabberStoneCore.Model
 			return success;
 		}
 
-		public void Execute(in ISimpleTask task, in Controller controller, in Playable source, in Entity target, int number = 0)
+		public void Execute(in SimpleTask task, in Controller controller, in Playable source, in Entity target, int number = 0)
 		{
 
 			_game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TaskQueue", !_game.Logging ? "" : $"PriorityTask[{source}]: '{task.GetType().Name}' is processed!" +

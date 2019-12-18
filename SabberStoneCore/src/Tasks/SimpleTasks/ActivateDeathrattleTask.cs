@@ -35,7 +35,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				if (p.AppliedEnchantments != null)
 					foreach (Enchantment e in p.AppliedEnchantments)
 					{
-						ISimpleTask task = e.Power.DeathrattleTask;
+						SimpleTask task = e.Power.DeathrattleTask;
 						if (task == null) continue;
 						game.TaskQueue.Enqueue(in task, e.Target.Controller, e.Target, e);
 					}
@@ -46,7 +46,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					if (p.AppliedEnchantments != null)
 						foreach (Enchantment e in p.AppliedEnchantments)
 						{
-							ISimpleTask task = e.Power.DeathrattleTask;
+							SimpleTask task = e.Power.DeathrattleTask;
 							if (task == null) continue;
 							game.TaskQueue.Enqueue(in task, e.Target.Controller, e.Target, e);
 						}

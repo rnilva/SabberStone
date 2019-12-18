@@ -64,7 +64,7 @@ namespace SabberStoneCore.Actions
 					game.TriggerManager.OnDrawTrigger(playable);
 				}
 
-				ISimpleTask task = playable.Power?.TopdeckTask;
+				SimpleTask task = playable.Power?.TopdeckTask;
 				if (task != null)
 				{
 					if (game.History)

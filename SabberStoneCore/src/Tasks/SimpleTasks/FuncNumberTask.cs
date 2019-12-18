@@ -25,7 +25,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private readonly Func<IList<Playable>, int> _stackFunction;
 
 		/// <summary>
-		///     Process a custom delegate which takes <see cref="ISimpleTask.source" /> entity as a parameter and save the
+		///     Process a custom delegate which takes <see cref="SimpleTask.source" /> entity as a parameter and save the
 		///     returning <see cref="Int32" /> to <see cref="TaskStack.Number" />.
 		/// </summary>
 		public FuncNumberTask(Func<Playable, int> function)

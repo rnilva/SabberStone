@@ -55,7 +55,7 @@
 //			return TaskState.COMPLETE;
 //		}
 
-//		public override ISimpleTask Clone()
+//		public override SimpleTask Clone()
 //		{
 //			var clone = new AddPowerTask(Type, Power, Activate);
 //			clone.Copy(this);
