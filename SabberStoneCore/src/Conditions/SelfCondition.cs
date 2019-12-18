@@ -234,19 +234,6 @@ namespace SabberStoneCore.Conditions
 				   me.Controller.Opponent.BoardZone.Any(p => p[tag] <= amount
 				    || me.Controller.Opponent.Hero[tag] <= amount));
 
-
-		public static SelfCondition IsCost(int value, RelaSign relaSign = RelaSign.EQ)
-		{
-			return new SelfCondition(me =>
-			{
-				int val = me.Cost;
-
-				return relaSign == RelaSign.EQ && val == value
-				       || relaSign == RelaSign.GEQ && val >= value
-				       || relaSign == RelaSign.LEQ && val <= value;
-			});
-		}
-
 		public static SelfCondition IsTagValue(GameTag tag, int value, RelaSign relaSign = RelaSign.EQ)
 		{
 			return new SelfCondition(me =>
@@ -257,6 +244,24 @@ namespace SabberStoneCore.Conditions
 				       || relaSign == RelaSign.GEQ && val >= value
 				       || relaSign == RelaSign.LEQ && val <= value;
 			});
+		}
+
+		public static SelfCondition IsATK(int value, RelaSign relaSign = RelaSign.EQ)
+		{
+			if (relaSign == RelaSign.EQ)
+				return new SelfCondition(me => ((Character) me).AttackDamage == value);
+			if (relaSign == RelaSign.GEQ)
+				return new SelfCondition(me => ((Character) me).AttackDamage >= value);
+			return new SelfCondition(me => ((Character) me).AttackDamage <= value);
+		}
+
+		public static SelfCondition IsCost(int value, RelaSign relaSign = RelaSign.EQ)
+		{
+			if (relaSign == RelaSign.EQ)
+				return new SelfCondition(me => me.Cost == value);
+			if (relaSign == RelaSign.GEQ)
+				return new SelfCondition(me => me.Cost >= value);
+			return new SelfCondition(me => me.Cost <= value);
 		}
 
 		public static SelfCondition IsBaseTagValue(GameTag tag, int value, RelaSign relaSign = RelaSign.EQ)

@@ -44,7 +44,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_048", new Power {
 				//Aura = new AdaptiveEffect(GameTag.CANT_ATTACK, EffectOperator.SET, p => p.Controller.Hero.Armor > 2 ? 0 : 1)
-				Aura = new AdaptiveEffect(new SelfCondition(p => p.Controller.Hero.Armor <= 3), GameTag.CANT_ATTACK)
+//				Aura = new AdaptiveEffect(new SelfCondition(p => p.Controller.Hero.Armor <= 3), GameTag.CANT_ATTACK)
+				Aura = new AdaptiveBoolAttributeEffect<MinionInPlay>(BoolAttributes.CantAttack,
+					new SelfCondition(p => p.Controller.Hero.Armor <= 3))
 			});
 
 			// ----------------------------------------- MINION - DRUID
@@ -2415,7 +2417,9 @@ namespace SabberStoneCore.CardSets
 				//	GameTag.CANT_ATTACK,
 				//	EffectOperator.SET,
 				//	p => p.Controller.Hero.Armor > 4 ? 0 : 1)
-				Aura = new AdaptiveEffect(SelfCondition.HasArmorLessThan(5), GameTag.CANT_ATTACK)
+//				Aura = new AdaptiveEffect(SelfCondition.HasArmorLessThan(5), GameTag.CANT_ATTACK)
+				Aura = new AdaptiveBoolAttributeEffect<MinionInPlay>(BoolAttributes.CantAttack,
+					SelfCondition.HasArmorLessThan(5))
 			});
 
 			// --------------------------------------- MINION - WARRIOR
@@ -2526,7 +2530,8 @@ namespace SabberStoneCore.CardSets
 				// TODO Bladed Gauntlet_LOOT_044
 				//Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.SET, p => p.Controller.Hero.Armor)
 				Aura = new MultiAura(
-					new AdaptiveEffect(GameTag.ATK, EffectOperator.SET, p => p.Controller.Hero.Armor),
+//					new AdaptiveEffect(GameTag.ATK, EffectOperator.SET, p => p.Controller.Hero.Armor),
+					new AdaptiveATKEffect<Weapon>(EffectOperator.SET, p => p.Controller.Hero.Armor),
 					new Aura(AuraType.HERO, new Effect(GameTag.CANNOT_ATTACK_HEROES, EffectOperator.SET, 1)))
 			});
 

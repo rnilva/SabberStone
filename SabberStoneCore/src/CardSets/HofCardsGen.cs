@@ -235,7 +235,16 @@ namespace SabberStoneCore.CardSets
 			// - CHARGE = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_062", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p =>
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p =>
+//				{
+//					int count = 0;
+//					ReadOnlySpan<MinionInPlay> span = p.Controller.BoardZone.GetSpan();
+//					for (int i = 0; i < span.Length; i++)
+//						if (span[i].IsRace(Race.MURLOC))
+//							count++;
+//					return count;
+//				})
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD, p =>
 				{
 					int count = 0;
 					ReadOnlySpan<MinionInPlay> span = p.Controller.BoardZone.GetSpan();

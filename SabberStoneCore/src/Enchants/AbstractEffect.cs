@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Model.Zones;
+
 #pragma warning disable 169
 #pragma warning disable 649
 
@@ -64,6 +67,86 @@ namespace SabberStoneCore.Enchants
 		//			break;
 		//	}
 		//}
+
+		public static AbstractEffect BooleanAttributeEffect(BoolAttributes attr)
+		{
+//			switch (attr)
+//			{
+//				case BoolAttributes.Charge:
+//
+//			}
+			return null;
+		}
+	}
+
+	public class SetChargeEffect : AbstractEffect
+	{
+		public override void ApplyTo(MinionInPlay minion)
+		{
+			minion.HasCharge = true;
+		}
+
+		public override void RemoveFrom(MinionInPlay minion)
+		{
+			minion.HasCharge = false;
+		}
+	}
+
+	public class ATKVaryEffect : AbstractEffect
+	{
+		public readonly int Value;
+
+		public ATKVaryEffect(int value)
+		{
+			Value = value;
+		}
+
+		public GameTag Tag => GameTag.ATK;
+
+		public override void ApplyTo(Character character)
+		{
+			character.AttackDamage += Value; 
+		}
+		public override void RemoveFrom(Character character)
+		{
+			character.AttackDamage -= Value;
+		}
+	}
+
+	public class ATKSetEffect : AbstractEffect
+	{
+		public readonly int Value;
+
+		public ATKSetEffect(int value)
+		{
+			Value = value;
+		}
+
+		public GameTag Tag => GameTag.ATK;
+
+		public override void ApplyTo(Character character)
+		{
+			character.AttackDamage += Value;
+
+			// Remove atk one turn effects
+			List<(int entityId, IEffect effect)> oneTurnEffects = character.Game.OneTurnEffects;
+			for (int i = oneTurnEffects.Count - 1; i >= 0; --i)
+			{
+				(int id, IEffect eff) = oneTurnEffects[i];
+				if (id == character.Id && eff.Tag == GameTag.ATK)
+					oneTurnEffects.RemoveAt(i);
+			}
+			// Reapply auras
+			if (character.Zone is BoardZone board)
+				foreach (Aura aura in board.Auras)
+					if (aura.Deregister(character))
+						aura.EntityAdded(character);
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			// Do nothing
+		}
 	}
 
 	public class AttributeAddEffect : AbstractEffect, IEffect
@@ -125,15 +208,20 @@ namespace SabberStoneCore.Enchants
 	public class AttributeSetEffect : AbstractEffect
 	{
 		private readonly int _attribute;
-		private readonly int _value;
-		public AttributeSetEffect(BoolAttributes attr, int value)
+		private readonly bool _value;
+		public AttributeSetEffect(BoolAttributes attr, bool value)
 		{
 			_attribute = (int)attr;
 			_value = value;
 		}
-		public override void ApplyTo(Character playable)
+		public override void ApplyTo(Character character)
 		{
-			playable.GetIntRef(_attribute) = _value;
+			character.GetRef(_attribute) = _value;
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			character.GetRef(_attribute) = !_value;
 		}
 	}
 

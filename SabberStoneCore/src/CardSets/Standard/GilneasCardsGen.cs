@@ -773,10 +773,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - LIFESTEAL = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_685", new Power {
-				//Aura = new AdaptiveEffect(SelfCondition.IsTagValue(GameTag.ATK, 3, RelaSign.GEQ), GameTag.TAUNT, GameTag.LIFESTEAL)
 				Aura = new MultiAura(
-					new AdaptiveEffect(SelfCondition.IsTagValue(GameTag.ATK, 3, RelaSign.GEQ), GameTag.TAUNT),
-					new AdaptiveEffect(SelfCondition.IsTagValue(GameTag.ATK, 3, RelaSign.GEQ), GameTag.LIFESTEAL))
+					new AdaptiveBoolAttributeEffect<MinionInPlay>(BoolAttributes.Taunt, SelfCondition.IsATK(3, RelaSign.GEQ)),
+					new AdaptiveBoolAttributeEffect<MinionInPlay>(BoolAttributes.Lifesteal, SelfCondition.IsATK(3, RelaSign.GEQ)))
 			});
 
 			// --------------------------------------- MINION - PALADIN
@@ -947,7 +946,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Can't attack while damaged.
 			// --------------------------------------------------------
 			cards.Add("GIL_156", new Power {
-				Aura = new AdaptiveEffect(SelfCondition.IsDamaged, GameTag.CANT_ATTACK)
+//				Aura = new AdaptiveEffect(SelfCondition.IsDamaged, GameTag.CANT_ATTACK)
+				Aura = new AdaptiveBoolAttributeEffect<MinionInPlay>(BoolAttributes.CantAttack, SelfCondition.IsDamaged)
 			});
 
 			// ---------------------------------------- MINION - PRIEST

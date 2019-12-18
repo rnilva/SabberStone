@@ -89,7 +89,7 @@ namespace SabberStoneCore.Actions
 					c.Game.Log(LogLevel.ERROR, BlockType.ATTACK, "PreAttackPhase", !c.Game.Logging? "":"wrong controller in phase.");
 					return false;
 				}
-				if (!source.CanAttack || !source.IsValidAttackTarget(target))
+				if (!source.CanAttack(false) || !source.IsValidAttackTarget(target))
 				{
 					if (source.AutoAttack)
 						return true;

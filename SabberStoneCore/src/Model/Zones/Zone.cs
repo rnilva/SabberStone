@@ -316,7 +316,7 @@ namespace SabberStoneCore.Model.Zones
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		List<Playable> IZone.GetAll => this.Cast<Playable>().ToList();
 
-		private struct Enumerator : IEnumerator<T>, IDisposable, IEnumerator
+		private struct Enumerator : IEnumerator<T>
 		{
 			private readonly int _count;
 			private readonly T[] _entities;

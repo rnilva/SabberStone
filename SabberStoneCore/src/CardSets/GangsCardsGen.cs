@@ -1876,7 +1876,8 @@ namespace SabberStoneCore.CardSets
 			cards.Add("CFM_325", new Power
 			{
 				InfoCardId = "CFM_325e",
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.Hero.Weapon != null ? 2 : 0)
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.Hero.Weapon != null ? 2 : 0)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD, p => p.Controller.Hero.Weapon != null ? 2 : 0)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

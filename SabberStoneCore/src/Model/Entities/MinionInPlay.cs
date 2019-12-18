@@ -114,6 +114,28 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
+		public override bool CanAttack(bool checkTargets = true)
+		{
+			if (HasCharge || IsRush)
+			{
+				if (HasWindfury)
+				{
+					if (NumAttacksThisTurn == 2)
+						return false;
+				}
+				else if (NumAttacksThisTurn != 0)
+					return false;
+			}
+			else if (IsExhausted)
+				return false;
+
+			return AttackDamage > 0 &&
+			       !IsFrozen &&
+			       !CantAttack &&
+			       !Untouchable &&
+			       (!checkTargets || HasAnyValidAttackTargets());
+		}
+
 		#region Attribute Properties
 		public override int AttackDamage
 		{
@@ -241,8 +263,15 @@ namespace SabberStoneCore.Model.Entities
 			get => _attrs.boolAttrs[8];
 			set
 			{
-				if (value && IsExhausted && NumAttacksThisTurn == 0)
-					IsExhausted = false;
+				if (value)
+				{
+					if (IsExhausted && NumAttacksThisTurn == 0)
+						IsExhausted = false;
+				}
+				else
+				{
+//					if (HasCharge && !IsExhausted && )
+				}
 				_attrs.boolAttrs[8] = value;
 			}
 		}
@@ -403,7 +432,9 @@ namespace SabberStoneCore.Model.Entities
 
 		public override Playable Clone(in Controller controller)
 		{
-			return new MinionInPlay(in controller, this);
+			return Zone?.Type != Enums.Zone.PLAY
+				? new Minion(in controller, this)
+				: new MinionInPlay(in controller, this);
 		}
 
 		public Minion CloneAsMinion(in Controller controller)

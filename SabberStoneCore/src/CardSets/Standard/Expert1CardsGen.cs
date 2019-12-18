@@ -1792,7 +1792,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: This minion's Attack is always equal to its Health.
 			// --------------------------------------------------------
 			cards.Add("EX1_335", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.SET, p => ((Minion)p).Health)
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.SET, p => ((Minion)p).Health)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.SET, p => p.Health)
 			});
 
 			// ---------------------------------------- MINION - PRIEST
@@ -3514,7 +3515,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - CHARGE = 1
 			// --------------------------------------------------------
 			cards.Add("CS2_146", new Power {
-				Aura = new AdaptiveEffect(SelfCondition.IsWeaponEquiped, GameTag.CHARGE)
+//				Aura = new AdaptiveEffect(SelfCondition.IsWeaponEquiped, GameTag.CHARGE)
+				Aura = new AdaptiveBoolAttributeEffect<MinionInPlay>(BoolAttributes.Charge, SelfCondition.IsWeaponEquiped)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

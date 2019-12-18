@@ -3620,10 +3620,10 @@ namespace SabberStoneCoreTest.CardSets
 
 			Minion testCard = game.ProcessCard<Minion>("Gemstudded Golem");
 			testCard.IsExhausted = false;
-			Assert.False(testCard.CanAttack);
+			Assert.False(testCard.CanAttack());
 
 			game.ProcessCard("Shield Block");
-			Assert.True(testCard.CanAttack);
+			Assert.True(testCard.CanAttack());
 		}
 
 		// --------------------------------------- MINION - WARRIOR

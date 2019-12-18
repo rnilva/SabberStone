@@ -103,11 +103,11 @@ namespace SabberStoneCore.Model.Entities
 			set => _v1 = value;
 		}
 
-		public override bool CanAttack
+		public override bool CanAttack(bool checkTargets = true)
 			=> AttackDamage > 0
 			   && (!IsExhausted || (ExtraAttacksThisTurn > 0 && ExtraAttacksThisTurn >= NumAttacksThisTurn))
 			   && !IsFrozen
-			   && HasAnyValidAttackTargets();
+			   && (!checkTargets || HasAnyValidAttackTargets());
 
 		public override bool HasWindfury
 		{

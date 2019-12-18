@@ -442,7 +442,9 @@ namespace SabberStoneCore.CardSets
 			// - SPELLPOWER = 1
 			// --------------------------------------------------------
 			cards.Add("KAR_063", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.CurrentSpellPower > 0 ? 2 : 0)
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.CurrentSpellPower > 0 ? 2 : 0)
+				Aura = new AdaptiveATKEffect<Weapon>(EffectOperator.ADD,
+					p => p.Controller.CurrentSpellPower > 0 ? 2 : 0)
 			});
 
 		}

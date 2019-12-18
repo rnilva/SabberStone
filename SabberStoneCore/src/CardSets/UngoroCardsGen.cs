@@ -1864,7 +1864,9 @@ namespace SabberStoneCore.CardSets
 			// - TAUNT = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_049", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller == p.Game.CurrentOpponent ? 3 : 0)
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller == p.Game.CurrentOpponent ? 3 : 0)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD,
+					       p => p.Controller == p.Game.CurrentOpponent ? 3 : 0)
 			});
 
 			// --------------------------------------- MINION - WARLOCK
@@ -2124,7 +2126,8 @@ namespace SabberStoneCore.CardSets
 			// - TAUNT = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_838", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller == p.Game.CurrentOpponent ? 4 : 0)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD,
+					p => p.Controller == p.Game.CurrentOpponent ? 4 : 0)
 			});
 
 			// --------------------------------------- MINION - WARRIOR
@@ -3033,7 +3036,8 @@ namespace SabberStoneCore.CardSets
 			// - TAUNT = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_928", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller == p.Game.CurrentOpponent ? 2 : 0)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD,
+					p => p.Controller == p.Game.CurrentOpponent ? 2 : 0)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

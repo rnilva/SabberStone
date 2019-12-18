@@ -2335,7 +2335,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SPELLPOWER = 1
 			// --------------------------------------------------------
 			cards.Add("DAL_434", new Power {
-				Aura = new AdaptiveEffect(SelfCondition.IsntSpellDmgOnHero, GameTag.CANT_ATTACK)
+//				Aura = new AdaptiveEffect(SelfCondition.IsntSpellDmgOnHero, GameTag.CANT_ATTACK)
+				Aura = new AdaptiveBoolAttributeEffect<MinionInPlay>(BoolAttributes.CantAttack,
+					SelfCondition.IsntSpellDmgOnHero)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -2440,7 +2442,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAUNT = 1
 			// --------------------------------------------------------
 			cards.Add("DAL_551", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD,
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD,
+//					p => p.Controller.BoardZone.Count == 1 ? 2 : 0)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD,
 					p => p.Controller.BoardZone.Count == 1 ? 2 : 0)
 			});
 

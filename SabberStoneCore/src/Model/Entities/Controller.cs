@@ -429,10 +429,12 @@ namespace SabberStoneCore.Model.Entities
 			{
 				MinionInPlay minion = boardSpan[j];
 
-				if (minion.IsExhausted && (!minion.HasCharge || minion.NumAttacksThisTurn != 0))
-					continue;
-				if (minion.IsFrozen || minion.AttackDamage == 0 || minion.CantAttack || minion.Untouchable)
-					continue;
+				//if (minion.IsExhausted && (!minion.HasCharge || minion.NumAttacksThisTurn != 0))
+				//	continue;
+				//if (minion.IsFrozen || minion.AttackDamage == 0 || minion.CantAttack || minion.Untouchable)
+				//	continue;
+
+				if (!minion.CanAttack(false)) continue;
 
 				GenerateAttackTargets();
 
