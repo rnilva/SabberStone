@@ -742,6 +742,7 @@ namespace SabberStoneCore.Model.Entities
 			#endregion
 		}
 
+
 		/// <summary>
 		/// Returns a string which dumps information about this player.
 		/// </summary>
