@@ -41,13 +41,6 @@ namespace SabberStoneCore.Model
 			private fixed int _data[COUNT];
 #pragma warning restore 649
 
-			//public GameAttributes(GameAttributes other)
-			//{
-			//	fixed (void* ptr = _data)
-			//		Buffer.MemoryCopy(other._data, ptr,
-			//			COUNT * sizeof(int), COUNT * sizeof(int));
-			//}
-
 			public int Turn
 			{
 				[MethodImpl(MethodImplOptions.AggressiveInlining)]

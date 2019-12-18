@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Tasks.SimpleTasks;
@@ -116,25 +117,32 @@ namespace SabberStoneCore.Model.Entities
 		#region Attribute Properties
 		public override int AttackDamage
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get
 			{
-				int value = _v1.Value;/* + (AuraEffects?.ATK ?? 0);*/
+				int value = _v1.Value;
 				return value < 0 ? 0 : value;
 			}
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _v1 = value;
 		}
 		public override int BaseHealth
 		{
-			get => _v2.Value/* + (AuraEffects?.Health ?? 0)*/;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _v2.Value;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _v2 = value;
 		}
 		public unsafe int SpellPower
 		{
-			get => _attrs.intAttrs[0];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.intAttrs[0];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[0] = value;
 		}
 		public override unsafe int Damage
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[1];
 			set
 			{
@@ -148,22 +156,30 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override unsafe int NumAttacksThisTurn
 		{
-			get => _attrs.intAttrs[2];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.intAttrs[2];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[2] = value;
 		}
 		public unsafe int OrderOfPlay
 		{
-			get => _attrs.intAttrs[3];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.intAttrs[3];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[3] = value;
 		}
 		public override unsafe bool IsImmune
 		{
-			get => _attrs.boolAttrs[0];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.boolAttrs[0];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[0] = value;
 		}
 		public override unsafe bool IsFrozen
 		{
-			get => _attrs.boolAttrs[1];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.boolAttrs[1];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set
 			{
 				if (value)
@@ -174,28 +190,35 @@ namespace SabberStoneCore.Model.Entities
 
 		public override unsafe bool HasStealth
 		{
-			get => _attrs.boolAttrs[2];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.boolAttrs[2];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[2] = value;
 		}
 		public override unsafe bool CantBeTargetedBySpells
 		{
-			get => /*(AuraEffects?.CantBeTargetedBySpells ?? false) ||*/
-			       _attrs.boolAttrs[3];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[3];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[3] = value;
 		}
 		public override unsafe bool CantAttackHeroes
 		{
-			get => _attrs.boolAttrs[4];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.boolAttrs[4];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[4] = value;
 		}
 		public override unsafe bool HasTaunt
 		{
-			get => /*(AuraEffects?.Taunt ?? false) ||*/
-			       _attrs.boolAttrs[5];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.boolAttrs[5];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[5] = value;
 		}
 		public override unsafe bool HasDivineShield
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[6];
 			set
 			{
@@ -207,13 +230,15 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override unsafe bool HasWindfury
 		{
-			get => _attrs.boolAttrs[7];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.boolAttrs[7];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[7] = value;
 		}
 		public override unsafe bool HasCharge
 		{
-			get => /*(AuraEffects?.Charge ?? 0) > 0 ||*/
-			       _attrs.boolAttrs[8];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[8];
 			set
 			{
 				if (value && IsExhausted && NumAttacksThisTurn == 0)
@@ -223,39 +248,51 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override unsafe bool Poisonous
 		{
-			get => _attrs.boolAttrs[9];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.boolAttrs[9];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[9] = value;
 		}
 		public override unsafe bool HasLifeSteal
 		{
-			get => /*(AuraEffects?.Lifesteal ?? false) ||*/
-			       _attrs.boolAttrs[10];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.boolAttrs[10];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[10] = value;
 		}
 		public override unsafe bool IsRush
 		{
-			get => /*(AuraEffects?.Rush ?? false) ||*/
-			       _attrs.boolAttrs[11];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _attrs.boolAttrs[11];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[11] = value;
 		}
 		public override unsafe bool CantAttack
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[12];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[12] = value;
 		}
 		public override unsafe bool HasDeathrattle
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[13];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[13] = value;
 		}
 		public unsafe bool IsSilenced
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[14];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[14] = value;
 		}
 		public unsafe bool AttackableByRush
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[15];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[15] = value;
 		}
 		#endregion
@@ -488,14 +525,14 @@ namespace SabberStoneCore.Model.Entities
 		}
 		#endregion
 
-		internal override bool GetAttribute(Entities.BoolAttributes attr)
+		internal override bool GetAttribute(BoolAttributes attr)
 		{
 			unsafe
 			{
 				return _attrs.boolAttrs[(int) attr];
 			}
 		}
-		internal override void SetAttribute(Entities.BoolAttributes attr, bool value)
+		internal override void SetAttribute(BoolAttributes attr, bool value)
 		{
 			unsafe
 			{

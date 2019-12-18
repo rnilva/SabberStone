@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
@@ -95,7 +96,6 @@ namespace SabberStoneCore.Model.Entities
 			get
 			{
 				int value = _v1 ?? (_v1 = 0).Value;
-				//value += (AuraEffects?.ATK ?? 0);
 				if (Weapon != null && Game.CurrentPlayer == Controller)
 					return Weapon.AttackDamage + value;
 				return value;
@@ -265,11 +265,14 @@ namespace SabberStoneCore.Model.Entities
 
 		public unsafe int SpellPower
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[0];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[0] = value;
 		}
 		public override unsafe int Damage
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[1];
 			set
 			{
@@ -283,53 +286,72 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override unsafe int NumAttacksThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[2];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[2] = value;
 		}
 		public unsafe int Fatigue
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[3];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[3] = value;
 		}
 		public unsafe int DamageTakenThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[4];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[4] = value;
 		}
 		public unsafe int HeroPowerDamage
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[5];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[5] = value;
 		}
 		public unsafe int ExtraAttacksThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[6];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[6] = value;
 		}
 		public override unsafe bool IsImmune
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[0];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[0] = value;
 		}
 		public override unsafe bool IsFrozen
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[1];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[1] = value;
 		}
 		public override unsafe bool HasStealth
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[2];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[2] = value;
 		}
 		public override unsafe bool CantBeTargetedBySpells
 		{
-			get => /*(AuraEffects?.CantBeTargetedBySpells ?? false) ||*/
-			       _attrs.boolAttrs[3];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[3];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[3] = value;
 		}
 		public override unsafe bool CantAttackHeroes
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[4];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[4] = value;
 		}
 		internal override unsafe ref bool GetRef(int index)
