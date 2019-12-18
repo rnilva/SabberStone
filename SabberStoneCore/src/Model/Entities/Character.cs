@@ -133,7 +133,11 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// Character can attack.
 		/// </summary>
-		public virtual bool CanAttack => !IsExhausted && !IsFrozen && HasAnyValidAttackTargets() && !CantAttack;
+		public virtual bool CanAttack(bool checkTargets = true)
+			=> !IsExhausted &&
+			   !IsFrozen &&
+			   !CantAttack &&
+			   (!checkTargets || HasAnyValidAttackTargets());
 
 		/// <summary>
 		/// Indicates if the provided character can be attacked by this character.
@@ -524,7 +528,8 @@ namespace SabberStoneCore.Model.Entities
 			get { return this[GameTag.DEFENDING] == 1; }
 			set { this[GameTag.DEFENDING] = value ? 1 : 0; }
 		}
-		
+
+//		public abstract ref bool this[BoolAttributes attr] { get; }
 
 		internal abstract ref bool GetRef(int index);
 		internal abstract ref int GetIntRef(int index);

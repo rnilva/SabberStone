@@ -2462,10 +2462,11 @@ namespace SabberStoneCore.CardSets.Standard
 			// RefTag:
 			// - SPELLPOWER = 1
 			// --------------------------------------------------------
-			cards.Add("DAL_434", new CardDef(new Power
-			{
-				Aura = new AdaptiveEffect(SelfCondition.IsntSpellDmgOnHero, GameTag.CANT_ATTACK)
-			}));
+			cards.Add("DAL_434", new Power {
+//				Aura = new AdaptiveEffect(SelfCondition.IsntSpellDmgOnHero, GameTag.CANT_ATTACK)
+				Aura = new AdaptiveBoolAttributeEffect<MinionInPlay>(BoolAttributes.CantAttack,
+					SelfCondition.IsntSpellDmgOnHero)
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [DAL_538] Unseen Saboteur - COST:6 [ATK:5/HP:6]
@@ -2574,11 +2575,12 @@ namespace SabberStoneCore.CardSets.Standard
 			// GameTag:
 			// - TAUNT = 1
 			// --------------------------------------------------------
-			cards.Add("DAL_551", new CardDef(new Power
-			{
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD,
+			cards.Add("DAL_551", new Power {
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD,
+//					p => p.Controller.BoardZone.Count == 1 ? 2 : 0)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD,
 					p => p.Controller.BoardZone.Count == 1 ? 2 : 0)
-			}));
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [DAL_553] Big Bad Archmage - COST:10 [ATK:6/HP:6]

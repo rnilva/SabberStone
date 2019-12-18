@@ -2460,7 +2460,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Can only attack if you cast a spell this turn.
 			// --------------------------------------------------------
 			cards.Add("BOT_098", new Power {
-				Aura = new AdaptiveEffect(SelfCondition.NotPlayedAnySpellThisTurn, GameTag.CANT_ATTACK)
+//				Aura = new AdaptiveEffect(SelfCondition.NotPlayedAnySpellThisTurn, GameTag.CANT_ATTACK)
+				Aura = new AdaptiveBoolAttributeEffect<MinionInPlay>(BoolAttributes.CantAttack,
+					SelfCondition.NotPlayedAnySpellThisTurn)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

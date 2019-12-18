@@ -2235,7 +2235,8 @@ namespace SabberStoneCore.CardSets.Standard
 				//	new IncludeTask(EntityType.SOURCE),
 				//	new FuncNumberTask(p => p.Controller.DiscardedEntities.Count),
 				//	new AddEnchantmentTask("ICC_841e", EntityType.SOURCE, true))
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.NumDiscardedThisGame)
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.NumDiscardedThisGame)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD, p => p.Controller.NumDiscardedThisGame)
 			});
 
 			// --------------------------------------- MINION - WARLOCK

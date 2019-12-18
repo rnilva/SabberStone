@@ -918,9 +918,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, testCard));
 			Assert.Equal(3, game.CurrentOpponent.BoardZone.Count);
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
-			Assert.True(game.CurrentPlayer.BoardZone[0].CanAttack);
-			Assert.True(game.CurrentPlayer.BoardZone[1].CanAttack);
-			Assert.True(game.CurrentPlayer.BoardZone[2].CanAttack);
+			Assert.True(game.CurrentPlayer.BoardZone[0].CanAttack());
+			Assert.True(game.CurrentPlayer.BoardZone[1].CanAttack());
+			Assert.True(game.CurrentPlayer.BoardZone[2].CanAttack());
 		}
 
 		// ----------------------------------------- SPELL - HUNTER
@@ -3360,7 +3360,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, minion2));
 
-			Assert.True(((Minion)minion2).CanAttack);
+			Assert.True(((Minion)minion2).CanAttack());
 			game.Process(MinionAttackTask.Any(game.CurrentPlayer, minion2, game.CurrentOpponent.Hero));
 			Assert.Equal(2, game.CurrentOpponent.Hero.Damage);
 
@@ -5433,8 +5433,24 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.ProcessCard(minion1);
 
 			Assert.True(minion1.HasCharge);
-			Assert.False(minion1.IsExhausted);
+			Assert.True(minion1.CanAttack());
 			Assert.Equal(0, minion1.NumAttacksThisTurn);
+
+			game.CurrentPlayer.Hero.Weapon.Destroy();
+			game.DeathProcessingAndAuraUpdate();
+			Assert.False(minion1.HasCharge);
+			Assert.False(minion1.CanAttack());
+
+			game.EndTurn();
+			game.EndTurn();
+
+			Assert.True(minion1.CanAttack());
+			Assert.False(minion1.HasCharge);
+			game.Process(HeroPowerTask.Any(game.CurrentPlayer));
+			game.CurrentPlayer.Hero.Weapon.Destroy();
+			game.DeathProcessingAndAuraUpdate();
+			Assert.False(minion1.HasCharge);
+			Assert.True(minion1.CanAttack());
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

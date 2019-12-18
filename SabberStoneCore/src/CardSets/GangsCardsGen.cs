@@ -1877,8 +1877,9 @@ namespace SabberStoneCore.CardSets
 			cards.Add("CFM_325", new CardDef(new Power
 			{
 				InfoCardId = "CFM_325e",
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.Hero.Weapon != null ? 2 : 0)
-			}));
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.Hero.Weapon != null ? 2 : 0)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD, p => p.Controller.Hero.Weapon != null ? 2 : 0)
+			});
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [CFM_328] Fight Promoter - COST:6 [ATK:4/HP:4]

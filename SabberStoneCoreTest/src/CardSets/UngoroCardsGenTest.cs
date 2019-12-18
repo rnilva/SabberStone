@@ -2076,7 +2076,7 @@ namespace SabberStoneCoreTest.CardSets
 
 			Minion boar = game.ProcessCard<Minion>("Stonetusk Boar");
 			game.Process(MinionAttackTask.Any(game.CurrentPlayer, boar, seed));
-			Assert.True(boar.CanAttack);
+			Assert.True(boar.CanAttack());
 
 			// 2
 			for (int i = 0; i < 30; ++i)
@@ -4079,7 +4079,7 @@ namespace SabberStoneCoreTest.CardSets
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
 			MinionInPlay devilsaur = game.CurrentPlayer.BoardZone[1];
 			Assert.Equal("Charged Devilsaur", devilsaur.Card.Name);
-			Assert.True(devilsaur.CanAttack);
+			Assert.True(devilsaur.CanAttack());
 			Assert.False(devilsaur.CantAttackHeroes);
 		}
 

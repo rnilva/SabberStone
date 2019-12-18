@@ -1004,7 +1004,8 @@ namespace SabberStoneCore.CardSets
 			// - AURA = 1
 			// --------------------------------------------------------
 			cards.Add("GVG_024", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.BoardZone.Any(m => m.Race == Race.MECHANICAL) ? 2 : 0)
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.BoardZone.Any(m => m.IsRace(Race.MECHANICAL)) ? 2 : 0)
+				Aura = new AdaptiveATKEffect<Weapon>(EffectOperator.ADD, p => p.Controller.BoardZone.Any(m => m.IsRace(Race.MECHANICAL)) ? 2 : 0)
 			});
 
 		}
@@ -1557,8 +1558,10 @@ namespace SabberStoneCore.CardSets
 			// - AURA = 1
 			// --------------------------------------------------------
 			cards.Add("GVG_013", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD,
-					p => p.Controller.BoardZone.Any(m => m.Race == Race.MECHANICAL) ? 2 : 0)
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD,
+//					p => p.Controller.BoardZone.Any(m => m.IsRace(Race.MECHANICAL)) ? 2 : 0)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD,
+					p => p.Controller.BoardZone.Any(m => m.IsRace(Race.MECHANICAL)) ? 2 : 0)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -1884,7 +1887,9 @@ namespace SabberStoneCore.CardSets
 			// - AURA = 1
 			// --------------------------------------------------------
 			cards.Add("GVG_095", new Power {
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.Opponent.HandZone.Count > 5 ? 4 : 0)
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD, p => p.Controller.Opponent.HandZone.Count > 5 ? 4 : 0)
+				Aura = new AdaptiveATKEffect<MinionInPlay>(EffectOperator.ADD,
+					p => p.Controller.Opponent.HandZone.Count > 5 ? 4 : 0)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

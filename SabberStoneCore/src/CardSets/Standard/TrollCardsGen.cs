@@ -1749,11 +1749,12 @@ namespace SabberStoneCore.CardSets.Standard
 			// RefTag:
 			// - OVERLOAD = 1
 			// --------------------------------------------------------
-			cards.Add("TRL_352", new CardDef(new Power
-			{
-				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD,
+			cards.Add("TRL_352", new Power {
+//				Aura = new AdaptiveEffect(GameTag.ATK, EffectOperator.ADD,
+//					p => p.Controller.OverloadLocked > 0 || p.Controller.OverloadOwed > 0 ? 2 : 0)
+				Aura = new AdaptiveATKEffect<Weapon>(EffectOperator.ADD,
 					p => p.Controller.OverloadLocked > 0 || p.Controller.OverloadOwed > 0 ? 2 : 0)
-			}));
+			});
 
 		}
 
