@@ -23,9 +23,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 	{
 		private readonly int _amount;
 		private readonly bool _spellDmg;
-		private readonly ISimpleTask _task;
+		private readonly SimpleTask _task;
 
-		public EnqueueTask(int amount, ISimpleTask task, bool spellDmg = false)
+		public EnqueueTask(int amount, SimpleTask task, bool spellDmg = false)
 		{
 			_amount = amount;
 			_task = task;
@@ -54,10 +54,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 	public class EnqueuePendingTask : SimpleTask
 	{
-		private readonly ISimpleTask _task;
+		private readonly SimpleTask _task;
 		private readonly EntityType _targetType;
 
-		public EnqueuePendingTask(ISimpleTask task, EntityType targetType)
+		public EnqueuePendingTask(SimpleTask task, EntityType targetType)
 		{
 			_task = task;
 			_targetType = targetType;
@@ -75,7 +75,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			if (_task == null)
 			{
-				ISimpleTask task;
+				SimpleTask task;
 				if (target.Card.ChooseOne)
 				{
 					int chooseOne = game.CurrentEventData.EventNumber;
@@ -89,8 +89,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					    && !id.Equals("ICC_051")	// ICC_051t3
 					    && !id.Equals("ICC_047"))	// using choose one 0 option
 					{
-						ISimpleTask task1 = ((Playable) target).ChooseOnePlayables[0].Card.Power.PowerTask;
-						ISimpleTask task2 = ((Playable) target).ChooseOnePlayables[1].Card.Power.PowerTask;
+						SimpleTask task1 = ((Playable) target).ChooseOnePlayables[0].Card.Power.PowerTask;
+						SimpleTask task2 = ((Playable) target).ChooseOnePlayables[1].Card.Power.PowerTask;
 
 						foreach (Playable p in targets)
 						{

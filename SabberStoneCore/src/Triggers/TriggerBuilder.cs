@@ -28,13 +28,13 @@ namespace SabberStoneCore.Triggers
 				_triggerBuilder = tBuilder;
 			}
 
-			public TriggerBuilder SetTask(ISimpleTask task)
+			public TriggerBuilder SetTask(SimpleTask task)
 			{
 				_triggerBuilder._trigger.SingleTask = task;
 				return _triggerBuilder;
 			}
 
-			public TriggerBuilder SetSecretTasks(params ISimpleTask[] tasks)
+			public TriggerBuilder SetSecretTasks(params SimpleTask[] tasks)
 			{
 				_triggerBuilder._trigger.SingleTask = ComplexTask.Secret(tasks);
 				return _triggerBuilder;

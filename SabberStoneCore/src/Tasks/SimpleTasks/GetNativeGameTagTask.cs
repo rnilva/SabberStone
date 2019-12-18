@@ -76,7 +76,7 @@
 //			return TaskState.COMPLETE;
 //		}
 
-//		public override ISimpleTask Clone()
+//		public override SimpleTask Clone()
 //		{
 //			var clone = new GetNativeGameTagTask(Tag, Type, SelfBuffs, _index);
 //			clone.Copy(this);

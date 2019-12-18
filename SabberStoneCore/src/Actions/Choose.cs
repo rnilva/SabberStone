@@ -258,8 +258,8 @@ namespace SabberStoneCore.Actions
 				return true;
 			};
 
-		public static Func<Controller, Entity, IList<Playable>, ChoiceType, ChoiceAction, Card[], ISimpleTask, bool> CreateChoiceCards
-			=> delegate (Controller c, Entity source, IList<Playable> targets, ChoiceType type, ChoiceAction action, Card[] choices, ISimpleTask taskToDo)
+		public static Func<Controller, Entity, IList<Playable>, ChoiceType, ChoiceAction, Card[], SimpleTask, bool> CreateChoiceCards
+			=> delegate (Controller c, Entity source, IList<Playable> targets, ChoiceType type, ChoiceAction action, Card[] choices, SimpleTask taskToDo)
 			{
 				//if (c.Choice != null)
 				//{

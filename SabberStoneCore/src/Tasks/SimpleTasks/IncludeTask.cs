@@ -22,7 +22,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 
 	/// <summary>
-	/// Indicator enum to specify target range of <see cref="ISimpleTask"/>s.
+	/// Indicator enum to specify target range of <see cref="SimpleTask"/>s.
 	/// </summary>
 	public enum EntityType
 	{

@@ -313,7 +313,7 @@ namespace SabberStoneCore.Model.Entities
             {
                 game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TakeDamage", !_logging ? "" : $"{source}' Overkill is triggered.");
 
-                ISimpleTask task = source is HeroInPlay h ? h.Weapon.Card.Power.OverkillTask : source.Card.Power.OverkillTask;
+                SimpleTask task = source is HeroInPlay h ? h.Weapon.Card.Power.OverkillTask : source.Card.Power.OverkillTask;
                 game.TaskQueue.Enqueue(task, source.Controller, source, null);
             }
 

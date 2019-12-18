@@ -25,20 +25,20 @@ namespace SabberStoneCore.Tasks
 
 
 	[DebuggerDisplay("{DebuggerDisplay, nq}")]
-	public class StateTaskList : ISimpleTask
+	public class StateTaskList : SimpleTask
 	{
-		private readonly ISimpleTask[] _tasks;
+		private readonly SimpleTask[] _tasks;
 
-		private StateTaskList(ISimpleTask[] list)
+		private StateTaskList(SimpleTask[] list)
 		{
 			_tasks = list;
 		}
 
 		public TaskState State { get; set; } = TaskState.READY;
 
-		public bool IsTrigger { get; set; }
+		//public bool IsTrigger { get; set; }
 
-		public TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target, in TaskStack stack = null)
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target, in TaskStack stack = null)
 		{
 			TaskStack currentStack = stack ?? new TaskStack();
 
@@ -56,7 +56,7 @@ namespace SabberStoneCore.Tasks
 		}
 
 
-		public static StateTaskList Chain(params ISimpleTask[] list)
+		public static StateTaskList Chain(params SimpleTask[] list)
 		{
 			return new StateTaskList(list);
 		}
@@ -75,7 +75,7 @@ namespace SabberStoneCore.Tasks
 			get
 			{
 				var sb = new StringBuilder();
-				foreach (ISimpleTask task in _tasks)
+				foreach (SimpleTask task in _tasks)
 				{
 					sb.Append($"[{task.GetType().Name}]");
 				}

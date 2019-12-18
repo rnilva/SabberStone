@@ -102,7 +102,7 @@ namespace SabberStoneCore.Model
 		//public Card EnchantmentCard { get; set; }
 
 		/// <summary>Gets or sets the task that must be done after the entity is chosen.</summary>
-		public ISimpleTask AfterChooseTask { get; set; }
+		public SimpleTask AfterChooseTask { get; set; }
 
 		/// <summary>Gets or sets the next consecutive choice.</summary>
 		public Choice NextChoice { get; set;}

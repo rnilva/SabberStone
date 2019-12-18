@@ -164,7 +164,7 @@ namespace SabberStoneCore.Model.Entities
 
 			if (Power == null) return;
 
-			ISimpleTask task = null;
+			SimpleTask task = null;
 			switch (activation)
 			{
 				case PowerActivation.POWER:
@@ -180,7 +180,7 @@ namespace SabberStoneCore.Model.Entities
 			if (task == null) return;
 
 			// clone task here
-			//ISimpleTask clone = task.Clone();
+			//SimpleTask clone = task.Clone();
 			//clone.Game = source?.Game ?? Game;
 			//clone.Controller = source?.Controller ?? Controller;
 			//clone.Source = source ?? this;

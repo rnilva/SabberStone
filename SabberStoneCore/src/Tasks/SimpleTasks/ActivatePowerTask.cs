@@ -43,7 +43,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				foreach (Playable p in IncludeTask.GetEntities(in _sourceType, in controller, source, target,
 					stack?.Playables))
 				{
-					ISimpleTask task = p.Card.Power.PowerTask;
+					SimpleTask task = p.Card.Power.PowerTask;
 
 					foreach (Playable t in targets)
 					{

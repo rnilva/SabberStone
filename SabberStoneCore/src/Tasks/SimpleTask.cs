@@ -17,16 +17,16 @@ using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCore.Tasks
 {
-	public interface ISimpleTask
-	{
-		//TaskState State { get; set; }
+	//public interface SimpleTask
+	//{
+	//	//TaskState State { get; set; }
 
-		TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target, in TaskStack stack = null);
+	//	TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target, in TaskStack stack = null);
 
-		bool IsTrigger { get; set; }
-	}
+	//	bool IsTrigger { get; set; }
+	//}
 
-	public abstract class SimpleTask : ISimpleTask
+	public abstract class SimpleTask
 	{
 		//public TaskState State { get; set; } = TaskState.READY;
 

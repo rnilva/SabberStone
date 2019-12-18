@@ -28,7 +28,7 @@ namespace SabberStoneCore.Tasks
 {
 	internal static class SpecificTask
 	{
-		public static ISimpleTask LivingMana
+		public static SimpleTask LivingMana
 			=> ComplexTask.Create(
 				new IncludeTask(EntityType.SOURCE),
 				new FuncPlayablesTask(p =>
@@ -48,14 +48,14 @@ namespace SabberStoneCore.Tasks
 				new ManaCrystalEmptyTask(0, false, true)
 			);
 
-		public static ISimpleTask PatchesThePirate
+		public static SimpleTask PatchesThePirate
 			=> ComplexTask.Create(
 				new ConditionTask(EntityType.HERO, SelfCondition.IsNotBoardFull),
 				new FlagTask(true, new RemoveFromDeck(EntityType.SOURCE)),
 				new FlagTask(true, new SummonTask())
 			);
 
-		public static ISimpleTask TotemicCall
+		public static SimpleTask TotemicCall
 			=> ComplexTask.Create(
 				new FuncNumberTask(p =>
 				{
@@ -86,13 +86,13 @@ namespace SabberStoneCore.Tasks
 					return 0;
 				}));
 
-		public static ISimpleTask Betrayal
+		public static SimpleTask Betrayal
 			=> ComplexTask.Create(
 				new GetGameTagTask(GameTag.ATK, EntityType.TARGET),
 				new IncludeAdjacentTask(EntityType.TARGET),
 				new DamageNumberTask(EntityType.STACK));
 
-		public static ISimpleTask JusticarTrueheart
+		public static SimpleTask JusticarTrueheart
 			=> ComplexTask.Create(
 				new IncludeTask(EntityType.HERO_POWER),
 				new FuncPlayablesTask(p =>
@@ -124,7 +124,7 @@ namespace SabberStoneCore.Tasks
 				new ReplaceHeroPower()
 			);
 
-		public static ISimpleTask Doppelgangster
+		public static SimpleTask Doppelgangster
 			=> ComplexTask.Create(
 				new IncludeTask(EntityType.SOURCE),
 				new FuncPlayablesTask(p =>
@@ -180,7 +180,7 @@ namespace SabberStoneCore.Tasks
 				})
 			);
 
-		public static ISimpleTask MayorNoggenfogger =>
+		public static SimpleTask MayorNoggenfogger =>
 			new CustomTask((g, c, s, t, stack) =>
 			{
 				int opBoardCount = t.Controller.Opponent.BoardZone.CountExceptUntouchables;
@@ -205,7 +205,7 @@ namespace SabberStoneCore.Tasks
 			});
 
 		// TODO The cache should be managed separately when using different decks 
-		public static ISimpleTask CuriousGlimmerroot
+		public static SimpleTask CuriousGlimmerroot
 			=> new CustomTask((g,c,s,t,stack) =>
 			{
 				Controller op = c.Opponent;
@@ -273,7 +273,7 @@ namespace SabberStoneCore.Tasks
 		private static ReadOnlyCollection<Card> _glimmerrootMemory3;
 		private static readonly object locker = new object();
 
-		public static ISimpleTask UngoroPack
+		public static SimpleTask UngoroPack
 			=> new CustomTask((g,c,s,t,stack) =>
 			{
 				int space = Controller.MaxHandSize - c.HandZone.Count;
@@ -327,7 +327,7 @@ namespace SabberStoneCore.Tasks
 			});
 		private static ReadOnlyDictionary<Rarity, Card[]> _ungoroPackMemory;
 
-		// public static ISimpleTask RandomHunterSecretPlay
+		// public static SimpleTask RandomHunterSecretPlay
 		// 	=> ComplexTask.Create(
 		// 		new IncludeTask(EntityType.TARGET),
 		// 		new FuncPlayablesTask(p =>
@@ -344,7 +344,7 @@ namespace SabberStoneCore.Tasks
 		// 		})
 		// 	);
 
-		public static ISimpleTask Simulacrum
+		public static SimpleTask Simulacrum
 			=> ComplexTask.Create(
 				new IncludeTask(EntityType.HAND),
 				new FilterStackTask(SelfCondition.IsMinion),
@@ -358,7 +358,7 @@ namespace SabberStoneCore.Tasks
 				new RandomTask(1, EntityType.STACK),
 				new CopyTask(EntityType.STACK, Zone.HAND));
 
-		public static ISimpleTask DeathsShadow
+		public static SimpleTask DeathsShadow
 			=> ComplexTask.Create(
 				new IncludeTask(EntityType.SOURCE),
 				new FuncPlayablesTask(list =>
@@ -375,7 +375,7 @@ namespace SabberStoneCore.Tasks
 				}),
 				new AddEnchantmentTask("ICC_827e", EntityType.STACK));
 
-		public static ISimpleTask ShadowReflection
+		public static SimpleTask ShadowReflection
 			=> ComplexTask.Create(
 				new IncludeTask(EntityType.SOURCE),
 				new IncludeTask(EntityType.TARGET, null, true),
@@ -397,7 +397,7 @@ namespace SabberStoneCore.Tasks
 					return null;
 				}));
 
-		public static ISimpleTask ExplosiveRunes
+		public static SimpleTask ExplosiveRunes
 			=> ComplexTask.Create(
 				new ConditionTask(EntityType.EVENT_SOURCE, SelfCondition.IsNotDead, SelfCondition.IsNotUntouchable),
 				new FlagTask(true, ComplexTask.Secret(
@@ -419,7 +419,7 @@ namespace SabberStoneCore.Tasks
 						return null;
 					}))));
 
-		public static ISimpleTask DiamondSpellstone(int i)
+		public static SimpleTask DiamondSpellstone(int i)
 		{
 			return ComplexTask.Create(
 				new IncludeTask(EntityType.GRAVEYARD),
@@ -439,7 +439,7 @@ namespace SabberStoneCore.Tasks
 				new SummonStackTask());
 		}
 
-		public static ISimpleTask Kingsbane
+		public static SimpleTask Kingsbane
 			=> ComplexTask.Create(
 				new FuncNumberTask((Playable p) =>
 				{
@@ -472,7 +472,7 @@ namespace SabberStoneCore.Tasks
 					return 0;
 				}));
 
-		public static ISimpleTask DarknessCandle
+		public static SimpleTask DarknessCandle
 			=> ComplexTask.Create(
 				new FuncNumberTask(p =>
 				{
@@ -480,13 +480,13 @@ namespace SabberStoneCore.Tasks
 					if (targets.Length == 0) return 0;
 					for (int i = 0; i < targets.Length; i++)
 					{
-						ISimpleTask task = DarknessCandleInternal;
+						SimpleTask task = DarknessCandleInternal;
 						p.Game.TaskQueue.Execute(task, p.Controller, targets[i], null);
 					}
 					return 0;
 				}),
 				new DrawTask());
-		private static ISimpleTask DarknessCandleInternal
+		private static SimpleTask DarknessCandleInternal
 			=> ComplexTask.Create(
 				new GetGameTagTask(GameTag.TAG_SCRIPT_DATA_NUM_1, EntityType.SOURCE),
 				new MathAddTask(1),
@@ -502,7 +502,7 @@ namespace SabberStoneCore.Tasks
 					return 0;
 				})));
 
-		public static ISimpleTask LynessaSunsorrow
+		public static SimpleTask LynessaSunsorrow
 			=> new FuncNumberTask(p =>
 			{
 				int original = p.Card.AssetId;
@@ -531,7 +531,7 @@ namespace SabberStoneCore.Tasks
 				return 0;
 			});
 
-		public static ISimpleTask SwapDecks
+		public static SimpleTask SwapDecks
 			=> new FuncNumberTask(p =>
 			{
 				Controller c = p.Controller;
@@ -556,7 +556,7 @@ namespace SabberStoneCore.Tasks
 				return 0;
 			});
 
-		public static ISimpleTask TessGreymane
+		public static SimpleTask TessGreymane
 			=> new FuncNumberTask(p =>
 			{
 				Controller c = p.Controller;
@@ -618,7 +618,7 @@ namespace SabberStoneCore.Tasks
 				return 0;
 			});
 
-		public static ISimpleTask Shudderwock
+		public static SimpleTask Shudderwock
 			=> new FuncNumberTask(p =>
 			{
 				int original = p.Card.AssetId;
@@ -664,7 +664,7 @@ namespace SabberStoneCore.Tasks
 				return 0;
 			});
 
-		public static ISimpleTask ArcaneKeysmith =>
+		public static SimpleTask ArcaneKeysmith =>
 			new FuncNumberTask(source =>
 			{
 				if (source.Controller.SecretZone.IsFull) return 0;
@@ -689,7 +689,7 @@ namespace SabberStoneCore.Tasks
 				return 0;
 			});
 
-		public static ISimpleTask CastRandomSecret(CardClass cardClass) =>
+		public static SimpleTask CastRandomSecret(CardClass cardClass) =>
 			new CustomTask((g,c,s,t,stack) =>
 			{
 				//if (c.SecretZone.IsFull) return;
@@ -722,7 +722,7 @@ namespace SabberStoneCore.Tasks
 
 		private static Dictionary<(FormatType, CardClass), Card[]> _cachedSecrets;
 
-		public static ISimpleTask AzalinaSoulthief =>
+		public static SimpleTask AzalinaSoulthief =>
 			new FuncNumberTask(source =>
 			{
 				Controller c = source.Controller;
@@ -741,7 +741,7 @@ namespace SabberStoneCore.Tasks
 				return 0;
 			});
 
-		public static ISimpleTask GetRandomDrBoomHeroPower =>
+		public static SimpleTask GetRandomDrBoomHeroPower =>
 			new FuncNumberTask(source =>
 			{
 				string nextId;
@@ -769,7 +769,7 @@ namespace SabberStoneCore.Tasks
 			});
 		private static readonly IReadOnlyList<string> DrBoomHeroPowerIds = Cards.FromId("BOT_238p").Entourage;
 
-		public static readonly ISimpleTask Zuljin = new FuncNumberTask(ZuljinInternal);
+		public static readonly SimpleTask Zuljin = new FuncNumberTask(ZuljinInternal);
 		private static int ZuljinInternal(Playable source)
 		{
 			Controller c = source.Controller;
@@ -792,7 +792,7 @@ namespace SabberStoneCore.Tasks
 			return 0;
 		}
 
-		public static readonly ISimpleTask PrismaticLens =
+		public static readonly SimpleTask PrismaticLens =
 			new FuncNumberTask(p =>
 			{
 				Controller c = p.Controller;
@@ -835,7 +835,7 @@ namespace SabberStoneCore.Tasks
 				return 0;
 			});
 
-		public static readonly ISimpleTask MastersCall =
+		public static readonly SimpleTask MastersCall =
 			new FuncNumberTask(p =>
 			{
 				Controller c = p.Controller;
@@ -926,7 +926,7 @@ namespace SabberStoneCore.Tasks
 				return 0;
 			});
 
-		public static readonly ISimpleTask ArchmageVargoth =
+		public static readonly SimpleTask ArchmageVargoth =
 			new CustomTask((g, c, s, t, stack) =>
 			{
 				List<Card> spellsPlayedThisTurn = new List<Card>();
@@ -969,7 +969,7 @@ namespace SabberStoneCore.Tasks
 					Generic.ChoicePick(c, g, c.Choice.Choices[rnd.Next(c.Choice.Choices.Count)]);
 			});
 
-		public static readonly ISimpleTask ImmortalPrelate =
+		public static readonly SimpleTask ImmortalPrelate =
 			new CustomTask((g, c, s, t, stack) =>
 			{
 				Minion source = (Minion)s;

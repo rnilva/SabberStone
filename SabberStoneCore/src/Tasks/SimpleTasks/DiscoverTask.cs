@@ -87,7 +87,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private readonly DiscoverType _discoverType;
 		//private readonly Card _enchantmentCard;
 		private readonly int _numberOfChoices = 3;
-		private readonly ISimpleTask _taskTodo;
+		private readonly SimpleTask _taskTodo;
 		private readonly Predicate<Card[]> _keepAllCondition;
 
 		private readonly DiscoverCriteria _discoverCriteria;
@@ -99,7 +99,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public DiscoverTask(CardType cardType = CardType.INVALID, CardClass cardClass = CardClass.INVALID,
 			(GameTag tag, RelaSign relaSign, int value) tagValueCriteria = default,
 			ChoiceAction choiceAction = ChoiceAction.HAND,
-			ISimpleTask afterDiscoverTask = null, int repeat = 1, Predicate<Card[]> keepAllCondition = null)
+			SimpleTask afterDiscoverTask = null, int repeat = 1, Predicate<Card[]> keepAllCondition = null)
 		{
 			_discoverCriteria =
 				new DiscoverCriteria(cardType, cardClass, tagValueCriteria);
@@ -117,7 +117,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//	_enchantmentCard = Cards.FromId(enchantmentId);
 		}
 
-		public DiscoverTask(DiscoverType discoverType, ISimpleTask afterDiscoverTask)
+		public DiscoverTask(DiscoverType discoverType, SimpleTask afterDiscoverTask)
 		{
 			_discoverType = discoverType;
 			_taskTodo = afterDiscoverTask;

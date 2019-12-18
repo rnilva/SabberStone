@@ -21,11 +21,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class RevealTask : SimpleTask
 	{
-		private readonly ISimpleTask _failedJoustTask;
-		private readonly ISimpleTask _successJoustTask;
+		private readonly SimpleTask _failedJoustTask;
+		private readonly SimpleTask _successJoustTask;
 		private readonly CardType _type;
 
-		public RevealTask(ISimpleTask successJoustTask, ISimpleTask failedJoustTask = null,
+		public RevealTask(SimpleTask successJoustTask, SimpleTask failedJoustTask = null,
 			CardType type = CardType.MINION)
 		{
 			_successJoustTask = successJoustTask;

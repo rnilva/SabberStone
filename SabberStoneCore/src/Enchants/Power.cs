@@ -30,15 +30,15 @@ namespace SabberStoneCore.Enchants
 
 		public Trigger Trigger { get; set; }
 
-		public ISimpleTask PowerTask { get; set; }
+		public SimpleTask PowerTask { get; set; }
 
-		public ISimpleTask DeathrattleTask { get; set; }
+		public SimpleTask DeathrattleTask { get; set; }
 
-		public ISimpleTask ComboTask { get; set; }
+		public SimpleTask ComboTask { get; set; }
 
-		public ISimpleTask TopdeckTask { get; set; }
+		public SimpleTask TopdeckTask { get; set; }
 
-		public ISimpleTask OverkillTask { get; set; }
+		public SimpleTask OverkillTask { get; set; }
 
 		internal static Power OneTurnStealthEnchantmentPower =>
 			new Power
