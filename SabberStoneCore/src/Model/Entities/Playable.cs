@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
@@ -498,7 +499,9 @@ namespace SabberStoneCore.Model.Entities
 
 		public int ZonePosition
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _zonePosition;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set
 			{
 				_zonePosition = value;
@@ -507,13 +510,23 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		public bool Combo => Card.Combo;
+		public bool Combo
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => Card.Combo;
+		}
 
-		public bool ChooseOne => Card.ChooseOne;
+		public bool ChooseOne
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => Card.ChooseOne;
+		}
 
 		public bool IsExhausted
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _exhausted;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set
 			{
 				_exhausted = value;
@@ -524,21 +537,32 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		public int Overload => Card.Overload;
+		public int Overload
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => Card.Overload;
+		}
 
 		public bool IsEcho
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _echoEffects > 0 || Card.Echo;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _echoEffects += (value ? (sbyte) 1 : (sbyte) -1);
 		}
 
 		public virtual bool HasLifeSteal
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => Card.LifeSteal;
 			set => throw new NotImplementedException();
 		}
 
-		public bool HasOverkill => Card.Overkill;
+		public bool HasOverkill
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => Card.Overkill;
+		}
 
 		internal virtual void CopyAttributesTo(Playable target)
 		{

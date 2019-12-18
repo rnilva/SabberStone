@@ -13,6 +13,7 @@
 // GNU Affero General Public License for more details.
 #endregion
 using System;
+using System.Runtime.CompilerServices;
 using SabberStoneCore.Enums;
 
 namespace SabberStoneCore.Model.Entities
@@ -59,21 +60,29 @@ namespace SabberStoneCore.Model.Entities
 
 		public override int AttackDamage
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get
 			{
-				int value = _v1.Value /*+ (AuraEffects?.ATK ?? 0)*/;
+				int value = _v1.Value;
 				return value < 0 ? 0 : value;
 			}
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _v1 = value;
 		}
 
 		public int Durability
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _v2.Value - Damage;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _v2 = value;
 		}
 
-		public bool HasDeathrattle => Card.Deathrattle;
+		public bool HasDeathrattle
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => Card.Deathrattle;
+		}
 
 		#region Overrides of Playable
 
@@ -140,6 +149,7 @@ namespace SabberStoneCore.Model.Entities
 		private Attributes _attrs;
 		public override unsafe int Damage
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[0];
 			set
 			{
@@ -151,19 +161,24 @@ namespace SabberStoneCore.Model.Entities
 
 		public override unsafe bool IsImmune
 		{
-			get => /*(AuraEffects?.Immune ?? false) ||*/
-			       _attrs.boolAttrs[0];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[0];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[0] = value;
 		}
 
 		public override unsafe bool Poisonous
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[1];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[1] = value;
 		}
 		public override unsafe bool HasLifeSteal
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[2];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[2] = value;
 		}
 

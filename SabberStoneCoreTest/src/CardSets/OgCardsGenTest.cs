@@ -4497,7 +4497,7 @@ namespace SabberStoneCoreTest.CardSets
 				var task = StateTaskList.Chain(
 					_spells
 						.Select(s => new CastSingleSpell(s))
-						.Cast<ISimpleTask>()
+						.Cast<SimpleTask>()
 						.ToArray());
 
 				game.TaskQueue.Enqueue(task, in controller, in source, in target);

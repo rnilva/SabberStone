@@ -488,8 +488,13 @@ namespace SabberStoneCore.Model.Entities
 						{
 							if (SecretZone.IsFull) // REQ_SECRET_CAP
 								return;
-							if (SecretZone.Any(p => p.Card.AssetId == card.AssetId)) // REQ_UNIQUE_SECRET
-								return;
+
+							{
+								ReadOnlySpan<Spell> span = SecretZone.GetSpan();
+								for (int i = 0; i < span.Length; ++i)
+									if (span[i].Card.AssetId == card.AssetId)  // REQ_UNIQUE_SECRET
+										return;
+							}
 						}
 
 						if (card.IsQuest && SecretZone.Quest != null)
@@ -737,7 +742,7 @@ namespace SabberStoneCore.Model.Entities
 
 			Minion[] GetEnemyMinions()
 			{
-				return enemyMinions ?? (enemyMinions = Opponent.BoardZone.GetAll(p => !p.HasStealth && !p.IsImmune));
+				return enemyMinions ??= Opponent.BoardZone.GetAll(p => !p.HasStealth && !p.IsImmune);
 			}
 			#endregion
 		}

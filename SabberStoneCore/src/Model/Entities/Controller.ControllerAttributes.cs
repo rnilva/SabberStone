@@ -142,7 +142,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int PlayerId
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[0];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			private set => _attrs.intAttrs[0] = value;
 		}
 		/// <summary>
@@ -150,7 +152,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int HeroId
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[1];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[1] = value;
 		}
 		/// <summary>
@@ -158,7 +162,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe PlayState PlayState
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => (PlayState) _attrs.intAttrs[2];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[2] = (int) value;
 		}
 		/// <summary>
@@ -166,7 +172,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe Mulligan MulliganState
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => (Mulligan) _attrs.intAttrs[3];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[3] = (int) value;
 		}
 		/// <summary>
@@ -175,7 +183,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int BaseMana
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[4];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[4] = value;
 		}
 		/// <summary>
@@ -183,7 +193,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int UsedMana
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[5];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[5] = value;
 		}
 		/// <summary>
@@ -191,7 +203,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int TemporaryMana
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[6];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[6] = value;
 		}
 		/// <summary>
@@ -200,7 +214,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int OverloadOwed
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[7];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[7] = value;
 		}
 		/// <summary>
@@ -209,7 +225,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int OverloadLocked
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[8];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[8] = value;
 		}
 		/// <summary>
@@ -217,27 +235,37 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int OverloadThisGame
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[9];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[9] = value;
 		}
 		public unsafe int SpellPowerDouble
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[10];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[10] = value;
 		}
 		public unsafe int HeroPowerDouble
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[11];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[11] = value;
 		}
 		public unsafe int AllHealingDouble
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[12];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[12] = value;
 		}
 		public unsafe int NumTurnsLeft
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[13];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[13] = value;
 		}
 		/// <summary>
@@ -245,7 +273,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int LastCardPlayed
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[14];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[14] = value;
 		}
 		/// <summary>
@@ -253,7 +283,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int LastCardDrawn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[15];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[15] = value;
 		}
 		/// <summary>
@@ -261,102 +293,142 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int LastCardDiscarded
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[16];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[16] = value;
 		}
 		public unsafe int NumCardsDrawnThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[17];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[17] = value;
 		}
 		public unsafe int NumCardsPlayedThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[18];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[18] = value;
 		}
 		public unsafe int NumMinionsPlayedThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[19];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[19] = value;
 		}
 		public unsafe int NumOptionsPlayedThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[20];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[20] = value;
 		}
 		public unsafe int NumFriendlyMinionsThatDiedThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[21];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[21] = value;
 		}
 		public unsafe int AmountHeroHealedThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[22];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[22] = value;
 		}
 		public unsafe int NumMinionsPlayerKilledThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[23];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[23] = value;
 		}
 		public unsafe int NumFriendlyMinionsThatAttackedThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[24];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[24] = value;
 		}
 		public unsafe int HeroPowerActivationsThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[25];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[25] = value;
 		}
 		public unsafe int NumElementalsPlayedThisTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[26];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[26] = value;
 		}
 		public unsafe int NumElementalsPlayedLastTurn
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[27];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[27] = value;
 		}
 		public unsafe int TotalManaSpentThisGame
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[28];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[28] = value;
 		}
 		public unsafe int NumTotemSummonedThisGame
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[29];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[29] = value;
 		}
 		public unsafe int NumTimesHeroPowerUsedThisGame
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[30];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[30] = value;
 		}
 		public unsafe int NumHeroPowerDamageThisGame
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[31];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[31] = value;
 		}
 		public unsafe int NumSecretsPlayedThisGame
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[32];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[32] = value;
 		}
 		public unsafe int NumSpellsPlayedThisGame
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[33];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[33] = value;
 		}
 		public unsafe int NumWeaponsPlayedThisGame
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[34];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[34] = value;
 		}
 		public unsafe int NumMurlocsPlayedThisGame
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[35];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[35] = value;
 		}
 		/// <summary>
@@ -364,7 +436,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int TimeOut
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[36];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[36] = value;
 		}
 		/// <summary>
@@ -374,7 +448,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe int ProxyCthun
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[37];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[37] = value;
 		}
 		/// <summary>
@@ -382,17 +458,23 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe bool IsComboActive
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[0];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[0] = value;
 		}
 		public unsafe bool SeenCthun
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[1];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[1] = value;
 		}
 		public unsafe bool TemporusFlag
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[2];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[2] = value;
 		}
 		/// <summary>
@@ -401,7 +483,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe bool RestoreToDamage
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.sbyteAttrs[0] > 0;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.sbyteAttrs[0] += value ? (sbyte) 1 : (sbyte) -1;
 		}
 		/// <summary>
@@ -410,7 +494,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe bool ExtraDeathrattle
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.sbyteAttrs[1] > 0;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.sbyteAttrs[1] += value ? (sbyte) 1 : (sbyte) -1;
 		}
 		/// <summary>
@@ -419,7 +505,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe bool ExtraBattlecry
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.sbyteAttrs[2] > 0;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.sbyteAttrs[2] += value ? (sbyte) 1 : (sbyte) -1;
 		}
 		/// <summary>
@@ -428,12 +516,16 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe bool ChooseBoth
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.sbyteAttrs[3] > 0;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.sbyteAttrs[3] += value ? (sbyte) 1 : (sbyte) -1;
 		}
 		public unsafe bool SpellsCostHelath
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.sbyteAttrs[4] > 0;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.sbyteAttrs[4] += value ? (sbyte) 1 : (sbyte) -1;
 		}
 		/// <summary>
@@ -442,7 +534,9 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe bool ExtraEndTurnEffect
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.sbyteAttrs[5] > 0;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.sbyteAttrs[5] += value ? (sbyte) 1 : (sbyte) -1;
 		}
 		/// <summary>
@@ -450,12 +544,16 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public unsafe bool HeroPowerDisabled
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.sbyteAttrs[6] > 0;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.sbyteAttrs[6] += value ? (sbyte) 1 : (sbyte) -1;
 		}
 		public unsafe bool ExtraBattleCryAndCombo
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.sbyteAttrs[7] > 0;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.sbyteAttrs[7] += value ? (sbyte) 1 : (sbyte) -1;
 		}
 		#endregion
