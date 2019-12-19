@@ -41,6 +41,8 @@ namespace SabberStoneCore.Auras
 
 		HAND_AND_BOARD,
 
+		ENCHANTMENT_TARGET,
+
 		SUMMONING_PORTAL,
 
 		MULTIAURA

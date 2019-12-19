@@ -515,6 +515,9 @@ namespace SabberStoneCore.Auras
 				case AuraType.SELF:
 					Apply(Owner);
 					break;
+				case AuraType.ENCHANTMENT_TARGET:
+					Apply(((Enchantment) Owner).Target as Playable);
+					break;
 				case AuraType.SUMMONING_PORTAL:
 					break;
 			}

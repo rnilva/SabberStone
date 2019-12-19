@@ -111,7 +111,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			if (Zone?.Type != Enums.Zone.HAND) return null;
 
-			return _costManager ??= new CostManager(_modifiedCost ?? (_modifiedCost = Card.Cost).Value);
+			return _costManager ?? (_costManager = new CostManager(_modifiedCost ?? (_modifiedCost = Card.Cost).Value));
 		}
 
 		internal void VaryCost(int value)
@@ -137,7 +137,8 @@ namespace SabberStoneCore.Model.Entities
 			{
 				if (_costManager == null)
 				{
-					_modifiedCost ??= Card.Cost;
+					if (_modifiedCost == null)
+						_modifiedCost = Card.Cost;
 					_costManager = new CostManager(value);
 				}
 

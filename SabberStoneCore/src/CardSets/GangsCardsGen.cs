@@ -894,9 +894,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_603", new Power
 			{
-				PowerTask = ComplexTask.Create(
-					new ControlTask(EntityType.TARGET),
-					new AddEnchantmentTask("CFM_603e", EntityType.TARGET))
+				PowerTask = new AddEnchantmentTask("CFM_603e", EntityType.TARGET)
 			});
 
 			// ----------------------------------------- SPELL - PRIEST
@@ -953,13 +951,11 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_603e", new Power
 			{
-				Enchant = new Enchant(Effects.Charge, new Effect(GameTag.CONTROLLER_CHANGED_THIS_TURN, EffectOperator.SET, 1)),
-				Trigger = new Trigger(TriggerType.TURN_END)
+				Aura = new Aura(AuraType.ENCHANTMENT_TARGET,
+								Effects.Charge,
+								new OneTurnControlEffect())
 				{
-					EitherTurn = true,
-					SingleTask = ComplexTask.Create(
-						RemoveEnchantmentTask.Task,
-						new ControlTask(EntityType.TARGET, true))
+					RemoveTrigger = (TriggerType.TURN_END, null)
 				}
 			});
 
