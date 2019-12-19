@@ -895,10 +895,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_603", new CardDef(new Dictionary<PlayReq, int>() {{PlayReq.REQ_TARGET_TO_PLAY,0},{PlayReq.REQ_MINION_TARGET,0},{PlayReq.REQ_ENEMY_TARGET,0},{PlayReq.REQ_NUM_MINION_SLOTS,1},{PlayReq.REQ_TARGET_MAX_ATTACK,2}}, new Power
 			{
-				PowerTask = ComplexTask.Create(
-					new ControlTask(EntityType.TARGET),
-					new AddEnchantmentTask("CFM_603e", EntityType.TARGET))
-			}));
+				PowerTask = new AddEnchantmentTask("CFM_603e", EntityType.TARGET)
+			});
 
 			// ----------------------------------------- SPELL - PRIEST
 			// [CFM_604] Greater Healing Potion - COST:4
@@ -954,13 +952,11 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_603e", new CardDef(new Power
 			{
-				Enchant = new Enchant(Effects.Charge, new Effect(GameTag.CONTROLLER_CHANGED_THIS_TURN, EffectOperator.SET, 1)),
-				Trigger = new Trigger(TriggerType.TURN_END)
+				Aura = new Aura(AuraType.ENCHANTMENT_TARGET,
+								Effects.Charge,
+								new OneTurnControlEffect())
 				{
-					EitherTurn = true,
-					SingleTask = ComplexTask.Create(
-						RemoveEnchantmentTask.Task,
-						new ControlTask(EntityType.TARGET, true))
+					RemoveTrigger = (TriggerType.TURN_END, null)
 				}
 			}));
 

@@ -743,7 +743,7 @@ namespace SabberStoneCore.Model.Entities
 
 			Minion[] GetEnemyMinions()
 			{
-				return enemyMinions ??= Opponent.BoardZone.GetAll(p => !p.HasStealth && !p.IsImmune);
+				return enemyMinions ?? (enemyMinions = Opponent.BoardZone.GetAll(p => !p.HasStealth && !p.IsImmune));
 			}
 			#endregion
 		}

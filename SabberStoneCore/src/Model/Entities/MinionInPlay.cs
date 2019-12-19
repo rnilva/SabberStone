@@ -380,11 +380,11 @@ namespace SabberStoneCore.Model.Entities
 				BaseHealth = cardBaseHealth;
 			}
 
-			if (_data.TryGetValue(GameTag.CONTROLLER_CHANGED_THIS_TURN, out int v) && v > 0)
-			{
-				Game.TaskQueue.Execute(new ControlTask(EntityType.SOURCE, true), Controller, this, null);
-				this[GameTag.CONTROLLER_CHANGED_THIS_TURN] = 0;
-			}
+			//if (_data.TryGetValue(GameTag.CONTROLLER_CHANGED_THIS_TURN, out int v) && v > 0)
+			//{
+			//	Game.TaskQueue.Execute(new ControlTask(EntityType.SOURCE, true), Controller, this, null);
+			//	this[GameTag.CONTROLLER_CHANGED_THIS_TURN] = 0;
+			//}
 
 			if (_history && Card[GameTag.TRIGGER_VISUAL] == 1) this[GameTag.TRIGGER_VISUAL] = 0;
 

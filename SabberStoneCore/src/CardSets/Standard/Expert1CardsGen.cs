@@ -1873,9 +1873,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - REQ_TARGET_MAX_ATTACK = 3
 			// --------------------------------------------------------
 			cards.Add("EX1_334", new Power {
-				PowerTask = ComplexTask.Create(
-					new ControlTask(EntityType.TARGET),
-					new AddEnchantmentTask("EX1_334e", EntityType.TARGET))
+				PowerTask = new AddEnchantmentTask("EX1_334e", EntityType.TARGET)
 			});
 
 			// ----------------------------------------- SPELL - PRIEST
@@ -1986,14 +1984,21 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: This minion has switched controllers this turn.
 			// --------------------------------------------------------
 			cards.Add("EX1_334e", new Power {
-				Enchant = new Enchant(Effects.Charge, new Effect(GameTag.CONTROLLER_CHANGED_THIS_TURN, EffectOperator.SET, 1)),
-				Trigger = new Trigger(TriggerType.TURN_END)
+//				Enchant = new Enchant(Effects.Charge, new Effect(GameTag.CONTROLLER_CHANGED_THIS_TURN, EffectOperator.SET, 1)),
+//				Trigger = new Trigger(TriggerType.TURN_END)
+//				{
+//					EitherTurn = true,
+//					SingleTask = ComplexTask.Create(
+//						RemoveEnchantmentTask.Task,
+//						new ControlTask(EntityType.TARGET, true))
+//				}
+				Aura = new Aura(AuraType.ENCHANTMENT_TARGET,
+					Effects.Charge,
+					new OneTurnControlEffect())
 				{
-					EitherTurn = true,
-					SingleTask = ComplexTask.Create(
-						new RemoveEnchantmentTask(),
-						new ControlTask(EntityType.TARGET, true))
+					RemoveTrigger = (TriggerType.TURN_END, null)
 				}
+				
 			});
 
 			// ----------------------------------- ENCHANTMENT - PRIEST

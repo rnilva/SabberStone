@@ -235,7 +235,7 @@ namespace SabberStoneCore.Enchants
 
 		internal static Effect Windfury => new Effect(GameTag.WINDFURY, EffectOperator.SET, 1);
 
-		internal static Effect Charge => new Effect(GameTag.CHARGE, EffectOperator.SET, 1);
+		internal static IEffect Charge => new SetChargeEffect();
 
 		internal static Effect Immune => new Effect(GameTag.IMMUNE, EffectOperator.SET, 1);
 

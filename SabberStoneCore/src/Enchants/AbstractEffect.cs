@@ -5,6 +5,7 @@ using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Model.Zones;
+using SabberStoneCore.Tasks.SimpleTasks;
 
 #pragma warning disable 169
 #pragma warning disable 649
@@ -79,8 +80,20 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
-	public class SetChargeEffect : AbstractEffect
+	public class SetChargeEffect : AbstractEffect, IEffect
 	{
+		public GameTag Tag => GameTag.CHARGE;
+		public EffectOperator Operator => EffectOperator.SET;
+		public int Value => 1;
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect) => ApplyTo((MinionInPlay) entity);
+		void IEffect.RemoveFrom(Entity entity) => RemoveFrom((MinionInPlay) entity);
+
+		IEffect IEffect.ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+
 		public override void ApplyTo(MinionInPlay minion)
 		{
 			minion.HasCharge = true;
@@ -90,6 +103,44 @@ namespace SabberStoneCore.Enchants
 		{
 			minion.HasCharge = false;
 		}
+	}
+
+	public class OneTurnControlEffect : AbstractEffect, IEffect
+	{
+		private readonly ControlTask _task = new ControlTask(EntityType.SOURCE);
+
+		public override void ApplyTo(MinionInPlay minion)
+		{
+			_task.Process(minion.Game, minion.Controller.Opponent, minion, null);
+		}
+
+		public override void RemoveFrom(MinionInPlay minion)
+		{
+			_task.Process(minion.Game, minion.Controller.Opponent, minion, null);
+		}
+
+		#region Implementation of IEffect
+
+		public GameTag Tag => GameTag.CONTROLLER_CHANGED_THIS_TURN;
+
+		public EffectOperator Operator => EffectOperator.SET;
+		public int Value => 1;
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((MinionInPlay) entity);
+		}
+
+		void IEffect.RemoveFrom(Entity entity)
+		{
+			RemoveFrom((MinionInPlay) entity);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+		#endregion
 	}
 
 	public class ATKVaryEffect : AbstractEffect
