@@ -482,7 +482,6 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(3, game.CurrentPlayer.HandZone.Count);
 			Assert.True(game.CurrentPlayer.BoardZone[0].AttackableByRush);
 		}
-
 	}
 
 	public class HunterTrollTest

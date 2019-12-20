@@ -3429,7 +3429,7 @@ namespace SabberStoneCore.CardSets
 				Enchant = new Enchant(
 					Effects.Attack_N(2),
 					Effects.Health_N(2),
-					Effects.CantBeTargetedBySpellsAndHeroPowers)
+					Effects.Elusive)
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
