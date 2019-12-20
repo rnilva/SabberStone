@@ -2879,7 +2879,8 @@ namespace SabberStoneCore.CardSets.Standard
 			//       __and <b>Combos</b> trigger twice._
 			// --------------------------------------------------------
 			cards.Add("TRL_092e", new Power {
-				Enchant = new Enchant(GameTag.EXTRA_MINION_BATTLECRIES_BASE, EffectOperator.SET, 1)
+//				Enchant = new Enchant(GameTag.EXTRA_MINION_BATTLECRIES_BASE, EffectOperator.SET, 1)
+				Enchant = new Enchant(Effects.ControllerAttributeEffect(ControllerBoolAttributes.ExtraBattleCryAndCombo))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3013,7 +3014,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAG_ONE_TURN_EFFECT = 1
 			// --------------------------------------------------------
 			cards.Add("TRL_390e2", new Power {
-				Enchant = new Enchant(GameTag.HEROPOWER_DAMAGE, EffectOperator.ADD, 2)
+//				Enchant = new Enchant(GameTag.HEROPOWER_DAMAGE, EffectOperator.ADD, 2)
+				Enchant = new Enchant(Effects.AttributeAddEffect(IntAttributes.HeroPowerDamage, 2))
 				{
 					IsOneTurnEffect = true
 				},
@@ -3073,7 +3075,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAG_ONE_TURN_EFFECT = 1
 			// --------------------------------------------------------
 			cards.Add("TRL_501e", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.HEALING_DOES_DAMAGE, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerBoolAttributes.RestoreToDamage))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

@@ -793,6 +793,7 @@ namespace SabberStoneCore.Model
 			}
 
 			currentPlayer.Hero.NumAttacksThisTurn = 0;
+			currentPlayer.Hero.ExtraAttacksThisTurn = 0;
 			currentPlayer.Hero.IsExhausted = false;
 			currentPlayer.Hero.HeroPower.IsExhausted = false;
 			if (currentPlayer.Hero.Weapon != null)
@@ -811,7 +812,7 @@ namespace SabberStoneCore.Model
 
 			NumMinionsKilledThisTurn = 0; 
 
-			MainRessources();
+			MainResources();
 
 			if (History)
 				PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
@@ -850,7 +851,7 @@ namespace SabberStoneCore.Model
 		/// Part of the state machine.
 		/// Runs when STATE = RUNNING &amp;&amp; NEXTSTEP = MAIN_RESOURCE
 		/// </summary>
-		public void MainRessources()
+		public void MainResources()
 		{
 			Controller c = CurrentPlayer;
 

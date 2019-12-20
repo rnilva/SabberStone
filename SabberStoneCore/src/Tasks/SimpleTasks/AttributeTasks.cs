@@ -1,4 +1,8 @@
-﻿using SabberStoneCore.Model;
+﻿using System;
+using System.Collections.Generic;
+using SabberStoneCore.Enchants;
+using SabberStoneCore.Enums;
+using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using static SabberStoneCore.Tasks.ImplementationHelpers;
 
@@ -11,7 +15,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private readonly int _entityIndex;
 		private readonly int _stackIndex;
 
-		public GetIntegerAttributeTask(BoolAttributes attribute, EntityType type, int entityIndex = 0, int stackIndex = 0)
+		public GetIntegerAttributeTask(IntAttributes attribute, EntityType type, int entityIndex = 0, int stackIndex = 0)
 		{
 			_attribute = (int)attribute;
 			_type = type;
@@ -22,29 +26,110 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			//IList<Playable> entities = IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables);
-			//if (entities == null || entities.Count == 0 || entities.Count <= _entityIndex) return TaskState.STOP;
+			IList<Playable> entities = IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables);
+			if (entities == null || entities.Count == 0 || entities.Count <= _entityIndex) return TaskState.STOP;
 
-			//int value = entities[_entityIndex].GetAttribute<int>(_attribute);
+			if (!(entities[_entityIndex] is Character entity))
+				throw new InvalidCastException("Can't get IntAttribute from a non-Character entity");
 
-			//switch (_stackIndex)
-			//{
-			//	case 0:
-			//		stack.Number = value;
-			//		break;
-			//	case 1:
-			//		stack.Number1 = value;
-			//		break;
-			//	case 2:
-			//		stack.Number2 = value;
-			//		break;
-			//	case 3:
-			//		stack.Number3 = value;
-			//		break;
-			//	case 4:
-			//		stack.Number4 = value;
-			//		break;
-			//}
+			int value;
+			try
+			{
+				value = entity.GetIntRef(_attribute);
+			}
+			catch
+			{
+				throw new NotImplementedException($"Getting {(IntAttributes) _attribute} is not implemented.");
+			}
+
+			switch (_stackIndex)
+			{
+				case 0:
+					stack.Number = value;
+					break;
+				case 1:
+					stack.Number1 = value;
+					break;
+				case 2:
+					stack.Number2 = value;
+					break;
+				case 3:
+					stack.Number3 = value;
+					break;
+				case 4:
+					stack.Number4 = value;
+					break;
+			}
+
+			return TaskState.COMPLETE;
+		}
+	}
+
+	public class SetIntAttributeTask : SimpleTask
+	{
+		private readonly IEffect _effect;
+		private readonly EntityType _type;
+
+		public SetIntAttributeTask(IntAttributes attribute, int amount, EntityType type)
+		{
+			_effect = Effects.AttributeAddEffect(attribute, amount);
+			_type = type;
+		}
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+			in TaskStack stack = null)
+		{
+			IEffect effect = _effect;
+
+			IList<Playable> entities =
+				IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables);
+			if (effect.Tag == GameTag.EXHAUSTED)
+			{
+				bool value = effect.Value > 0;
+				for (int i = 0; i < entities.Count; i++)
+					entities[i].IsExhausted = value;
+				return TaskState.COMPLETE;
+			}
+
+			for (int i = 0; i < entities.Count; i++)
+			{
+				if (effect.Tag == GameTag.DIVINE_SHIELD && effect.Value == 0 &&
+				    entities[i][GameTag.DIVINE_SHIELD] != 0)
+					game.TriggerManager.OnLoseDivineShield(entities[i]);
+				else if
+				(effect.Tag == GameTag.FROZEN && effect.Value == 1 &&
+				 entities[i][GameTag.FROZEN] == 0)
+					game.TriggerManager.OnFreezeTrigger(entities[i]);
+
+				effect.ApplyTo(entities[i]);
+			}
+
+			return TaskState.COMPLETE;
+		}
+	}
+
+	public class SetIntAttributeNumberTask : SimpleTask
+	{
+		private readonly IEffect _effect;
+		private readonly EntityType _type;
+
+		public SetIntAttributeNumberTask(IntAttributes attribute, EntityType type)
+		{
+			_effect = Effects.SetAttributeEffect(attribute, 0);
+			_type = type;
+		}
+
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+			in TaskStack stack = null)
+		{
+			IEffect effect = _effect;
+
+			IList<Playable> entities =
+				IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables);
+
+			for (int i = 0; i < entities.Count; ++i)
+			{
+				_effect.ChangeValue(stack.Number).ApplyTo(entities[i]);
+			}
 
 			return TaskState.COMPLETE;
 		}

@@ -1266,5 +1266,25 @@ namespace SabberStoneCoreTest.Basic
 			game.ProcessCard("Humility", target, asZeroCost: true);
 			Assert.Equal(2, target.AttackDamage);
         }
+
+        [Fact]
+        public void OneTurnEffectTest()
+        {
+	        var game = new Game(new GameConfig());
+	        game.StartGame();
+
+	        MinionInPlay target = (MinionInPlay) game.ProcessCard<Minion>("Bloodfen Raptor", asZeroCost: true);
+			game.ProcessCard("Abusive Sergeant", target, true);
+			Assert.Equal(5, target.AttackDamage);
+
+			game.EndTurn();
+			Assert.Equal(3, target.AttackDamage);
+			game.EndTurn();
+			game.ProcessCard("Abusive Sergeant", target, true);
+			game.ProcessCard("Humility", target, true);
+			Assert.Equal(1, target.AttackDamage);
+			game.EndTurn();
+			Assert.Equal(1, target.AttackDamage);
+        }
 	}
 }

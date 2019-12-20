@@ -117,6 +117,8 @@ namespace SabberStoneCore.Model.Entities
 
 		public override bool HasLifeSteal => Weapon?.HasLifeSteal ?? false;
 
+		public override bool HasOverkill => Weapon?.HasOverkill ?? false;
+
 		public override void Destroy()
 		{
 			_toBeDestroyed = true;
@@ -246,7 +248,7 @@ namespace SabberStoneCore.Model.Entities
 			// 3 : Fatigue
 			// 4 : DamageTakenThisTurn
 			// 5 : HeroPowerDamage
-			// 6 : ExtraAttackThisTurn
+			// 6 : ExtraAttacksThisTurn
 
 
 			// 0 : Immune

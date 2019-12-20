@@ -329,7 +329,8 @@ namespace SabberStoneCore.Conditions
 		{
 			return new SelfCondition(me =>
 			{
-				int currentValue = me.Controller[(GameTag) me.Card[GameTag.PLAYER_TAG_THRESHOLD_TAG_ID]];
+//				int currentValue = me.Controller[(GameTag) me.Card[GameTag.PLAYER_TAG_THRESHOLD_TAG_ID]];
+				int currentValue = me.Controller[me.Card.ThresholdAttribute];
 				int threshold = me.Card[GameTag.PLAYER_TAG_THRESHOLD_VALUE];
 
 				return relaSign == RelaSign.GEQ ? currentValue >= threshold

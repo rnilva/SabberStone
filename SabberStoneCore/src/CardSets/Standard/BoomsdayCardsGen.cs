@@ -912,7 +912,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - LIFESTEAL = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_236", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.ALL_HEALING_DOUBLE, EffectOperator.ADD, 1))
+//				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.ALL_HEALING_DOUBLE, EffectOperator.ADD, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerIntAttributes.AllHealingDouble))
 			});
 
 			// --------------------------------------- MINION - PALADIN

@@ -9,26 +9,58 @@ namespace SabberStoneCore.Model.Entities
 {
 	public enum ControllerIntAttributes
 	{
-		Invalid = -1,
+		PlayerId = 0,
+		HeroId = 1,
+		PlayState = 2,
+		MulliganState = 3,
+		BaseMana = 4,
 		UsedMana = 5,
+		TemporaryMana = 6,
 		OverloadOwed = 7,
 		OverloadLocked = 8,
+		OverloadThisGame = 9,
 		SpellPowerDouble = 10,
-		HeroPowerDouble,
-		AllHealingDouble,
-		TimeOut = 36
+		HeroPowerDouble = 11,
+		AllHealingDouble = 12,
+		NumTurnsLeft = 13,
+		LastCardPlayed = 14,
+		LastCardDrawn = 15,
+		LastCardDiscarded = 16,
+		NumCardsDrawnThisTurn = 17,
+		NumCardsPlayedThisTurn = 18,
+		NumMinionsPlayedThisTurn = 19,
+		NumOptionsPlayedThisTurn = 20,
+		NumFriendlyMinionsThatDiedThisTurn = 21,
+		AmountHeroHealedThisTurn = 22,
+		NumMinionsPlayerKilledThisTurn = 23,
+		NumFriendlyMinionsThatAttackedThisTurn = 24,
+		HeroPowerActivationsThisTurn = 25,
+		NumElementalsPlayedThisTurn = 26,
+		NumElementalsPlayedLastTurn = 27,
+		TotalManaSpentThisGame = 28,
+		NumTotemSummonedThisGame = 29,
+		NumTimesHeroPowerUsedThisGame = 30,
+		NumHeroPowerDamageThisGame = 31,
+		AmountHealedThisGame = 32,
+		NumSecretsPlayedThisGame = 33,
+		NumSpellsPlayedThisGame = 34,
+		NumWeaponsPlayedThisGame = 35,
+		NumMurlocsPlayedThisGame = 36,
+		TimeOut = 37,
+		ProxyCthun = 38,
+		Invalid = -1,
 	}
 	public enum ControllerBoolAttributes
 	{
+		RestoreToDamage = 0,
+		ExtraDeathrattle = 1,
+		ExtraBattlecry = 2,
+		ChooseBoth = 3,
+		SpellsCostHealth = 4,
+		ExtraEndTurnEffect = 5,
+		HeroPowerDisabled = 6,
+		ExtraBattleCryAndCombo = 7,
 		Invalid = -1,
-		RestoreToDamage,
-		ExtraDeathrattle,
-		ExtraBattlecry,
-		ChooseBoth,
-		SpellsCostHealth,
-		ExtraEndTurnEffect,
-		HeroPowerDisabled,
-		ExtraBattleCryAndCombo
 	}
 
 	public partial class Controller
@@ -84,12 +116,13 @@ namespace SabberStoneCore.Model.Entities
 			// 29 : NumTotemSummonedThisGame
 			// 30 : NumTimesHeroPowerUsedThisGame
 			// 31 : NumHeroPowerDamageThisGame
-			// 32 : NumSecretsPlayedThisGame
-			// 33 : NumSpellsPlayedThisGame
-			// 34 : NumWeaponsPlayedThisGame
-			// 35 : NumMurlocsPlayedThisGame
-			// 36 : TimeOut
-			// 37 : ProxyCthun
+			// 32 : AmountHealedThisGame
+			// 33 : NumSecretsPlayedThisGame
+			// 34 : NumSpellsPlayedThisGame
+			// 35 : NumWeaponsPlayedThisGame
+			// 36 : NumMurlocsPlayedThisGame
+			// 37 : TimeOut
+			// 38 : ProxyCthun
 
 			// 0 : IsComboActive
 			// 1 : SeenCthun
@@ -104,14 +137,14 @@ namespace SabberStoneCore.Model.Entities
 			// 6 : HeroPowerDisabled
 			// 7 : ExtraBattleCryAndCombo
 
-			private const int NUM_INT_ATTRS = 38;
+			private const int NUM_INT_ATTRS = 39;
 			private const int NUM_BOOL_ATTRS = 3;
 			private const int NUM_SBYTE_ATTRS = 8;
-		#pragma warning disable 649
+#pragma warning disable 649
 			public fixed int intAttrs[NUM_INT_ATTRS];
 			public fixed bool boolAttrs[NUM_BOOL_ATTRS];
 			public fixed sbyte sbyteAttrs[NUM_SBYTE_ATTRS];
-		#pragma warning restore 649
+#pragma warning restore 649
 			#region ClearTurnStatistics
 			private const int TURN_STATS_OFFSET = 17;
 			private const int TURN_STATS_COUNT = 9;
@@ -403,33 +436,40 @@ namespace SabberStoneCore.Model.Entities
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[31] = value;
 		}
-		public unsafe int NumSecretsPlayedThisGame
+		public unsafe int AmountHealedThisGame
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[32];
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[32] = value;
 		}
-		public unsafe int NumSpellsPlayedThisGame
+		public unsafe int NumSecretsPlayedThisGame
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[33];
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[33] = value;
 		}
-		public unsafe int NumWeaponsPlayedThisGame
+		public unsafe int NumSpellsPlayedThisGame
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[34];
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[34] = value;
 		}
-		public unsafe int NumMurlocsPlayedThisGame
+		public unsafe int NumWeaponsPlayedThisGame
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.intAttrs[35];
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[35] = value;
+		}
+		public unsafe int NumMurlocsPlayedThisGame
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.intAttrs[36];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.intAttrs[36] = value;
 		}
 		/// <summary>
 		/// Maximum duration of seconds of this player's turn.
@@ -437,9 +477,9 @@ namespace SabberStoneCore.Model.Entities
 		public unsafe int TimeOut
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => _attrs.intAttrs[36];
+			get => _attrs.intAttrs[37];
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			set => _attrs.intAttrs[36] = value;
+			set => _attrs.intAttrs[37] = value;
 		}
 		/// <summary>
 		/// The entity which is a copy of the real C'Thun entity in deck
@@ -449,9 +489,9 @@ namespace SabberStoneCore.Model.Entities
 		public unsafe int ProxyCthun
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => _attrs.intAttrs[37];
+			get => _attrs.intAttrs[38];
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			set => _attrs.intAttrs[37] = value;
+			set => _attrs.intAttrs[38] = value;
 		}
 		/// <summary>
 		/// Indicates whether combo effects should be executed or not.Combo is active if at least one card has been played this turn.

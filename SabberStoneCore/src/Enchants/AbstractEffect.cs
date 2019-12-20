@@ -413,6 +413,99 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
+	public class AddIntAttrEffect : AbstractEffect, IEffect
+	{
+		private readonly int _attr;
+		private int _value;
+		private readonly GameTag _tag;
+		private readonly EffectOperator _operator;
+
+		public AddIntAttrEffect(IntAttributes attr, int value)
+		{
+			_attr = (int) attr;
+			_value = value;
+			_tag = AttributeHelpers.AttributeToGameTag(attr);
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			character.GetIntRef(_attr) += _value;
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			character.GetIntRef(_attr) -= _value;
+		}
+
+		public GameTag Tag => _tag;
+
+		public EffectOperator Operator => _operator;
+
+		public int Value => _value;
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((Character) entity);
+		}
+
+		void IEffect.RemoveFrom(Entity entity)
+		{
+			RemoveFrom((Character) entity);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			return new AddIntAttrEffect((IntAttributes) _attr, newValue);
+		}
+	}
+
+	public class SetIntAttrEffect : AbstractEffect, IEffect
+	{
+		private readonly int _attr;
+
+		private GameTag _tag;
+		private EffectOperator _operator;
+		private int _value;
+
+		public GameTag Tag => _tag;
+
+		public EffectOperator Operator => _operator;
+
+		public int Value => _value;
+
+		public SetIntAttrEffect(IntAttributes attr, int value)
+		{
+			_attr = (int) attr;
+			_value = value;
+			_tag = AttributeHelpers.AttributeToGameTag(attr);
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			character.GetIntRef(_attr) = _value;
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			
+		}
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((Character) entity);
+		}
+
+		public void RemoveFrom(Entity entity)
+		{
+			
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			return new SetIntAttrEffect((IntAttributes) _attr, newValue);
+		}
+	}
+
 	public class AddSpellPower : AbstractEffect, IEffect
 	{
 		private int _value;

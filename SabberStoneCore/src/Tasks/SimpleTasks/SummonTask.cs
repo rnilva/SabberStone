@@ -113,7 +113,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						{
 							{GameTag.ZONE, (int) Zone.PLAY},
 							{GameTag.DISPLAYED_CREATOR, source.Id}
-						}, controller.BoardZone, zonePos: summonPosition) as Minion;
+						}, controller.BoardZone, zonePos: summonPosition, creator: source) as Minion;
 					if (summonEntity == null)
 						return TaskState.STOP;
 					if (_addToStack)
