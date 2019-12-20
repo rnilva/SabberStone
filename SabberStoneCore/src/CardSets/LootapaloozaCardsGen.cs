@@ -3697,14 +3697,15 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("LOOT_517e", new Power {
 				//Enchant = new Enchant(GameTag.EXTRA_BATTLECRIES_BASE, EffectOperator.SET, 1)
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_BATTLECRIES_BASE, EffectOperator.SET, 1))
+//				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_BATTLECRIES_BASE, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerBoolAttributes.ExtraBattlecry))
 				{
 					RemoveTrigger = (TriggerType.TURN_END, null),
 				},
 				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
 				{
-					Condition = new SelfCondition(p => p.Card.Id != "LOOT_517" && p.Card[GameTag.BATTLECRY] == 1),
-					SingleTask = new RemoveEnchantmentTask()
+					Condition = new SelfCondition(p => p.Card.Id != "LOOT_517" && p.Card.Battlecry),
+					SingleTask = RemoveEnchantmentTask.Task
 				}
 			});
 

@@ -3184,7 +3184,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Your next spell costs Health instead of Mana.
 			// --------------------------------------------------------
 			cards.Add("UNG_832e", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.SPELLS_COST_HEALTH, EffectOperator.SET, 1))
+//				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.SPELLS_COST_HEALTH, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerBoolAttributes.SpellsCostHealth))
 				{
 					RemoveTrigger = (TriggerType.CAST_SPELL, null)
 				},

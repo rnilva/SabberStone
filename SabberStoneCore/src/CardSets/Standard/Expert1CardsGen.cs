@@ -1803,7 +1803,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - AURA = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_591", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.RESTORE_TO_DAMAGE, EffectOperator.SET, 1))
+//				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.HEALING_DOES_DAMAGE, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerBoolAttributes.RestoreToDamage))
 			});
 
 			// ---------------------------------------- MINION - PRIEST
@@ -4499,7 +4500,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_560", new Power {
-				Aura = new Aura(AuraType.CONTROLLERS, new Effect(GameTag.TIMEOUT, EffectOperator.SET, -55))
+//				Aura = new Aura(AuraType.CONTROLLERS, new Effect(GameTag.TIMEOUT, EffectOperator.SET, -55))
+				Aura = new Aura(AuraType.CONTROLLERS, Effects.ControllerAttributeEffect(ControllerIntAttributes.TimeOut, -55))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

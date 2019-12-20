@@ -80,20 +80,28 @@ namespace SabberStoneCore.Enchants
 			IEffect[] effects = Effects;
 			if (!UseScriptTag)
 				for (int i = 0; i < effects.Length; i++)
-					effects[i].ApplyTo(entity, IsOneTurnEffect);
+					effects[i].ApplyTo(entity);
 			else
 			{
-				effects[0].ChangeValue(num1).ApplyTo(entity, IsOneTurnEffect);
+				effects[0].ChangeValue(num1).ApplyTo(entity);
 
 				if (effects.Length >= 2)
 				{
 					if (num2 >= 0)
-						effects[1].ChangeValue(num2).ApplyTo(entity, IsOneTurnEffect);
+						effects[1].ChangeValue(num2).ApplyTo(entity);
 					else
-						effects[1].ChangeValue(num1).ApplyTo(entity, IsOneTurnEffect);
+						effects[1].ChangeValue(num1).ApplyTo(entity);
 
 					for (int i = 2; i < effects.Length; i++)
-						effects[i].ApplyTo(entity, IsOneTurnEffect);
+						effects[i].ApplyTo(entity);
+				}
+			}
+
+			if (IsOneTurnEffect)
+			{
+				for (int i = 0; i < effects.Length; i++)
+				{
+					entity.Game.OneTurnEffects.Add((entity.Id, effects[i]));
 				}
 			}
 

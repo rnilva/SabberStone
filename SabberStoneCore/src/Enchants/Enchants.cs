@@ -244,5 +244,17 @@ namespace SabberStoneCore.Enchants
 		internal static Effect Rush => new Effect(GameTag.RUSH, EffectOperator.SET, 1);
 
 		internal static Effect Echo => new Effect(GameTag.ECHO, EffectOperator.SET, 1);
+
+		internal static IEffect AttributeAddEffect(IntAttributes intAttr, int value) =>
+			new AddIntAttrEffect(intAttr, value);
+
+		internal static IEffect SetAttributeEffect(IntAttributes intAttr, int value) =>
+			new SetIntAttrEffect(intAttr, value);
+
+		internal static IEffect ControllerAttributeEffect(ControllerBoolAttributes boolAttr) =>
+			new SetControllerBoolAttr(boolAttr);
+
+		internal static IEffect ControllerAttributeEffect(ControllerIntAttributes intAttr, int value = 1) =>
+			new AddControllerIntAttr(intAttr, value);
 	}
 }

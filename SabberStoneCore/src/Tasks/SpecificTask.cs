@@ -987,10 +987,19 @@ namespace SabberStoneCore.Tasks
 		public static readonly SimpleTask ImmortalPrelate =
 			new CustomTask((g, c, s, t, stack) =>
 			{
-				Minion source = (Minion)s;
+				//Minion source = (Minion)s;
 
-				Minion newEntity = (Minion) Entity.FromCard(in c, source.Card,
-					zone: c.DeckZone, zonePos: g.Random.Next(c.DeckZone.Count));
+				//Minion newEntity = (Minion) Entity.FromCard(in c, source.Card,
+				//	zone: c.DeckZone, zonePos: g.Random.Next(c.DeckZone.Count));
+
+				MinionInPlay source = (MinionInPlay) s;
+				MinionInPlay newEntity = MinionInPlay.FromCard(in c, source.Card);
+				Generic.ShuffleIntoDeck(c, source, newEntity);
+				newEntity.CopyAttributesFrom(source);
+				newEntity.Damage = 0;
+				newEntity.IsFrozen = false;
+				newEntity.IsImmune = false;
+				newEntity.IsSilenced = false;
 
 				if (source.AppliedEnchantments != null)
 				{

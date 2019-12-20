@@ -58,7 +58,8 @@ namespace SabberStoneCore.CardSets
 				//[irc] NightKev yeah that one
 				//[irc] NightKev you have two of those next to each other and place fandral on either end of the board and there are zero other minions on the board
 				//[irc] NightKev then you would be unable to play starfall because it has no targets
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.CHOOSE_BOTH, EffectOperator.SET, 1))
+//				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.CHOOSE_BOTH, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerBoolAttributes.ChooseBoth))
 			});
 
 			// ----------------------------------------- MINION - DRUID
@@ -2596,7 +2597,8 @@ namespace SabberStoneCore.CardSets
 			// - TAG_ONE_TURN_EFFECT = 1
 			// --------------------------------------------------------
 			cards.Add("OG_104e", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.RESTORE_TO_DAMAGE, EffectOperator.SET, 1))
+//				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.HEALING_DOES_DAMAGE, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerBoolAttributes.RestoreToDamage))
 				{
 					RemoveTrigger = (TriggerType.TURN_END, null)
 				}
@@ -2625,7 +2627,8 @@ namespace SabberStoneCore.CardSets
 			// Text: Your next spell costs Health instead of Mana.
 			// --------------------------------------------------------
 			cards.Add("OG_121e", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.SPELLS_COST_HEALTH, EffectOperator.SET, 1))
+//				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.SPELLS_COST_HEALTH, EffectOperator.SET, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerBoolAttributes.SpellsCostHealth))
 				{
 					RemoveTrigger = (TriggerType.CAST_SPELL, null)
 				},

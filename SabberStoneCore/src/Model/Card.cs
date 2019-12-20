@@ -68,7 +68,6 @@ namespace SabberStoneCore.Model
 		public bool Poisonous { get; private set; }
 		public bool LifeSteal { get; private set; }
 		public bool Rush { get; private set; }
-		public bool Deathrattle { get; }
 		public bool CantAttack { get; private set; }
 
 		public bool Echo { get; private set; }
@@ -77,12 +76,18 @@ namespace SabberStoneCore.Model
 		public bool Combo { get; private set; }
 		public bool IsSecret { get; private set; }
 		public bool IsQuest { get; private set; }
+		public bool Battlecry { get; }
+		public bool Deathrattle { get; }
 		public bool Untouchable { get; private set; }
 		public bool HideStat { get; private set; }
 		public bool ReceivesDoubleSpelldamageBonus { get; private set; }
 		public bool Freeze { get; }
 		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
 
+		public bool Overkill { get; }
+		public bool TwinSpell { get; }
+
+		public ControllerIntAttributes ThresholdAttribute { get; }
 
 		private Card()
 		{
@@ -171,6 +176,9 @@ namespace SabberStoneCore.Model
 						case GameTag.QUEST:
 							IsQuest = true;
 							break;
+						case GameTag.BATTLECRY:
+							Battlecry = true;
+							break;
 						case GameTag.DEATHRATTLE:
 							Deathrattle = true;
 							break;
@@ -194,6 +202,10 @@ namespace SabberStoneCore.Model
 							break;
 						case GameTag.CARDTYPE:
 							Type = (CardType)(int)tag.TagValue;
+							break;
+						case GameTag.PLAYER_TAG_THRESHOLD_TAG_ID:
+							ThresholdAttribute =
+								AttributeHelpers.GameTagToControllerIntAttribute((GameTag)(int) tag.TagValue);
 							break;
 					}
 				}

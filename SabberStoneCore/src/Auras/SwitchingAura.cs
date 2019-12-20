@@ -52,8 +52,8 @@ namespace SabberStoneCore.Auras
 
 		public override void Activate(Playable owner, bool cloning = false)
 		{
-			if (Effects == null)
-				Effects = EnchantmentCard.Power.Enchant.Effects;
+			if (IEffects == null)
+				IEffects = EnchantmentCard.Power.Enchant.Effects;
 
 			var instance = new SwitchingAura(this, owner);
 
@@ -114,7 +114,7 @@ namespace SabberStoneCore.Auras
 
 		protected override bool RemoveInternal()
 		{
-			AppliedEntityIdCollection.ForEach(Game.IdEntityDic, Effects,
+			AppliedEntityIdCollection.ForEach(Game.IdEntityDic, IEffects,
 				(id, idDict, effs) =>
 				{
 					Playable entity = idDict[id];

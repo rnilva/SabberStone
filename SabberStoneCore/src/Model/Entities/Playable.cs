@@ -558,7 +558,7 @@ namespace SabberStoneCore.Model.Entities
 			set => throw new NotImplementedException();
 		}
 
-		public bool HasOverkill
+		public virtual bool HasOverkill
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => Card.Overkill;

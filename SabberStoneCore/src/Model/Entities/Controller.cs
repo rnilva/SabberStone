@@ -42,7 +42,6 @@ namespace SabberStoneCore.Model.Entities
 		/// This zone contains cards which are not yet drawn. Can be empty.
 		/// </summary>
 		public DeckZone DeckZone;
-		//public DeckZone_new DeckZone;
 
 		/// <summary>
 		/// The hand of this player.

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Collections.ObjectModel;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 
@@ -42,11 +45,105 @@ namespace SabberStoneCore.Model.Entities
 		Damage = 1,
 		NumAttacksThisTurn = 2,
 		// ## Hero attributes
-		HeroPowerDamage = 5
+		HeroPowerDamage = 5,
+		ExtraAttacksThisTurn = 6
 	}
 
 	public static class AttributeHelpers
 	{
+		private static readonly ReadOnlyDictionary<IntAttributes, GameTag> IntAttrToTagMap;
+		private static readonly ReadOnlyDictionary<GameTag, IntAttributes> TagToIntAttrMap;
+
+		private static readonly ReadOnlyDictionary<GameTag, ControllerIntAttributes> TagToControllerIntAttrMap;
+		private static readonly ReadOnlyDictionary<ControllerIntAttributes, GameTag> ControllerIntAttrToTagMap;
+		private static readonly ReadOnlyDictionary<GameTag, ControllerBoolAttributes> TagToControllerBoolAttrMap;
+		private static readonly ReadOnlyDictionary<ControllerBoolAttributes, GameTag> ControllerBoolAttrToTagMap;
+
+		static AttributeHelpers()
+		{
+			IntAttrToTagMap = new ReadOnlyDictionary<IntAttributes, GameTag>(new Dictionary<IntAttributes, GameTag>
+			{
+				{IntAttributes.SpellPower, GameTag.SPELLPOWER},
+				{IntAttributes.Damage, GameTag.DAMAGE},
+				{IntAttributes.NumAttacksThisTurn, GameTag.NUM_ATTACKS_THIS_TURN},
+				{IntAttributes.HeroPowerDamage, GameTag.HEROPOWER_DAMAGE},
+				{IntAttributes.ExtraAttacksThisTurn, GameTag.EXTRA_ATTACKS_THIS_TURN }
+			});
+
+			TagToIntAttrMap = new ReadOnlyDictionary<GameTag, IntAttributes>(
+				IntAttrToTagMap.ToDictionary(p => p.Value, p => p.Key));
+
+
+			ControllerIntAttrToTagMap = new ReadOnlyDictionary<ControllerIntAttributes, GameTag>(
+				new Dictionary<ControllerIntAttributes, GameTag>
+				{
+					{ControllerIntAttributes.PlayerId, GameTag.PLAYER_ID},
+					{ControllerIntAttributes.HeroId, GameTag.HERO_ENTITY},
+					{ControllerIntAttributes.PlayState, GameTag.PLAYSTATE},
+					{ControllerIntAttributes.MulliganState, GameTag.MULLIGAN_STATE},
+					{ControllerIntAttributes.BaseMana, GameTag.RESOURCES},
+					{ControllerIntAttributes.UsedMana, GameTag.RESOURCES_USED},
+					{ControllerIntAttributes.TemporaryMana, GameTag.TEMP_RESOURCES},
+					{ControllerIntAttributes.OverloadOwed, GameTag.OVERLOAD_OWED},
+					{ControllerIntAttributes.OverloadLocked, GameTag.OVERLOAD_LOCKED},
+					{ControllerIntAttributes.OverloadThisGame, GameTag.OVERLOAD_THIS_GAME},
+					{ControllerIntAttributes.SpellPowerDouble, GameTag.SPELLPOWER_DOUBLE},
+					{ControllerIntAttributes.HeroPowerDouble, GameTag.HERO_POWER_DOUBLE},
+					{ControllerIntAttributes.AllHealingDouble, GameTag.ALL_HEALING_DOUBLE},
+					{ControllerIntAttributes.NumTurnsLeft, GameTag.NUM_TURNS_LEFT},
+					{ControllerIntAttributes.LastCardPlayed, GameTag.LAST_CARD_PLAYED},
+					{ControllerIntAttributes.LastCardDrawn, GameTag.LAST_CARD_DRAWN},
+					{ControllerIntAttributes.LastCardDiscarded, GameTag.LAST_CARD_DISCARDED},
+					{ControllerIntAttributes.NumCardsDrawnThisTurn, GameTag.NUM_CARDS_DRAWN_THIS_TURN},
+					{ControllerIntAttributes.NumCardsPlayedThisTurn, GameTag.NUM_CARDS_PLAYED_THIS_TURN},
+					{ControllerIntAttributes.NumMinionsPlayedThisTurn, GameTag.NUM_MINIONS_PLAYED_THIS_TURN},
+					{ControllerIntAttributes.NumOptionsPlayedThisTurn, GameTag.NUM_OPTIONS_PLAYED_THIS_TURN},
+					{ControllerIntAttributes.NumFriendlyMinionsThatDiedThisTurn, GameTag.NUM_FRIENDLY_MINIONS_THAT_DIED_THIS_TURN},
+					{ControllerIntAttributes.AmountHeroHealedThisTurn, GameTag.AMOUNT_HERO_HEALED_THIS_TURN},
+					{ControllerIntAttributes.NumMinionsPlayerKilledThisTurn, GameTag.NUM_MINIONS_PLAYER_KILLED_THIS_TURN},
+					{ControllerIntAttributes.NumFriendlyMinionsThatAttackedThisTurn, GameTag.NUM_FRIENDLY_MINIONS_THAT_ATTACKED_THIS_TURN},
+					{ControllerIntAttributes.HeroPowerActivationsThisTurn, GameTag.HEROPOWER_ACTIVATIONS_THIS_TURN},
+					{ControllerIntAttributes.NumElementalsPlayedThisTurn, GameTag.NUM_ELEMENTAL_PLAYED_THIS_TURN},
+					{ControllerIntAttributes.NumElementalsPlayedLastTurn, GameTag.NUM_ELEMENTAL_PLAYED_LAST_TURN},
+					{ControllerIntAttributes.TotalManaSpentThisGame, GameTag.NUM_RESOURCES_SPENT_THIS_GAME},
+					{ControllerIntAttributes.NumTimesHeroPowerUsedThisGame, GameTag.NUM_TIMES_HERO_POWER_USED_THIS_GAME},
+					{ControllerIntAttributes.NumHeroPowerDamageThisGame, GameTag.NUM_HERO_POWER_DAMAGE_THIS_GAME},
+					{ControllerIntAttributes.AmountHealedThisGame, GameTag.AMOUNT_HEALED_THIS_GAME},
+					{ControllerIntAttributes.NumSecretsPlayedThisGame, GameTag.NUM_SECRETS_PLAYED_THIS_GAME},
+					{ControllerIntAttributes.NumSpellsPlayedThisGame, GameTag.NUM_SPELLS_PLAYED_THIS_GAME},
+					{ControllerIntAttributes.NumWeaponsPlayedThisGame, GameTag.NUM_WEAPONS_PLAYED_THIS_GAME},
+					{ControllerIntAttributes.NumMurlocsPlayedThisGame, GameTag.NUM_MURLOCS_PLAYED_THIS_GAME},
+					{ControllerIntAttributes.TimeOut, GameTag.TIMEOUT},
+					{ControllerIntAttributes.ProxyCthun, GameTag.PROXY_CTHUN},
+				});
+
+			TagToControllerIntAttrMap = new ReadOnlyDictionary<GameTag, ControllerIntAttributes>(
+				ControllerIntAttrToTagMap.ToDictionary(p => p.Value, p => p.Key));
+
+			ControllerBoolAttrToTagMap = new ReadOnlyDictionary<ControllerBoolAttributes, GameTag>(
+				new Dictionary<ControllerBoolAttributes, GameTag>
+				{
+					{ControllerBoolAttributes.RestoreToDamage, GameTag.HEALING_DOES_DAMAGE},
+					{ControllerBoolAttributes.ExtraDeathrattle, GameTag.EXTRA_DEATHRATTLES_BASE},
+					{ControllerBoolAttributes.ExtraBattlecry, GameTag.EXTRA_BATTLECRIES_BASE},
+					{ControllerBoolAttributes.ChooseBoth, GameTag.CHOOSE_BOTH},
+					{ControllerBoolAttributes.SpellsCostHealth, GameTag.SPELLS_COST_HEALTH},
+					{ControllerBoolAttributes.ExtraEndTurnEffect, GameTag.EXTRA_END_TURN_EFFECT},
+					{ControllerBoolAttributes.HeroPowerDisabled, GameTag.HERO_POWER_DISABLED},
+					{ControllerBoolAttributes.ExtraBattleCryAndCombo, GameTag.EXTRA_MINION_BATTLECRIES_BASE},
+				});
+
+			TagToControllerBoolAttrMap = new ReadOnlyDictionary<GameTag, ControllerBoolAttributes>(
+				ControllerBoolAttrToTagMap.ToDictionary(p => p.Value, p => p.Key));
+		}
+
+		public static GameTag AttributeToGameTag(IntAttributes intAttr)
+			=> IntAttrToTagMap.TryGetValue(intAttr, out GameTag value)
+				? value
+				: throw new NotImplementedException($"Mapping to {intAttr} to GameTag is not implemented.");
+		public static IntAttributes GameTagToIntAttribute(GameTag tag)
+			=> TagToIntAttrMap.TryGetValue(tag, out IntAttributes value) ? value : IntAttributes.Invalid;
+
 		public static BoolAttributes GameTagToBoolAttribute(GameTag tag)
 		{
 			switch (tag)
@@ -78,65 +175,17 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		public static IntAttributes GameTagToIntAttribute(GameTag tag)
-		{
-			switch (tag)
-			{
-				case GameTag.SPELLPOWER:
-					return IntAttributes.SpellPower;
-				case GameTag.DAMAGE:
-					return IntAttributes.Damage;
-				case GameTag.NUM_ATTACKS_THIS_TURN:
-					return IntAttributes.NumAttacksThisTurn;
-				case GameTag.HEROPOWER_DAMAGE:
-					return IntAttributes.HeroPowerDamage;
-				default:
-					return IntAttributes.Invalid;
-			}
-		}
-
 		public static ControllerIntAttributes GameTagToControllerIntAttribute(GameTag tag)
-		{
-			switch (tag)
-			{
-				case GameTag.SPELLPOWER_DOUBLE:
-				case GameTag.SPELL_HEALING_DOUBLE:
-					return ControllerIntAttributes.SpellPowerDouble;
-				case GameTag.HERO_POWER_DOUBLE:
-					return ControllerIntAttributes.HeroPowerDouble;
-				case GameTag.ALL_HEALING_DOUBLE:
-					return ControllerIntAttributes.AllHealingDouble;
-				case GameTag.TIMEOUT:
-					return ControllerIntAttributes.TimeOut;
-				default:
-					return ControllerIntAttributes.Invalid;
-			}
-		}
+			=> TagToControllerIntAttrMap.TryGetValue(tag, out ControllerIntAttributes value)
+				? value : ControllerIntAttributes.Invalid;
+		public static GameTag ControllerIntAttributeToGameTag(ControllerIntAttributes attr)
+			=> ControllerIntAttrToTagMap.TryGetValue(attr, out GameTag value)
+				? value
+				: throw new NotImplementedException($"Mapping to {attr} to GameTag is not implemented.");
 
 		public static ControllerBoolAttributes GameTagToControllerBoolAttribute(GameTag tag)
-		{
-			switch (tag)
-			{
-				case GameTag.HEALING_DOES_DAMAGE:
-					return ControllerBoolAttributes.RestoreToDamage;
-				case GameTag.EXTRA_BATTLECRIES_BASE:
-					return ControllerBoolAttributes.ExtraBattlecry;
-				case GameTag.EXTRA_DEATHRATTLES_BASE:
-					return ControllerBoolAttributes.ExtraDeathrattle;
-				case GameTag.CHOOSE_BOTH:
-					return ControllerBoolAttributes.ChooseBoth;
-				case GameTag.SPELLS_COST_HEALTH:
-					return ControllerBoolAttributes.SpellsCostHealth;
-				case GameTag.EXTRA_END_TURN_EFFECT:
-					return ControllerBoolAttributes.ExtraEndTurnEffect;
-				case GameTag.HERO_POWER_DISABLED:
-					return ControllerBoolAttributes.HeroPowerDisabled;
-				case GameTag.EXTRA_MINION_BATTLECRIES_BASE:
-					return ControllerBoolAttributes.ExtraBattleCryAndCombo;
-				default:
-					return ControllerBoolAttributes.Invalid;
-			}
-		}
+			=> TagToControllerBoolAttrMap.TryGetValue(tag, out ControllerBoolAttributes value)
+				? value : ControllerBoolAttributes.Invalid;
 	}
 
 	public readonly struct AttributeEffect : IEffect

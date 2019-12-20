@@ -3176,7 +3176,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - AURA = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_901", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_END_TURN_EFFECT, EffectOperator.ADD, 1))
+//				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.EXTRA_END_TURN_EFFECT, EffectOperator.ADD, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerBoolAttributes.ExtraEndTurnEffect))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -3186,7 +3187,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Hero Powers are disabled.
 			// --------------------------------------------------------
 			cards.Add("ICC_902", new Power {
-				Aura = new Aura(AuraType.CONTROLLERS, new Effect(GameTag.HERO_POWER_DISABLED, EffectOperator.ADD, 1))
+//				Aura = new Aura(AuraType.CONTROLLERS, new Effect(GameTag.HERO_POWER_DISABLED, EffectOperator.ADD, 1))
+				Aura = new Aura(AuraType.CONTROLLERS, Effects.ControllerAttributeEffect(ControllerBoolAttributes.HeroPowerDisabled))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
