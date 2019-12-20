@@ -506,6 +506,53 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
+	public class SetBoolAttrEffect : AbstractEffect, IEffect
+	{
+		private readonly int _attr;
+
+		private GameTag _tag;
+		private EffectOperator _operator;
+		private bool _value;
+
+		public GameTag Tag => _tag;
+
+		public EffectOperator Operator => _operator;
+
+		public int Value => _value ? 1 : 0;
+
+		public SetBoolAttrEffect(BoolAttributes attr, bool value)
+		{
+			_attr = (int) attr;
+			_value = value;
+			_tag = AttributeHelpers.AttributeToGameTag(attr);
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			character.GetRef(_attr) = _value;
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			
+		}
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((Character) entity);
+		}
+
+		public void RemoveFrom(Entity entity)
+		{
+			
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			return new SetBoolAttrEffect((BoolAttributes) _attr, newValue > 0);
+		}
+	}
+
 	public class AddSpellPower : AbstractEffect, IEffect
 	{
 		private int _value;

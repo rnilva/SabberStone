@@ -3353,7 +3353,7 @@ namespace SabberStoneCore.CardSets.Standard
 				Enchant = new Enchant(
 					Effects.Attack_N(0),
 					Effects.Health_N(0),
-					new Effect(GameTag.DIVINE_SHIELD, EffectOperator.SET, 1),
+					Effects.SetAttributeEffect(BoolAttributes.DivineShield),
 					Effects.TauntEff,
 					Effects.Lifesteal,
 					Effects.Rush)

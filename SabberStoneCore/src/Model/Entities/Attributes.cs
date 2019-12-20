@@ -53,6 +53,8 @@ namespace SabberStoneCore.Model.Entities
 	{
 		private static readonly ReadOnlyDictionary<IntAttributes, GameTag> IntAttrToTagMap;
 		private static readonly ReadOnlyDictionary<GameTag, IntAttributes> TagToIntAttrMap;
+		private static readonly ReadOnlyDictionary<BoolAttributes, GameTag> BoolAttrToTagMap;
+		private static readonly ReadOnlyDictionary<GameTag, BoolAttributes> TagToBoolAttrMap;
 
 		private static readonly ReadOnlyDictionary<GameTag, ControllerIntAttributes> TagToControllerIntAttrMap;
 		private static readonly ReadOnlyDictionary<ControllerIntAttributes, GameTag> ControllerIntAttrToTagMap;
@@ -72,6 +74,27 @@ namespace SabberStoneCore.Model.Entities
 
 			TagToIntAttrMap = new ReadOnlyDictionary<GameTag, IntAttributes>(
 				IntAttrToTagMap.ToDictionary(p => p.Value, p => p.Key));
+
+			BoolAttrToTagMap = new ReadOnlyDictionary<BoolAttributes, GameTag>(new Dictionary<BoolAttributes, GameTag>
+			{
+				{BoolAttributes.CannotAttackHeroes, GameTag.CANNOT_ATTACK_HEROES},
+				{BoolAttributes.CantAttack, GameTag.CANT_ATTACK},
+				{BoolAttributes.Charge, GameTag.CHARGE},
+				{BoolAttributes.Deathrattle, GameTag.DEATHRATTLE},
+				{BoolAttributes.DivineShield, GameTag.DIVINE_SHIELD},
+				{BoolAttributes.Elusive, GameTag.CANT_BE_TARGETED_BY_SPELLS},
+				{BoolAttributes.Frozen, GameTag.FROZEN},
+				{BoolAttributes.Immune, GameTag.IMMUNE},
+				{BoolAttributes.Lifesteal, GameTag.LIFESTEAL},
+				{BoolAttributes.Poisonous, GameTag.POISONOUS},
+				{BoolAttributes.Rush, GameTag.RUSH},
+				{BoolAttributes.Stealth, GameTag.STEALTH},
+				{BoolAttributes.Taunt, GameTag.TAUNT},
+				{BoolAttributes.Windfury, GameTag.WINDFURY},
+			});
+
+			TagToBoolAttrMap = new ReadOnlyDictionary<GameTag, BoolAttributes>(
+				BoolAttrToTagMap.ToDictionary(p => p.Value, p => p.Key));
 
 
 			ControllerIntAttrToTagMap = new ReadOnlyDictionary<ControllerIntAttributes, GameTag>(
@@ -141,6 +164,10 @@ namespace SabberStoneCore.Model.Entities
 			=> IntAttrToTagMap.TryGetValue(intAttr, out GameTag value)
 				? value
 				: throw new NotImplementedException($"Mapping to {intAttr} to GameTag is not implemented.");
+		public static GameTag AttributeToGameTag(BoolAttributes boolAttr)
+			=> BoolAttrToTagMap.TryGetValue(boolAttr, out GameTag value)
+				? value
+				: throw new NotImplementedException($"Mapping to {boolAttr} to GameTag is not implemented."); 
 		public static IntAttributes GameTagToIntAttribute(GameTag tag)
 			=> TagToIntAttrMap.TryGetValue(tag, out IntAttributes value) ? value : IntAttributes.Invalid;
 

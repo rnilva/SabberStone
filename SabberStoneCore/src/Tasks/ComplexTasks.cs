@@ -96,7 +96,7 @@ namespace SabberStoneCore.Tasks
 
 		public static SimpleTask ExtraAttacksThisTurn(EntityType type) =>
 			Create(
-				new GetIntegerAttributeTask(IntAttributes.ExtraAttacksThisTurn, type),
+				new GetIntAttributeTask(IntAttributes.ExtraAttacksThisTurn, type),
 				new MathAddTask(1),
 				new SetIntAttributeNumberTask(IntAttributes.ExtraAttacksThisTurn, type));
 

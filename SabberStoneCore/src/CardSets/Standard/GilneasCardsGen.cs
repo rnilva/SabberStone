@@ -2422,7 +2422,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Double the damage and_healing of your Hero_Power.
 			// --------------------------------------------------------
 			cards.Add("GIL_646", new Power {
-				Aura = new Aura(AuraType.CONTROLLER, new Effect(GameTag.HERO_POWER_DOUBLE, EffectOperator.ADD, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerIntAttributes.HeroPowerDouble))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

@@ -2004,10 +2004,12 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("CS2_103e2", new Power {
 				Enchant = new Enchant(
 					Effects.Charge,
-					new Effect(GameTag.CANNOT_ATTACK_HEROES, EffectOperator.SET, 1)),
+//					new Effect(GameTag.CANNOT_ATTACK_HEROES, EffectOperator.SET, 1)),
+					Effects.SetAttributeEffect(BoolAttributes.CannotAttackHeroes)),
 				Trigger = new Trigger(TriggerType.TURN_END)
 				{
-					SingleTask = new SetGameTagTask(GameTag.CANNOT_ATTACK_HEROES, 0, EntityType.TARGET),
+//					SingleTask = new SetGameTagTask(GameTag.CANNOT_ATTACK_HEROES, 0, EntityType.TARGET),
+					SingleTask = new SetAttributeTask(BoolAttributes.CannotAttackHeroes, false, EntityType.TARGET),
 					RemoveAfterTriggered = true
 				}
 			});
