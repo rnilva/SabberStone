@@ -275,20 +275,40 @@ namespace SabberStoneCore.Enchants
 		#endregion
 	}
 
-	public class ATKVaryEffect : AbstractEffect
+	public class VaryAttackEffect : AbstractEffect, IEffect
 	{
-		public readonly int Value;
+		private EffectOperator _operator;
+		private readonly int _value;
 
-		public ATKVaryEffect(int value)
+		public VaryAttackEffect(int value)
 		{
-			Value = value;
+			_value = value;
 		}
 
 		public GameTag Tag => GameTag.ATK;
 
+		public EffectOperator Operator => EffectOperator.ADD;
+
+		public int Value => _value;
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((Character) entity);
+		}
+
+		void IEffect.RemoveFrom(Entity entity)
+		{
+			RemoveFrom((Character) entity);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			return Effects.Attack_N(newValue);
+		}
+
 		public override void ApplyTo(Character character)
 		{
-			character.AttackDamage += Value; 
+			character.AttackDamage += _value; 
 		}
 		public override void RemoveFrom(Character character)
 		{
@@ -296,20 +316,40 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
-	public class ATKSetEffect : AbstractEffect
+	public class SetAttackEffect : AbstractEffect, IEffect
 	{
-		public readonly int Value;
+		private readonly int _value;
+		private EffectOperator _operator;
 
-		public ATKSetEffect(int value)
+		public SetAttackEffect(int value)
 		{
-			Value = value;
+			_value = value;
 		}
 
 		public GameTag Tag => GameTag.ATK;
 
+		public EffectOperator Operator => _operator;
+
+		public int Value => _value;
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((Character) entity);
+		}
+
+		void IEffect.RemoveFrom(Entity entity)
+		{
+			RemoveFrom((Character) entity);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			return Effects.SetAttack(newValue);
+		}
+
 		public override void ApplyTo(Character character)
 		{
-			character.AttackDamage += Value;
+			character.AttackDamage = _value;
 
 			// Remove atk one turn effects
 			List<(int entityId, IEffect effect)> oneTurnEffects = character.Game.OneTurnEffects;
@@ -329,6 +369,107 @@ namespace SabberStoneCore.Enchants
 		public override void RemoveFrom(Character character)
 		{
 			// Do nothing
+		}
+	}
+
+	public class VaryHealthEffect : AbstractEffect, IEffect
+	{
+		private readonly int _value;
+
+		public GameTag Tag => GameTag.HEALTH;
+
+		public EffectOperator Operator => EffectOperator.ADD;
+
+		public int Value => _value;
+
+		public VaryHealthEffect(int value)
+		{
+			_value = value;
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			character.BaseHealth += _value;
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			character.BaseHealth -= _value;
+			character.Damage -= _value;
+		}
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((Character) entity);
+		}
+
+		void IEffect.RemoveFrom(Entity entity)
+		{
+			RemoveFrom((Character) entity);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			return Effects.Health_N(newValue);
+		}
+	}
+
+	public class SetHealthEffect : AbstractEffect, IEffect
+	{
+		private readonly int _value;
+
+		public GameTag Tag => GameTag.HEALTH;
+
+		public EffectOperator Operator => EffectOperator.SET;
+
+		public int Value => _value;
+
+		public SetHealthEffect(int value)
+		{
+			_value = value;
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			if (character is Hero h)
+			{
+				int hbh = h.BaseHealth;
+				if (hbh > _value)
+					h.Damage = hbh - _value;
+				else
+					h.Health = _value;
+				return;
+			}
+
+			if (character is Minion m)
+			{
+				m.Health = _value;
+				return;
+			}
+
+			if (character.Zone is BoardZone board)
+			{
+				foreach (Aura aura in board.Auras)
+				{
+					if (aura.Deregister(character))
+						aura.EntityAdded(character);
+				}
+			}
+		}
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((Character) entity);
+		}
+
+		void IEffect.RemoveFrom(Entity entity)
+		{
+			RemoveFrom((Character) entity);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			return Effects.SetMaxHealth(newValue);
 		}
 	}
 

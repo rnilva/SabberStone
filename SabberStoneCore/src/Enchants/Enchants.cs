@@ -174,14 +174,23 @@ namespace SabberStoneCore.Enchants
 
 	internal static class Effects
 	{
+		private static readonly Dictionary<int, VaryAttackEffect> VaryAttackEffects = new Dictionary<int, VaryAttackEffect>();
+		private static readonly Dictionary<int, SetAttackEffect> SetAttackEffects = new Dictionary<int, SetAttackEffect>();
+		private static readonly Dictionary<int, VaryHealthEffect> VaryHealthEffects = new Dictionary<int, VaryHealthEffect>();
+		private static readonly Dictionary<int, SetHealthEffect> SetHealthEffects = new Dictionary<int, SetHealthEffect>();
+
 		internal static IEffect Attack_N(int n)
 		{
-			return ATK.Effect(EffectOperator.ADD, n);
+			return VaryAttackEffects.TryGetValue(n, out VaryAttackEffect value)
+				? value
+				: (VaryAttackEffects[n] = new VaryAttackEffect(n));
 		}
 
 		internal static IEffect Health_N(int n)
 		{
-			return Health.Effect(EffectOperator.ADD, n);
+			return VaryHealthEffects.TryGetValue(n, out VaryHealthEffect value)
+				? value
+				: (VaryHealthEffects[n] = new VaryHealthEffect(n));
 		}
 
 		internal static IEffect Durability_N(int n)
@@ -196,12 +205,16 @@ namespace SabberStoneCore.Enchants
 
 		internal static IEffect SetAttack(int n)
 		{
-			return ATK.Effect(EffectOperator.SET, n);
+			return SetAttackEffects.TryGetValue(n, out SetAttackEffect value)
+				? value
+				: SetAttackEffects[n] = new SetAttackEffect(n);
 		}
 
 		internal static IEffect SetMaxHealth(int n)
 		{
-			return Health.Effect(EffectOperator.SET, n);
+			return SetHealthEffects.TryGetValue(n, out SetHealthEffect value)
+				? value
+				: SetHealthEffects[n] = new SetHealthEffect(n);
 		}
 
 		internal static IEffect[] SetAttackHealth(int n)
