@@ -3189,7 +3189,7 @@ namespace SabberStoneCore.CardSets.Standard
 				Enchant = new Enchant(
 					Effects.Attack_N(0),
 					Effects.Health_N(0),
-					Effects.CantBeTargetedBySpellsAndHeroPowers)
+					Effects.Elusive)
 				{
 					UseScriptTag = true
 				}

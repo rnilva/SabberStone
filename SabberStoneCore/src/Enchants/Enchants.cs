@@ -227,23 +227,23 @@ namespace SabberStoneCore.Enchants
 			return new VaryCost(n);
 		}
 
-		internal static IEffect TauntEff => Taunt.Effect();
+		internal static readonly IEffect TauntEff = new SetBoolAttrEffect(BoolAttributes.Taunt, true);
 
-		internal static IEffect StealthEff => Stealth.Effect();
+		internal static readonly IEffect StealthEff = new SetBoolAttrEffect(BoolAttributes.Stealth, true);
 
-		internal static IEffect CantBeTargetedBySpellsAndHeroPowers => CantBeTargetedBySpells.Effect();
+		internal static readonly IEffect Elusive = new SetBoolAttrEffect(BoolAttributes.Elusive, true);
 
-		internal static Effect Windfury => new Effect(GameTag.WINDFURY, EffectOperator.SET, 1);
+		internal static readonly IEffect Windfury = new SetWindfuryEffect();
 
-		internal static IEffect Charge => new SetChargeEffect();
+		internal static readonly IEffect Charge = new SetChargeEffect();
 
-		internal static Effect Immune => new Effect(GameTag.IMMUNE, EffectOperator.SET, 1);
+		internal static readonly IEffect Immune = new SetBoolAttrEffect(BoolAttributes.Immune, true);
 
-		internal static Effect Lifesteal => new Effect(GameTag.LIFESTEAL, EffectOperator.SET, 1);
+		internal static readonly IEffect Lifesteal = new SetLifestealEffect();
 
-		internal static Effect Rush => new Effect(GameTag.RUSH, EffectOperator.SET, 1);
+		internal static readonly IEffect Rush = new SetRushEffect();
 
-		internal static Effect Echo => new Effect(GameTag.ECHO, EffectOperator.SET, 1);
+		internal static readonly IEffect Echo = new SetEchoEffect();
 
 		internal static IEffect AttributeAddEffect(IntAttributes intAttr, int value) =>
 			new AddIntAttrEffect(intAttr, value);

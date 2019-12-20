@@ -103,9 +103,9 @@ namespace SabberStoneCore.Model.Entities
 
 		#region Overrides of Character
 
-		internal override ref bool GetRef(int index)
+		internal override unsafe ref bool GetRef(int index)
 		{
-			throw new NotImplementedException();
+			return ref _attrs.boolAttrs[index];
 		}
 
 		internal override ref int GetIntRef(int index)

@@ -105,6 +105,138 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
+	public class SetWindfuryEffect : AbstractEffect, IEffect
+	{
+		private GameTag _tag;
+		private EffectOperator _operator;
+		private int _value;
+
+		public GameTag Tag => GameTag.WINDFURY;
+
+		public EffectOperator Operator => EffectOperator.SET;
+
+		public int Value => 1;
+
+		public override void ApplyTo(MinionInPlay minion)
+		{
+			minion.HasWindfury = true;
+			if (minion.NumAttacksThisTurn == 1)
+				minion.IsExhausted = false;
+		}
+
+		public override void RemoveFrom(MinionInPlay minion)
+		{
+			minion.HasWindfury = false;
+			if (!minion.IsExhausted && minion.NumAttacksThisTurn == 1)
+				minion.IsExhausted = true;
+		}
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((MinionInPlay) entity);
+		}
+
+		void IEffect.RemoveFrom(Entity entity)
+		{
+			RemoveFrom((MinionInPlay) entity);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class SetRushEffect : AbstractEffect, IEffect
+	{
+		private GameTag _tag;
+		private EffectOperator _operator;
+		public GameTag Tag => GameTag.RUSH;
+
+		public EffectOperator Operator => EffectOperator.SET;
+
+		public int Value => 1;
+
+		public override void ApplyTo(MinionInPlay minion)
+		{
+			minion.IsRush = true;
+			if (minion.IsExhausted)
+			{
+				if (minion.HasWindfury)
+				{
+					if (minion.NumAttacksThisTurn < 2)
+					{
+						minion.IsExhausted = false;
+						minion.AttackableByRush = true;
+					}
+				}
+				else
+				{
+					if (minion.NumAttacksThisTurn == 0)
+					{
+						minion.IsExhausted = false;
+						minion.AttackableByRush = true;
+					}
+				}
+			}
+		}
+
+		public override void RemoveFrom(MinionInPlay minion)
+		{
+			minion.IsRush = false;
+		}
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((MinionInPlay) entity);
+		}
+
+		void IEffect.RemoveFrom(Entity entity)
+		{
+			RemoveFrom((MinionInPlay) entity);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class SetLifestealEffect : AbstractEffect, IEffect
+	{
+		public GameTag Tag => GameTag.LIFESTEAL;
+
+		public EffectOperator Operator => EffectOperator.SET;
+
+		public int Value => 1;
+
+		public override void ApplyTo(Playable playable)
+		{
+			playable.HasLifeSteal = true;
+		}
+
+		public override void RemoveFrom(Playable playable)
+		{
+			playable.HasLifeSteal = false;
+		}
+
+
+		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		{
+			ApplyTo((Playable) entity);
+		}
+
+		void IEffect.RemoveFrom(Entity entity)
+		{
+			RemoveFrom((Playable) entity);
+		}
+
+		public IEffect ChangeValue(int newValue)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
 	public class OneTurnControlEffect : AbstractEffect, IEffect
 	{
 		private readonly ControlTask _task = new ControlTask(EntityType.SOURCE);
@@ -325,12 +457,8 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
-	public class Echo : AbstractEffect, IEffect
+	public class SetEchoEffect : AbstractEffect, IEffect
 	{
-		private GameTag _tag;
-		private EffectOperator _operator;
-		private int _value;
-
 		public GameTag Tag => GameTag.ECHO;
 
 		public EffectOperator Operator => EffectOperator.ADD;
@@ -534,7 +662,7 @@ namespace SabberStoneCore.Enchants
 
 		public override void RemoveFrom(Character character)
 		{
-			
+			character.GetRef(_attr) = !_value;
 		}
 
 		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
@@ -542,9 +670,9 @@ namespace SabberStoneCore.Enchants
 			ApplyTo((Character) entity);
 		}
 
-		public void RemoveFrom(Entity entity)
+		void IEffect.RemoveFrom(Entity entity)
 		{
-			
+			RemoveFrom((Character) entity);
 		}
 
 		public IEffect ChangeValue(int newValue)

@@ -1605,7 +1605,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ECHO = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_618", new Power {
-				Aura = new Aura(AuraType.HAND, new Echo())
+				Aura = new Aura(AuraType.HAND, new SetEchoEffect())
 				{
 					Condition = SelfCondition.IsMinion
 				}

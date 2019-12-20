@@ -3024,9 +3024,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - CANT_BE_TARGETED_BY_SPELLS = 1
 			// - CANT_BE_TARGETED_BY_HERO_POWERS = 1
 			// --------------------------------------------------------
-			cards.Add("DAL_081e", new CardDef(new Power
-			{
-				Enchant = new Enchant(Effects.CantBeTargetedBySpellsAndHeroPowers),
+			cards.Add("DAL_081e", new Power {
+				Enchant = new Enchant(Effects.Elusive),
 				Trigger = TriggerBuilder.Type(TriggerType.TURN_START)
 					.SetTask(RemoveEnchantmentTask.Task)
 			}));
