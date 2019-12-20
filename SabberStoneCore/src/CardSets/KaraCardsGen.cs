@@ -590,9 +590,9 @@ namespace SabberStoneCore.CardSets
 			// GameTag:
 			// - DURABILITY = 4
 			// --------------------------------------------------------
-			cards.Add("KAR_028", new CardDef(new Power
-			{
-				Aura = new Aura(AuraType.HERO, new Effect(GameTag.CANNOT_ATTACK_HEROES, EffectOperator.SET, 1)),
+			cards.Add("KAR_028", new Power {
+//				Aura = new Aura(AuraType.HERO, new Effect(GameTag.CANNOT_ATTACK_HEROES, EffectOperator.SET, 1)),
+				Aura = new Aura(AuraType.HERO, Effects.SetAttributeEffect(BoolAttributes.CannotAttackHeroes)),
 				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
 				{
 					TriggerSource = TriggerSource.HERO,

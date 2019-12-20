@@ -647,7 +647,8 @@ namespace SabberStoneCore.CardSets
 			// - HEROPOWER_DAMAGE = 1
 			// --------------------------------------------------------
 			cards.Add("AT_003", new Power {
-				Aura = new Aura(AuraType.HERO, new Effect(GameTag.HEROPOWER_DAMAGE, EffectOperator.ADD, 1))
+//				Aura = new Aura(AuraType.HERO, new Effect(GameTag.HEROPOWER_DAMAGE, EffectOperator.ADD, 1))
+				Aura = new Aura(AuraType.HERO, Effects.SetAttributeEffect(IntAttributes.HeroPowerDamage, 1))
 			});
 
 			// ------------------------------------------ MINION - MAGE

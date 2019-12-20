@@ -2541,7 +2541,8 @@ namespace SabberStoneCore.CardSets.Standard
 				Aura = new MultiAura(
 //					new AdaptiveEffect(GameTag.ATK, EffectOperator.SET, p => p.Controller.Hero.Armor),
 					new AdaptiveATKEffect<Weapon>(EffectOperator.SET, p => p.Controller.Hero.Armor),
-					new Aura(AuraType.HERO, new Effect(GameTag.CANNOT_ATTACK_HEROES, EffectOperator.SET, 1)))
+//					new Aura(AuraType.HERO, new Effect(GameTag.CANNOT_ATTACK_HEROES, EffectOperator.SET, 1)))
+					new Aura(AuraType.HERO, Effects.SetAttributeEffect(BoolAttributes.CannotAttackHeroes)))
 			});
 
 			// --------------------------------------- WEAPON - WARRIOR

@@ -251,6 +251,9 @@ namespace SabberStoneCore.Enchants
 		internal static IEffect SetAttributeEffect(IntAttributes intAttr, int value) =>
 			new SetIntAttrEffect(intAttr, value);
 
+		internal static IEffect SetAttributeEffect(BoolAttributes boolAttr, bool value = true) =>
+			new SetBoolAttrEffect(boolAttr, value);
+
 		internal static IEffect ControllerAttributeEffect(ControllerBoolAttributes boolAttr) =>
 			new SetControllerBoolAttr(boolAttr);
 

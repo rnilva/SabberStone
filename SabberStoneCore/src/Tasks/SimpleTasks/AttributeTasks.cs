@@ -8,14 +8,14 @@ using static SabberStoneCore.Tasks.ImplementationHelpers;
 
 namespace SabberStoneCore.Tasks.SimpleTasks
 {
-	public class GetIntegerAttributeTask : SimpleTask
+	public class GetIntAttributeTask : SimpleTask
 	{
 		private readonly int _attribute;
 		private readonly EntityType _type;
 		private readonly int _entityIndex;
 		private readonly int _stackIndex;
 
-		public GetIntegerAttributeTask(IntAttributes attribute, EntityType type, int entityIndex = 0, int stackIndex = 0)
+		public GetIntAttributeTask(IntAttributes attribute, EntityType type, int entityIndex = 0, int stackIndex = 0)
 		{
 			_attribute = (int)attribute;
 			_type = type;
@@ -65,14 +65,19 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		}
 	}
 
-	public class SetIntAttributeTask : SimpleTask
+	public class SetAttributeTask : SimpleTask
 	{
 		private readonly IEffect _effect;
 		private readonly EntityType _type;
 
-		public SetIntAttributeTask(IntAttributes attribute, int amount, EntityType type)
+		public SetAttributeTask(IntAttributes attribute, int amount, EntityType type)
 		{
-			_effect = Effects.AttributeAddEffect(attribute, amount);
+			_effect = Effects.SetAttributeEffect(attribute, amount);
+			_type = type;
+		}
+		public SetAttributeTask(BoolAttributes attributes, bool value, EntityType type)
+		{
+			_effect = Effects.SetAttributeEffect(attributes, value);
 			_type = type;
 		}
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,

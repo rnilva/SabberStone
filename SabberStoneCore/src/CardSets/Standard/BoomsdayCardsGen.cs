@@ -3329,7 +3329,16 @@ namespace SabberStoneCore.CardSets.Standard
 			// - 871 = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_548e", new Power {
-				Enchant = Enchants.Enchants.GetAutoEnchantFromText("BOT_548e")
+				Enchant = new Enchant(
+					Effects.Attack_N(0),
+					Effects.Health_N(0),
+					Effects.SetAttributeEffect(BoolAttributes.DivineShield),
+					Effects.TauntEff,
+					Effects.Lifesteal,
+					Effects.Rush)
+				{
+					UseScriptTag = true
+				}
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

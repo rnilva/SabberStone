@@ -1789,8 +1789,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_350", new Power {
-				Aura = new Aura(AuraType.CONTROLLER,
-					new Effect(GameTag.SPELLPOWER_DOUBLE, EffectOperator.ADD, 1))
+				Aura = new Aura(AuraType.CONTROLLER, Effects.ControllerAttributeEffect(ControllerIntAttributes.SpellPowerDouble))
 			});
 
 			// ---------------------------------------- MINION - PRIEST
