@@ -1465,13 +1465,19 @@ namespace SabberStoneCoreTest.CardSets
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
 			Assert.Equal(4, game.CurrentPlayer.BoardZone.Last().Cost);
 			Assert.Equal(2, game.CurrentPlayer.Hero.Weapon.Durability);
+
+			// Remove unpredictable trigger.
+			game.CurrentPlayer.BoardZone.Last().Silence();
+			game.CurrentPlayer.BoardZone.Last().Kill();
+
 			Playable apprentice = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sorcerer's Apprentice"));
 			Playable spell2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, apprentice));
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell2, game.CurrentOpponent.Hero));
-			Assert.Equal(4, game.CurrentPlayer.BoardZone.Count);
+			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Last().Cost);
 			Assert.Equal(1, game.CurrentPlayer.Hero.Weapon.Durability);
+
 		}
 
 		// --------------------------------------- MINION - NEUTRAL
