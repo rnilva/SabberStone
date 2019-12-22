@@ -51,7 +51,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					for (int i = 0; i < entities.Length; i++)
 					{
 						entities[i] = Entity.FromCard(in controller, in _card);
-						entities[i][GameTag.DISPLAYED_CREATOR] = source.Id;
+						entities[i].CreatorId = source.Id;
 					}
 
 					for (int i = 0; i < entities.Length && !controller.DeckZone.IsFull; i++)
@@ -62,7 +62,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					for (int i = 0; i < entities.Length; i++)
 					{
 						entities[i] = Entity.FromCard(controller, _card);
-						entities[i][GameTag.DISPLAYED_CREATOR] = source.Id;
+						entities[i].CreatorId = source.Id;
 					}
 
 					for (int i = 0; i < entities.Length; i++)
@@ -73,7 +73,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					for (int i = 0; i < entities.Length; i++)
 					{
 						entities[i] = Entity.FromCard(controller.Opponent, _card);
-						entities[i][GameTag.DISPLAYED_CREATOR] = source.Id;
+						entities[i].CreatorId = source.Id;
 					}
 
 					for (int i = 0; i < entities.Length; i++)
@@ -84,7 +84,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					for (int i = 0; i < entities.Length; i++)
 					{
 						entities[i] = Entity.FromCard(controller.Opponent, _card);
-						entities[i][GameTag.DISPLAYED_CREATOR] = source.Id;
+						entities[i].CreatorId = source.Id;
 					}
 
 					for (int i = 0; i < entities.Length && !controller.Opponent.DeckZone.IsFull; i++)

@@ -212,7 +212,7 @@ namespace SabberStoneCore.Actions
 							Card zombeastCard = Card.CreateZombeastCard(in firstCard, in secondCard, g.History);
 
 							Playable zombeast = Entity.FromCard(in c, in zombeastCard);
-							zombeast[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
+							zombeast.CreatorId = c.Choice.SourceId;
 
 							AddHandPhase.Invoke(c, zombeast);
 							break;
@@ -222,7 +222,7 @@ namespace SabberStoneCore.Actions
 						throw new NotImplementedException();
 				}
 
-				g.IdEntityDic[choice]._data[GameTag.DISPLAYED_CREATOR] = c.Choice.SourceId;
+				g.IdEntityDic[choice].CreatorId = c.Choice.SourceId;
 
 				// aftertask here
 				if (c.Choice.AfterChooseTask != null)
@@ -350,13 +350,8 @@ namespace SabberStoneCore.Actions
 				var choicesIds = new List<int>();
 				for (int i = 0; i < choices.Length; i++)
 				{
-					Playable choiceEntity = Entity.FromCard(c, in choices[i],
-						new EntityData
-						{
-							{GameTag.CREATOR, source.Id},
-							{GameTag.DISPLAYED_CREATOR, source.Id }
-						});
-					c.SetasideZone.Add(choiceEntity);
+					Playable choiceEntity = Entity.FromCard(c, in choices[i], zone: c.SetasideZone);
+					choiceEntity.CreatorId = source.Id;
 					choicesIds.Add(choiceEntity.Id);
 				}
 

@@ -40,14 +40,10 @@ namespace SabberStoneCore.Actions
 
 			if (copyEnchantments)
 			{
-				var tags = new EntityData()
-				{
-					[GameTag.DISPLAYED_CREATOR] = creator.Id
-				};
-
-                if (targetZone == Zone.PLAY)
+				if (targetZone == Zone.PLAY)
                 {
-	                MinionInPlay mip = MinionInPlay.FromCard(in controller, source.Card, tags);
+	                MinionInPlay mip = MinionInPlay.FromCard(in controller, source.Card);
+					mip.CreatorId = creator.Id;
 	                if (sourceZone == Zone.PLAY)
 	                {
 		                mip.CopyAttributesFrom((MinionInPlay) source);
@@ -76,7 +72,8 @@ namespace SabberStoneCore.Actions
                 }
                 else
                 {
-                    copiedEntity = Entity.FromCard(in controller, source.Card, tags);
+                    copiedEntity = Entity.FromCard(in controller, source.Card);
+					copiedEntity.CreatorId = creator.Id;
 
 					copiedEntity._v1 = source._v1;
 					copiedEntity._v2 = source._v2;
@@ -168,7 +165,7 @@ namespace SabberStoneCore.Actions
 			else
 			{
 				copiedEntity = Entity.FromCard(in controller, source.Card);
-				copiedEntity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, creator.Id);
+				copiedEntity.CreatorId = creator.Id;
 			}
 
 			switch (targetZone)

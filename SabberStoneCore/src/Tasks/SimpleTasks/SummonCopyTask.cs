@@ -93,15 +93,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					if (board.IsFull)
 						break;
 
-					var minion = (Minion)Entity.FromCard(in controller, entities[i].Card,
-						new EntityData
-						{
-							{GameTag.DISPLAYED_CREATOR, source.Id}
-						});
+					//var minion = (Minion)Entity.FromCard(in controller, entities[i].Card);
 
-					Generic.SummonBlock(game, ref minion,
+					MinionInPlay minion = MinionInPlay.FromCard(in controller, entities[i].Card);
+
+					Generic.SummonBlock(game, minion,
 						SummonTask.GetPosition(in source, _side, stack?.Number ?? 0, ref alternateCount),
 											   (Playable) source);
+
 
 					if (_addToStack)
 						stack.AddPlayable(minion);

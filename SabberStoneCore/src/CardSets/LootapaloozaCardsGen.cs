@@ -3908,7 +3908,7 @@ namespace SabberStoneCore.CardSets.Standard
 						for (int i = 0; i < space; i++)
 						{
 							Playable copied = Entity.FromCard(c, card);
-							copied[GameTag.DISPLAYED_CREATOR] = drawed.Id;
+							copied.CreatorId = drawed.Id;
 							c.HandZone.Add(copied);
 						}
 						return null;

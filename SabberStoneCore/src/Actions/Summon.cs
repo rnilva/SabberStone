@@ -35,6 +35,22 @@ namespace SabberStoneCore.Actions
 			return true;
 		}
 
+		public static bool SummonBlock(Game g, MinionInPlay minion, int zonePosition, Playable summoner)
+		{
+			SummonPhase(g, minion, zonePosition);
+
+			EventMetaData temp = g.CurrentEventData;
+			if (summoner != null)
+				g.CurrentEventData = new EventMetaData(summoner, minion);
+			g.TriggerManager.OnAfterSummonTrigger(minion);
+			g.CurrentEventData = temp;
+
+			if (minion.IsRace(Race.TOTEM))
+				minion.Controller.NumTotemSummonedThisGame++;
+
+			return true;
+		}
+
 		public static bool SummonBlock(Game g, ref Playable playable, int zonePosition, Playable summoner)
 		{
 			var m = (Minion) playable;
@@ -47,9 +63,11 @@ namespace SabberStoneCore.Actions
 		{
 			return SummonBlock(g, ref minion, zonePosition, summoner);
 		}
+
 		private static void SummonPhase(Game g, ref Minion minion, int zonePosition)
 		{
-			g.Log(LogLevel.INFO, BlockType.PLAY, "SummonPhase", !g.Logging? "":$"Summon Minion {minion} to Board of {minion.Controller.Name}.");
+			if (g.Logging)
+				g.Log(LogLevel.INFO, BlockType.PLAY, "SummonPhase", !g.Logging? "":$"Summon Minion {minion} to Board of {minion.Controller.Name}.");
 			minion.Controller.BoardZone.Add(ref minion, zonePosition);
 
 			g.AuraUpdate();
@@ -57,6 +75,21 @@ namespace SabberStoneCore.Actions
 			g.SummonedMinions.Add((MinionInPlay) minion);
 
 			// add summon block show entity 
+			if (g.History)
+				g.PowerHistory.Add(PowerHistoryBuilder.ShowEntity(minion));
+		}
+
+		private static void SummonPhase(Game g, MinionInPlay minion, int zonePosition)
+		{
+			if (g.Logging)
+				g.Log(LogLevel.INFO, BlockType.PLAY, "SummonPhase", !g.Logging? "":$"Summon Minion {minion} to Board of {minion.Controller.Name}.");
+
+			minion.Controller.BoardZone.Add(minion, zonePosition);
+
+			g.AuraUpdate();
+
+			g.SummonedMinions.Add(minion);
+
 			if (g.History)
 				g.PowerHistory.Add(PowerHistoryBuilder.ShowEntity(minion));
 		}

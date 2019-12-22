@@ -108,12 +108,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					summonPosition = controller.BoardZone.Count;
 				if (Card != null)
 				{
-					summonEntity = Entity.FromCard(controller, Card,
-						new EntityData
-						{
-							{GameTag.ZONE, (int) Zone.PLAY},
-							{GameTag.DISPLAYED_CREATOR, source.Id}
-						}, controller.BoardZone, zonePos: summonPosition, creator: source) as Minion;
+					summonEntity = Entity.FromCard(controller, Card, null,
+						controller.BoardZone, zonePos: summonPosition, creator: source) as Minion;
 					if (summonEntity == null)
 						return TaskState.STOP;
 					if (_addToStack)

@@ -79,7 +79,8 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = TriggerBuilder.Type(TriggerType.AFTER_CAST)
 					.SetTask(new CustomTask((g, c, s, t, stack) =>
 					{
-						GenericEffect<Playable> costEffect = Cost.Effect(EffectOperator.SET, t.Card.Cost);
+						//GenericEffect<Playable> costEffect = Cost.Effect(EffectOperator.SET, t.Card.Cost);
+						IEffect costEffect = Effects.SetCost(t.Card.Cost);
 
 						var target = (Playable) t;
 						for (int i = 0; i < target.ChooseOnePlayables.Length; i++)
@@ -1737,7 +1738,7 @@ namespace SabberStoneCore.CardSets.Standard
 							{GameTag.GHOSTLY, 1}
 						};
 						Playable echoPlayable = Entity.FromCard(in c, s.Card, echoTags, c.HandZone);
-						echoPlayable[GameTag.DISPLAYED_CREATOR] = s.Id;
+						echoPlayable.CreatorId = s.Id;
 						c.Game.AuraUpdate();
 						c.Game.GhostlyCards.Add(echoPlayable.Id);
 					}))

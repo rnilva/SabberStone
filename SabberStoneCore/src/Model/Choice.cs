@@ -131,12 +131,12 @@ namespace SabberStoneCore.Model
 
 			Card[] cards = DiscoverTask.GetChoices(_cardSets, 3, Controller.Game.Random);
 			var choices = new List<int>(3);
-			foreach (Card card in cards)
-				choices.Add(Entity.FromCard(Controller, card, new EntityData
-				{
-					{GameTag.CREATOR, SourceId},
-					{GameTag.DISPLAYED_CREATOR, SourceId}
-				}, Controller.SetasideZone).Id);
+			for (int i = 0; i < cards.Length; i++)
+			{
+				Playable entity = Entity.FromCard(Controller, cards[i], zone: Controller.SetasideZone);
+				entity.CreatorId = SourceId;
+				choices.Add(entity.Id);
+			}
 
 			Choices = choices;
 		}
