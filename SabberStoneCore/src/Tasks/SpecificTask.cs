@@ -299,10 +299,6 @@ namespace SabberStoneCore.Tasks
 
 				for (int i = 0; i < space; ++i)
 				{
-					var tags = new EntityData
-					{
-						{GameTag.CREATOR, s.Id}
-					};
 					Rarity rarity;
 					double rnd = g.Random.NextDouble();
 
@@ -318,8 +314,8 @@ namespace SabberStoneCore.Tasks
 
 					Card[] cards = _ungoroPackMemory[rarity];
 					Card pick = cards[g.Random.Next(cards.Length)];
-					Playable entity = Entity.FromCard(c, pick, tags, c.HandZone);
-					entity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, s.Id);
+					Playable entity = Entity.FromCard(c, pick, zone: c.HandZone);
+					entity.CreatorId = s.Id;
 					//pack.Add(entity);
 				}
 
@@ -387,8 +383,8 @@ namespace SabberStoneCore.Tasks
 
 					Playable newEntity = Generic.ChangeEntityBlock.Invoke(e.Controller, previous, pList[1].Card, false);
 
-					if (newEntity[GameTag.DISPLAYED_CREATOR] == 0)
-						newEntity[GameTag.DISPLAYED_CREATOR] = e.Creator.Id;
+					if (newEntity.CreatorId == 0)
+						newEntity.CreatorId = e.Creator.Id;
 
 					Generic.AddEnchantmentBlock(e.Game, e.Card, e, newEntity, 0, 0, 0);
 
@@ -1086,7 +1082,7 @@ namespace SabberStoneCore.Tasks
 					}
 
 					Playable newEntity = Entity.FromCard(in controller, cards.Choose(rnd), tags, controller.HandZone, -1, i);
-					newEntity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, source.Id);
+					newEntity.CreatorId = source.Id;
 					newEntity.Cost = newEntity.Card.Cost - 1;
 				}
 				
@@ -1100,7 +1096,7 @@ namespace SabberStoneCore.Tasks
 
 					Card randCard = cards.Choose(rnd);
 					Playable newEntity = Entity.FromCard(in controller, in randCard, null, controller.DeckZone);
-					newEntity.NativeTags.Add(GameTag.DISPLAYED_CREATOR, source.Id);
+					newEntity.CreatorId = source.Id;
 
 					//Enchantment.GetInstance(Controller, (Playable) Source, newEntity, EnchantmentCard);
 

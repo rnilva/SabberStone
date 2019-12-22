@@ -485,6 +485,7 @@ namespace SabberStoneCore.Model.Entities
 
 		protected bool _exhausted;
 		protected int _zonePosition;
+		protected int _creatorId;
 
 		protected sbyte _echoEffects;
 
@@ -509,6 +510,15 @@ namespace SabberStoneCore.Model.Entities
 					this[GameTag.ZONE_POSITION] = value + 1;
 			}
 		}
+
+		public int CreatorId
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _creatorId;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _creatorId = value;
+		}
+
 
 		public bool Combo
 		{

@@ -32,7 +32,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			in TaskStack stack = null)
 		{
 			foreach (Playable p in stack.Playables)
-				p[GameTag.DISPLAYED_CREATOR] = source.Id;
+				p.CreatorId = source.Id;
 
 			switch (Type)
 			{

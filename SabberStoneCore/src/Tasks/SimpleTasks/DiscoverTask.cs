@@ -186,7 +186,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				for (int i = 0; i < result.Length && !controller.HandZone.IsFull; i++)
 				{
 					Playable entity = Entity.FromCard(in controller, result[i]);
-					entity[GameTag.DISPLAYED_CREATOR] = source.Id;
+					entity.CreatorId = source.Id;
 					Generic.AddHandPhase.Invoke(controller, entity);
 				}
 

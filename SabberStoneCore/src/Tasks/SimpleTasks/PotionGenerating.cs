@@ -190,12 +190,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			// TODO: Pre-made potion entities for non-historic games
 			for (int i = 0; i < cards.Length; i++)
 			{
-				Playable choiceEntity = Entity.FromCard(in c, in cards[i],
-					new EntityData
-					{
-						{GameTag.CREATOR, sourceId},
-						{GameTag.DISPLAYED_CREATOR, sourceId}
-					}, c.SetasideZone);
+				Playable choiceEntity = Entity.FromCard(in c, in cards[i], zone: c.SetasideZone);
+				choiceEntity.CreatorId = sourceId;
 				choices.Add(choiceEntity.Id);
 			}
 

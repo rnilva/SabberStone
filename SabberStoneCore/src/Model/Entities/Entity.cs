@@ -245,6 +245,10 @@ namespace SabberStoneCore.Model.Entities
 			// add entity to the game dic
 			game.IdEntityDic[result.Id] = result;
 
+			// Set creator Id.
+			if (creator != null)
+				result.CreatorId = creator.Id;
+
 			// add power history full entity 
 			if (game.History)
 			{

@@ -46,7 +46,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			{
 				// creating reward card ...
 				Playable reward = Entity.FromCard(controller, _card);
-				reward[GameTag.DISPLAYED_CREATOR] = spell.Id;
+				reward.CreatorId = spell.Id;
 
 				game.Log(LogLevel.INFO, BlockType.PLAY, "QuestProgressTask",
 					!game.Logging ? "" : $"{controller} Quest finished, reward {reward}!");
