@@ -3126,7 +3126,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Your <b>Deathrattles</b> trigger twice.
 			// --------------------------------------------------------
 			cards.Add("BOT_039e", new Power {
-				Enchant = new Enchant(GameTag.EXTRA_DEATHRATTLES, EffectOperator.ADD, 1)
+				Enchant = Effects.ControllerAttributeEffect(ControllerBoolAttributes.ExtraDeathrattle)
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3221,7 +3221,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RUSH = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_238e2", new Power {
-				Enchant = new Enchant(GameTag.RUSH, EffectOperator.SET, 1)
+				Enchant = Effects.Rush
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

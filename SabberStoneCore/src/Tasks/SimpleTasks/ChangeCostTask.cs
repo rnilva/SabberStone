@@ -21,10 +21,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class ChangeCostTask : SimpleTask
 	{
-		private readonly IEffect _effect;
+		private readonly AbstractEffect _effect;
 		private readonly EntityType _type;
 
-		public ChangeCostTask(IEffect effect, EntityType entityType)
+		public ChangeCostTask(AbstractEffect effect, EntityType entityType)
 		{
 			_effect = effect;
 			_type = entityType;
@@ -35,7 +35,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		{
 			IList<Playable> entities = IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables);
 			for (int i = 0; i < entities.Count; i++)
-				_effect.ApplyTo(entities[i]);
+				//_effect.ApplyTo(entities[i]);
+				entities[i].ApplyEffect(_effect);
 
 			return TaskState.COMPLETE;
 		}

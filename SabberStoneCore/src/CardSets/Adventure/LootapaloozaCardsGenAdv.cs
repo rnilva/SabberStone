@@ -4033,13 +4033,9 @@ namespace SabberStoneCore.CardSets.Adventure
 			// --------------------------------------------------------
 			// Text: Has <b>Charge</b>.
 			// --------------------------------------------------------
-			// GameTag:
-			// - HIDE_WATERMARK = 1
-			// --------------------------------------------------------
-			cards.Add("LOOTA_BOSS_12e", new CardDef(new Power
-			{
-				Enchant = new Enchant(GameTag.CHARGE, EffectOperator.SET, 1)
-			}));
+			cards.Add("LOOTA_BOSS_12e", new Power {
+				Enchant = Effects.Charge
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [LOOTA_BOSS_24e] Glooped (*) - COST:0
@@ -4081,8 +4077,8 @@ namespace SabberStoneCore.CardSets.Adventure
 			cards.Add("LOOTA_BOSS_40pe", new CardDef(new Power
 			{
 				//Enchant = new Enchant(GameTag.ATK, EffectOperator.SUB, 1)
-				Enchant = new Enchant(ATK.Effect(EffectOperator.SUB, 1))
-			}));
+				Enchant = new Enchant(Effects.Attack_N(-1))
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [LOOTA_BOSS_46pe] Infected (*) - COST:0

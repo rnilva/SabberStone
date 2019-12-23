@@ -114,10 +114,10 @@ namespace SabberStoneCore.Actions
 					
 				}
 
-                List<(int entityId, IEffect effect)> oneTurnEffects = controller.Game.OneTurnEffects;
+                List<(int entityId, AbstractEffect effect)> oneTurnEffects = controller.Game.OneTurnEffects;
 				for (int i = oneTurnEffects.Count - 1; i >= 0; i--)
 				{
-					(int id, IEffect effect) = oneTurnEffects[i];
+					(int id, AbstractEffect effect) = oneTurnEffects[i];
 					if (id == source.Id)
 						oneTurnEffects.Add((copiedEntity.Id, effect));
 				}

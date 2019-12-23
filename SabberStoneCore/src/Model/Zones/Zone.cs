@@ -599,7 +599,7 @@ namespace SabberStoneCore.Model.Zones
 	/// <typeparam name="T"></typeparam>
 	public abstract class PositioningZone<T> : LimitedZone<T> where T : Playable
 	{
-		public readonly List<Aura> Auras = new List<Aura>();
+		public readonly List<Aura> Auras = new List<Aura>(4);
 
 		protected PositioningZone(Zone type, int maxSize) : base(type, maxSize) { }
 		protected PositioningZone(Controller c, PositioningZone<T> zone) : base(c, zone) { }

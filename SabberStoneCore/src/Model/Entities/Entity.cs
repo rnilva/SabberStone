@@ -377,5 +377,8 @@ namespace SabberStoneCore.Model.Entities
 		/// Attached or overwritten tags of this entity instance. This does not contain Card tags.
 		/// </summary>
 		public IDictionary<GameTag, int> NativeTags => _data;
+
+		internal abstract void ApplyEffect(AbstractEffect effect);
+		internal abstract void RemoveEffect(AbstractEffect effect);
 	}
 }

@@ -13,10 +13,10 @@ namespace SabberStoneCore.Auras
 	public class EnrageEffect : Aura
 	{
 		private bool _enraged;
-		private Playable _target;
+		private Character _target;
 		private Enchantment _currentInstance;
 
-		public EnrageEffect(AuraType type, params IEffect[] effects) : base(type, effects)
+		public EnrageEffect(AuraType type, params AbstractEffect[] effects) : base(type, effects)
 		{
 		}
 
@@ -25,7 +25,7 @@ namespace SabberStoneCore.Auras
 
 		}
 
-		private EnrageEffect(EnrageEffect prototype, Playable owner) : base(prototype, owner)
+		private EnrageEffect(EnrageEffect prototype, Character owner) : base(prototype, owner)
 		{
 			_enraged = prototype._enraged;
 			Restless = true;            //	can cause performance issue; should replace with heal trigger ?
@@ -45,7 +45,7 @@ namespace SabberStoneCore.Auras
 			//if (owner is Enchantment e)
 			//	owner = (Playable)e.Target;
 
-			var instance = new EnrageEffect(this, owner);
+			var instance = new EnrageEffect(this, (Character) owner);
 
 			owner.Game.Auras.Add(instance);
 			owner.OngoingEffect = instance;
@@ -53,7 +53,7 @@ namespace SabberStoneCore.Auras
 
 		public override bool Update()
 		{
-			var m = (Minion) Owner;
+			var m = (MinionInPlay) Owner;
 
 			// Remove this EnrageEffect from the target
 			if (!On)
@@ -73,9 +73,10 @@ namespace SabberStoneCore.Auras
 						return false;
 				}
 
-				foreach (IEffect eff in EnchantmentCard.Power.Enchant.Effects)
+				foreach (AbstractEffect eff in EnchantmentCard.Power.Enchant.Effects)
 				{
-					eff.RemoveFrom(_target);
+					//eff.RemoveFrom(_target);
+					_target.RemoveEffect(eff);
 				}
 				if (_currentInstance != null)
 				{
@@ -121,8 +122,8 @@ namespace SabberStoneCore.Auras
 			{
 				if (m.Damage != 0) return true;
 
-				for (int i = 0; i < EnchantmentCard.Power.Enchant.Effects.Length; i++)
-					EnchantmentCard.Power.Enchant.Effects[i].RemoveFrom(m);
+				foreach (AbstractEffect eff in EnchantmentCard.Power.Enchant.Effects)
+					m.RemoveEffect(eff);
 
 				if (_currentInstance != null)
 				{

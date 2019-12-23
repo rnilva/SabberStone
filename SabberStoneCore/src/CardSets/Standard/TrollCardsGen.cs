@@ -3047,10 +3047,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Increased Durability.
 			// --------------------------------------------------------
-			cards.Add("TRL_111e1", new CardDef(new Power
-			{
-				Enchant = new Enchant(GameTag.DURABILITY, EffectOperator.ADD, 1)
-			}));
+			cards.Add("TRL_111e1", new Power {
+				Enchant = Effects.Durability_N(1)
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [TRL_119e] The Beast Within (*) - COST:0
@@ -3083,10 +3082,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Doubled Health.
 			// --------------------------------------------------------
-			cards.Add("TRL_244e", new CardDef(new Power
-			{
-				Enchant = new Enchant(Health.Effect(EffectOperator.MUL, 2))
-			}));
+			cards.Add("TRL_244e", new Power {
+				Enchant = new Enchant(Effects.MultiplyHealth(2))
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [TRL_249e] Grim Rally (*) - COST:0
@@ -3298,10 +3296,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Doubled Attack.
 			// --------------------------------------------------------
-			cards.Add("TRL_528e", new CardDef(new Power
-			{
-				Enchant = new Enchant(ATK.Effect(EffectOperator.MUL, 2))
-			}));
+			cards.Add("TRL_528e", new Power {
+				Enchant = new Enchant(Effects.MultiplyAttack(2))
+			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [TRL_537e] Undatakah Deathrattles (*) - COST:0

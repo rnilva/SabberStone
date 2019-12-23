@@ -302,7 +302,7 @@ namespace SabberStoneCore.Actions
 		/// <param name="num1">ScriptTag1</param>
 		/// <param name="num2">ScriptTag2</param>
 		/// <param name="entityId">The entity ID to be stored in the enchantment. (e.g. carnivorous Cube)</param>
-		public static void AddEnchantmentBlock(in Game g, in Card enchantmentCard, in Playable creator, IEntity target, int num1 = -1, int num2 = -1, int entityId = 0)
+		public static void AddEnchantmentBlock(in Game g, in Card enchantmentCard, in Playable creator, Entity target, int? num1 = default, int? num2 = default, int entityId = 0)
 		{
 			Power power = enchantmentCard.Power;
 

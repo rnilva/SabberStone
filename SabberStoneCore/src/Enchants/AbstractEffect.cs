@@ -14,85 +14,360 @@ namespace SabberStoneCore.Enchants
 {
 	public abstract class AbstractEffect
 	{
-		public virtual void ApplyTo(Playable playable)
-		{
-			throw new NotImplementedException();
-		}
-		public virtual void RemoveFrom(Playable playable)
-		{
-			throw new NotImplementedException();
-		}
-		public virtual void ApplyTo(Character character)
-		{
-			throw new NotImplementedException();
-		}
-		public virtual void RemoveFrom(Character character)
-		{
-			throw new NotImplementedException();
-		}
-		public virtual void ApplyTo(HeroInPlay hero)
-		{
-			throw new NotImplementedException();
-		}
-		public virtual void RemoveFrom(HeroInPlay hero)
-		{
-			throw new NotImplementedException();
-		}
-		public virtual void ApplyTo(MinionInPlay minion)
-		{
-			throw new NotImplementedException();
-		}
-		public virtual void RemoveFrom(MinionInPlay minion)
-		{
-			throw new NotImplementedException();
-		}
-		//internal static AbstractEffect IEffectToAbstract<T>(GenericEffect<T> eff) where T: Playable
-		//{
-		//	switch (eff._attr)
-		//	{
-		//		case ATK atk:
-		//			switch (eff._operator)
-		//			{
-		//				case EffectOperator.ADD:
-		//					return Attribte
-		//					break;
-		//				case EffectOperator.SUB:
-		//					break;
-		//				case EffectOperator.MUL:
-		//					break;
-		//				case EffectOperator.SET:
-		//					break;
-		//				default:
-		//					throw new ArgumentOutOfRangeException();
-		//			}
-		//			break;
-		//	}
-		//}
+		public abstract GameTag Tag { get; }
 
-		public static AbstractEffect BooleanAttributeEffect(BoolAttributes attr)
+		public abstract void ApplyTo(Entity entity);
+		public abstract void RemoveFrom(Entity entity);
+		public abstract void ApplyTo(Playable playable);
+		public abstract void RemoveFrom(Playable playable);
+		public abstract void ApplyTo(Character character);
+		public abstract void RemoveFrom(Character character);
+		public abstract void ApplyTo(HeroInPlay hero);
+		public abstract void RemoveFrom(HeroInPlay hero);
+		public abstract void ApplyTo(MinionInPlay minion);
+		public abstract void RemoveFrom(MinionInPlay minion);
+		public abstract void ApplyTo(Controller controller);
+		public abstract void RemoveFrom(Controller controller);
+
+		public virtual AbstractEffect ChangeValue(int newValue)
 		{
-//			switch (attr)
-//			{
-//				case BoolAttributes.Charge:
-//
-//			}
-			return null;
+			throw new NotImplementedException();
 		}
 	}
 
-	public class SetChargeEffect : AbstractEffect, IEffect
+	public abstract class EntityEffect : AbstractEffect
 	{
-		public GameTag Tag => GameTag.CHARGE;
-		public EffectOperator Operator => EffectOperator.SET;
-		public int Value => 1;
+		#region Overrides of AbstractEffect
 
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect) => ApplyTo((MinionInPlay) entity);
-		void IEffect.RemoveFrom(Entity entity) => RemoveFrom((MinionInPlay) entity);
+		public override void ApplyTo(Playable playable)
+		{
+			ApplyTo((Entity) playable);
+		}
 
-		IEffect IEffect.ChangeValue(int newValue)
+		public override void RemoveFrom(Playable playable)
+		{
+			RemoveFrom((Entity) playable);
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			ApplyTo((Entity) character);
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			RemoveFrom((Entity) character);
+		}
+
+		public override void ApplyTo(HeroInPlay hero)
+		{
+			ApplyTo((Entity) hero);
+		}
+
+		public override void RemoveFrom(HeroInPlay hero)
+		{
+			RemoveFrom((Entity) hero);
+		}
+
+		public override void ApplyTo(MinionInPlay minion)
+		{
+			ApplyTo((Entity) minion);
+		}
+
+		public override void RemoveFrom(MinionInPlay minion)
+		{
+			RemoveFrom((Entity) minion);
+		}
+
+		public override void ApplyTo(Controller controller)
+		{
+			ApplyTo((Entity) controller);
+		}
+
+		public override void RemoveFrom(Controller controller)
+		{
+			RemoveFrom((Entity) controller);
+		}
+		#endregion
+	}
+	public abstract class PlayableEffect : AbstractEffect
+	{
+		#region Overrides of AbstractEffect
+		public override void ApplyTo(Entity entity)
 		{
 			throw new NotImplementedException();
 		}
+
+		public override void RemoveFrom(Entity entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			ApplyTo((Playable) character);
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			RemoveFrom((Playable) character);
+		}
+
+		public override void ApplyTo(HeroInPlay hero)
+		{
+			ApplyTo((Playable) hero);
+		}
+
+		public override void RemoveFrom(HeroInPlay hero)
+		{
+			RemoveFrom((Playable) hero);
+		}
+
+		public override void ApplyTo(MinionInPlay minion)
+		{
+			ApplyTo((Playable) minion);
+		}
+
+		public override void RemoveFrom(MinionInPlay minion)
+		{
+			RemoveFrom((Playable) minion);
+		}
+
+		public override void ApplyTo(Controller controller)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Controller controller)
+		{
+			throw new NotImplementedException();
+		}
+		#endregion
+	}
+	public abstract class CharacterEffect : AbstractEffect
+	{
+		#region Overrides of AbstractEffect
+		public override void ApplyTo(Entity entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Entity entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(Playable playable)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Playable playable)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(HeroInPlay hero)
+		{
+			ApplyTo((Character) hero);
+		}
+
+		public override void RemoveFrom(HeroInPlay hero)
+		{
+			RemoveFrom((Character) hero);
+		}
+
+		public override void ApplyTo(MinionInPlay minion)
+		{
+			ApplyTo((Character) minion);
+		}
+
+		public override void RemoveFrom(MinionInPlay minion)
+		{
+			RemoveFrom((Character) minion);
+		}
+
+		public override void ApplyTo(Controller controller)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Controller controller)
+		{
+			throw new NotImplementedException();
+		}
+		#endregion
+	}
+	public abstract class HeroInPlayEffect : AbstractEffect
+	{
+		#region Overrides of AbstractEffect
+		public override void ApplyTo(Entity entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Entity entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(Playable playable)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Playable playable)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(MinionInPlay minion)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(MinionInPlay minion)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(Controller controller)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Controller controller)
+		{
+			throw new NotImplementedException();
+		}
+		#endregion
+	}
+	public abstract class MinionInPlayEffect : AbstractEffect
+	{
+		#region Overrides of AbstractEffect
+		public override void ApplyTo(Entity entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Entity entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(Playable playable)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Playable playable)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(HeroInPlay hero)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(HeroInPlay hero)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(Controller controller)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Controller controller)
+		{
+			throw new NotImplementedException();
+		}
+		#endregion
+	}
+
+	public abstract class ControllerEffect : AbstractEffect
+	{
+		#region Overrides of AbstractEffect
+		public override void ApplyTo(Entity entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Entity entity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(Playable playable)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Playable playable)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(HeroInPlay hero)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(HeroInPlay hero)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void ApplyTo(MinionInPlay minion)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void RemoveFrom(MinionInPlay minion)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
+	}
+
+	public class SetChargeEffect : MinionInPlayEffect
+	{
+		public override GameTag Tag => GameTag.CHARGE;
+		public EffectOperator Operator => EffectOperator.SET;
+		public int Value => 1;
 
 		public override void ApplyTo(MinionInPlay minion)
 		{
@@ -105,13 +380,13 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
-	public class SetWindfuryEffect : AbstractEffect, IEffect
+	public class SetWindfuryEffect : MinionInPlayEffect
 	{
 		private GameTag _tag;
 		private EffectOperator _operator;
 		private int _value;
 
-		public GameTag Tag => GameTag.WINDFURY;
+		public override GameTag Tag => GameTag.WINDFURY;
 
 		public EffectOperator Operator => EffectOperator.SET;
 
@@ -130,28 +405,13 @@ namespace SabberStoneCore.Enchants
 			if (!minion.IsExhausted && minion.NumAttacksThisTurn == 1)
 				minion.IsExhausted = true;
 		}
-
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			ApplyTo((MinionInPlay) entity);
-		}
-
-		void IEffect.RemoveFrom(Entity entity)
-		{
-			RemoveFrom((MinionInPlay) entity);
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
-		}
 	}
 
-	public class SetRushEffect : AbstractEffect, IEffect
+	public class SetRushEffect : MinionInPlayEffect
 	{
 		private GameTag _tag;
 		private EffectOperator _operator;
-		public GameTag Tag => GameTag.RUSH;
+		public override GameTag Tag => GameTag.RUSH;
 
 		public EffectOperator Operator => EffectOperator.SET;
 
@@ -185,26 +445,11 @@ namespace SabberStoneCore.Enchants
 		{
 			minion.IsRush = false;
 		}
-
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			ApplyTo((MinionInPlay) entity);
-		}
-
-		void IEffect.RemoveFrom(Entity entity)
-		{
-			RemoveFrom((MinionInPlay) entity);
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
-		}
 	}
 
-	public class SetLifestealEffect : AbstractEffect, IEffect
+	public class SetLifestealEffect : PlayableEffect
 	{
-		public GameTag Tag => GameTag.LIFESTEAL;
+		public override GameTag Tag => GameTag.LIFESTEAL;
 
 		public EffectOperator Operator => EffectOperator.SET;
 
@@ -219,26 +464,12 @@ namespace SabberStoneCore.Enchants
 		{
 			playable.HasLifeSteal = false;
 		}
-
-
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			ApplyTo((Playable) entity);
-		}
-
-		void IEffect.RemoveFrom(Entity entity)
-		{
-			RemoveFrom((Playable) entity);
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
-		}
 	}
 
-	public class OneTurnControlEffect : AbstractEffect, IEffect
+	public class OneTurnControlEffect : MinionInPlayEffect
 	{
+		public override GameTag Tag => GameTag.CONTROLLER_CHANGED_THIS_TURN;
+
 		private readonly ControlTask _task = new ControlTask(EntityType.SOURCE);
 
 		public override void ApplyTo(MinionInPlay minion)
@@ -250,32 +481,11 @@ namespace SabberStoneCore.Enchants
 		{
 			_task.Process(minion.Game, minion.Controller.Opponent, minion, null);
 		}
-
-		#region Implementation of IEffect
-
-		public GameTag Tag => GameTag.CONTROLLER_CHANGED_THIS_TURN;
-
 		public EffectOperator Operator => EffectOperator.SET;
 		public int Value => 1;
-
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			ApplyTo((MinionInPlay) entity);
-		}
-
-		void IEffect.RemoveFrom(Entity entity)
-		{
-			RemoveFrom((MinionInPlay) entity);
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
-		}
-		#endregion
 	}
 
-	public class VaryAttackEffect : AbstractEffect, IEffect
+	public class VaryAttackEffect : CharacterEffect
 	{
 		private EffectOperator _operator;
 		private readonly int _value;
@@ -285,38 +495,61 @@ namespace SabberStoneCore.Enchants
 			_value = value;
 		}
 
-		public GameTag Tag => GameTag.ATK;
+		public override GameTag Tag => GameTag.ATK;
 
 		public EffectOperator Operator => EffectOperator.ADD;
 
 		public int Value => _value;
 
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			ApplyTo((Character) entity);
-		}
-
-		void IEffect.RemoveFrom(Entity entity)
-		{
-			RemoveFrom((Character) entity);
-		}
-
-		public IEffect ChangeValue(int newValue)
+		public override AbstractEffect ChangeValue(int newValue)
 		{
 			return Effects.Attack_N(newValue);
 		}
 
 		public override void ApplyTo(Character character)
 		{
-			character.AttackDamage += _value; 
+			ref int? target = ref character._v1;
+			if (target == null)
+				target = character.Card.ATK;
+			character._v1 += _value;
 		}
 		public override void RemoveFrom(Character character)
 		{
-			character.AttackDamage -= Value;
+			character._v1 -= _value;
 		}
 	}
 
-	public class SetAttackEffect : AbstractEffect, IEffect
+	public class ReduceAttackScriptTagEffect : MinionInPlayEffect
+	{
+		private readonly int _value;
+
+		public ReduceAttackScriptTagEffect(int value)
+		{
+			_value = value;
+		}
+
+		#region Overrides of AbstractEffect
+
+		public override GameTag Tag => GameTag.ATK;
+		public override void ApplyTo(MinionInPlay minion)
+		{
+			minion._v1 -= _value;
+		}
+
+		public override void RemoveFrom(MinionInPlay minion)
+		{
+			minion._v1 += _value;
+		}
+
+		public override AbstractEffect ChangeValue(int newValue)
+		{
+			return new ReduceAttackScriptTagEffect(newValue);
+		}
+
+		#endregion
+	}
+
+	public class SetAttackEffect : CharacterEffect
 	{
 		private readonly int _value;
 		private EffectOperator _operator;
@@ -326,23 +559,13 @@ namespace SabberStoneCore.Enchants
 			_value = value;
 		}
 
-		public GameTag Tag => GameTag.ATK;
+		public override GameTag Tag => GameTag.ATK;
 
 		public EffectOperator Operator => _operator;
 
 		public int Value => _value;
 
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			ApplyTo((Character) entity);
-		}
-
-		void IEffect.RemoveFrom(Entity entity)
-		{
-			RemoveFrom((Character) entity);
-		}
-
-		public IEffect ChangeValue(int newValue)
+		public override AbstractEffect ChangeValue(int newValue)
 		{
 			return Effects.SetAttack(newValue);
 		}
@@ -352,10 +575,10 @@ namespace SabberStoneCore.Enchants
 			character.AttackDamage = _value;
 
 			// Remove atk one turn effects
-			List<(int entityId, IEffect effect)> oneTurnEffects = character.Game.OneTurnEffects;
+			List<(int entityId, AbstractEffect effect)> oneTurnEffects = character.Game.OneTurnEffects;
 			for (int i = oneTurnEffects.Count - 1; i >= 0; --i)
 			{
-				(int id, IEffect eff) = oneTurnEffects[i];
+				(int id, AbstractEffect eff) = oneTurnEffects[i];
 				if (id == character.Id && eff.Tag == GameTag.ATK)
 					oneTurnEffects.RemoveAt(i);
 			}
@@ -372,11 +595,33 @@ namespace SabberStoneCore.Enchants
 		}
 	}
 
-	public class VaryHealthEffect : AbstractEffect, IEffect
+	public class MultiplyAttackEffect : CharacterEffect
 	{
 		private readonly int _value;
 
-		public GameTag Tag => GameTag.HEALTH;
+		public override GameTag Tag => GameTag.ATK;
+
+		public MultiplyAttackEffect(int value)
+		{
+			_value = value;
+		}
+
+		public override void ApplyTo(Character character)
+		{
+			character.AttackDamage *= _value;
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			
+		}
+	}
+
+	public class VaryHealthEffect : CharacterEffect
+	{
+		private readonly int _value;
+
+		public override GameTag Tag => GameTag.HEALTH;
 
 		public EffectOperator Operator => EffectOperator.ADD;
 
@@ -398,27 +643,17 @@ namespace SabberStoneCore.Enchants
 			character.Damage -= _value;
 		}
 
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			ApplyTo((Character) entity);
-		}
-
-		void IEffect.RemoveFrom(Entity entity)
-		{
-			RemoveFrom((Character) entity);
-		}
-
-		public IEffect ChangeValue(int newValue)
+		public override AbstractEffect ChangeValue(int newValue)
 		{
 			return Effects.Health_N(newValue);
 		}
 	}
 
-	public class SetHealthEffect : AbstractEffect, IEffect
+	public class SetHealthEffect : CharacterEffect
 	{
 		private readonly int _value;
 
-		public GameTag Tag => GameTag.HEALTH;
+		public override GameTag Tag => GameTag.HEALTH;
 
 		public EffectOperator Operator => EffectOperator.SET;
 
@@ -457,111 +692,41 @@ namespace SabberStoneCore.Enchants
 			}
 		}
 
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		public override void RemoveFrom(Character character)
 		{
-			ApplyTo((Character) entity);
+			
 		}
 
-		void IEffect.RemoveFrom(Entity entity)
-		{
-			RemoveFrom((Character) entity);
-		}
-
-		public IEffect ChangeValue(int newValue)
+		public override AbstractEffect ChangeValue(int newValue)
 		{
 			return Effects.SetMaxHealth(newValue);
 		}
 	}
 
-	public class AttributeAddEffect : AbstractEffect, IEffect
+	public class MultiplyHealthEffect : CharacterEffect
 	{
-		public readonly int Attribute;
-		public readonly int _value;
-		private GameTag _tag;
-		private EffectOperator _operator;
+		private readonly int _value;
 
-		public AttributeAddEffect(IntAttributes attr, int value)
+		public override GameTag Tag => GameTag.HEALTH;
+
+		public MultiplyHealthEffect(int value)
 		{
-			Attribute = (int)attr;
 			_value = value;
 		}
 
-		public override void ApplyTo(Character playable)
-		{
-			playable.GetIntRef(Attribute) += Value;
-		}
-
-		public override void RemoveFrom(Character playable)
-		{
-			playable.GetIntRef(Attribute) -= Value;
-		}
-
-		public GameTag Tag => _tag;
-
-		public EffectOperator Operator => _operator;
-
-		public int Value => _value;
-
-		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			((Character) entity).GetIntRef(Attribute) += Value;
-		}
-
-		public void RemoveFrom(Entity entity)
-		{
-			((Character) entity).GetIntRef(Attribute) -= Value;
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
-		}
-	}
-
-	public class AttributeAddAuraEffect : AbstractEffect
-	{
-		private readonly int Attribute;
-		private readonly int Value;
-		public AttributeAddAuraEffect(BoolAttributes attr, int value)
-		{
-			Attribute = (int)attr;
-			Value = value;
-		}
-	}
-
-	public class AttributeSetEffect : AbstractEffect
-	{
-		private readonly int _attribute;
-		private readonly bool _value;
-		public AttributeSetEffect(BoolAttributes attr, bool value)
-		{
-			_attribute = (int)attr;
-			_value = value;
-		}
 		public override void ApplyTo(Character character)
 		{
-			character.GetRef(_attribute) = _value;
+			character.BaseHealth *= _value;
 		}
 
 		public override void RemoveFrom(Character character)
 		{
-			character.GetRef(_attribute) = !_value;
+			
 		}
 	}
 
-	public class BooleanAttributeEffect : AbstractEffect
+	public class CardCostsHealth : PlayableEffect
 	{
-		private readonly int _attribute;
-		private readonly bool _value;
-		private readonly Action<Character> _afterApplyTask;
-	}
-
-	public class CardCostsHealth : AbstractEffect, IEffect
-	{
-		private GameTag _tag;
-		private EffectOperator _operator;
-		private int _value;
-
 		public override void ApplyTo(Playable playable)
 		{
 			playable.GetCostManager().CardCostsHealth = true;
@@ -574,61 +739,38 @@ namespace SabberStoneCore.Enchants
 				costManager.CardCostsHealth = false;
 		}
 
-		public GameTag Tag => _tag;
+		public override GameTag Tag => GameTag.CARD_COSTS_HEALTH;
 
-		public EffectOperator Operator => _operator;
+		public EffectOperator Operator => EffectOperator.SET;
 
-		public int Value => _value;
-
-		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			((Playable)entity).GetCostManager().CardCostsHealth = true;
-		}
-
-		public void RemoveFrom(Entity entity)
-		{
-			Playable.CostManager manager = ((Playable) entity).GetCostManager();
-			if (manager != null)
-				manager.CardCostsHealth = false;
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
-		}
+		public int Value => 1;
 	}
 
-	public class SetEchoEffect : AbstractEffect, IEffect
+	public class SetEchoEffect : PlayableEffect
 	{
-		public GameTag Tag => GameTag.ECHO;
+		public override GameTag Tag => GameTag.ECHO;
 
 		public EffectOperator Operator => EffectOperator.ADD;
 
 		public int Value => 1;
 
-		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		public override void ApplyTo(Playable playable)
 		{
-			((Playable) entity).IsEcho = true;
+			playable.IsEcho = true;
 		}
 
-		public void RemoveFrom(Entity entity)
+		public override void RemoveFrom(Playable playable)
 		{
-			((Playable) entity).IsEcho = false;
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
+			playable.IsEcho = false;
 		}
 	}
 
-	public class VaryCost : AbstractEffect, IEffect
-	{
-		private GameTag _tag;
+	public class VaryCost : PlayableEffect
+	{ 
 		private EffectOperator _operator;
 		private int _value;
 
-		public GameTag Tag => GameTag.COST;
+		public override GameTag Tag => GameTag.COST;
 
 		public EffectOperator Operator => EffectOperator.ADD;
 
@@ -636,29 +778,23 @@ namespace SabberStoneCore.Enchants
 
 		public VaryCost(int value) { _value = value;}
 
-		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		public override void ApplyTo(Playable playable)
 		{
-			((Playable) entity).VaryCost(_value);
+			playable.VaryCost(_value);
 		}
 
-		public void RemoveFrom(Entity entity)
+		public override void RemoveFrom(Playable playable)
 		{
-			((Playable) entity).RemoveCostEffect(_value);
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
+			playable.RemoveCostEffect(_value);
 		}
 	}
 
-	public class SetCost : AbstractEffect, IEffect
+	public class SetCost : PlayableEffect
 	{
-		private GameTag _tag;
 		private EffectOperator _operator;
 		private int _value;
 
-		public GameTag Tag => GameTag.COST;
+		public override GameTag Tag => GameTag.COST;
 
 		public EffectOperator Operator => EffectOperator.SET;
 
@@ -666,23 +802,18 @@ namespace SabberStoneCore.Enchants
 
 		public SetCost(int value) { _value = value;}
 
-		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		public override void ApplyTo(Playable playable)
 		{
-			((Playable) entity).SetCost(_value);
+			playable.SetCost(_value);
 		}
 
-		public void RemoveFrom(Entity entity)
+		public override void RemoveFrom(Playable playable)
 		{
-			((Playable) entity).RemoveSetCostEffect(_value);
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
+			playable.RemoveSetCostEffect(_value);
 		}
 	}
 
-	public class AddIntAttrEffect : AbstractEffect, IEffect
+	public class AddIntAttrEffect : CharacterEffect
 	{
 		private readonly int _attr;
 		private int _value;
@@ -706,29 +837,18 @@ namespace SabberStoneCore.Enchants
 			character.GetIntRef(_attr) -= _value;
 		}
 
-		public GameTag Tag => _tag;
+		public override GameTag Tag => _tag;
 
 		public EffectOperator Operator => _operator;
 
 		public int Value => _value;
-
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			ApplyTo((Character) entity);
-		}
-
-		void IEffect.RemoveFrom(Entity entity)
-		{
-			RemoveFrom((Character) entity);
-		}
-
-		public IEffect ChangeValue(int newValue)
+		public override AbstractEffect ChangeValue(int newValue)
 		{
 			return new AddIntAttrEffect((IntAttributes) _attr, newValue);
 		}
 	}
 
-	public class SetIntAttrEffect : AbstractEffect, IEffect
+	public class SetIntAttrEffect : CharacterEffect
 	{
 		private readonly int _attr;
 
@@ -736,7 +856,7 @@ namespace SabberStoneCore.Enchants
 		private EffectOperator _operator;
 		private int _value;
 
-		public GameTag Tag => _tag;
+		public override GameTag Tag => _tag;
 
 		public EffectOperator Operator => _operator;
 
@@ -759,23 +879,13 @@ namespace SabberStoneCore.Enchants
 			
 		}
 
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			ApplyTo((Character) entity);
-		}
-
-		public void RemoveFrom(Entity entity)
-		{
-			
-		}
-
-		public IEffect ChangeValue(int newValue)
+		public override AbstractEffect ChangeValue(int newValue)
 		{
 			return new SetIntAttrEffect((IntAttributes) _attr, newValue);
 		}
 	}
 
-	public class SetBoolAttrEffect : AbstractEffect, IEffect
+	public class SetBoolAttrEffect : CharacterEffect
 	{
 		private readonly int _attr;
 
@@ -783,7 +893,7 @@ namespace SabberStoneCore.Enchants
 		private EffectOperator _operator;
 		private bool _value;
 
-		public GameTag Tag => _tag;
+		public override GameTag Tag => _tag;
 
 		public EffectOperator Operator => _operator;
 
@@ -806,27 +916,17 @@ namespace SabberStoneCore.Enchants
 			character.GetRef(_attr) = !_value;
 		}
 
-		void IEffect.ApplyTo(Entity entity, bool isOneTurnEffect = false)
-		{
-			ApplyTo((Character) entity);
-		}
-
-		void IEffect.RemoveFrom(Entity entity)
-		{
-			RemoveFrom((Character) entity);
-		}
-
-		public IEffect ChangeValue(int newValue)
+		public override AbstractEffect ChangeValue(int newValue)
 		{
 			return new SetBoolAttrEffect((BoolAttributes) _attr, newValue > 0);
 		}
 	}
 
-	public class AddSpellPower : AbstractEffect, IEffect
+	public class AddSpellPower : CharacterEffect
 	{
 		private int _value;
 
-		public GameTag Tag => GameTag.SPELLPOWER;
+		public override GameTag Tag => GameTag.SPELLPOWER;
 
 		public EffectOperator Operator => EffectOperator.ADD;
 
@@ -837,29 +937,24 @@ namespace SabberStoneCore.Enchants
 			_value = value;
 		}
 
-		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		public override void ApplyTo(Character character)
 		{
-			((Character) entity).GetIntRef((int) IntAttributes.SpellPower) += _value;
+			character.GetIntRef((int) IntAttributes.SpellPower) += _value;
 		}
 
-		public void RemoveFrom(Entity entity)
+		public override void RemoveFrom(Character character)
 		{
-			((Character) entity).GetIntRef((int) IntAttributes.SpellPower) -= _value;
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
+			character.GetIntRef((int) IntAttributes.SpellPower) -= _value;
 		}
 	}
 
-	public class AddControllerIntAttr : AbstractEffect, IEffect
+	public class AddControllerIntAttr : ControllerEffect
 	{
 		private GameTag _tag;
 		private EffectOperator _operator;
 		private int _value;
 
-		public GameTag Tag => _tag;
+		public override GameTag Tag => _tag;
 
 		public EffectOperator Operator => EffectOperator.ADD;
 
@@ -873,29 +968,24 @@ namespace SabberStoneCore.Enchants
 			_value = value;
 		}
 
-		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		public override void ApplyTo(Controller controller)
 		{
-			((Controller)entity)[_attr] += _value;
+			controller[_attr] += _value;
 		}
 
-		public void RemoveFrom(Entity entity)
+		public override void RemoveFrom(Controller controller)
 		{
-			((Controller) entity)[_attr] -= _value;
-		}
-
-		public IEffect ChangeValue(int newValue)
-		{
-			throw new NotImplementedException();
+			controller[_attr] -= _value;
 		}
 	}
 
-	public class SetControllerBoolAttr : AbstractEffect, IEffect
+	public class SetControllerBoolAttr : ControllerEffect
 	{
 		private GameTag _tag;
 		private EffectOperator _operator;
 		private int _value;
 
-		public GameTag Tag => _tag;
+		public override GameTag Tag => _tag;
 
 		public EffectOperator Operator => EffectOperator.ADD;
 
@@ -908,19 +998,79 @@ namespace SabberStoneCore.Enchants
 			_attr = attr;
 		}
 
-		public void ApplyTo(Entity entity, bool isOneTurnEffect = false)
+		public override void ApplyTo(Controller controller)
 		{
-			((Controller)entity)[_attr] = true;
+			controller[_attr] = true;
 		}
 
-		public void RemoveFrom(Entity entity)
+		public override void RemoveFrom(Controller controller)
 		{
-			((Controller) entity)[_attr] = false;
+			controller[_attr] = false;
+		}
+	}
+
+	public class GameTagEffect : EntityEffect
+	{
+		private readonly GameTag _tag;
+		private readonly EffectOperator _operator;
+		private readonly int _value;
+
+		public override GameTag Tag => _tag;
+
+		public GameTagEffect(GameTag tag, EffectOperator @operator, int value)
+		{
+			_tag = tag;
+			_operator = @operator;
+			_value = value;
 		}
 
-		public IEffect ChangeValue(int newValue)
+		public override void ApplyTo(Entity entity)
 		{
-			throw new NotImplementedException();
+			int oldValue = 0;
+			if (_operator != EffectOperator.SET)
+				entity._data.TryGetValue(_tag, out oldValue);
+
+			switch (_operator)
+			{
+				case EffectOperator.ADD:
+					entity._data[_tag] = oldValue + _value;
+					break;
+				case EffectOperator.SUB:
+					entity._data[_tag] = oldValue - _value;
+					break;
+				case EffectOperator.MUL:
+					entity._data[_tag] = oldValue * _value;
+					break;
+				case EffectOperator.SET:
+					entity._data[_tag] = _value;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		public override void RemoveFrom(Entity entity)
+		{
+			int oldValue = 0;
+			if (_operator != EffectOperator.SET)
+				entity._data.TryGetValue(_tag, out oldValue);
+
+			switch (_operator)
+			{
+				case EffectOperator.ADD:
+					entity._data[_tag] = oldValue - _value;
+					break;
+				case EffectOperator.SUB:
+					entity._data[_tag] = oldValue + _value;
+					break;
+				case EffectOperator.MUL:
+					break;
+				case EffectOperator.SET:
+					entity._data[_tag] = 0;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 		}
 	}
 }

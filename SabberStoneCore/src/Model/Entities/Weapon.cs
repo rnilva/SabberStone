@@ -14,6 +14,7 @@
 #endregion
 using System;
 using System.Runtime.CompilerServices;
+using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 
 namespace SabberStoneCore.Model.Entities
@@ -103,9 +104,9 @@ namespace SabberStoneCore.Model.Entities
 
 		#region Overrides of Character
 
-		internal override unsafe ref bool GetRef(int index)
+		internal override ref bool GetRef(int index)
 		{
-			return ref _attrs.boolAttrs[index];
+			return ref GetRef((BoolAttributes) index);
 		}
 
 		internal override ref int GetIntRef(int index)
@@ -182,7 +183,7 @@ namespace SabberStoneCore.Model.Entities
 			set => _attrs.boolAttrs[2] = value;
 		}
 
-		private unsafe ref bool GetRef(Entities.BoolAttributes attr)
+		private unsafe ref bool GetRef(BoolAttributes attr)
 		{
 			switch (attr)
 			{

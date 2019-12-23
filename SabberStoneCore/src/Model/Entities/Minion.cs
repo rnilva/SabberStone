@@ -13,6 +13,7 @@
 #endregion
 
 using System;
+using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Zones;
 

@@ -14,7 +14,7 @@ namespace SabberStoneCore.Auras
 		private MinionInPlay _right;
 		private bool _toBeRemoved;
 
-		private readonly IEffect[] _effects;
+		private readonly AbstractEffect[] _effects;
 		private readonly MinionInPlay _owner; 
 		private readonly BoardZone _board;
 		private readonly bool _history;
@@ -29,7 +29,7 @@ namespace SabberStoneCore.Auras
 			new[] {_left} :
 			_right != null ? new[] {_right} : new MinionInPlay[0];
 
-		public AdjacentAura(params IEffect[] effects)
+		public AdjacentAura(params AbstractEffect[] effects)
 		{
 			_effects = effects;
 		}
@@ -152,7 +152,8 @@ namespace SabberStoneCore.Auras
 		internal void DeApply(MinionInPlay m, bool ignoreEnchantments = false)
 		{
 			for (int i = 0; i < _effects.Length; i++)
-				_effects[i].RemoveFrom(m);
+				//_effects[i].RemoveFrom(m);
+				m.RemoveEffect(_effects[i]);
 
 			if (ignoreEnchantments) return;
 

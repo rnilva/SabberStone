@@ -266,7 +266,7 @@ namespace SabberStoneCore.Model
 			}
 		}
 
-		internal class PriorityQueue<TValue> where TValue : struct
+		internal class PriorityQueue<TValue> where TValue : struct, IEquatable<TValue>
 		{
 			[DebuggerDisplay("{DebuggerDisplay,nq}")]
 			private class Node

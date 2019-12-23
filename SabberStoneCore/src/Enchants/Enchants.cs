@@ -68,7 +68,7 @@ namespace SabberStoneCore.Enchants
 		{
 			Card card = Cards.FromId(cardId);
 			string text = card.Text;
-		    var effects = new List<IEffect>();
+		    var effects = new List<AbstractEffect>();
 			bool oneTurn = false;
 			bool mod = false;
 
@@ -129,13 +129,13 @@ namespace SabberStoneCore.Enchants
 		    if (text.Contains(@"<b>Divine Shield</b>"))
 		    {
 			    //effects.Add(new Effect(GameTag.DIVINE_SHIELD, EffectOperator.SET, 1));
-			    effects.Add(new AttributeEffect(BoolAttributes.DivineShield, true));
+			    effects.Add(Effects.DivineShield);
 		    }
 
 		    if (text.Contains(@"<b>Poisonous</b>"))
 		    {
 			    //effects.Add(new Effect(GameTag.POISONOUS, EffectOperator.SET, 1));
-			    effects.Add(new AttributeEffect(BoolAttributes.Poisonous, true));
+			    effects.Add(Effects.Poisonous);
 		    }
 
 		    if (text.Contains(@"<b>Lifesteal</b>"))
@@ -179,98 +179,112 @@ namespace SabberStoneCore.Enchants
 		private static readonly Dictionary<int, VaryHealthEffect> VaryHealthEffects = new Dictionary<int, VaryHealthEffect>();
 		private static readonly Dictionary<int, SetHealthEffect> SetHealthEffects = new Dictionary<int, SetHealthEffect>();
 
-		internal static IEffect Attack_N(int n)
+		internal static AbstractEffect Attack_N(int n)
 		{
 			return VaryAttackEffects.TryGetValue(n, out VaryAttackEffect value)
 				? value
 				: (VaryAttackEffects[n] = new VaryAttackEffect(n));
 		}
 
-		internal static IEffect Health_N(int n)
+		internal static AbstractEffect Health_N(int n)
 		{
 			return VaryHealthEffects.TryGetValue(n, out VaryHealthEffect value)
 				? value
 				: (VaryHealthEffects[n] = new VaryHealthEffect(n));
 		}
 
-		internal static IEffect Durability_N(int n)
+		internal static AbstractEffect Durability_N(int n)
 		{
 			return Health_N(n);
 		}
 
-		internal static IEffect[] AttackHealth_N(int n)
+		internal static AbstractEffect[] AttackHealth_N(int n)
 		{
 			return new[] {Attack_N(n), Health_N(n)};
 		}
 
-		internal static IEffect SetAttack(int n)
+		internal static AbstractEffect SetAttack(int n)
 		{
 			return SetAttackEffects.TryGetValue(n, out SetAttackEffect value)
 				? value
 				: SetAttackEffects[n] = new SetAttackEffect(n);
 		}
 
-		internal static IEffect SetMaxHealth(int n)
+		internal static AbstractEffect SetMaxHealth(int n)
 		{
 			return SetHealthEffects.TryGetValue(n, out SetHealthEffect value)
 				? value
 				: SetHealthEffects[n] = new SetHealthEffect(n);
 		}
 
-		internal static IEffect[] SetAttackHealth(int n)
+		internal static AbstractEffect[] SetAttackHealth(int n)
 		{
 			return new[] {SetAttack(n), SetMaxHealth(n)};
 		}
 
-		internal static IEffect ReduceCost(int n)
+		internal static AbstractEffect MultiplyAttack(int n)
+		{
+			return new MultiplyAttackEffect(n);
+		}
+
+		internal static AbstractEffect MultiplyHealth(int n)
+		{
+			return new MultiplyHealthEffect(n);
+		}
+
+		internal static AbstractEffect ReduceCost(int n)
 		{
 			//return Cost.Effect(EffectOperator.SUB, n);
 			return new VaryCost(-n);
 		}
 
-		internal static IEffect SetCost(int n)
+		internal static AbstractEffect SetCost(int n)
 		{
 			//return Cost.Effect(EffectOperator.SET, n);
 			return new SetCost(n);
 		}
 
-		internal static IEffect AddCost(int n)
+		internal static AbstractEffect AddCost(int n)
 		{
 			//return Cost.Effect(EffectOperator.ADD, n);
 			return new VaryCost(n);
 		}
 
-		internal static readonly IEffect TauntEff = new SetBoolAttrEffect(BoolAttributes.Taunt, true);
+		internal static readonly AbstractEffect TauntEff = new SetBoolAttrEffect(BoolAttributes.Taunt, true);
 
-		internal static readonly IEffect StealthEff = new SetBoolAttrEffect(BoolAttributes.Stealth, true);
+		internal static readonly AbstractEffect StealthEff = new SetBoolAttrEffect(BoolAttributes.Stealth, true);
 
-		internal static readonly IEffect Elusive = new SetBoolAttrEffect(BoolAttributes.Elusive, true);
+		internal static readonly AbstractEffect Elusive = new SetBoolAttrEffect(BoolAttributes.Elusive, true);
 
-		internal static readonly IEffect Windfury = new SetWindfuryEffect();
+		internal static readonly AbstractEffect DivineShield = new SetBoolAttrEffect(BoolAttributes.DivineShield, true);
 
-		internal static readonly IEffect Charge = new SetChargeEffect();
+		internal static readonly AbstractEffect Poisonous = new SetBoolAttrEffect(BoolAttributes.Poisonous, true);
 
-		internal static readonly IEffect Immune = new SetBoolAttrEffect(BoolAttributes.Immune, true);
+		internal static readonly AbstractEffect Windfury = new SetWindfuryEffect();
 
-		internal static readonly IEffect Lifesteal = new SetLifestealEffect();
+		internal static readonly AbstractEffect Charge = new SetChargeEffect();
 
-		internal static readonly IEffect Rush = new SetRushEffect();
+		internal static readonly AbstractEffect Immune = new SetBoolAttrEffect(BoolAttributes.Immune, true);
 
-		internal static readonly IEffect Echo = new SetEchoEffect();
+		internal static readonly AbstractEffect Lifesteal = new SetLifestealEffect();
 
-		internal static IEffect AttributeAddEffect(IntAttributes intAttr, int value) =>
+		internal static readonly AbstractEffect Rush = new SetRushEffect();
+
+		internal static readonly AbstractEffect Echo = new SetEchoEffect();
+
+		internal static AbstractEffect AttributeAddEffect(IntAttributes intAttr, int value) =>
 			new AddIntAttrEffect(intAttr, value);
 
-		internal static IEffect SetAttributeEffect(IntAttributes intAttr, int value) =>
+		internal static AbstractEffect SetAttributeEffect(IntAttributes intAttr, int value) =>
 			new SetIntAttrEffect(intAttr, value);
 
-		internal static IEffect SetAttributeEffect(BoolAttributes boolAttr, bool value = true) =>
+		internal static AbstractEffect SetAttributeEffect(BoolAttributes boolAttr, bool value = true) =>
 			new SetBoolAttrEffect(boolAttr, value);
 
-		internal static IEffect ControllerAttributeEffect(ControllerBoolAttributes boolAttr) =>
+		internal static AbstractEffect ControllerAttributeEffect(ControllerBoolAttributes boolAttr) =>
 			new SetControllerBoolAttr(boolAttr);
 
-		internal static IEffect ControllerAttributeEffect(ControllerIntAttributes intAttr, int value = 1) =>
+		internal static AbstractEffect ControllerAttributeEffect(ControllerIntAttributes intAttr, int value = 1) =>
 			new AddControllerIntAttr(intAttr, value);
 	}
 }

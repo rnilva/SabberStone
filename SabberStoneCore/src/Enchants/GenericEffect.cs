@@ -30,8 +30,8 @@ namespace SabberStoneCore.Enchants
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void ApplyTo(T entity, bool isOneTurnEffect)
 		{
-			if (isOneTurnEffect)
-				entity.Game.OneTurnEffects.Add((entity.Id, this));
+			//if (isOneTurnEffect)
+			//	entity.Game.OneTurnEffects.Add((entity.Id, this));
 
 			_attr.Apply(entity, _operator, _value);
 		}
@@ -353,8 +353,8 @@ namespace SabberStoneCore.Enchants
 				// TODO Fix OneTurnEffects & GenericEffect
 				for (int i = entity.Game.OneTurnEffects.Count - 1; i >= 0; i--)
 				{
-					(int id, IEffect eff) = entity.Game.OneTurnEffects[i];
-					if (id != entity.Id || !(eff is GenericEffect<Playable>)) continue;
+					(int id, AbstractEffect eff) = entity.Game.OneTurnEffects[i];
+					//if (id != entity.Id || !(eff is GenericEffect<Playable>)) continue;
 					entity.Game.OneTurnEffects.RemoveAt(i);
 				}
 

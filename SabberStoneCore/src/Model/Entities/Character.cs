@@ -17,6 +17,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Runtime.CompilerServices;
+using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Tasks;
@@ -530,6 +531,15 @@ namespace SabberStoneCore.Model.Entities
 		}
 
 //		public abstract ref bool this[BoolAttributes attr] { get; }
+
+		internal override void ApplyEffect(AbstractEffect effect)
+		{
+			effect.ApplyTo(this);
+		}
+		internal override void RemoveEffect(AbstractEffect effect)
+		{
+			effect.RemoveFrom(this);
+		}
 
 		internal abstract ref bool GetRef(int index);
 		internal abstract ref int GetIntRef(int index);

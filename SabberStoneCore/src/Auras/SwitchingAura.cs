@@ -30,7 +30,7 @@ namespace SabberStoneCore.Auras
 
 		private bool _removed;
 
-		public SwitchingAura(AuraType type, SelfCondition initCondition, TriggerType offTrigger, params IEffect[] effects) : base(type, effects)
+		public SwitchingAura(AuraType type, SelfCondition initCondition, TriggerType offTrigger, params AbstractEffect[] effects) : base(type, effects)
 		{
 			_initialisationCondtion = initCondition;
 			_offTrigger = offTrigger;
@@ -52,8 +52,8 @@ namespace SabberStoneCore.Auras
 
 		public override void Activate(Playable owner, bool cloning = false)
 		{
-			if (IEffects == null)
-				IEffects = EnchantmentCard.Power.Enchant.Effects;
+			if (Effects == null)
+				Effects = EnchantmentCard.Power.Enchant.Effects;
 
 			var instance = new SwitchingAura(this, owner);
 
@@ -114,12 +114,13 @@ namespace SabberStoneCore.Auras
 
 		protected override bool RemoveInternal()
 		{
-			AppliedEntityIdCollection.ForEach(Game.IdEntityDic, IEffects,
+			AppliedEntityIdCollection.ForEach(Game.IdEntityDic, Effects,
 				(id, idDict, effs) =>
 				{
 					Playable entity = idDict[id];
 					for (int i = 0; i < effs.Length; i++)
-						effs[i].RemoveFrom(entity);
+						//effs[i].RemoveFrom(entity);
+						entity.RemoveEffect(effs[i]);
 				});
 
 			AppliedEntityIdCollection.Clear();

@@ -65,7 +65,7 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		public readonly List<IAura> Auras;
 
-		public readonly List<(int entityId, IEffect effect)> OneTurnEffects;
+		public readonly List<(int entityId, AbstractEffect effect)> OneTurnEffects;
 
 		/// <summary>
 		/// Temporal container to store Enchantment entities of One_Turn_effects.
@@ -340,13 +340,13 @@ namespace SabberStoneCore.Model
 				Player2.BaseClass = Player2.HeroClass;
 			}
 
-			Auras = new List<IAura>();
+			Auras = new List<IAura>(4);
 			TaskQueue = new TaskQueue(this);
 			TriggerManager = new TriggerManager(this);
-			Triggers = new List<Trigger>();
+			Triggers = new List<Trigger>(4);
 
-			OneTurnEffects = new List<(int, IEffect)>();
-			OneTurnEffectEnchantments = new List<Enchantment>();
+			OneTurnEffects = new List<(int, AbstractEffect)>(4);
+			OneTurnEffectEnchantments = new List<Enchantment>(4);
 
 			if (history)
 			{
@@ -407,7 +407,7 @@ namespace SabberStoneCore.Model
 
 			Auras = new List<IAura>(game.Auras.Count);
 			Triggers = new List<Trigger>(game.Triggers.Count);
-			OneTurnEffects = new List<(int entityId, IEffect effect)>(game.OneTurnEffects);
+			OneTurnEffects = new List<(int entityId, AbstractEffect effect)>(game.OneTurnEffects);
 			OneTurnEffectEnchantments = new List<Enchantment>(game.OneTurnEffectEnchantments.Count);
 			RushMinions.AddRange(game.RushMinions);
 			GhostlyCards.AddRange(game.GhostlyCards);
@@ -982,8 +982,9 @@ namespace SabberStoneCore.Model
 			}
 			if (OneTurnEffects.Count > 0)
 			{
-				foreach ((int id, IEffect eff) in OneTurnEffects)
-					eff.RemoveFrom(IdEntityDic[id]);
+				foreach ((int id, AbstractEffect eff) in OneTurnEffects)
+					//eff.RemoveFrom(IdEntityDic[id]);
+					IdEntityDic[id].RemoveEffect(eff);
 				
 				OneTurnEffects.Clear();
 			}
@@ -1281,6 +1282,15 @@ namespace SabberStoneCore.Model
 		public Game Clone(bool logging = false, bool resetRandomSeed = true, bool history = false)
 		{
 			return new Game(this, logging, resetRandomSeed, history);
+		}
+
+		internal override void ApplyEffect(AbstractEffect effect)
+		{
+			effect.ApplyTo(this);
+		}
+		internal override void RemoveEffect(AbstractEffect effect)
+		{
+			effect.RemoveFrom(this);
 		}
 
 		/// <summary>Builds and stores a logentry, from the specified log message.</summary>

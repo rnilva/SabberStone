@@ -2782,7 +2782,7 @@ namespace SabberStoneCore.CardSets
 			// Text: Attack increased.
 			// --------------------------------------------------------
 			cards.Add("OG_271e", new Power {
-				Enchant = new Enchant(ATK.Effect(EffectOperator.MUL, 2))
+				Enchant = new Enchant(Effects.MultiplyAttack(2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -2923,7 +2923,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("OG_315e", new Power {
 				Enchant = new Enchant(
-					ATK.Effect(EffectOperator.ADD, 1),
+					Effects.Attack_N(1),
 					Effects.Durability_N(1))
 			});
 

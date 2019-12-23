@@ -4064,6 +4064,11 @@ namespace SabberStoneCoreTest.CardSets
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, game.CurrentOpponent.Hero));
 			game.Process(MinionAttackTask.Any(game.CurrentPlayer, testCard, game.CurrentOpponent.Hero));
 			Assert.Equal(27, game.CurrentOpponent.Hero.Health);
+
+			game.EndTurn();
+			game.EndTurn();
+			MinionInPlay test = game.CurrentPlayer.BoardZone[0];
+			Assert.False(test.CanAttack());
 		}
 
 		// --------------------------------------- MINION - NEUTRAL
