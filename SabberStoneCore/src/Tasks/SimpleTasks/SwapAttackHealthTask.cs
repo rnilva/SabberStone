@@ -51,9 +51,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				if (game.History)
 				{
 					Enchantment instance =
-						Enchantment.GetInstance(controller, (Playable) source, p, in _enchantmentCard);
-					instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = atk;
-					instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = health;
+						Enchantment.GetInstance(in game, controller, (Playable) source, p, in _enchantmentCard);
+					instance.ScriptTag1 = atk;
+					instance.ScriptTag2 = health;
 				}
 
 				ATK.Effect(EffectOperator.SET, health).ApplyTo(m);

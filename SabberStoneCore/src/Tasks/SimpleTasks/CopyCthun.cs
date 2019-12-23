@@ -35,18 +35,18 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (game.History)
 			{
 				if (playableSource.AppliedEnchantments == null)
-					playableSource.AppliedEnchantments = new List<Enchantment>();
+					playableSource.AppliedEnchantments = new List<Enchantment>(4);
 
 				if (proxyCthun.AppliedEnchantments != null)
 					foreach (Enchantment e in proxyCthun.AppliedEnchantments)
 					{
 						Enchantment instance =
-							Enchantment.GetInstance(in controller, minionTarget, minionTarget, e.Card);
-						if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
+							Enchantment.GetInstance(in game, in controller, minionTarget, minionTarget, e.Card);
+						if (e.ScriptTag1 > 0)
 						{
-							instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
-							if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
-								instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
+							instance.ScriptTag1 = e.ScriptTag1;
+							if (e.ScriptTag2 > 0)
+								instance.ScriptTag2 = e.ScriptTag2;
 						}
 					}
 			}

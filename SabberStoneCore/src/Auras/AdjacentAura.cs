@@ -141,7 +141,7 @@ namespace SabberStoneCore.Auras
 				_effects[i].ApplyTo(m);
 
 			if (EnchantmentCard != null && _history)
-				Enchantment.GetInstance(m.Controller, _owner, m, in EnchantmentCard);
+				Enchantment.GetInstance(m.Game, m.Controller, _owner, m, in EnchantmentCard);
 		}
 
 		internal void DeApply(MinionInPlay m, bool ignoreEnchantments = false)

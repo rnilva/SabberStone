@@ -2890,7 +2890,8 @@ namespace SabberStoneCore.CardSets.Standard
 				DeathrattleTask = ComplexTask.Create(
 					new CustomTask((g,c,s,t,stack)=>
 						{
-							if (!(g.IdEntityDic[t[GameTag.TAG_SCRIPT_DATA_NUM_1]] is MinionInPlay m))
+							int id = ((Playable)t)._v1 ?? 0;
+							if (!(g.IdEntityDic[id] is MinionInPlay m))
 								return;
 							if (m.IsSilenced ||
 							    !m.NativeTags.TryGetValue(GameTag.VOODOO_LINK, out int v) ||

@@ -3492,7 +3492,7 @@ namespace SabberStoneCore.CardSets
 				DeathrattleTask = ComplexTask.Create(
 					new IncludeTask(EntityType.TARGET),
 					new FuncPlayablesTask(p =>
-						new List<Playable> {p[0].Game.IdEntityDic[p[0][GameTag.TAG_SCRIPT_DATA_NUM_1]]}),
+						new List<Playable> {p[0].Game.IdEntityDic[p[0]._v1 ?? 0]}),
 					new CopyTask(EntityType.STACK, Zone.PLAY, 2))
 			});
 

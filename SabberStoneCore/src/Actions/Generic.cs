@@ -318,7 +318,7 @@ namespace SabberStoneCore.Actions
 			{	// Create Enchantment instance Only when it is needed.
 				// As an owner entity for Auras, Triggers or Deathrattle tasks.
 				// We also maintain Modular (Magnetic) Enchantments for Kangor's Endless Army.
-				Enchantment enchantment = Enchantment.GetInstance(creator.Controller, in creator, in target, in enchantmentCard, num1, num2);
+				Enchantment enchantment = Enchantment.GetInstance(in g, creator.Controller, in creator, in target, in enchantmentCard, num1, num2);
 
 				power.Aura?.Activate(enchantment);
 				power.Trigger?.Activate(g, enchantment);

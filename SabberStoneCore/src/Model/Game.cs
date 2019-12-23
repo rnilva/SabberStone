@@ -81,12 +81,12 @@ namespace SabberStoneCore.Model
 		/// <summary>
 		/// List of Minions that ready to be destroyed and to be removed from the BoardZone.
 		/// </summary>
-		public readonly List<MinionInPlay> DeadMinions = new List<MinionInPlay>();
+		public readonly List<MinionInPlay> DeadMinions = new List<MinionInPlay>(4);
 
 		/// <summary>
 		/// List of Minions summoned in current event.
 		/// </summary>
-		public readonly List<MinionInPlay> SummonedMinions = new List<MinionInPlay>();
+		public readonly List<MinionInPlay> SummonedMinions = new List<MinionInPlay>(4);
 
 		/// <summary>
 		/// List of entity ids of Minions in the state of 'AttackableByRush'.
@@ -177,7 +177,7 @@ namespace SabberStoneCore.Model
 		/// When TRUE, detailed information each process step will be saved in <see cref="Logs"/>
 		/// in a form of <see cref="LogEntry"/>.
 		/// </summary>
-		public bool Logging { get;}
+		public bool Logging { get; }
 
 		/// <summary>Gets or sets the power history container. 
 		/// This object facilitates building POWER blocks to send to the hearthstone client.
@@ -189,7 +189,7 @@ namespace SabberStoneCore.Model
 		/// building enabled.
 		/// </summary>
 		/// <value><c>true</c> if history building is enabled; otherwise, <c>false</c>.</value>
-		public bool History { get;}
+		public bool History { get; }
 
 		/// <summary>
 		/// Gets the task queue.

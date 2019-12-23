@@ -581,7 +581,7 @@ namespace SabberStoneCoreTest.CardSets
 			Assert.Single(testCard.AppliedEnchantments);
 			Assert.Single(game.CurrentPlayer.SetasideZone);
 
-			Assert.Equal(testCard.AppliedEnchantments[0][GameTag.TAG_SCRIPT_DATA_NUM_1],
+			Assert.Equal(testCard.AppliedEnchantments[0].ScriptTag1,
 				game.CurrentPlayer.SetasideZone[0].Id);
 
 			game.ProcessCard("Fireball", testCard, true);
