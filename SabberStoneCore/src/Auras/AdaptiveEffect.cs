@@ -232,10 +232,10 @@ namespace SabberStoneCore.Auras
 			{
 				owner.AttackDamage = value;
 
-				List<(int entityId, IEffect effect)> oneTurnEffects = owner.Game.OneTurnEffects;
+				List<(int entityId, AbstractEffect effect)> oneTurnEffects = owner.Game.OneTurnEffects;
 				for (int i = oneTurnEffects.Count - 1; i >= 0; --i)
 				{
-					(int id, IEffect eff) = oneTurnEffects[i];
+					(int id, AbstractEffect eff) = oneTurnEffects[i];
 					if (id == owner.Id && eff.Tag == GameTag.ATK)
 						oneTurnEffects.RemoveAt(i);
 				}
@@ -280,7 +280,6 @@ namespace SabberStoneCore.Auras
 	public class AdaptiveBoolAttributeEffect<T> : IAura where T : Character
 	{
 		private readonly int _attr;
-		private readonly BooleanAttributeEffect _effect;
 		private readonly SelfCondition _condition;
 		private readonly T _owner;
 		private bool? _lastValue;
@@ -291,7 +290,6 @@ namespace SabberStoneCore.Auras
 		public AdaptiveBoolAttributeEffect(BoolAttributes attr, SelfCondition condition)
 		{
 			_attr = (int) attr;
-			_effect = new BooleanAttributeEffect();
 			_condition = condition;
 		}
 

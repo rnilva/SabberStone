@@ -970,7 +970,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_661e", new Power
 			{
-				Enchant = new Enchant(ATK.Effect(EffectOperator.SUB, 3))
+				Enchant = new Enchant(Effects.Attack_N(-3))
 				{
 					IsOneTurnEffect = true
 				}
@@ -2940,7 +2940,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("CFM_755e", new Power
 			{
 				Enchant = new Enchant(
-					ATK.Effect(EffectOperator.ADD, 1),
+					Effects.Attack_N(1),
 					Effects.Durability_N(1))
 			});
 

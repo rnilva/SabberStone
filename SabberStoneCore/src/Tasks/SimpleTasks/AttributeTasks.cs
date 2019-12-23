@@ -67,7 +67,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 	public class SetAttributeTask : SimpleTask
 	{
-		private readonly IEffect _effect;
+		private readonly AbstractEffect _effect;
 		private readonly EntityType _type;
 
 		public SetAttributeTask(IntAttributes attribute, int amount, EntityType type)
@@ -83,29 +83,30 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			IEffect effect = _effect;
+			AbstractEffect effect = _effect;
 
 			IList<Playable> entities =
 				IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables);
-			if (effect.Tag == GameTag.EXHAUSTED)
-			{
-				bool value = effect.Value > 0;
-				for (int i = 0; i < entities.Count; i++)
-					entities[i].IsExhausted = value;
-				return TaskState.COMPLETE;
-			}
+			//if (effect.Tag == GameTag.EXHAUSTED)
+			//{
+			//	bool value = effect.Value > 0;
+			//	for (int i = 0; i < entities.Count; i++)
+			//		entities[i].IsExhausted = value;
+			//	return TaskState.COMPLETE;
+			//}
 
 			for (int i = 0; i < entities.Count; i++)
 			{
-				if (effect.Tag == GameTag.DIVINE_SHIELD && effect.Value == 0 &&
-				    entities[i][GameTag.DIVINE_SHIELD] != 0)
-					game.TriggerManager.OnLoseDivineShield(entities[i]);
-				else if
-				(effect.Tag == GameTag.FROZEN && effect.Value == 1 &&
-				 entities[i][GameTag.FROZEN] == 0)
-					game.TriggerManager.OnFreezeTrigger(entities[i]);
+				//if (effect.Tag == GameTag.DIVINE_SHIELD && effect.Value == 0 &&
+				//	entities[i][GameTag.DIVINE_SHIELD] != 0)
+				//	game.TriggerManager.OnLoseDivineShield(entities[i]);
+				//else if
+				//(effect.Tag == GameTag.FROZEN && effect.Value == 1 &&
+				// entities[i][GameTag.FROZEN] == 0)
+				//	game.TriggerManager.OnFreezeTrigger(entities[i]);
 
-				effect.ApplyTo(entities[i]);
+				//effect.ApplyTo(entities[i]);
+				entities[i].ApplyEffect(effect);
 			}
 
 			return TaskState.COMPLETE;
@@ -114,7 +115,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 	public class SetIntAttributeNumberTask : SimpleTask
 	{
-		private readonly IEffect _effect;
+		private readonly AbstractEffect _effect;
 		private readonly EntityType _type;
 
 		public SetIntAttributeNumberTask(IntAttributes attribute, EntityType type)
@@ -126,14 +127,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			IEffect effect = _effect;
+			AbstractEffect effect = _effect;
 
 			IList<Playable> entities =
 				IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables);
 
 			for (int i = 0; i < entities.Count; ++i)
 			{
-				_effect.ChangeValue(stack.Number).ApplyTo(entities[i]);
+				//_effect.ChangeValue(stack.Number).ApplyTo(entities[i]);
+				entities[i].ApplyEffect(_effect.ChangeValue(stack.Number));
 			}
 
 			return TaskState.COMPLETE;

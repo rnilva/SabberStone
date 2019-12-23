@@ -3418,7 +3418,7 @@ namespace SabberStoneCore.CardSets.Adventure
 			// Text: Has <b>Charge</b>.
 			// --------------------------------------------------------
 			cards.Add("LOOTA_BOSS_12e", new Power {
-				Enchant = new Enchant(GameTag.CHARGE, EffectOperator.SET, 1)
+				Enchant = Effects.Charge
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3449,7 +3449,7 @@ namespace SabberStoneCore.CardSets.Adventure
 			// --------------------------------------------------------
 			cards.Add("LOOTA_BOSS_40pe", new Power {
 				//Enchant = new Enchant(GameTag.ATK, EffectOperator.SUB, 1)
-				Enchant = new Enchant(ATK.Effect(EffectOperator.SUB, 1))
+				Enchant = new Enchant(Effects.Attack_N(-1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

@@ -1681,7 +1681,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: This minion's Attack has been doubled.
 			// --------------------------------------------------------
 			cards.Add("EX1_355e", new Power {
-				Enchant = new Enchant(ATK.Effect(EffectOperator.MUL, 2))
+				Enchant = new Enchant(Effects.MultiplyAttack(2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - PALADIN
@@ -2647,8 +2647,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("CS2_053e", new Power {
 				Enchant = new Enchant(
-					Effects.ReduceCost(3),
-					new Effect(GameTag.DISPLAYED_CREATOR, EffectOperator.SET, 1)),
+					Effects.ReduceCost(3)
+					//, new Effect(GameTag.DISPLAYED_CREATOR, EffectOperator.SET, 1)
+					),
 				Trigger = new Trigger(TriggerType.PLAY_CARD)
 				{
 					TriggerSource = TriggerSource.ENCHANTMENT_TARGET,
@@ -3277,7 +3278,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("EX1_409e", new Power {
 				Enchant = new Enchant(
-					ATK.Effect(EffectOperator.ADD, 1),
+					Effects.Attack_N(1),
 					Effects.Durability_N(1))
 			});
 
@@ -3307,7 +3308,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("EX1_411e2", new Power {
 				//Enchant = new OngoingEnchant(new Effect(GameTag.ATK, EffectOperator.SUB, 1))
-				Enchant = new OngoingEnchant(ATK.Effect(EffectOperator.SUB, 1))
+				Enchant = new OngoingEnchant(Effects.Attack_N(-1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - WARRIOR
@@ -5196,7 +5197,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("CS2_221e", new Power {
 				//Aura = new EnrageEffect(AuraType.WEAPON, Effects.Attack_N(2))
 				//Enchant = new Enchant(new Effect(GameTag.ATK, EffectOperator.ADD, 2))
-				Enchant = new Enchant(ATK.Effect(EffectOperator.ADD, 2))
+				Enchant = new Enchant(Effects.Attack_N(2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -5530,7 +5531,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("NEW1_024o", new Power {
 				Enchant = new Enchant(
-					ATK.Effect(EffectOperator.ADD, 1),
+					Effects.Attack_N(1),
 					Effects.Durability_N(1))
 			});
 

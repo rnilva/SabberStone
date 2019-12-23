@@ -2382,7 +2382,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			// Text: <b>Battlecry:</b> Reveal a minion in each deck. If yours costs more, gain <b>Charge</b>.
 			// --------------------------------------------------------
-			// GameTag:
+			// GameTag:1
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			// RefTag:
@@ -2977,7 +2977,7 @@ namespace SabberStoneCore.CardSets
 			// - TAG_ONE_TURN_EFFECT = 1
 			// --------------------------------------------------------
 			cards.Add("AT_109e", new Power {
-				Enchant = new Enchant(GameTag.CANT_ATTACK, EffectOperator.SET, 0)
+				Enchant = new Enchant(Effects.SetAttributeEffect(BoolAttributes.CantAttack, false))
 				{
 					IsOneTurnEffect = true
 				}

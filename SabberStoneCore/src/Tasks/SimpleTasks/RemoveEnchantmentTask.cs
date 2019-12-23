@@ -40,7 +40,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					enchant.RemoveEffect(e.Target);
 
 				if (e.IsOneTurnActive)
-					foreach (IEffect eff in enchant.Effects)
+					foreach (AbstractEffect eff in enchant.Effects)
 						game.OneTurnEffects.Remove((e.Target.Id, eff));
 			}
 

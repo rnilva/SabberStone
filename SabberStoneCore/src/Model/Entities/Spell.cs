@@ -12,6 +12,7 @@
 // GNU Affero General Public License for more details.
 #endregion
 
+using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 
 namespace SabberStoneCore.Model.Entities

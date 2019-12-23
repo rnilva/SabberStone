@@ -1002,10 +1002,10 @@ namespace SabberStoneCore.Tasks
 
 
 
-				List<(int entityId, IEffect effect)> oneTurnEffects = g.OneTurnEffects;
+				List<(int entityId, AbstractEffect effect)> oneTurnEffects = g.OneTurnEffects;
 				for (int i = oneTurnEffects.Count - 1; i >= 0; i--)
 				{
-					(int id, IEffect effect) = oneTurnEffects[i];
+					(int id, AbstractEffect effect) = oneTurnEffects[i];
 					if (id == source.Id)
 						oneTurnEffects.Add((newEntity.Id, effect));
 				}

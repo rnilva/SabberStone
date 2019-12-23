@@ -92,9 +92,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 	public class ApplyEffectTask : SimpleTask
 	{
 		private readonly EntityType _type;
-		private readonly IEffect[] _effs;
+		private readonly AbstractEffect[] _effs;
 
-		public ApplyEffectTask(EntityType entityType, params IEffect[] effects)
+		public ApplyEffectTask(EntityType entityType, params AbstractEffect[] effects)
 		{
 			_type = entityType;
 			_effs = effects;
@@ -103,12 +103,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source,
 			in Entity target, in TaskStack stack = null)
 		{
-			IEffect[] effects = _effs;
+			AbstractEffect[] effects = _effs;
 			IList<Playable> entities = IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables);
 
 			for (int i = 0; i < entities.Count; i++)
 			for (int j = 0; j < effects.Length; j++)
-				effects[j].ApplyTo(entities[i]);
+				//effects[j].ApplyTo(entities[i]);
+				entities[i].ApplyEffect(effects[j]);
 
 			return TaskState.COMPLETE;
 		}

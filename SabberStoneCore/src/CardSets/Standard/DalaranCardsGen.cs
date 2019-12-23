@@ -75,13 +75,14 @@ namespace SabberStoneCore.CardSets.Standard
 					.SetTask(new CustomTask((g, c, s, t, stack) =>
 					{
 						//GenericEffect<Playable> costEffect = Cost.Effect(EffectOperator.SET, t.Card.Cost);
-						IEffect costEffect = Effects.SetCost(t.Card.Cost);
+						AbstractEffect costEffect = Effects.SetCost(t.Card.Cost);
 
 						var target = (Playable) t;
 						for (int i = 0; i < target.ChooseOnePlayables.Length; i++)
 						{
 							Playable copy = Generic.Copy(in c, in s, target.ChooseOnePlayables[i], Zone.HAND);
-							costEffect.ApplyTo(copy);
+							//costEffect.ApplyTo(copy);
+							copy.ApplyEffect(costEffect);
 						}
 					}))
 					.SetCondition(SelfCondition.IsChooseOneCard)
@@ -1168,7 +1169,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("DAL_011", new Power {
 				PowerTask = ComplexTask.Scheme(
-					new AddEnchantmentTask("DAL_011e", EntityType.TARGET, true)),
+						new AddEnchantmentTask("DAL_011e", EntityType.TARGET, true)),
 				Trigger = TriggerLibrary.UpgradeEachTurn
 			});
 
@@ -2829,7 +2830,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Reduced Attack.
 			// --------------------------------------------------------
 			cards.Add("DAL_011e", new Power {
-				Enchant = new Enchant(ATK.Effect(EffectOperator.SUB, 0))
+				Enchant = new Enchant(new ReduceAttackScriptTagEffect(0))
 				{
 					UseScriptTag = true
 				},

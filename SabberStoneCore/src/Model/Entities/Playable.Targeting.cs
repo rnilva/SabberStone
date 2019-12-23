@@ -10,7 +10,7 @@ namespace SabberStoneCore.Model.Entities
 		/// Gets a value indicating whether the entity requires a target list to be calculated before being played.
 		/// </summary>
 		/// <value><c>true</c> if a target list must be calculated; otherwise, <c>false</c>.</value>
-		protected internal virtual bool NeedsTargetList =>
+		protected internal virtual bool NeedsTargetList() =>
 			Card.RequiresTarget
 			|| Card.RequiresTargetForCombo
 			|| Card.RequiresTargetIfAvailable

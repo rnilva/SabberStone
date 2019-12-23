@@ -23,7 +23,7 @@ namespace SabberStoneCore.Model.Entities
 {
 	public partial class Enchantment : Playable
 	{
-		private int _creatorId;
+		//private int _creatorId;
 		private int _controllerId;
 		private Playable _creator;
 		private Card _capturedCard;
@@ -104,8 +104,12 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="creator">The entity who creates the enchantment.</param>
 		/// <param name="target">The entity who is subjected to the enchantment.</param>
 		/// <param name="card">The card from which the enchantment must be derived.</param>
+		/// <param name="num1">The value of script tag 1.</param>
+		/// <param name="num2">The value of script tag 2.</param>
 		/// <returns>The resulting enchantment entity.</returns>
-		public static Enchantment GetInstance(in Controller controller, in Playable creator, in Entity target, in Card card, int num1 = 0, int num2 = 0)
+		public static Enchantment GetInstance(in Controller controller, in Playable creator,
+											  in Entity target, in Card card,
+											  int? num1 = default, int? num2 = default)
 		{
 			int id = controller.Game.NextId;
 
@@ -118,9 +122,8 @@ namespace SabberStoneCore.Model.Entities
 			};
 
 			if (target.AppliedEnchantments == null)
-				target.AppliedEnchantments = new List<Enchantment> {instance};
-			else
-				target.AppliedEnchantments.Add(instance);
+				target.AppliedEnchantments = new List<Enchantment>(4);
+			target.AppliedEnchantments.Add(instance);
 
 			//controller.Game.IdEntityDic.Add(instance.Id, instance);
 			controller.Game.IdEntityDic[instance.Id] = instance;
@@ -172,7 +175,7 @@ namespace SabberStoneCore.Model.Entities
 				instance[GameTag.ZONE] = (int)Enums.Zone.PLAY;
 			}
 
-			if (card[GameTag.TAG_ONE_TURN_EFFECT] == 1)
+			if (card.OneTurnEffect)
 			{
 				instance.IsOneTurnActive = true;
 				controller.Game.OneTurnEffectEnchantments.Add(instance);
@@ -189,11 +192,11 @@ namespace SabberStoneCore.Model.Entities
 			controller.Game.Log(LogLevel.VERBOSE, BlockType.ACTION, "Enchantment",
 				!controller.Game.Logging ? "" : $"Enchantment {card} created by {creator} is added to {target}.");
 
-			if (num1 > 0)
+			if (num1 >= 0)
 			{
-				tags.Add(GameTag.TAG_SCRIPT_DATA_NUM_1, num1);
-				if (num2 > 0)
-					tags.Add(GameTag.TAG_SCRIPT_DATA_NUM_2, num2);
+				tags.Add(GameTag.TAG_SCRIPT_DATA_NUM_1, num1.Value);
+				if (num2 >= 0)
+					tags.Add(GameTag.TAG_SCRIPT_DATA_NUM_2, num2.Value);
 			}
 
 			return instance;

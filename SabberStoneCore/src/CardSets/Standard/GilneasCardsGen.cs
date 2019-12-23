@@ -2397,6 +2397,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("GIL_623", new Power {
 				PowerTask = ComplexTask.Create(
 					new CountTask(EntityType.OP_HAND),
+					new MathMultiplyTask(-1),
 					new AddEnchantmentTask("GIL_623e", EntityType.SOURCE, true))
 			});
 
@@ -2661,8 +2662,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("GIL_128e", new Power {
 				Enchant = new Enchant(
-					ATK.Effect(EffectOperator.MUL, 2),
-					Health.Effect(EffectOperator.MUL, 2))
+					Effects.MultiplyAttack(2),
+					Effects.MultiplyHealth(2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -2919,7 +2920,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Decreased Health.
 			// --------------------------------------------------------
 			cards.Add("GIL_623e", new Power {
-				Enchant = new Enchant(Health.Effect(EffectOperator.SUB, 0))
+				Enchant = new Enchant(Effects.Health_N(0))
 				{
 					UseScriptTag = true
 				}
@@ -2995,7 +2996,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: -2 Attack until next turn.
 			// --------------------------------------------------------
 			cards.Add("GIL_665e", new Power {
-				Enchant = new Enchant(ATK.Effect(EffectOperator.SUB, 2))
+				Enchant = new Enchant(Effects.Attack_N(-2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3045,7 +3046,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Doubled Health.
 			// --------------------------------------------------------
 			cards.Add("GIL_837e", new Power {
-				Enchant = new Enchant(Health.Effect(EffectOperator.MUL, 2))
+				Enchant = new Enchant(Effects.MultiplyHealth(2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3055,7 +3056,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: +1 Attack.
 			// --------------------------------------------------------
 			cards.Add("GIL_902e", new Power {
-				Enchant = new Enchant(ATK.Effect(EffectOperator.ADD, 1))
+				Enchant = new Enchant(Effects.Attack_N(1))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

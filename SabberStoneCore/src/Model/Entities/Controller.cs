@@ -773,6 +773,15 @@ namespace SabberStoneCore.Model.Entities
 			_attrs.ClearTurnStatistics();
 		}
 
+		internal override void ApplyEffect(AbstractEffect effect)
+		{
+			effect.ApplyTo(this);
+		}
+		internal override void RemoveEffect(AbstractEffect effect)
+		{
+			effect.RemoveFrom(this);
+		}
+
 		/// <summary>
 		/// Maximum amount of cards in the player's hand
 		/// </summary>

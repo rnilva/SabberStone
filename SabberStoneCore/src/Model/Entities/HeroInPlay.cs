@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Auras;
+using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 
 namespace SabberStoneCore.Model.Entities
@@ -11,6 +12,7 @@ namespace SabberStoneCore.Model.Entities
 	{
 		public HeroInPlay(in Controller controller, in Card card, in EntityData tags, in int id = -1) : base(in controller, in card, in tags, in id)
 		{
+			_v1 = card.ATK;
 			Auras = new List<Aura>();
 		}
 
@@ -95,7 +97,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get
 			{
-				int value = _v1 ?? (_v1 = 0).Value;
+				int value = _v1.Value;
 				if (Weapon != null && Game.CurrentPlayer == Controller)
 					return Weapon.AttackDamage + value;
 				return value;
@@ -203,6 +205,15 @@ namespace SabberStoneCore.Model.Entities
 		public override Playable Clone(in Controller controller)
 		{
 			return new HeroInPlay(in controller, this);
+		}
+
+		internal override void ApplyEffect(AbstractEffect effect)
+		{
+			effect.ApplyTo(this);
+		}
+		internal override void RemoveEffect(AbstractEffect effect)
+		{
+			effect.RemoveFrom(this);
 		}
 
 		public string FullPrint()

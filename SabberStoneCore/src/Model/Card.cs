@@ -84,6 +84,8 @@ namespace SabberStoneCore.Model
 		public bool Overkill { get; }
 		public bool TwinSpell { get; }
 
+		public bool OneTurnEffect { get; }
+
 		public ControllerIntAttributes ThresholdAttribute { get; }
 
 		private Card()
@@ -209,6 +211,9 @@ namespace SabberStoneCore.Model
 						case GameTag.PLAYER_TAG_THRESHOLD_TAG_ID:
 							ThresholdAttribute =
 								AttributeHelpers.GameTagToControllerIntAttribute((GameTag)(int) tag.TagValue);
+							break;
+						case GameTag.TAG_ONE_TURN_EFFECT:
+							OneTurnEffect = true;
 							break;
 					}
 				}
@@ -976,6 +981,7 @@ namespace SabberStoneCore.Model
 		{
 			get
 			{
+				// ReSharper disable once SuggestVarOrType_Elsewhere
 				var array = new int[MinionAttributes.NUM_INT_ATTRS + MinionAttributes.NUM_BOOL_ATTRS];
 				for (int i = 0; i < MinionAttributes.NUM_INT_ATTRS; i++)
 					array[i] = _minionAttrs.intAttrs[i];

@@ -75,8 +75,8 @@ namespace SabberStoneCore.Enchants
 		/// </summary>
 		public void ApplyTo(Entity entity, bool oneTurnEffect = false)
 		{
-			if (oneTurnEffect)
-				entity.Game.OneTurnEffects.Add((entity.Id, this));
+			//if (oneTurnEffect)
+			//	entity.Game.OneTurnEffects.Add((entity.Id, this));
 
 			BoolAttributes attr = AttributeHelpers.GameTagToBoolAttribute(Tag);
 			if (attr != BoolAttributes.Invalid)
@@ -144,8 +144,8 @@ namespace SabberStoneCore.Enchants
 					}
 				}
 
-				if (oneTurnEffect && tags.TryGetValue(Tag, out int value) && value == Value)
-					entity.Game.OneTurnEffects.Remove((entity.Id, this));
+				//if (oneTurnEffect && tags.TryGetValue(Tag, out int value) && value == Value)
+				//	entity.Game.OneTurnEffects.Remove((entity.Id, this));
 
 				tags[Tag] = Value;
 			}

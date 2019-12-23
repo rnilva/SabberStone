@@ -116,24 +116,49 @@ namespace SabberStoneCore.Model.Entities
 
 		public override bool CanAttack(bool checkTargets = true)
 		{
-			if (HasCharge || IsRush)
-			{
-				if (HasWindfury)
-				{
-					if (NumAttacksThisTurn == 2)
-						return false;
-				}
-				else if (NumAttacksThisTurn != 0)
-					return false;
-			}
-			else if (IsExhausted)
-				return false;
+			//if (HasCharge || IsRush)
+			//{
+			//	if (HasWindfury)
+			//	{
+			//		if (NumAttacksThisTurn == 2)
+			//			return false;
+			//	}
+			//	else if (NumAttacksThisTurn != 0)
+			//		return false;
+			//}
+			//else if (IsExhausted)
+			//	return false;
 
-			return AttackDamage > 0 &&
-			       !IsFrozen &&
-			       !CantAttack &&
-			       !Untouchable &&
-			       (!checkTargets || HasAnyValidAttackTargets());
+			//return AttackDamage > 0 &&
+			//       !IsFrozen &&
+			//       !CantAttack &&
+			//       !Untouchable &&
+			//       (!checkTargets || HasAnyValidAttackTargets());
+			unsafe
+			{
+				fixed (bool* attrs = _attrs.boolAttrs)
+				{
+					if (attrs[8] || attrs[11])
+					{
+						if (attrs[7])
+						{
+							if (NumAttacksThisTurn == 2)
+								return false;
+						}
+						else if (NumAttacksThisTurn != 0)
+							return false;
+					}
+					else if (_exhausted)
+						return false;
+
+					return _v1 > 0 &&
+					       !attrs[1] &&
+					       !attrs[12] &&
+					       !Untouchable &&
+					       (!checkTargets || HasAnyValidAttackTargets());
+
+				}
+			}
 		}
 
 		#region Attribute Properties
@@ -437,6 +462,15 @@ namespace SabberStoneCore.Model.Entities
 				: new MinionInPlay(in controller, this);
 		}
 
+		internal override void ApplyEffect(AbstractEffect effect)
+		{
+			effect.ApplyTo(this);
+		}
+		internal override void RemoveEffect(AbstractEffect effect)
+		{
+			effect.RemoveFrom(this);
+		}
+
 		public Minion CloneAsMinion(in Controller controller)
 		{
 			return new Minion(in controller, this);
@@ -492,6 +526,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get
 			{
+				// ReSharper disable once SuggestVarOrType_Elsewhere
 				var array = new int[Attributes.NUM_INT_ATTRS + Attributes.NUM_BOOL_ATTRS];
 				for (int i = 0; i < Attributes.NUM_INT_ATTRS; i++)
 					array[i] = _attrs.intAttrs[i];

@@ -2901,7 +2901,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Increased Durability.
 			// --------------------------------------------------------
 			cards.Add("TRL_111e1", new Power {
-				Enchant = new Enchant(GameTag.DURABILITY, EffectOperator.ADD, 1)
+				Enchant = Effects.Durability_N(1)
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -2934,7 +2934,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Doubled Health.
 			// --------------------------------------------------------
 			cards.Add("TRL_244e", new Power {
-				Enchant = new Enchant(Health.Effect(EffectOperator.MUL, 2))
+				Enchant = new Enchant(Effects.MultiplyHealth(2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3135,7 +3135,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Doubled Attack.
 			// --------------------------------------------------------
 			cards.Add("TRL_528e", new Power {
-				Enchant = new Enchant(ATK.Effect(EffectOperator.MUL, 2))
+				Enchant = new Enchant(Effects.MultiplyAttack(2))
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL

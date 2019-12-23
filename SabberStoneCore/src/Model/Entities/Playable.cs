@@ -574,6 +574,15 @@ namespace SabberStoneCore.Model.Entities
 			get => Card.Overkill;
 		}
 
+		internal override void ApplyEffect(AbstractEffect effect)
+		{
+			effect.ApplyTo(this);
+		}
+		internal override void RemoveEffect(AbstractEffect effect)
+		{
+			effect.RemoveFrom(this);
+		}
+
 		internal virtual void CopyAttributesTo(Playable target)
 		{
 			target._v1 = _v1;

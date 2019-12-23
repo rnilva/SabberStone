@@ -3290,7 +3290,7 @@ namespace SabberStoneCore.CardSets
 			// Text: Attack increased.
 			// --------------------------------------------------------
 			cards.Add("ICC_029e", new Power {
-				Enchant = new Enchant(Effects.Attack_N(3))
+				Enchant = Effects.Attack_N(3)
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3300,7 +3300,7 @@ namespace SabberStoneCore.CardSets
 			// Text: This minion has increased Attack.
 			// --------------------------------------------------------
 			cards.Add("ICC_031e", new Power {
-				Enchant = new Enchant(Effects.Attack_N(2))
+				Enchant = Effects.Attack_N(2)
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3320,7 +3320,7 @@ namespace SabberStoneCore.CardSets
 			// Text: Poisonous.
 			// --------------------------------------------------------
 			cards.Add("ICC_049e", new Power {
-				Enchant = new Enchant(GameTag.POISONOUS, EffectOperator.SET, 1)
+				Enchant = Effects.Poisonous
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -3534,7 +3534,7 @@ namespace SabberStoneCore.CardSets
 			// - LIFESTEAL = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_833e2", new Power {
-				Enchant = new Enchant(GameTag.LIFESTEAL, EffectOperator.SET, 1)
+				Enchant = Effects.Lifesteal
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
