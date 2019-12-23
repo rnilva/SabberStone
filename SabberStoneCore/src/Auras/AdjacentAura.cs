@@ -4,6 +4,7 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Model.Zones;
+using SabberStoneCore.Kettle;
 // ReSharper disable ObjectCreationAsStatement
 
 namespace SabberStoneCore.Auras
@@ -142,7 +143,7 @@ namespace SabberStoneCore.Auras
 
 			if (EnchantmentCard != null && _history)
 			{
-				Enchantment.GetInstance(m.Controller, _owner, m, in EnchantmentCard);
+				Enchantment.GetInstance(m.Game, m.Controller, _owner, m, in EnchantmentCard);
 				for (int i = 0; i < _effects.Length; i++)
 					_owner.Game.PowerHistory.Add(
 						PowerHistoryBuilder.TagChange(_owner.Id, _effects[i].Tag, _owner[_effects[i].Tag]));

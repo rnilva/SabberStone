@@ -159,8 +159,8 @@ namespace SabberStoneCore.Tasks
 					}
 					if (left != null)
 					{
-						Generic.SummonBlock(c.Game, ref left, s.ZonePosition);
-						s.AppliedEnchantments?.ForEach(e => Enchantment.GetInstance(in c, left, left, e.Card));
+						Generic.SummonBlock(c.Game, ref left, s.ZonePosition, s);
+						s.AppliedEnchantments?.ForEach(e => Enchantment.GetInstance(c.Game, in c, left, left, e.Card));
 						//left[GameTag.ATK] = s[GameTag.ATK];
 						//left[GameTag.HEALTH] = s[GameTag.HEALTH];
 						left.AttackDamage = s.AttackDamage;
@@ -168,8 +168,8 @@ namespace SabberStoneCore.Tasks
 
 						if (right != null)
 						{
-							Generic.SummonBlock(c.Game, ref right, s.ZonePosition + 1);
-							s.AppliedEnchantments?.ForEach(e => Enchantment.GetInstance(in c, right, right, e.Card));
+							Generic.SummonBlock(c.Game, ref right, s.ZonePosition + 1, s);
+							s.AppliedEnchantments?.ForEach(e => Enchantment.GetInstance(c.Game, in c, right, right, e.Card));
 							//right[GameTag.ATK] = s[GameTag.ATK];
 							//right[GameTag.HEALTH] = s[GameTag.HEALTH];
 							right.AttackDamage = s.AttackDamage;
@@ -462,12 +462,12 @@ namespace SabberStoneCore.Tasks
 					Weapon newWeapon = (Weapon) Entity.FromCard(deadWeapon.Controller, deadWeapon.Card, tags);
 					deadWeapon.AppliedEnchantments?.ForEach(e =>
 					{
-						Enchantment instance = Enchantment.GetInstance(deadWeapon.Controller, newWeapon, newWeapon, e.Card);
-						if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
+						Enchantment instance = Enchantment.GetInstance(deadWeapon.Game, deadWeapon.Controller, newWeapon, newWeapon, e.Card);
+						if (e.ScriptTag1 > 0)
 						{
-							instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
-							if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
-								instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
+							instance.ScriptTag1 = e.ScriptTag1;
+							if (e.ScriptTag2 > 0)
+								instance.ScriptTag2 = e.ScriptTag2;
 						}
 					});
 
@@ -1001,12 +1001,12 @@ namespace SabberStoneCore.Tasks
 				{
 					foreach (Enchantment e in source.AppliedEnchantments)
 					{
-						Enchantment instance = Enchantment.GetInstance(in c, e.Creator, newEntity, e.Card);
-						if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
+						Enchantment instance = Enchantment.GetInstance(in g, in c, e.Creator, newEntity, e.Card);
+						if (e.ScriptTag1 > 0)
 						{
-							instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
-							if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
-								instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
+							instance.ScriptTag1 = e.ScriptTag1;
+							if (e.ScriptTag2 > 0)
+								instance.ScriptTag2 = e.ScriptTag2;
 						}
 						instance.CapturedCard = e.CapturedCard;
 

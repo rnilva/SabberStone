@@ -78,14 +78,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (minionTarget.AppliedEnchantments != null)
 				foreach (Enchantment e in minionTarget.AppliedEnchantments)
 				{
-					Enchantment instance = Enchantment.GetInstance(in controller, minionSource, minionSource, e.Card);
-					if (e[GameTag.TAG_SCRIPT_DATA_NUM_1] > 0)
+					Enchantment instance = Enchantment.GetInstance(in game, in controller, minionSource, minionSource, e.Card);
+					if (e.ScriptTag1 > 0)
 					{
-						instance[GameTag.TAG_SCRIPT_DATA_NUM_1] = e[GameTag.TAG_SCRIPT_DATA_NUM_1];
-						if (e[GameTag.TAG_SCRIPT_DATA_NUM_2] > 0)
-							instance[GameTag.TAG_SCRIPT_DATA_NUM_2] = e[GameTag.TAG_SCRIPT_DATA_NUM_2];
-
-						instance.CapturedCard = e.CapturedCard;
+						instance.ScriptTag1 = e.ScriptTag1;
+						if (e.ScriptTag2 > 0)
+							instance.ScriptTag2 = e.ScriptTag2;
 					}
 					if (e.IsOneTurnActive)
 						game.OneTurnEffectEnchantments.Add(instance);

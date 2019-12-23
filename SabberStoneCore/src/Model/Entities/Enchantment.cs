@@ -112,9 +112,17 @@ namespace SabberStoneCore.Model.Entities
 
 		public bool IsOneTurnActive { get; private set; }
 
-		public int ScriptTag1 => this[GameTag.TAG_SCRIPT_DATA_NUM_1];
+		public int ScriptTag1
+		{
+			get => _v1 ?? 0;
+			set => _v1 = value;
+		}
 
-		public int ScriptTag2 => this[GameTag.TAG_SCRIPT_DATA_NUM_2];
+		public int ScriptTag2
+		{
+			get => _v2 ?? 0;
+			set => _v1 = value;
+		}
 
 		/// <summary>
 		/// Creates and adds a new Enchantment entity to the given Controller's Game.
@@ -126,13 +134,13 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="num1">The value of script tag 1.</param>
 		/// <param name="num2">The value of script tag 2.</param>
 		/// <returns>The resulting enchantment entity.</returns>
-		public static Enchantment GetInstance(in Controller controller, in Playable creator,
+		public static Enchantment GetInstance(in Game game, in Controller controller, in Playable creator,
 											  in Entity target, in Card card,
 											  int? num1 = default, int? num2 = default)
 		{
-			int id = controller.Game.NextId;
+			int id = game.NextId;
 
-			var tags = new EntityData(4);
+			var tags = new EntityData(0);
 
 			var instance = new Enchantment(in controller, in card, in tags, in id)
 			{
@@ -144,16 +152,16 @@ namespace SabberStoneCore.Model.Entities
 				target.AppliedEnchantments = new List<Enchantment>(4);
 			target.AppliedEnchantments.Add(instance);
 
-			//controller.Game.IdEntityDic.Add(instance.Id, instance);
-			controller.Game.IdEntityDic[instance.Id] = instance;
+			//game.IdEntityDic.Add(instance.Id, instance);
+			game.IdEntityDic[instance.Id] = instance;
 
-			if (controller.Game.History)
+			if (game.History)
 			{
 				//tags.Add(GameTag.ENTITY_ID, id);
 				tags.Add(GameTag.ZONE, (int)Enums.Zone.SETASIDE);
 				//tags.Add(GameTag.CONTROLLER, controller.PlayerId);
 
-				controller.Game.PowerHistory.Add(new PowerHistoryFullEntity
+				game.PowerHistory.Add(new PowerHistoryFullEntity
 				{
 					Entity = new PowerHistoryEntity
 					{
@@ -181,7 +189,7 @@ namespace SabberStoneCore.Model.Entities
 					};
 					if (card[GameTag.TAG_ONE_TURN_EFFECT] == 1)
 						gameTags.Add(GameTag.TAG_ONE_TURN_EFFECT, 1);
-					controller.Game.PowerHistory.Add(new PowerHistoryShowEntity
+					game.PowerHistory.Add(new PowerHistoryShowEntity
 					{
 						Entity = new PowerHistoryEntity
 						{
@@ -198,25 +206,28 @@ namespace SabberStoneCore.Model.Entities
 			if (card.OneTurnEffect)
 			{
 				instance.IsOneTurnActive = true;
-				controller.Game.OneTurnEffectEnchantments.Add(instance);
+				game.OneTurnEffectEnchantments.Add(instance);
 			}
 
 
 			instance.Zone = controller.BoardZone;
-			instance.OrderOfPlay = controller.Game.NextOop;
+			instance.OrderOfPlay = game.NextOop;
 			//	323 = 1
 
 			if (card.Power.DeathrattleTask != null && target is MinionInPlay m)
 				m.HasDeathrattle = true;
 
-			controller.Game.Log(LogLevel.VERBOSE, BlockType.ACTION, "Enchantment",
-				!controller.Game.Logging ? "" : $"Enchantment {card} created by {creator} is added to {target}.");
+			if (game.Logging)
+				game.Log(LogLevel.VERBOSE, BlockType.ACTION, "Enchantment",
+				!game.Logging ? "" : $"Enchantment {card} created by {creator} is added to {target}.");
 
 			if (num1 >= 0)
 			{
-				tags.Add(GameTag.TAG_SCRIPT_DATA_NUM_1, num1.Value);
+				//tags.Add(GameTag.TAG_SCRIPT_DATA_NUM_1, num1.Value);
+				instance._v1 = num1;
 				if (num2 >= 0)
-					tags.Add(GameTag.TAG_SCRIPT_DATA_NUM_2, num2.Value);
+					//tags.Add(GameTag.TAG_SCRIPT_DATA_NUM_2, num2.Value);
+					instance._v2 = num2;
 			}
 
 			return instance;
@@ -230,6 +241,22 @@ namespace SabberStoneCore.Model.Entities
 		public override Playable Clone(in Controller controller)
 		{
 			return new Enchantment(in controller, this);
+		}
+
+		public override int this[GameTag t]
+		{
+			get =>
+				t == GameTag.TAG_SCRIPT_DATA_NUM_1 ? ScriptTag1 :
+				t == GameTag.TAG_SCRIPT_DATA_NUM_2 ? ScriptTag2 : base[t];
+			set
+			{
+				if (t == GameTag.TAG_SCRIPT_DATA_NUM_1)
+					ScriptTag1 = value;
+				else if (t == GameTag.TAG_SCRIPT_DATA_NUM_2)
+					ScriptTag2 = value;
+				else
+					base[t] = value;
+			}
 		}
 
 		public void Remove()
