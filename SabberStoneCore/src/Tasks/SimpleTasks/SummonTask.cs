@@ -149,23 +149,20 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				case SummonSide.DEFAULT:
 					return -1;
 				case SummonSide.LEFT:
-					if (source.Zone.Type == Zone.PLAY)
-						summonPosition = ((Minion) source).ZonePosition;
-					else
-						summonPosition = ((Minion) source).LastBoardPosition;
+					summonPosition = ((Minion) source).ZonePosition;
 					break;
 				case SummonSide.RIGHT:
 					if (source.Zone.Type == Zone.PLAY)
 						summonPosition = ((Minion) source).ZonePosition + 1;
 					else
-						summonPosition = ((Minion) source).LastBoardPosition;
+						summonPosition = ((Minion) source).ZonePosition;
 					break;
 				case SummonSide.DEATHRATTLE:
 					if (source is Minion m)
-						summonPosition = m.LastBoardPosition;
+						summonPosition = m.ZonePosition;
 					else if
 						(source is Enchantment e)
-						summonPosition = ((Minion)e.Target).LastBoardPosition;
+						summonPosition = ((Minion)e.Target).ZonePosition;
 					else goto default;
 					break;
 				case SummonSide.NUMBER:

@@ -801,15 +801,15 @@ namespace SabberStoneCore.CardSets.Standard
 				Aura = new AdaptiveCostEffect(
 					initialisationFunction: p =>
 					{
-						int sum = 0;
-						for (int i = 0; i < p.Controller.PlayHistory.Count; i++)
-							if (p.Controller.PlayHistory[i].SourceCard.Type == CardType.SPELL)
-								sum += p.Game.IdEntityDic[p.Controller.PlayHistory[i].SourceId][
-									GameTag.TAG_LAST_KNOWN_COST_IN_HAND];
+						//int sum = 0;
+						//for (int i = 0; i < p.Controller.PlayHistory.Count; i++)
+						//	if (p.Controller.PlayHistory[i].SourceCard.Type == CardType.SPELL)
+						//		sum += p.Game.IdEntityDic[p.Controller.PlayHistory[i].SourceId][
+						//			GameTag.TAG_LAST_KNOWN_COST_IN_HAND];
 
-						return -sum;
+						return -p.Controller.TotalManaSpentOnSpells;
 					},
-					triggerValueFunction: p => -p[GameTag.TAG_LAST_KNOWN_COST_IN_HAND],
+					triggerValueFunction: p => -p.Game.CurrentEventData.EventNumber,
 					trigger: TriggerType.CAST_SPELL,
 					triggerSource: TriggerSource.FRIENDLY)
 			});
@@ -864,7 +864,7 @@ namespace SabberStoneCore.CardSets.Standard
 					.SetTask(new CustomTask((g, c, s, t, stack) =>
 					{
 						if (c.BoardZone.IsFull) return;
-						Card instance = Card.GetTigerCard(t[GameTag.TAG_LAST_KNOWN_COST_IN_HAND], g.History);
+						Card instance = Card.GetTigerCard(g.CurrentEventData.EventNumber, g.History);
 						Entity.FromCard(in c, in instance, zone: c.BoardZone, creator: in s);
 					}))
 					.SetSource(TriggerSource.FRIENDLY)
@@ -1512,7 +1512,7 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = TriggerLibrary.SpiritTrigger(TriggerBuilder.Type(TriggerType.CAST_SPELL)
 					.SetTask(new CustomTask((g, c, s, t, stack) =>
 					{
-						int cost = t[GameTag.TAG_LAST_KNOWN_COST_IN_HAND] + 1;
+						int cost = g.CurrentEventData.EventNumber + 1;
 						ReadOnlySpan<Playable> deck = c.DeckZone.GetSpan();
 						List<int> indices = new List<int>();
 						for (int i = 0; i < deck.Length; i++)
@@ -1950,7 +1950,7 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = TriggerLibrary.SpiritTrigger(TriggerBuilder.Type(TriggerType.SUMMON)
 					.SetTask(new AddEnchantmentTask("TRL_327e", EntityType.TARGET))
 					.SetSource(TriggerSource.FRIENDLY)
-					.SetCondition(SelfCondition.IsTagValue(GameTag.RUSH, 1))
+					.SetCondition(SelfCondition.HasRush)
 					.GetTrigger())
 			});
 
@@ -2174,7 +2174,8 @@ namespace SabberStoneCore.CardSets.Standard
 						int pick = g.Random.Next(2);
 						Playable giveaway = stack.Playables[pick];
 						giveaway.Controller = c.Opponent;
-						giveaway[GameTag.CONTROLLER] = c.Opponent.PlayerId;
+						if (g.History)
+							giveaway[GameTag.CONTROLLER] = c.Opponent.PlayerId;
 						Generic.AddHandPhase(c.Opponent, giveaway);
 						Generic.AddHandPhase(c, stack.Playables[(pick + 1) % 2]);
 					}),

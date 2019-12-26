@@ -190,7 +190,7 @@ namespace SabberStoneCore.Model.Entities
 				return null;
 
 			Character randTarget = validTargets.RandomElement(Game.Random);
-			CardTarget = randTarget.Id;
+			//CardTarget = randTarget.Id;
 
 			if (Game.Logging)
 				Game.Log(LogLevel.INFO, BlockType.POWER, "GetRandomValidTarget",

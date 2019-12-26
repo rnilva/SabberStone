@@ -55,9 +55,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			object value = _property.Invoke(obj, null);
 
 			if (_property.ReturnType == typeof(int))
-				stack.Number = (int) value;
+				stack.Number = (int)value;
 			else if (_property.ReturnType == typeof(bool))
-				stack.Flag = (bool) value;
+				stack.Flag = (bool)value;
 			else
 				throw new NotImplementedException();
 

@@ -32,9 +32,8 @@ namespace SabberStoneCore.Conditions
 		public static RelaCondition IsNotSelf => new RelaCondition((me, other) => me != other);
 		public static RelaCondition IsSideBySide => new RelaCondition((me, other) => me.Zone == other.Zone && Math.Abs(me.ZonePosition - other.ZonePosition) == 1);
         public static RelaCondition IsMyHeroAttacked => new RelaCondition((me, other) => other is Character && (me.Game.ProposedDefender == me.Controller.Hero.Id));
-		public static RelaCondition IsTargetingMe => new RelaCondition((me, other) => other.CardTarget == me.Id);
 
-		public static RelaCondition IsMe(SelfCondition condition) => new RelaCondition((me, other) => condition.Eval(me));
+        public static RelaCondition IsMe(SelfCondition condition) => new RelaCondition((me, other) => condition.Eval(me));
 		public static RelaCondition IsOther(SelfCondition condition) => new RelaCondition((me, other) => condition.Eval(other));
 
 		public RelaCondition(Func<Playable, Playable, bool> function)

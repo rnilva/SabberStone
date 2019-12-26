@@ -103,7 +103,8 @@ namespace SabberStoneCore.Actions
 					case ChoiceAction.HEROPOWER:
 						if (RemoveFromZone(c, playable))
 						{
-							playable[GameTag.CREATOR] = c.Hero.Id;
+							//playable[GameTag.CREATOR] = c.Hero.Id;
+							playable.CreatorId = c.Hero.Id;
 							g.Log(LogLevel.INFO, BlockType.PLAY, "ReplaceHeroPower",
 								!g.Logging ? "" : $"{c.Hero} power replaced by {playable}");
 

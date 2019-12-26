@@ -125,17 +125,30 @@ namespace SabberStoneCore.Conditions
 
 
 		// entities that don't have a real zone like Heroes are checked on the gametag value
-		public static SelfCondition IsInZone(Zone zone) =>
-			new SelfCondition(me =>
-				me.Zone != null
-					? me.Zone.Type == zone
-					: me.NativeTags.TryGetValue(GameTag.ZONE, out int value) && (Zone)value == zone);
+		public static SelfCondition IsInZone(Zone zone) => new SelfCondition(me => me.Zone?.Type == zone);
+		//public static SelfCondition IsInZone(Zone zone) =>
+		//	new SelfCondition(me =>
+		//		me.Zone != null
+		//			? me.Zone.Type == zone
+		//			: me.NativeTags.TryGetValue(GameTag.ZONE, out int value) && (Zone)value == zone);
+
+		//public static readonly SelfCondition IsInPlay = new SelfCondition(me =>
+		//{
+		//	if (me.Zone != null)
+		//		return me.Zone.Type == Zone.PLAY;
+		//	if (me is HeroInPlay) return true;
+
+		//	if (me is Weapon w && w.Zone)
+		//})
 
 
 		public static readonly SelfCondition IsOverloadCard = new SelfCondition(me => me.Card.HasOverload);
 		public static readonly SelfCondition IsBattleCryCard = new SelfCondition(me => me.Card.Tags.ContainsKey(GameTag.BATTLECRY));
 		public static readonly SelfCondition IsChooseOneCard = new SelfCondition(me => me.Card.ChooseOne);
 		public static readonly SelfCondition HasTaunt = new SelfCondition(me => me is Minion m && m.HasTaunt);
+		public static readonly SelfCondition HasDivineShield = new SelfCondition(me => me is Minion m && m.HasDivineShield);
+		public static readonly SelfCondition HasCharge = new SelfCondition(me => me is Minion m && m.HasCharge);
+		public static readonly SelfCondition HasLifesteal = new SelfCondition(me => me.HasLifeSteal);
 		public static readonly SelfCondition IsFrozen = new SelfCondition(me => me is Character c && c.IsFrozen);
 		public static SelfCondition IsHeroPowerCard(string cardId) => new SelfCondition(me => me.Controller.Hero.HeroPower.Card.Id.Equals(cardId));
 		public static readonly SelfCondition IsManaCrystalFull = new SelfCondition(me => me.Controller.BaseMana == 10);
@@ -155,7 +168,7 @@ namespace SabberStoneCore.Conditions
 		public static readonly SelfCondition IsQuestDone = new SelfCondition(me => me[GameTag.QUEST_PROGRESS] == me[GameTag.QUEST_PROGRESS_TOTAL]);
 
 		public static readonly SelfCondition IsSpellTargetingMinion = new SelfCondition(me =>
-			me.Card.Type == CardType.SPELL && me.Game.IdEntityDic[me.CardTarget].Card.Type == CardType.MINION);
+			me.Card.Type == CardType.SPELL && me.Game.CurrentEventData.EventTarget.Card.Type == CardType.MINION);
 
 		public static readonly SelfCondition HoldingAnotherClassCard =
 			new SelfCondition(me => me.Controller.HandZone.Any(p => p.Card.Class != me.Controller.HeroClass));
@@ -172,7 +185,8 @@ namespace SabberStoneCore.Conditions
 		public static readonly SelfCondition DoesOpHasMoresMinions =
 			new SelfCondition(me => me.Controller.BoardZone.CountExceptUntouchables < me.Controller.Opponent.BoardZone.CountExceptUntouchables);
 
-		public static readonly SelfCondition HasTarget = new SelfCondition(me => me.CardTarget > 0);
+		public static readonly SelfCondition HasTarget =
+			new SelfCondition(p => p.Game.CurrentEventData.EventTarget != null);
 
 		public static SelfCondition AnyNonClassCardInHand(CardClass cardClass)
 			=> new SelfCondition(me => me.Controller.HandZone.Any(p => p.Card.Class != cardClass));

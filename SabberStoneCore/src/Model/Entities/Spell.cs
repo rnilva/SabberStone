@@ -39,7 +39,10 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		/// <param name="controller">The target <see cref="Controller"/> instance.</param>
 		/// <param name="spell">The source <see cref="Spell"/>.</param>
-		private Spell(in Controller controller, in Playable spell) : base(in controller, in spell) { }
+		private Spell(in Controller controller, in Spell spell) : base(in controller, spell)
+		{
+			_isCountered = spell._isCountered;
+		}
 
 		/// <summary>
 		/// Calculates if a target is valid by testing the game state for each hardcoded requirement.
@@ -92,7 +95,10 @@ namespace SabberStoneCore.Model.Entities
 	public partial class Spell
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
-		public bool IsAffectedBySpellpower => this[GameTag.AFFECTED_BY_SPELL_POWER] == 1;
+		private bool _isCountered;
+
+
+		public bool IsAffectedBySpellpower => Card[GameTag.AFFECTED_BY_SPELL_POWER] == 1;
 
 		//public bool IsSecret => Card[GameTag.SECRET] == 1;
 		public bool IsSecret => Card.IsSecret;
@@ -102,8 +108,10 @@ namespace SabberStoneCore.Model.Entities
 
 		public bool IsCountered
 		{
-			get { return this[GameTag.CANT_PLAY] == 1; }
-			set { this[GameTag.CANT_PLAY] = value ? 1 : 0; }
+			//get { return this[GameTag.CANT_PLAY] == 1; }
+			//set { this[GameTag.CANT_PLAY] = value ? 1 : 0; }
+			get => _isCountered;
+			set => _isCountered = value;
 		}
 
 		public bool ReceveivesDoubleSpellDamage => Card.ReceivesDoubleSpelldamageBonus;
@@ -114,7 +122,7 @@ namespace SabberStoneCore.Model.Entities
 			set { this[GameTag.QUEST_PROGRESS] = value; }
 		}
 
-		public int QuestTotalProgress => this[GameTag.QUEST_PROGRESS_TOTAL];
+		public int QuestTotalProgress => Card[GameTag.QUEST_PROGRESS_TOTAL];
 
 		public bool IsTwinSpell => Card.TwinSpell;
 	}

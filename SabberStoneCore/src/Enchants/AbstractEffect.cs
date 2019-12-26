@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
@@ -147,51 +148,52 @@ namespace SabberStoneCore.Enchants
 	public abstract class CharacterEffect : AbstractEffect
 	{
 		#region Overrides of AbstractEffect
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void ApplyTo(Entity entity)
 		{
 			throw new NotImplementedException();
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void RemoveFrom(Entity entity)
 		{
 			throw new NotImplementedException();
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void ApplyTo(Playable playable)
 		{
 			throw new NotImplementedException();
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void RemoveFrom(Playable playable)
 		{
 			throw new NotImplementedException();
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void ApplyTo(HeroInPlay hero)
 		{
 			ApplyTo((Character) hero);
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void RemoveFrom(HeroInPlay hero)
 		{
 			RemoveFrom((Character) hero);
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void ApplyTo(MinionInPlay minion)
 		{
 			ApplyTo((Character) minion);
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void RemoveFrom(MinionInPlay minion)
 		{
 			RemoveFrom((Character) minion);
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void ApplyTo(Controller controller)
 		{
 			throw new NotImplementedException();
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void RemoveFrom(Controller controller)
 		{
 			throw new NotImplementedException();
@@ -720,6 +722,36 @@ namespace SabberStoneCore.Enchants
 		}
 
 		public override void RemoveFrom(Character character)
+		{
+			
+		}
+	}
+
+	public class FreezeEffect : CharacterEffect
+	{
+		public override GameTag Tag => GameTag.FREEZE;
+
+		public override void ApplyTo(Character character)
+		{
+			character.IsFrozen = true;
+		}
+
+		public override void RemoveFrom(Character character)
+		{
+			character.IsFrozen = false;
+		}
+	}
+
+	public class SetUnexhaustedEffect : PlayableEffect
+	{
+		public override GameTag Tag => GameTag.EXHAUSTED;
+
+		public override void ApplyTo(Playable playable)
+		{
+			playable.IsExhausted = false;
+		}
+
+		public override void RemoveFrom(Playable playable)
 		{
 			
 		}

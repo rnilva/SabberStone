@@ -1562,7 +1562,9 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("GIL_565", new Power {
 				PowerTask = ComplexTask.Create(
 					new ConditionTask(EntityType.SOURCE, SelfCondition.IsMyHeroDamagedThisTurn),
-					new FlagTask(true, new SetGameTagTask(GameTag.LIFESTEAL, 1, EntityType.SOURCE)))
+					new FlagTask(true,
+						//new SetGameTagTask(GameTag.LIFESTEAL, 1, EntityType.SOURCE)))
+						new ApplyEffectTask(EntityType.SOURCE, Effects.Lifesteal)))
 			});
 
 			// --------------------------------------- MINION - WARLOCK
@@ -1989,7 +1991,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("GIL_124", new Power {
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.ALLMINIONS_NOSOURCE),
-					new FilterStackTask(SelfCondition.IsTagValue(GameTag.ATK, 2, RelaSign.LEQ)),
+					new FilterStackTask(SelfCondition.IsATK(2, RelaSign.LEQ)),
 					new DestroyTask(EntityType.STACK))
 			});
 
@@ -2229,7 +2231,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_561", new Power {
-				PowerTask = new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.HERO_POWER)
+				PowerTask = ComplexTask.SetUnexhaustedTask(EntityType.HERO_POWER)
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

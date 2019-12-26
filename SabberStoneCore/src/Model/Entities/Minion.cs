@@ -167,37 +167,27 @@ namespace SabberStoneCore.Model.Entities
 			set => throw new NotImplementedException();
 		}
 
-		public bool HasBattleCry
-		{
-			get { return Card[GameTag.BATTLECRY] != 0; }
-			set { this[GameTag.BATTLECRY] = value ? 1 : 0; }
-		}
+		public bool HasInspire => Card[GameTag.INSPIRE] == 1;
 
-		public bool HasInspire
-		{
-			get { return this[GameTag.INSPIRE] == 1; }
-			set { this[GameTag.INSPIRE] = value ? 1 : 0; }
-		}
-
-		public bool IsEnraged
-		{
-			get { return this[GameTag.ENRAGED] == 1; }
-			set { this[GameTag.ENRAGED] = value ? 1 : 0; }
-		}
+		//public bool IsEnraged
+		//{
+		//	get { return this[GameTag.ENRAGED] == 1; }
+		//	set { this[GameTag.ENRAGED] = value ? 1 : 0; }
+		//}
 
 		public bool Freeze => Card.Freeze;
 
 		public bool Untouchable => Card.Untouchable;
 
-		public int LastBoardPosition
-		{
-			get
-			{
-				_data.TryGetValue(GameTag.TAG_LAST_KNOWN_POSITION_ON_BOARD, out int value);
-				return value;
-			}
-			set { this[GameTag.TAG_LAST_KNOWN_POSITION_ON_BOARD] = value; }
-		}
+		//public int LastBoardPosition
+		//{
+		//	get
+		//	{
+		//		_data.TryGetValue(GameTag.TAG_LAST_KNOWN_POSITION_ON_BOARD, out int value);
+		//		return value;
+		//	}
+		//	set { this[GameTag.TAG_LAST_KNOWN_POSITION_ON_BOARD] = value; }
+		//}
 
 		//public override ref bool this[BoolAttributes attr]
 		//{

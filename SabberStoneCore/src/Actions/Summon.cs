@@ -35,7 +35,7 @@ namespace SabberStoneCore.Actions
             if (minion.IsRace(Race.TOTEM))
                 minion.Controller.NumTotemSummonedThisGame++;
 
-			return true;
+            return true;
 		}
 
 		public static bool SummonBlock(Game g, MinionInPlay minion, int zonePosition, Playable summoner)

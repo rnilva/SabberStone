@@ -333,7 +333,7 @@ namespace SabberStoneCore.Model
 				Player2.BaseClass = Player2.HeroClass;
 			}
 
-			Auras = new List<IAura>(4);
+			Auras = new List<IAura>(8);
 			TaskQueue = new TaskQueue(this);
 			TriggerManager = new TriggerManager(this);
 			Triggers = new List<Trigger>(4);
@@ -399,10 +399,10 @@ namespace SabberStoneCore.Model
 
 			TaskQueue = new TaskQueue(this);
 			TriggerManager = new TriggerManager(this);
-			Auras = new List<IAura>(game.Auras.Count);
-			Triggers = new List<Trigger>(game.Triggers.Count);
+			Auras = new List<IAura>(game.Auras.Capacity);
+			Triggers = new List<Trigger>(game.Triggers.Capacity);
 			OneTurnEffects = new List<(int entityId, AbstractEffect effect)>(game.OneTurnEffects);
-			OneTurnEffectEnchantments = new List<Enchantment>(game.OneTurnEffectEnchantments.Count);
+			OneTurnEffectEnchantments = new List<Enchantment>(game.OneTurnEffectEnchantments.Capacity);
 			RushMinions.AddRange(game.RushMinions);
 			GhostlyCards.AddRange(game.GhostlyCards);
 			
@@ -1147,23 +1147,18 @@ namespace SabberStoneCore.Model
 					// Death event created
 					TriggerManager.OnDeathTrigger(minion);
 
-					minion.LastBoardPosition = minion.ZonePosition;
-					//minion.Zone.Remove(minion);
+
+					int lastBoardPosition = minion.ZonePosition;
 					Controller c = minion.Controller;
 					c.BoardZone.Remove(minion);
 
 					if (minion.HasDeathrattle)
 						minion.ActivateTask(PowerActivation.DEATHRATTLE);
 
-					c.GraveyardZone.Add(minion);
+					c.GraveyardZone.Add(minion, lastBoardPosition);
 					c.NumFriendlyMinionsThatDiedThisTurn++;
 					CurrentPlayer.NumMinionsPlayerKilledThisTurn++;
 					NumMinionsKilledThisTurn++;
-
-					//minion.Damage = 0;
-					//minion.IsExhausted = false;
-
-					// should remove tags of dead cards for faster cloning
 				}
 
 				if (History)

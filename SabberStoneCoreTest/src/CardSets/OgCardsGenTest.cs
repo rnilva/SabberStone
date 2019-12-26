@@ -4471,8 +4471,8 @@ namespace SabberStoneCoreTest.CardSets
 
 					var spellToCast = (Spell) Entity.FromCard(source.Controller, _spellCard);
 
-					spellToCast.CardTarget = source.Id;
-
+					//spellToCast.CardTarget = source.Id;
+					
 					Generic.CastSpell.Invoke(source.Controller, game, spellToCast, (Character)source, 0);
 					game.DeathProcessingAndAuraUpdate();
 

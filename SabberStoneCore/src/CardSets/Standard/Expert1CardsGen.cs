@@ -1249,11 +1249,10 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.CAST_SPELL)
 				{
 					SingleTask = ComplexTask.Secret(
-						new SetGameTagTask(GameTag.CANT_PLAY, 1, EntityType.TARGET),
-						new FuncNumberTask((Playable p) =>
+						new CustomTask((g,c,s,t,stack) =>
 						{
-							Trigger.InvalidateAll(p.Game);
-							return 0;
+							((Spell) t).IsCountered = true;
+							Trigger.InvalidateAll(g);
 						})),
 					FastExecution = true,
 				}
@@ -1330,16 +1329,22 @@ namespace SabberStoneCore.CardSets.Standard
 				{
 					Condition = SelfCondition.IsSpellTargetingMinion,
 					SingleTask = ComplexTask.Create(
-						new ConditionTask(EntityType.SOURCE, SelfCondition.IsNotBoardFull, SelfCondition.IsTagValue(GameTag.CANT_PLAY, 0)),
+						new ConditionTask(EntityType.SOURCE, SelfCondition.IsNotBoardFull/*, SelfCondition.IsTagValue(GameTag.CANT_PLAY, 0)*/),
 						new FlagTask(true, ComplexTask.Secret(
 							new SummonTask("tt_010a", SummonSide.DEFAULT, true),
-							new IncludeTask(EntityType.SOURCE, null, true),
-							new IncludeTask(EntityType.TARGET, null, true),
-							new FuncPlayablesTask(p =>
+							//new IncludeTask(EntityType.SOURCE, null, true),
+							//new IncludeTask(EntityType.TARGET, null, true),
+							//new FuncPlayablesTask(p =>
+							//{
+							//	p[2].CardTarget = p[0].Id;
+							//	return p;
+							//})
+							new CustomTask((g,c,s,t,stack) =>
 							{
-								p[2].CardTarget = p[0].Id;
-								return p;
-							}))))
+								// stack[0] : Summoned one
+								g.CurrentEventData.EventTarget = stack.Playables[0];
+							})
+							)))
 				}
 			});
 
@@ -2121,7 +2126,8 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("EX1_613", new Power {
 				ComboTask = ComplexTask.Create(
 					//new GetGameTagControllerTask(GameTag.NUM_CARDS_PLAYED_THIS_TURN),
-					new GetPropertyTask(EntityType.CONTROLLER, "NumCardsPlayedThisTurn"),
+					//new GetPropertyTask(EntityType.CONTROLLER, "NumCardsPlayedThisTurn"),
+					new GetControllerAttributeTask(ControllerIntAttributes.NumCardsPlayedThisTurn),
 					new MathSubstractionTask(1),
 					new MathMultiplyTask(2),
 					new AddEnchantmentTask("EX1_613e", EntityType.SOURCE, true))
@@ -3728,8 +3734,9 @@ namespace SabberStoneCore.CardSets.Standard
 				{
 					Condition = SelfCondition.HasMinionInHand,
 					SingleTask = ComplexTask.Conditional(SelfCondition.IsNotDead, ComplexTask.Create(
-							new GetGameTagTask(GameTag.ZONE_POSITION, EntityType.SOURCE),
-							new MathSubstractionTask(1),
+							//new GetGameTagTask(GameTag.ZONE_POSITION, EntityType.SOURCE),
+							new GetPlayableAttributeTask(PlayableAttributes.ZonePosition, EntityType.SOURCE),
+							//new MathSubstractionTask(1),
 							new MoveToSetaside(EntityType.SOURCE),
 							new IncludeTask(EntityType.HAND),
 							new FilterStackTask(SelfCondition.IsMinion),
@@ -4808,8 +4815,9 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("EX1_590", new Power {
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.ALLMINIONS),
-					new FilterStackTask(SelfCondition.IsTagValue(GameTag.DIVINE_SHIELD, 1)),
-					new SetGameTagTask(GameTag.DIVINE_SHIELD, 0, EntityType.STACK),
+					new FilterStackTask(SelfCondition.HasDivineShield),
+					//new SetGameTagTask(GameTag.DIVINE_SHIELD, 0, EntityType.STACK),
+					new ApplyEffectTask(EntityType.STACK, new SetBoolAttrEffect(BoolAttributes.DivineShield, false)),
 					new CountTask(EntityType.STACK),
 					new MathMultiplyTask(3),
 					new AddEnchantmentTask("EX1_590e", EntityType.SOURCE, true))
@@ -5141,7 +5149,7 @@ namespace SabberStoneCore.CardSets.Standard
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.OP_MINIONS),
 					new FilterStackTask(
-						SelfCondition.IsTagValue(GameTag.ATK, 2, RelaSign.LEQ),
+						SelfCondition.IsATK(2, RelaSign.LEQ),
 						SelfCondition.IsNotDead),
 					new RandomTask(1, EntityType.STACK),
 					new DestroyTask(EntityType.STACK))

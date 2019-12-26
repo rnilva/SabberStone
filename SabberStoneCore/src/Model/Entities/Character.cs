@@ -329,11 +329,14 @@ namespace SabberStoneCore.Model.Entities
 			// Check if the source is lifesteal
 			if (source.HasLifeSteal && !_lifestealChecker)
 			{
-				if (_history)
+				if (game.History)
 					game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, source.Id, source.Card.Id, -1, 0)); // TriggerKeyword=LIFESTEAL
-				game.Log(LogLevel.VERBOSE, BlockType.ATTACK, "TakeDamage", !_logging ? "" : $"lifesteal source {source} has damaged target for {amount}.");
+				if (game.Logging)
+					game.Log(LogLevel.VERBOSE, BlockType.ATTACK, "TakeDamage", !_logging ? "" : $"lifesteal source {source} has damaged target for {amount}.");
+
 				source.Controller.Hero.TakeHeal(source, amount);
-				if (_history)
+
+				if (game.History)
 					game.PowerHistory.Add(new PowerHistoryBlockEnd());
 
 				if (source.Controller.Hero.ToBeDestroyed && source.Controller.Hero.Health > 0)
@@ -475,6 +478,8 @@ namespace SabberStoneCore.Model.Entities
 			set => throw new NotImplementedException();
 		}
 		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
+		public bool HasBattleCry => Card.Battlecry;
+
 		public virtual bool IsImmune
 		{
 			get => default;
@@ -535,7 +540,15 @@ namespace SabberStoneCore.Model.Entities
 		{
 			effect.ApplyTo(this);
 		}
+		internal void ApplyEffect(CharacterEffect effect)
+		{
+			effect.ApplyTo(this);
+		}
 		internal override void RemoveEffect(AbstractEffect effect)
+		{
+			effect.RemoveFrom(this);
+		}
+		internal void RemoveFrom(CharacterEffect effect)
 		{
 			effect.RemoveFrom(this);
 		}

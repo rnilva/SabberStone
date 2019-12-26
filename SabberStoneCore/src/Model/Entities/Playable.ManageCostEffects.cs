@@ -11,7 +11,7 @@ namespace SabberStoneCore.Model.Entities
 	{
 		internal class CostManager
 		{
-			private readonly List<int> _setEffects = new List<int>();
+			private readonly List<int> _setEffects = new List<int>(2);
 			private int _cachedValue;
 			private bool _toBeUpdated;
 			private AdaptiveCostEffect _adaptiveCostEffect;
@@ -82,9 +82,9 @@ namespace SabberStoneCore.Model.Entities
 
 			private int GetCostInternal(int c)
 			{
-				if (_adaptiveCostEffect?.IsSetEffect ?? false)
-					_adaptiveCostEffect.Apply(ref c);
-				else
+				bool flag = _adaptiveCostEffect?.IsSetEffect == true && _adaptiveCostEffect.Apply(ref c);
+
+				if (!flag) 
 				{
 					if (_setEffects.Count > 0)
 						c = _setEffects[_setEffects.Count - 1];
@@ -112,6 +112,8 @@ namespace SabberStoneCore.Model.Entities
 			if (Zone?.Type != Enums.Zone.HAND) return null;
 
 			return _costManager ?? (_costManager = new CostManager(_modifiedCost ?? (_modifiedCost = Card.Cost).Value));
+
+			// TODO: Cost TagChange History
 		}
 
 		internal void VaryCost(int value)

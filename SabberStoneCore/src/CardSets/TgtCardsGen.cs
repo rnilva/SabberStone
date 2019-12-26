@@ -727,7 +727,7 @@ namespace SabberStoneCore.CardSets
 				// TODO [AT_008] Coldarra Drake && Test: Coldarra Drake_AT_008
 				Trigger = TriggerBuilder
 					.Type(TriggerType.INSPIRE)
-					.SetTask(new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.HERO_POWER))
+					.SetTask(ComplexTask.SetUnexhaustedTask(EntityType.HERO_POWER))
 					.GetTrigger()
 			});
 
@@ -2040,7 +2040,7 @@ namespace SabberStoneCore.CardSets
 				Trigger = new Trigger(TriggerType.INSPIRE)
 				{
 					Condition = new SelfCondition(p => p.Controller.HeroPowerActivationsThisTurn == 1),
-					SingleTask = new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.HERO_POWER)
+					SingleTask = ComplexTask.SetUnexhaustedTask(EntityType.HERO_POWER)
 				}
 			});
 
@@ -2649,7 +2649,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("AT_125", new Power {
 				Trigger = TriggerBuilder
 					.Type(TriggerType.ZONE)
-					.SetTask(new SetGameTagTask(GameTag.CANNOT_ATTACK_HEROES, 1, EntityType.SOURCE))
+					.SetTask(new ApplyEffectTask(EntityType.SOURCE, new SetBoolAttrEffect(BoolAttributes.CannotAttackHeroes, true)))
 					.SetRemoveAfterTriggered()
 			});
 

@@ -64,7 +64,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (!controller.SeenCthun)
 			{
 				proxyCthun = MinionInPlay.FromCard(in controller, CthunCard);
-				proxyCthun[GameTag.REVEALED] = 1;
+				proxyCthun.IsRevealed = true;
 				controller.SetasideZone.Add(proxyCthun);
 				controller.ProxyCthun = proxyCthun.Id;
 				controller.SeenCthun = true;

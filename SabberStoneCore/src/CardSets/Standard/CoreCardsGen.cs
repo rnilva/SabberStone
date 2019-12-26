@@ -1867,7 +1867,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("EX1_084", new Power {
 				Aura = new Aura(AuraType.BOARD, "EX1_084e")
 				{
-					Condition = SelfCondition.IsTagValue(GameTag.CHARGE, 1),
+					Condition = SelfCondition.HasCharge,
 					Restless = true
 				}
 			});

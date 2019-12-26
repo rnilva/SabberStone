@@ -328,6 +328,13 @@ namespace SabberStoneCore.Triggers
 						    p :
 						    null);
 		    }
+
+			if (_isSecret)
+			{
+				if (Game.History)
+					_owner.IsRevealed = true;
+				Game.TriggerManager.OnSecretRevealedTrigger(_owner);
+			}
 	    }
 
 		/// <summary>

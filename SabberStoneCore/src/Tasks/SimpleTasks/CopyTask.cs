@@ -89,7 +89,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						zonePosition = (_zoneType == Zone.PLAY &&
 						                target is Enchantment e &&
 						                e.Power?.DeathrattleTask != null)
-							? ((Minion) source).LastBoardPosition
+							? ((Minion) source).ZonePosition
 							: -1;
 						break;
 					case EntityType.EVENT_SOURCE:

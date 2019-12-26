@@ -8,6 +8,61 @@ using static SabberStoneCore.Tasks.ImplementationHelpers;
 
 namespace SabberStoneCore.Tasks.SimpleTasks
 {
+	public enum PlayableAttributes
+	{
+		AttackDamage,
+		Health,
+		Durability = Health,
+		Cost,
+		Armor,
+		Exhausted,
+		ZonePosition,
+		Entity_Id,
+
+	}
+
+	public class GetPlayableAttributeTask : SimpleTask
+	{
+		private readonly EntityType _type;
+		private readonly Func<Playable, int> _getter;
+
+		public GetPlayableAttributeTask(PlayableAttributes attr, EntityType type)
+		{
+			_type = type;
+
+			switch (attr)
+			{
+				case PlayableAttributes.AttackDamage:
+					_getter = p => ((Character) p).AttackDamage;
+					break;
+				case PlayableAttributes.Health:
+					_getter = p => ((Character) p).Health;
+					break;
+				case PlayableAttributes.Cost:
+					_getter = p => p.Cost;
+					break;
+				case PlayableAttributes.Armor:
+					_getter = p => ((Hero) p).Armor;
+					break;
+				case PlayableAttributes.ZonePosition:
+					_getter = p => p.ZonePosition;
+					break;
+				case PlayableAttributes.Entity_Id:
+					_getter = p => p.Id;
+					break;
+			}
+		}
+
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+			in TaskStack stack = null)
+		{
+			IList<Playable> entities = IncludeTask.GetEntities(in _type, in controller, source, target, stack.Playables);
+
+			stack.Number = _getter(entities[0]);
+			return TaskState.COMPLETE;
+		}
+	}
+
 	public class GetIntAttributeTask : SimpleTask
 	{
 		private readonly int _attribute;

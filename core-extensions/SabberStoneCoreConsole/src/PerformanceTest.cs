@@ -60,6 +60,19 @@ namespace SabberStoneCoreConsole
 
 			var rnd = new Random();
 
+			Console.WriteLine("Warming up......");
+			for (int i = 0; i < count; ++i)
+			{
+				Game g = game.Clone();
+				g.StartGame();
+				do
+				{
+					List<PlayerTask> options = g.CurrentPlayer.Options();
+					g.Process(options[rnd.Next(options.Count)]);
+
+				} while (g.State != State.COMPLETE);
+			}
+
 			var roundRecords = new double[round];
 
 			for (int r = 0; r < round; ++r)
@@ -68,8 +81,8 @@ namespace SabberStoneCoreConsole
 
 				for (int i = 0; i < count; ++i)
 				{
-					Game g = game.Clone();
 					watch.Start();
+					Game g = game.Clone();
 					g.StartGame();
 					do
 					{
@@ -77,8 +90,8 @@ namespace SabberStoneCoreConsole
 						g.Process(options[rnd.Next(options.Count)]);
 
 					} while (g.State != State.COMPLETE);
-
 					watch.Stop();
+
 					record[i] = watch.ElapsedMilliseconds;
 				}
 

@@ -1032,7 +1032,7 @@ namespace SabberStoneCore.CardSets.Standard
 			//       minions from your deck.
 			// --------------------------------------------------------
 			cards.Add("BOT_909", new Power {
-				PowerTask = ComplexTask.DrawFromDeck(2, SelfCondition.IsTagValue(GameTag.ATK, 1))
+				PowerTask = ComplexTask.DrawFromDeck(2, SelfCondition.IsATK(1))
 			});
 
 			// ---------------------------------------- SPELL - PALADIN
@@ -1681,7 +1681,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_291", new Power {
-				PowerTask = ComplexTask.DrawFromDeck(1, SelfCondition.IsTagValue(GameTag.COST, 5, RelaSign.GEQ))
+				PowerTask = ComplexTask.DrawFromDeck(1, SelfCondition.IsCost(5, RelaSign.GEQ))
 			});
 
 			// ---------------------------------------- MINION - SHAMAN
@@ -2509,7 +2509,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("BOT_267", new Power {
 				DeathrattleTask = ComplexTask.Create(
 					new IncludeTask(EntityType.HAND),
-					new FilterStackTask(SelfCondition.IsTagValue(GameTag.COST, 2, RelaSign.LEQ), SelfCondition.IsMinion),
+					new FilterStackTask(SelfCondition.IsCost(2, RelaSign.LEQ), SelfCondition.IsMinion),
 					new RandomTask(1, EntityType.STACK),
 					new RemoveFromHand(EntityType.STACK),
 					new SummonTask())

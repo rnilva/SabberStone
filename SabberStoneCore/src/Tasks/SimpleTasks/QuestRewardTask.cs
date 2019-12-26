@@ -42,7 +42,7 @@
 
 //			// adding reward to hand
 //			Generic.AddHandPhase.Invoke(controller, reward);
-//			spell[GameTag.REVEALED] = 1;
+//			spell.IsRevealed = true;
 
 //			// moving quest to graveyard
 //			controller.SecretZone.Quest = null;

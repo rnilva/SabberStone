@@ -636,7 +636,8 @@ namespace SabberStoneCore.CardSets
 			{
 				PowerTask = ComplexTask.Create(
 					new IncludeAdjacentTask(EntityType.SOURCE),
-					new SetGameTagTask(GameTag.DIVINE_SHIELD, 1, EntityType.STACK))
+					//new SetGameTagTask(GameTag.DIVINE_SHIELD, 1, EntityType.STACK))
+					new ApplyEffectTask(EntityType.STACK, Effects.DivineShield))
 			});
 
 			// --------------------------------------- MINION - PALADIN
@@ -700,7 +701,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("CFM_759", new Power
 			{
 				DeathrattleTask = ComplexTask.Create(
-					new ConditionTask(EntityType.SOURCE, SelfCondition.IsTagValue(GameTag.ATK, 2, RelaSign.GEQ)),
+					new ConditionTask(EntityType.SOURCE, SelfCondition.IsATK( 2, RelaSign.GEQ)),
 					new FlagTask(true, new DrawTask()))
 			});
 
@@ -998,7 +999,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("CFM_342", new Power
 			{
 				PowerTask = ComplexTask.Create(
-					new ConditionTask(EntityType.WEAPON, SelfCondition.IsTagValue(GameTag.ATK, 3, RelaSign.GEQ)),
+					new ConditionTask(EntityType.WEAPON, SelfCondition.IsATK( 3, RelaSign.GEQ)),
 					new FlagTask(true, new AddEnchantmentTask("CFM_342e", EntityType.SOURCE)))
 			});
 
@@ -1018,7 +1019,8 @@ namespace SabberStoneCore.CardSets
 					TriggerSource = TriggerSource.SELF,
 					//Condition = new SelfCondition(p => p.Game.IdEntityDic[p.Game.ProposedDefender].ToBeDestroyed),
 					Condition = SelfCondition.IsDefenderDead,
-					SingleTask = new SetGameTagTask(GameTag.STEALTH, 1, EntityType.SOURCE)
+					//SingleTask = new SetGameTagTask(GameTag.STEALTH, 1, EntityType.SOURCE)
+					SingleTask = new ApplyEffectTask(EntityType.SOURCE, Effects.StealthEff)
 				}
 			});
 
@@ -2440,7 +2442,8 @@ namespace SabberStoneCore.CardSets
 				Trigger = new Trigger(TriggerType.AFTER_CAST)
 				{
 					TriggerSource = TriggerSource.FRIENDLY,
-					SingleTask = new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.HERO_POWER)
+					//SingleTask = new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.HERO_POWER)
+					SingleTask = ComplexTask.SetUnexhaustedTask(EntityType.HERO_POWER)
 				}
 			});
 

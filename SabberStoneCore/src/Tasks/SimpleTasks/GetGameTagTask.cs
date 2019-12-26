@@ -46,12 +46,6 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			else if
 				(Tag == GameTag.DURABILITY)
 				value = entities[EntityIndex] is Weapon w ? w.Durability : 0;
-			else if
-				(Tag == GameTag.TAG_SCRIPT_DATA_NUM_1)
-				value = entities[EntityIndex]._v1 ?? 0;
-			else if
-				(Tag == GameTag.TAG_SCRIPT_DATA_NUM_2)
-				value = entities[EntityIndex]._v2 ?? 0;
 			else if (entities[EntityIndex] is Character c)
 				switch (Tag)
 				{

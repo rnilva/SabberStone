@@ -66,10 +66,10 @@ namespace SabberStoneCore.Actions
 				//if (g.History)
 				//	g.PowerHistory.Add(PowerHistoryBuilder.ShowEntity(source));
 
-				// target is beeing set onto this gametag
 				if (target != null)
-				{
-					source.CardTarget = target.Id;
+				{	// Don't use CardTarget any more; Use EventMetaData.Target instead.
+
+					//source.CardTarget = target.Id;
 					Trigger.ValidateTriggers(g, source, SequenceType.Target);
 				}
 
@@ -93,11 +93,12 @@ namespace SabberStoneCore.Actions
 
 				if (echo && !(source is Spell s && s.IsCountered))
 				{
-					var echoTags = new EntityData
-					{
-						{GameTag.GHOSTLY, 1}
-					};
-					Playable echoPlayable = Entity.FromCard(c, source.Card, echoTags, c.HandZone);
+					//var echoTags = new EntityData
+					//{
+					//	{GameTag.GHOSTLY, 1}
+					//};
+					Playable echoPlayable = Entity.FromCard(c, source.Card, null, c.HandZone);
+					echoPlayable.Ghostly = true;
 					echoPlayable.CreatorId = source.Id;
 
 					g.AuraUpdate();
@@ -112,7 +113,7 @@ namespace SabberStoneCore.Actions
 
 				if (history)
 				{
-					if (source[GameTag.GHOSTLY] == 1)
+					if (source.Ghostly)
 						source[GameTag.GHOSTLY] = 0;
 					g.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
 				}
@@ -150,7 +151,10 @@ namespace SabberStoneCore.Actions
 				int cost = source.Cost;
 				if (cost > 0)
 				{
-					source[GameTag.TAG_LAST_KNOWN_COST_IN_HAND] = cost;
+					//source[GameTag.TAG_LAST_KNOWN_COST_IN_HAND] = cost;
+
+					if (g.CurrentEventData != null)
+						g.CurrentEventData.EventNumber = cost;
 
 					if (source is Spell && c.SpellsCostHelath)
 					{
@@ -168,6 +172,8 @@ namespace SabberStoneCore.Actions
 					if (tempUsed > 0) c.TemporaryMana -= tempUsed;
 					c.UsedMana += cost - tempUsed;
 					c.TotalManaSpentThisGame += cost;
+					if (source.Card.Type == CardType.SPELL)
+						c.TotalManaSpentOnSpells += cost;
 				}
 				g.Log(LogLevel.INFO, BlockType.ACTION, "PayPhase", !g.Logging? "":$"Paying {source} for {source.Cost} Mana, remaining mana is {c.RemainingMana}.");
 				return true;
@@ -181,7 +187,8 @@ namespace SabberStoneCore.Actions
 
 				HeroInPlay oldHero = c.Hero;
 				HeroInPlay heroInPlay = HeroInPlay.FromHero(ref hero);
-				hero[GameTag.ZONE] = (int)Zone.PLAY;
+				if (g.History)
+					hero[GameTag.ZONE] = (int)Zone.PLAY;
 				//hero[GameTag.LINKED_ENTITY] = c.Hero.Id;
 				//hero[GameTag.HEALTH] = oldHero[GameTag.HEALTH];
 				heroInPlay.BaseHealth = oldHero.BaseHealth;
@@ -192,7 +199,7 @@ namespace SabberStoneCore.Actions
 				heroInPlay.IsExhausted = oldHero.IsExhausted;
 
 				c.SetasideZone.Add(oldHero);
-				//oldHero[GameTag.REVEALED] = 1;
+				//oldHero.IsRevealed = true;
 				//c[GameTag.HERO_ENTITY] = heroInPlay.Id;
 				heroInPlay.Weapon = oldHero.Weapon;
 				c.SetasideZone.Add(oldHero.HeroPower);
@@ -258,7 +265,8 @@ namespace SabberStoneCore.Actions
 
 				// Noggenfogger here
 				if (target != null && g.TriggerManager.OnTargetTrigger(minion))
-					target = (Character) g.IdEntityDic[minion.CardTarget];
+					//target = (Character) g.IdEntityDic[minion.CardTarget];
+					target = (Character) g.CurrentEventData.EventTarget;
 
 				// - BattleCry Phase --> Battle Cry Resolves
 				//   (death processing, aura updates)
@@ -334,7 +342,8 @@ namespace SabberStoneCore.Actions
 					// check Spellbender and Mayor Noggenfogger
 					if (target != null && triggerManager.OnTargetTrigger(spell))
 					{
-						target = (Character)g.IdEntityDic[spell.CardTarget];
+						//target = (Character)g.IdEntityDic[spell.CardTarget];
+						target = (Character) g.CurrentEventData.EventTarget;
 						g.Log(LogLevel.DEBUG, BlockType.ACTION, "PlaySpell", !g.Logging ? "" : $"trigger Spellbender Phase. Target of {spell} is changed to {target}.");
 					}
 
@@ -373,8 +382,9 @@ namespace SabberStoneCore.Actions
 
 				if (target != null && g.TriggerManager.OnTargetTrigger(weapon))
 				{
-					if (target.Id != weapon.CardTarget)
-						target = (Character) g.IdEntityDic[weapon.CardTarget];
+					//if (target.Id != weapon.CardTarget)
+					//	target = (Character) g.IdEntityDic[weapon.CardTarget];
+					target = (Character) g.CurrentEventData.EventTarget;
 				}
 
 				OverloadBlock(c, weapon, g.History);

@@ -2107,13 +2107,16 @@ namespace SabberStoneCoreTest.CardSets
 				i++;
 			} while (!game.CurrentPlayer.BoardZone.IsFull && i < 26);
 
-			game.ProcessCard("Twisting Nether", null, true);
+			//game.ProcessCard("Twisting Nether", null, true);
+
+			game.CurrentPlayer.BoardZone.ForEach(m => m.Silence());
 			game.ProcessCard("Twisting Nether", null, true);
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Lesser Diamond Spellstone"));
 
 			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
 			Assert.NotEqual(game.CurrentPlayer.BoardZone[0].Card.Id, game.CurrentPlayer.BoardZone[1].Card.Id);
+
 		}
 
 		// ---------------------------------------- WEAPON - PRIEST
@@ -3773,10 +3776,9 @@ namespace SabberStoneCoreTest.CardSets
 		// --------------------------------------------------------
 		// Text: Spend all your Armor. Deal that much damage to all minions.
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void RecklessFlurry_LOOT_364()
 		{
-			// TODO RecklessFlurry_LOOT_364 test
 			var game = new Game(new GameConfig
 			{
 				StartPlayer = 1,
@@ -3793,8 +3795,29 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Reckless Flurry"));
-			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Reckless Flurry"));
+
+
+			game.ProcessCard("Shield Block", asZeroCost: true);
+			game.ProcessCard("Shield Block", asZeroCost: true);
+			game.ProcessCard("Wisp");
+			game.ProcessCard("Wisp");
+			game.ProcessCard("Wisp");
+			Assert.Equal(10, game.CurrentPlayer.Hero.Armor);
+			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
+
+			game.EndTurn();
+			game.ProcessCard("Stormwind Champion", asZeroCost: true);
+			game.ProcessCard("Stormwind Champion", asZeroCost: true);
+			game.ProcessCard("Stormwind Champion", asZeroCost: true);
+			game.ProcessCard("Stormwind Champion", asZeroCost: true);
+			game.ProcessCard("Stormwind Champion", asZeroCost: true);
+			Assert.Equal(10, game.CurrentPlayer.BoardZone[0].Health);
+
+			game.EndTurn();
+			game.ProcessCard("Reckless Flurry");
+			Assert.Empty(game.CurrentPlayer.BoardZone);
+			Assert.Empty(game.CurrentOpponent.BoardZone);
+			Assert.Equal(0, game.CurrentPlayer.Hero.Armor);
 		}
 
 		// ---------------------------------------- SPELL - WARRIOR

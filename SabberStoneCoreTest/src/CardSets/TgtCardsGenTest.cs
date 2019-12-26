@@ -2779,16 +2779,14 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tiny Knight of Evil"));
+			Minion testCard = (Minion) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tiny Knight of Evil"));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
+			testCard = game.CurrentPlayer.BoardZone[0];
 			Playable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Soulfire"));
-			Assert.Equal(5, game.CurrentPlayer.HandZone.Count);
-			Assert.Equal(3, ((Minion)testCard).AttackDamage);
-			Assert.Equal(2, ((Minion)testCard).Health);
 			game.Process(PlayCardTask.SpellTarget(game.CurrentPlayer, spell, game.CurrentOpponent.Hero));
-			Assert.Equal(3, game.CurrentPlayer.HandZone.Count);
-			Assert.Equal(4, ((Minion)testCard).AttackDamage);
-			Assert.Equal(3, ((Minion)testCard).Health);
+			Assert.Equal(1, game.CurrentPlayer.NumDiscardedThisGame);
+			Assert.Equal(testCard.Card.ATK + 1, testCard.AttackDamage);
+			Assert.Equal(testCard.Card.Health + 1, testCard.Health);
 		}
 
 		// --------------------------------------- MINION - WARLOCK
