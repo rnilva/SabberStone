@@ -287,7 +287,7 @@ namespace SabberStoneCore.Model.Entities
 				//Hero[GameTag.EXHAUSTED] = 0;
 				//Hero[GameTag.NUM_ATTACKS_THIS_TURN ] = 0;
 				//Hero[GameTag.DAMAGE] = 0;
-				//Hero[GameTag.REVEALED] = 1;
+				//Hero.IsRevealed = true;
 				if (Hero.Weapon != null)
 				{
 					weapon = Hero.Weapon;
@@ -299,7 +299,8 @@ namespace SabberStoneCore.Model.Entities
 
 			//Hero = (Hero) FromCard(this, in heroCard, tags, null, id);
 			Hero = HeroInPlay.FromCard(this, in heroCard);
-			Hero[GameTag.ZONE] = (int) Enums.Zone.PLAY;
+			if (Game.History)
+				Hero[GameTag.ZONE] = (int) Enums.Zone.PLAY;
 			HeroId = Hero.Id;
 			Hero.HeroPower = FromCard(this, powerCard ?? Cards.FromAssetId(Hero[GameTag.HERO_POWER]),
 				new EntityData { [GameTag.CREATOR] = Hero.Id }) as HeroPower;

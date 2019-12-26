@@ -189,12 +189,12 @@ namespace SabberStoneCore.Actions
 					if (card != null)
 					{
 						info.Add(card.Id);
-						card[GameTag.REVEALED] = 1;
+						card.IsRevealed = true;
 					}
 					if (cardOp != null)
 					{
 						info.Add(cardOp.Id);
-						cardOp[GameTag.REVEALED] = 1;
+						cardOp.IsRevealed = true;
 					}
 					if (card != null)
 						c.Game.PowerHistory.Add(PowerHistoryBuilder.FullEntity(card));
@@ -214,12 +214,12 @@ namespace SabberStoneCore.Actions
 					if (card != null)
 					{
 						c.Game.PowerHistory.Add(PowerHistoryBuilder.HideEntity(card));
-						card[GameTag.REVEALED] = 0;
+						card.IsRevealed =  false;
 					}
 					if (cardOp != null)
 					{
 						c.Game.PowerHistory.Add(PowerHistoryBuilder.HideEntity(cardOp));
-						cardOp[GameTag.REVEALED] = 0;
+						cardOp.IsRevealed = false;
 					}
 
 					// if new entities are created, must be moved to setaside
@@ -489,23 +489,24 @@ namespace SabberStoneCore.Actions
 
 				if (newCard.ChooseOne)
 				{
-					EntityData tags = null;
-					if (c.Game.History)
-					{
-						tags = new EntityData
-						{
-							{GameTag.CREATOR, id},
-							{GameTag.PARENT_CARD, id}
-						};
-					}
+
+					//EntityData tags = null;
+					//if (c.Game.History)
+					//{
+					//	tags = new EntityData
+					//	{
+					//		{GameTag.CREATOR, id},
+					//		{GameTag.PARENT_CARD, id}
+					//	};
+					//}
 
 					if (newCard.AssetId == 43310)
 					{
 						var chooseOnes = new Playable[4];
-						chooseOnes[0] = Entity.FromCard(in c, Cards.FromId("TRL_343at1"), tags, c.SetasideZone);
-						chooseOnes[1] = Entity.FromCard(in c, Cards.FromId("TRL_343ct1"), tags, c.SetasideZone);
-						chooseOnes[2] = Entity.FromCard(in c, Cards.FromId("TRL_343dt1"), tags, c.SetasideZone);
-						chooseOnes[3] = Entity.FromCard(in c, Cards.FromId("TRL_343bt1"), tags, c.SetasideZone);
+						chooseOnes[0] = Entity.FromCard(in c, Cards.FromId("TRL_343at1"), null, c.SetasideZone);
+						chooseOnes[1] = Entity.FromCard(in c, Cards.FromId("TRL_343ct1"), null, c.SetasideZone);
+						chooseOnes[2] = Entity.FromCard(in c, Cards.FromId("TRL_343dt1"), null, c.SetasideZone);
+						chooseOnes[3] = Entity.FromCard(in c, Cards.FromId("TRL_343bt1"), null, c.SetasideZone);
 
 						source.ChooseOnePlayables = chooseOnes;
 					}
@@ -515,8 +516,8 @@ namespace SabberStoneCore.Actions
 							source.ChooseOnePlayables = new Playable[2];
 
 
-						source.ChooseOnePlayables[0] = Entity.FromCard(c, Cards.FromId(newCard.Id + "a"), tags, c.SetasideZone);
-						source.ChooseOnePlayables[1] = Entity.FromCard(c, Cards.FromId(newCard.Id + "b"), tags, c.SetasideZone);
+						source.ChooseOnePlayables[0] = Entity.FromCard(c, Cards.FromId(newCard.Id + "a"), null, c.SetasideZone);
+						source.ChooseOnePlayables[1] = Entity.FromCard(c, Cards.FromId(newCard.Id + "b"), null, c.SetasideZone);
 					}
 				}
 
@@ -609,43 +610,43 @@ namespace SabberStoneCore.Actions
 					PowerHistoryBuilder.BlockEnd());
 		}
 
-		// Work in progress
-		public static void RevealCardBlock(Playable source, Playable target)
-		{
-			Game game = source.Game;
-			if (!game.History) return;
+		//// Work in progress
+		//public static void RevealCardBlock(Playable source, Playable target)
+		//{
+		//	Game game = source.Game;
+		//	if (!game.History) return;
 
-			game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.REVEAL_CARD, source.Id, "", 0, target.Id));
-			target.NativeTags[GameTag.REVEALED] = 1;
-			game.PowerHistory.Add(PowerHistoryBuilder.ShowEntity(target));
-			game.PowerHistory.Add(PowerHistoryBuilder.HideEntity(target));
-			target[GameTag.REVEALED] = 0;
-			// ShowEntity with Zone = SETASIDE ????
-		}
+		//	game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.REVEAL_CARD, source.Id, "", 0, target.Id));
+		//	target.NativeTags.IsRevealed = true;
+		//	game.PowerHistory.Add(PowerHistoryBuilder.ShowEntity(target));
+		//	game.PowerHistory.Add(PowerHistoryBuilder.HideEntity(target));
+		//	target.IsRevealed = false;
+		//	// ShowEntity with Zone = SETASIDE ????
+		//}
 
-		// TODO: Posionous Block
-		public static Func<bool, Character, Character, bool> PoisonousBlock
-			=> delegate(bool history, Character source, Character target)
-			{
-				if (source[GameTag.POISONOUS] != 1)
-					return false;
+		//	// TODO: Posionous Block
+		//	public static Func<bool, Character, Character, bool> PoisonousBlock
+		//		=> delegate(bool history, Character source, Character target)
+		//		{
+		//			if (source[GameTag.POISONOUS] != 1)
+		//				return false;
 
-				if (history)
-				{
-					source.Game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, source.Id, "", -1,
-						0)); //	SubOption = -1, TriggerKeyWord = POISONOUS
-							 //[DebugPrintPower] META_DATA - Meta=TARGET Data = 0 Info=1
-							 //[DebugPrintPower] Info[0] = [entityName=Goldshire Footman id=47 zone=PLAY zonePos=1 cardId=CS1_042 player=2]
-				}
+		//			if (history)
+		//			{
+		//				source.Game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, source.Id, "", -1,
+		//					0)); //	SubOption = -1, TriggerKeyWord = POISONOUS
+		//				//[DebugPrintPower] META_DATA - Meta=TARGET Data = 0 Info=1
+		//				//[DebugPrintPower] Info[0] = [entityName=Goldshire Footman id=47 zone=PLAY zonePos=1 cardId=CS1_042 player=2]
+		//			}
 
-				target.Destroy();
+		//			target.Destroy();
 
 
-				if (history)
-					source.Game.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
+		//			if (history)
+		//				source.Game.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
 
-				return true;
-			};
+		//			return true;
+		//		};
 	}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

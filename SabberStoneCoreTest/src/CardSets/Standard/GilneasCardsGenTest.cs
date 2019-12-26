@@ -714,12 +714,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Playable echo = game.CurrentPlayer.HandZone.Last();
 			Assert.Equal("GIL_607t", echo.Card.Id);
-			Assert.Equal(1, echo[GameTag.GHOSTLY]);
+			Assert.True(echo.Ghostly);
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, echo));
 			Playable echo2 = game.CurrentPlayer.HandZone.Last();
 			Assert.Equal("GIL_607t", echo2.Card.Id);
-			Assert.Equal(1, echo2[GameTag.GHOSTLY]);
+			Assert.True(echo2.Ghostly);
 
 			// Rush Test
 			MinionInPlay rush = (MinionInPlay) game.IdEntityDic[echo.Id];
@@ -2971,10 +2971,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		// RefTag:
 		// - LIFESTEAL = 1
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void DeathwebSpider_GIL_565()
 		{
-			// TODO DeathwebSpider_GIL_565 test
 			var game = new Game(new GameConfig
 			{
 				StartPlayer = 1,
@@ -2991,8 +2990,14 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Deathweb Spider"));
-			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Deathweb Spider"));
+
+			Minion test1 = game.ProcessCard<Minion>("Deathweb Spider", asZeroCost: true);
+			Assert.False(test1.HasLifeSteal);
+
+			game.PlayHeroPower();
+			Assert.True(game.CurrentPlayer.Hero.DamageTakenThisTurn > 0);
+			Minion test2 = game.ProcessCard<Minion>("Deathweb Spider", asZeroCost: true);
+			Assert.True(test2.HasLifeSteal);
 		}
 
 		// --------------------------------------- MINION - WARLOCK
@@ -3072,7 +3077,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.ProcessCard(wisp);
 			Playable ghost = game.CurrentPlayer.HandZone.Last();
 			Assert.Equal("Wisp", ghost.Card.Name);
-			Assert.Equal(1, ghost[GameTag.GHOSTLY]);
+			Assert.True(ghost.Ghostly);
 			Assert.True(ghost.IsEcho);
 		}
 
@@ -4632,6 +4637,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			test = (MinionInPlay) game.IdEntityDic[test.Id];
 			Assert.False(test.ToBeDestroyed);
 
+			test = game.ProcessCard<MinionInPlay>("Wisp");
 			Minion returnToHandTest = game.ProcessCard<Minion>("Voodoo Doll", test, asZeroCost: true);
 			game.ProcessCard("Shadowstep", test);
 			Assert.Equal(Zone.HAND, test.Zone.Type);

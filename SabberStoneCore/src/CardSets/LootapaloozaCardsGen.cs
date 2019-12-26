@@ -64,7 +64,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RECRUIT = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_314", new Power {
-				DeathrattleTask = new RecruitTask(2, SelfCondition.IsTagValue(GameTag.COST, 4, RelaSign.LEQ))
+				DeathrattleTask = new RecruitTask(2, SelfCondition.IsCost(4, RelaSign.LEQ))
 			});
 
 			// ----------------------------------------- MINION - DRUID
@@ -168,7 +168,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("LOOT_309", new Power {
 				PowerTask = ComplexTask.Create(
 					new ArmorTask(6),
-					new RecruitTask(1, SelfCondition.IsTagValue(GameTag.COST, 4, RelaSign.LEQ)))
+					new RecruitTask(1, SelfCondition.IsCost( 4, RelaSign.LEQ)))
 			});
 
 			// ----------------------------------------- WEAPON - DRUID
@@ -557,7 +557,8 @@ namespace SabberStoneCore.CardSets.Standard
 				{
 					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
-						new GetGameTagTask(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, EntityType.TARGET),
+						//new GetGameTagTask(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, EntityType.TARGET),
+						new GetEventNumberTask(),
 						new ArmorTask())
 				}
 			});
@@ -925,7 +926,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RECRUIT = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_093", new Power {
-				PowerTask = new RecruitTask(3, SelfCondition.IsTagValue(GameTag.COST, 2, RelaSign.LEQ))
+				PowerTask = new RecruitTask(3, SelfCondition.IsCost(2, RelaSign.LEQ))
 			});
 
 			// ---------------------------------------- SPELL - PALADIN
@@ -2508,9 +2509,11 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("LOOT_364", new Power {
 				// TODO Test: Reckless Flurry_LOOT_364
 				PowerTask = ComplexTask.Create(
-					new GetGameTagTask(GameTag.ARMOR, EntityType.HERO),
-					new SetGameTagTask(GameTag.ARMOR, 0, EntityType.HERO),
-					new DamageNumberTask(EntityType.OP_MINIONS))
+					//new GetGameTagTask(GameTag.ARMOR, EntityType.HERO),
+					//new SetGameTagTask(GameTag.ARMOR, 0, EntityType.HERO),
+					new GetPlayableAttributeTask(PlayableAttributes.Armor, EntityType.HERO),
+					new RemoveArmorTask(false),
+					new DamageNumberTask(EntityType.ALLMINIONS))
 			});
 
 			// ---------------------------------------- SPELL - WARRIOR
@@ -3020,7 +3023,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RECRUIT = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_184", new Power {
-				DeathrattleTask = new RecruitTask(1, SelfCondition.IsTagValue(GameTag.COST, 8))
+				DeathrattleTask = new RecruitTask(1, SelfCondition.IsCost(8))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -3145,7 +3148,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RECRUIT = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_375", new Power {
-				PowerTask = new RecruitTask(1, SelfCondition.IsTagValue(GameTag.COST, 4, RelaSign.LEQ))
+				PowerTask = new RecruitTask(1, SelfCondition.IsCost( 4, RelaSign.LEQ))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -3292,9 +3295,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("LOOT_521", new Power {
 				PowerTask = ComplexTask.Create(
-					new RecruitTask(1, SelfCondition.IsTagValue(GameTag.ATK, 1)),
-					new RecruitTask(1, SelfCondition.IsTagValue(GameTag.ATK, 2)),
-					new RecruitTask(1, SelfCondition.IsTagValue(GameTag.ATK, 3)))
+					new RecruitTask(1, SelfCondition.IsATK(1)),
+					new RecruitTask(1, SelfCondition.IsATK(2)),
+					new RecruitTask(1, SelfCondition.IsATK(3)))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL

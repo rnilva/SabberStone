@@ -43,7 +43,7 @@ namespace SabberStoneCoreConsole
 
 			Console.WriteLine("Start Test!");
 
-			PerformanceTest.MageExpertTest();
+			PerformanceTest.MageExpertTest(20000, 10);
 			return;
 
 			//ChameleosPintSizedSummonerDouble();

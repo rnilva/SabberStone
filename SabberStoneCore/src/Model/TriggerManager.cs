@@ -346,6 +346,7 @@ namespace SabberStoneCore.Model
 			EventMetaData temp = sender.Game.CurrentEventData;
 			sender.Game.CurrentEventData = new EventMetaData(sender, null, amount);
 			OverloadTrigger.Invoke(sender);
+			ProcessTasks();
 			sender.Game.CurrentEventData = temp;
 	    }
 

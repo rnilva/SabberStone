@@ -1771,6 +1771,34 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Minion spellBender = game.CurrentOpponent.BoardZone[1];
 			Assert.Equal(4, spellBender.AttackDamage);
 			Assert.Equal(3, spellBender.Health);
+
+			// Spellbender should not react to spells targeting hero.
+			game.EndTurn();
+			game.ProcessCard("Spellbender");
+			game.EndTurn();
+
+			game.ProcessCard("Hammer of Wrath", game.CurrentOpponent.Hero);
+			Assert.Equal(3, game.CurrentOpponent.Hero.Damage);
+			Assert.Single(game.CurrentOpponent.SecretZone);
+		}
+
+		[Fact]
+		public void Spellbender_tt_010_CounterSpell_interaction()
+		{
+			var game = new Game(new GameConfig());
+			game.StartGame();
+
+			game.ProcessCard("Counterspell", asZeroCost: true);
+			game.ProcessCard("Spellbender", asZeroCost: true);
+			Minion target = game.ProcessCard<Minion>("Wisp");
+			game.EndTurn();
+
+			Assert.Equal(2, game.CurrentOpponent.SecretZone.Count);
+			game.ProcessCard("Moonfire", target);
+
+			Assert.False(target.IsDead);
+			Assert.Single(game.CurrentOpponent.BoardZone);
+			Assert.Single(game.CurrentOpponent.SecretZone);
 		}
 
 		// ------------------------------------------ MINION - MAGE

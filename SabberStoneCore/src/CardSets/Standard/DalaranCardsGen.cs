@@ -1734,11 +1734,12 @@ namespace SabberStoneCore.CardSets.Standard
 					new HealTask(4, EntityType.TARGET),
 					new CustomTask((g, c, s, t, stack) =>
 					{
-						var echoTags = new EntityData
-						{
-							{GameTag.GHOSTLY, 1}
-						};
-						Playable echoPlayable = Entity.FromCard(in c, s.Card, echoTags, c.HandZone);
+						//var echoTags = new EntityData
+						//{
+						//	{GameTag.GHOSTLY, 1}
+						//};
+						Playable echoPlayable = Entity.FromCard(in c, s.Card, null, c.HandZone);
+						echoPlayable.Ghostly = true;
 						echoPlayable.CreatorId = s.Id;
 						c.Game.AuraUpdate();
 						c.Game.GhostlyCards.Add(echoPlayable.Id);
@@ -2715,7 +2716,8 @@ namespace SabberStoneCore.CardSets.Standard
 			{
 				// TODO: Extra_Attacks_This_Turn
 				Trigger = TriggerBuilder.Type(TriggerType.AFTER_ATTACK)
-					.SetTask(new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.SOURCE))
+					//.SetTask(new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.SOURCE))
+					.SetTask(new ApplyEffectTask<SetUnexhaustedEffect, Playable>(EntityType.SOURCE))
 					.SetCondition(SelfCondition.IsDefenderDead)
 					.SetSource(TriggerSource.SELF)
 			}));
@@ -2861,7 +2863,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("DAL_749", new CardDef(new Power
 			{
 				DeathrattleTask = ComplexTask.Create(
-					new ConditionTask(EntityType.SOURCE, SelfCondition.IsTagValue(GameTag.ATK, 4, RelaSign.GEQ)),
+					new ConditionTask(EntityType.SOURCE, SelfCondition.IsATK(4, RelaSign.GEQ)),
 					new FlagTask(true, new SummonTask("DAL_749", 1, SummonSide.DEATHRATTLE)))
 			}));
 
@@ -2939,7 +2941,8 @@ namespace SabberStoneCore.CardSets.Standard
 			{
 				Trigger = TriggerBuilder.Type(TriggerType.AFTER_PLAY_MINION)
 					.SetTask(new AddEnchantmentTask("DAL_773e", EntityType.TARGET))
-					.SetCondition(SelfCondition.IsTagValue(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, 1))
+					//.SetCondition(SelfCondition.IsTagValue(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, 1))
+					.SetCondition(SelfCondition.IsCurrentEventNumber(1, RelaSign.EQ))
 					.SetSource(TriggerSource.FRIENDLY)
 			}));
 

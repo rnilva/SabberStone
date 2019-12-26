@@ -1384,6 +1384,33 @@ namespace SabberStoneCoreTest.Basic
         }
 
         [Fact]
+        public void SetAuraWithAdaptiveCostEffect()
+        {
+	        var game = new Game(new GameConfig());
+	        game.StartGame();
+
+	        Playable target = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Scorch"));
+	        game.AuraUpdate();
+	        Assert.Equal(target.Card.Cost, target.Cost);
+
+			game.ProcessCard("Kalecgos", asZeroCost: true);
+			game.ChooseNthChoice(1);
+			Assert.Equal(0, target.Cost);
+
+			game.ProcessCard("Arcane Missiles", asZeroCost: true);
+			Assert.Equal(4, target.Cost);
+
+			game.ProcessCard("Water Elemental", asZeroCost: true);
+			game.EndTurn();
+			game.EndTurn();
+
+			Assert.Equal(1, target.Cost);
+			Playable otherSpell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Explosion"));
+			game.AuraUpdate();
+			Assert.Equal(0, otherSpell.Cost);
+        }
+
+        [Fact]
         public void OneTurnEffectTest()
         {
 	        var game = new Game(new GameConfig());

@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Conditions;
+using SabberStoneCore.Enchants;
 using SabberStoneCore.Model;
 using SabberStoneCore.Tasks.SimpleTasks;
 using SabberStoneCore.Model.Entities;
@@ -45,60 +46,71 @@ namespace SabberStoneCore.Tasks
 				new AddStackTo(opponent ? EntityType.OP_HAND : EntityType.HAND));
 
 		internal static SimpleTask LifeSteal(EntityType entityType)
-			=> new SetGameTagTask(GameTag.LIFESTEAL, 1, entityType);
+			//=> new SetGameTagTask(GameTag.LIFESTEAL, 1, entityType);
+			=> new ApplyEffectTask(entityType, Effects.Lifesteal);
 
 		public static SimpleTask Freeze(EntityType entityType)
-			=> new SetGameTagTask(GameTag.FROZEN, 1, entityType);
+			//=> new SetGameTagTask(GameTag.FROZEN, 1, entityType);
+			=> new ApplyEffectTask(entityType, Effects.Freeze);
 
 		public static SimpleTask WindFury(EntityType entityType)
-			=> Create(
-				new SetGameTagTask(GameTag.WINDFURY, 1, entityType),
-				new IncludeTask(entityType),
-				new FuncPlayablesTask(playables =>
-				{
-					foreach (Playable p in playables)
-					{
-						var m = (Minion) p;
-						if (m.NumAttacksThisTurn == 1 && m.IsExhausted)
-							m.IsExhausted = false;
-					}
+			//=> Create(
+			//	new SetGameTagTask(GameTag.WINDFURY, 1, entityType),
+			//	new IncludeTask(entityType),
+			//	new FuncPlayablesTask(playables =>
+			//	{
+			//		foreach (Playable p in playables)
+			//		{
+			//			var m = (Minion) p;
+			//			if (m.NumAttacksThisTurn == 1 && m.IsExhausted)
+			//				m.IsExhausted = false;
+			//		}
 
-					return playables;
-				}));
+			//		return playables;
+			//	}));
+			=> new ApplyEffectTask(entityType, Effects.Windfury);
 
 		public static SimpleTask Taunt(EntityType entityType)
-			=> new SetGameTagTask(GameTag.TAUNT, 1, entityType);
+			//=> new SetGameTagTask(GameTag.TAUNT, 1, entityType);
+			=> new ApplyEffectTask(entityType, Effects.TauntEff);
 
 		public static SimpleTask DivineShield(EntityType entityType)
-			=> new SetGameTagTask(GameTag.DIVINE_SHIELD, 1, entityType);
+			//=> new SetGameTagTask(GameTag.DIVINE_SHIELD, 1, entityType);
+			=> new ApplyEffectTask(entityType, Effects.DivineShield);
 
 		public static SimpleTask Poisonous(EntityType entityType)
-			=> new SetGameTagTask(GameTag.POISONOUS, 1, entityType);
+			//=> new SetGameTagTask(GameTag.POISONOUS, 1, entityType);
+			=> new ApplyEffectTask(entityType, Effects.Poisonous);
 
 		public static SimpleTask Charge(EntityType entityType)
-			=> Create(
-				new SetGameTagTask(GameTag.CHARGE, 1, entityType),
-				new IncludeTask(entityType),
-				new FuncPlayablesTask(list =>
-				{
-					foreach (Playable p in list)
-					{
-						var m = (Minion) p;
-						if (m.NumAttacksThisTurn == 0 && m.IsExhausted)
-							m.IsExhausted = false;
-					}
-					return null;
-				})
-			);
+			//=> Create(
+			//	new SetGameTagTask(GameTag.CHARGE, 1, entityType),
+			//	new IncludeTask(entityType),
+			//	new FuncPlayablesTask(list =>
+			//	{
+			//		foreach (Playable p in list)
+			//		{
+			//			var m = (Minion) p;
+			//			if (m.NumAttacksThisTurn == 0 && m.IsExhausted)
+			//				m.IsExhausted = false;
+			//		}
+			//		return null;
+			//	})
+			//);
+			=> new ApplyEffectTask(entityType, Effects.Charge);
 
 		public static SimpleTask Stealth(EntityType entityType)
-			=> new SetGameTagTask(GameTag.STEALTH, 1, entityType);
+			//=> new SetGameTagTask(GameTag.STEALTH, 1, entityType);
+			=> new ApplyEffectTask(entityType, Effects.StealthEff);
 
 		public static SimpleTask ExtraAttacksThisTurn(EntityType type) =>
 			Create(
 				new GetIntAttributeTask(IntAttributes.ExtraAttacksThisTurn, type),
 				new MathAddTask(1),
 				new SetIntAttributeNumberTask(IntAttributes.ExtraAttacksThisTurn, type));
+
+		public static SimpleTask SetUnexhaustedTask(EntityType type)
+			=> new ApplyEffectTask<SetUnexhaustedEffect, Playable>(type);
 
 		public static SimpleTask DiscardRandomCard(int amount)
 			=> Create(
@@ -361,7 +373,7 @@ namespace SabberStoneCore.Tasks
 		public static SimpleTask Secret(params SimpleTask[] list)
 		{
 			List<SimpleTask> secretList = list.ToList();
-			secretList.Add(new SetGameTagTask(GameTag.REVEALED, 1, EntityType.SOURCE));
+			//secretList.Add(new SetGameTagTask(GameTag.REVEALED, 1, EntityType.SOURCE));
 			secretList.Add(new MoveToGraveYard(EntityType.SOURCE));
 			return StateTaskList.Chain(secretList.ToArray());
 		}

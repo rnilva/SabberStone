@@ -23,7 +23,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private readonly bool _op;
 
 		/// <summary>
-		///     Adding the amount as Armor.
+		/// Adding the amount as Armor.
 		/// </summary>
 		/// <param name="opponent">True if should add armour to the opponent of the source.</param>
 		public ArmorTask(int amount, bool opponent = false)
@@ -33,7 +33,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		}
 
 		/// <summary>
-		///     Adding the value contained in stack.Number as Armor.
+		/// Adding the value contained in stack.Number as Armor.
 		/// </summary>
 		public ArmorTask(bool opponent = false)
 		{
@@ -53,6 +53,27 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				controller.Opponent.Hero.GainArmor((Playable)source, _useNumber ? stack.Number : _amount);
 			else
 				controller.Hero.GainArmor((Playable)source, _useNumber ? stack.Number : _amount);
+
+			return TaskState.COMPLETE;
+		}
+	}
+
+	public class RemoveArmorTask : SimpleTask
+	{
+		private readonly bool _opponent;
+
+		public RemoveArmorTask(bool opponent = true)
+		{
+			_opponent = opponent;
+		}
+
+		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
+			in TaskStack stack = null)
+		{
+			if (_opponent)
+				controller.Opponent.Hero.Armor = 0;
+			else
+				controller.Hero.Armor = 0;
 
 			return TaskState.COMPLETE;
 		}

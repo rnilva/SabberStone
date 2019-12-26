@@ -191,9 +191,9 @@
 //					Activation = PowerActivation.BATTLECRY,
 //					PowerTask = ComplexTask.Create(
 //						ComplexTask.SummonRandomMinion(EntityType.DECK, RelaCondition.IsOther(SelfCondition.IsMinion),
-//							RelaCondition.IsOther(SelfCondition.IsTagValue(GameTag.COST, 1))),
+//							RelaCondition.IsOther(SelfCondition.IsCost(1))),
 //						ComplexTask.SummonOpRandomMinion(EntityType.OP_DECK, RelaCondition.IsOther(SelfCondition.IsMinion),
-//							RelaCondition.IsOther(SelfCondition.IsTagValue(GameTag.COST, 1)))),
+//							RelaCondition.IsOther(SelfCondition.IsCost(1)))),
 //				},
 //			});
 

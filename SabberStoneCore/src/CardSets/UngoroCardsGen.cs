@@ -73,7 +73,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("UNG_086", new Power {
 				DeathrattleTask = ComplexTask.Create(
 					new IncludeTask(EntityType.HAND),
-					new FilterStackTask(SelfCondition.IsMinion, SelfCondition.IsTagValue(GameTag.ATK, 5, RelaSign.GEQ)),
+					new FilterStackTask(SelfCondition.IsMinion, SelfCondition.IsATK(5, RelaSign.GEQ)),
 					new RandomTask(1, EntityType.STACK),
 					new RemoveFromHand(EntityType.STACK),
 					new SummonTask()),
@@ -208,7 +208,7 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
 				{
 					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsTagValue(GameTag.ATK, 5, RelaSign.GEQ),
+					Condition = SelfCondition.IsATK(5, RelaSign.GEQ),
 					SingleTask = new QuestProgressTask("UNG_116t")
 				}
 			});
@@ -374,7 +374,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_913", new Power {
-				PowerTask = ComplexTask.DrawFromDeck(2, SelfCondition.IsTagValue(GameTag.COST, 1), SelfCondition.IsMinion)
+				PowerTask = ComplexTask.DrawFromDeck(2, SelfCondition.IsCost(1), SelfCondition.IsMinion)
 			});
 
 			// ---------------------------------------- MINION - HUNTER
@@ -1279,9 +1279,10 @@ namespace SabberStoneCore.CardSets.Standard
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_940t8", new Power {
-				PowerTask = ComplexTask.Create(
-					new SetGameTagTask(GameTag.HEALTH, 40, EntityType.HERO),
-					new SetGameTagTask(GameTag.DAMAGE, 0, EntityType.HERO))
+				//PowerTask = ComplexTask.Create(
+				//	new SetGameTagTask(GameTag.HEALTH, 40, EntityType.HERO),
+				//	new SetGameTagTask(GameTag.DAMAGE, 0, EntityType.HERO))
+				PowerTask = new ApplyEffectTask(EntityType.HERO, Effects.SetMaxHealth(40))
 			});
 
 		}
@@ -1316,7 +1317,8 @@ namespace SabberStoneCore.CardSets.Standard
 				InfoCardId = "UNG_063e",
 				ComboTask = ComplexTask.Create(
 					//new GetGameTagControllerTask(GameTag.NUM_CARDS_PLAYED_THIS_TURN),
-					new GetPropertyTask(EntityType.CONTROLLER, "NumCardsPlayedThisTurn"),
+					//new GetPropertyTask(EntityType.CONTROLLER, "NumCardsPlayedThisTurn"),
+					new GetControllerAttributeTask(ControllerIntAttributes.NumCardsPlayedThisTurn),
 					new MathSubstractionTask(1),
 					new AddEnchantmentTask("UNG_063e", EntityType.SOURCE, true))
 			});
@@ -1956,9 +1958,9 @@ namespace SabberStoneCore.CardSets.Standard
 							newEntity.BaseHealth = p.BaseHealth + 2;
 
 							// separated trigger actually
-							newEntity[GameTag.REVEALED] = 1;
+							newEntity.IsRevealed = true;
 							newEntity.Controller.HandZone.Add(newEntity);
-							newEntity[GameTag.REVEALED] = 0;
+							newEntity.IsRevealed = false;
 							return null;
 						}))
 				}
@@ -2508,7 +2510,7 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
 				{
 					TriggerSource = TriggerSource.SELF,
-					SingleTask = new SetGameTagTask(GameTag.FROZEN, 1, EntityType.SOURCE)
+					SingleTask = new ApplyEffectTask(EntityType.SOURCE, Effects.Freeze)
 				}
 			});
 
@@ -2640,13 +2642,16 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("UNG_099", new Power {
 				// TODO [UNG_099] Charged Devilsaur
-				PowerTask = new SetGameTagTask(GameTag.CANNOT_ATTACK_HEROES, 1, EntityType.SOURCE),
+				//PowerTask = new SetGameTagTask(GameTag.CANNOT_ATTACK_HEROES, 1, EntityType.SOURCE),
+				PowerTask = new ApplyEffectTask(EntityType.SOURCE, new SetBoolAttrEffect(BoolAttributes.CannotAttackHeroes, true)),
+				// TODO: AddTriggerTask
 				Trigger = new Trigger(TriggerType.TURN_END)
 				{
-					SingleTask = ComplexTask.Create(
-						new ConditionTask(EntityType.SOURCE, SelfCondition.IsTagValue(GameTag.CANNOT_ATTACK_HEROES, 1)),
-						new FlagTask(true,
-						new SetGameTagTask(GameTag.CANNOT_ATTACK_HEROES, 0, EntityType.SOURCE))),
+					//SingleTask = ComplexTask.Create(
+					//	new ConditionTask(EntityType.SOURCE, SelfCondition.IsTagValue(GameTag.CANNOT_ATTACK_HEROES, 1)),
+					//	new FlagTask(true,
+					//	new SetGameTagTask(GameTag.CANNOT_ATTACK_HEROES, 0, EntityType.SOURCE))),
+					SingleTask = new ApplyEffectTask(EntityType.SOURCE, new SetBoolAttrEffect(BoolAttributes.CannotAttackHeroes, false)),
 					RemoveAfterTriggered = true
 				}
 			});
@@ -2866,7 +2871,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("UNG_840", new Power {
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.DECK),
-					new FilterStackTask(SelfCondition.IsTagValue(GameTag.COST, 3, RelaSign.LEQ)),
+					new FilterStackTask(SelfCondition.IsCost(3, RelaSign.LEQ)),
 					new MoveToSetaside(EntityType.STACK))
 			});
 
@@ -3009,7 +3014,8 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("UNG_907", new Power {
 				PowerTask = ComplexTask.Create(
 					//new GetGameTagControllerTask(GameTag.NUM_ELEMENTAL_PLAYED_LAST_TURN),
-					new GetPropertyTask(EntityType.CONTROLLER, "NumElementalsPlayedLastTurn"),
+					//new GetPropertyTask(EntityType.CONTROLLER, "NumElementalsPlayedLastTurn"),
+					new GetControllerAttributeTask(ControllerIntAttributes.NumElementalsPlayedLastTurn),
 					new EnqueueNumberTask(new AddEnchantmentTask("UNG_907e", EntityType.SOURCE)))
 			});
 

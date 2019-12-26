@@ -46,8 +46,8 @@ namespace SabberStoneCore.Model.Entities
 		NumSpellsPlayedThisGame = 34,
 		NumWeaponsPlayedThisGame = 35,
 		NumMurlocsPlayedThisGame = 36,
-		TimeOut = 37,
-		ProxyCthun = 38,
+		TimeOut = 38,
+		ProxyCthun = 39,
 		Invalid = -1,
 	}
 	public enum ControllerBoolAttributes
@@ -121,8 +121,9 @@ namespace SabberStoneCore.Model.Entities
 			// 34 : NumSpellsPlayedThisGame
 			// 35 : NumWeaponsPlayedThisGame
 			// 36 : NumMurlocsPlayedThisGame
-			// 37 : TimeOut
-			// 38 : ProxyCthun
+			// 37 : TotalManaSpentOnSpells
+			// 38 : TimeOut
+			// 39 : ProxyCthun
 
 			// 0 : IsComboActive
 			// 1 : SeenCthun
@@ -137,7 +138,7 @@ namespace SabberStoneCore.Model.Entities
 			// 6 : HeroPowerDisabled
 			// 7 : ExtraBattleCryAndCombo
 
-			private const int NUM_INT_ATTRS = 39;
+			private const int NUM_INT_ATTRS = 40;
 			private const int NUM_BOOL_ATTRS = 3;
 			private const int NUM_SBYTE_ATTRS = 8;
 #pragma warning disable 649
@@ -471,15 +472,22 @@ namespace SabberStoneCore.Model.Entities
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[36] = value;
 		}
+		public unsafe int TotalManaSpentOnSpells
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.intAttrs[37];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _attrs.intAttrs[37] = value;
+		}
 		/// <summary>
 		/// Maximum duration of seconds of this player's turn.
 		/// </summary>
 		public unsafe int TimeOut
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => _attrs.intAttrs[37];
+			get => _attrs.intAttrs[38];
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			set => _attrs.intAttrs[37] = value;
+			set => _attrs.intAttrs[38] = value;
 		}
 		/// <summary>
 		/// The entity which is a copy of the real C'Thun entity in deck
@@ -489,9 +497,9 @@ namespace SabberStoneCore.Model.Entities
 		public unsafe int ProxyCthun
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => _attrs.intAttrs[38];
+			get => _attrs.intAttrs[39];
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			set => _attrs.intAttrs[38] = value;
+			set => _attrs.intAttrs[39] = value;
 		}
 		/// <summary>
 		/// Indicates whether combo effects should be executed or not.Combo is active if at least one card has been played this turn.

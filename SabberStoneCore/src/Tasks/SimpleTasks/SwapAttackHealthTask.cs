@@ -56,8 +56,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					instance.ScriptTag2 = health;
 				}
 
-				ATK.Effect(EffectOperator.SET, health).ApplyTo(m);
-				Health.Effect(EffectOperator.SET, atk).ApplyTo(m);
+				m.ApplyEffect(Effects.SetAttack(health));
+				m.ApplyEffect(Effects.SetMaxHealth(atk));
 
 				foreach (Aura aura in controller.BoardZone.Auras)
 				{

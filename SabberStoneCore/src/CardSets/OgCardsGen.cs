@@ -376,7 +376,7 @@ namespace SabberStoneCore.CardSets
 					TriggerSource = TriggerSource.SELF,
 					//Condition = new SelfCondition(p => p.Game.IdEntityDic[p.Game.ProposedDefender].ToBeDestroyed),
 					Condition = SelfCondition.IsDefenderDead,
-					SingleTask = new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.SOURCE)
+					SingleTask = ComplexTask.SetUnexhaustedTask(EntityType.SOURCE)
 				}
 			});
 
@@ -646,7 +646,9 @@ namespace SabberStoneCore.CardSets
 				DeathrattleTask = ComplexTask.Create(
 					new IncludeTask(EntityType.MINIONS),
 					new RandomTask(1, EntityType.STACK),
-					new SetGameTagTask(GameTag.DIVINE_SHIELD, 1, EntityType.STACK))
+					//new SetGameTagTask(GameTag.DIVINE_SHIELD, 1, EntityType.STACK)
+					new ApplyEffectTask(EntityType.STACK, Effects.DivineShield)
+					)
 			});
 
 			// --------------------------------------- MINION - PALADIN
@@ -757,7 +759,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("OG_222", new Power {
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.MINIONS),
-					new FilterStackTask(SelfCondition.IsTagValue(GameTag.DIVINE_SHIELD, 1)),
+					new FilterStackTask(SelfCondition.HasDivineShield),
 					new AddEnchantmentTask("OG_222e", EntityType.STACK))
 			});
 
@@ -892,8 +894,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("OG_100", new Power {
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.ALLMINIONS),
-					new FilterStackTask(EntityType.SOURCE,
-						RelaCondition.IsOther(SelfCondition.IsTagValue(GameTag.ATK, 2, RelaSign.LEQ))),
+					new FilterStackTask(SelfCondition.IsATK(2, RelaSign.LEQ)),
 					new DestroyTask(EntityType.STACK))
 			});
 
@@ -1848,7 +1849,8 @@ namespace SabberStoneCore.CardSets
 				// TODO [OG_134] Yogg-Saron, Hope's End && Test: Yogg-Saron, Hope's End_OG_134
 				PowerTask = ComplexTask.Create(
 					//new GetGameTagControllerTask(GameTag.NUM_SPELLS_PLAYED_THIS_GAME),
-					new GetPropertyTask(EntityType.CONTROLLER, "NumSpellsPlayedThisGame"),
+					//new GetPropertyTask(EntityType.CONTROLLER, "NumSpellsPlayedThisGame"),
+					new GetControllerAttributeTask(ControllerIntAttributes.NumSpellsPlayedThisGame),
 					new EnqueueNumberTask(ComplexTask.Create(
 						new ConditionTask(EntityType.SOURCE, SelfCondition.IsInZone(Zone.PLAY), SelfCondition.IsNotSilenced),
 						new FlagTask(true, new CastRandomSpellTask()))))

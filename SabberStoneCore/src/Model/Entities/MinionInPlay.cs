@@ -359,15 +359,15 @@ namespace SabberStoneCore.Model.Entities
 			// remove keywords
 			HasTaunt = false;
 			IsFrozen = false;
-			IsEnraged = false;
+			//IsEnraged = false;
 			HasCharge = false;
 			HasWindfury = false;
 			Poisonous = false;
 			HasDivineShield = false;
 			HasStealth = false;
 			HasDeathrattle = false;
-			HasBattleCry = false;
-			HasInspire = false;
+			//HasBattleCry = false;
+			//HasInspire = false;
 			HasLifeSteal = false;
 			//CantBeTargetedByHeroPowers = false;
 			CantBeTargetedBySpells = false;
@@ -466,7 +466,15 @@ namespace SabberStoneCore.Model.Entities
 		{
 			effect.ApplyTo(this);
 		}
+		internal void ApplyEffect(MinionInPlayEffect effect)
+		{
+			effect.ApplyTo(this);
+		}
 		internal override void RemoveEffect(AbstractEffect effect)
+		{
+			effect.RemoveFrom(this);
+		}
+		internal void RemoveEffect(MinionInPlayEffect effect)
 		{
 			effect.RemoveFrom(this);
 		}

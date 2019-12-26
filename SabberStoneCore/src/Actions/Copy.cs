@@ -80,7 +80,7 @@ namespace SabberStoneCore.Actions
 					int? modifiedCost = source._modifiedCost;
 
                     if (modifiedCost.HasValue)
-                        copiedEntity.Cost = modifiedCost.Value;
+                        copiedEntity._modifiedCost = modifiedCost.Value;
 
                     if (sourceZone == Zone.HAND)
                     {

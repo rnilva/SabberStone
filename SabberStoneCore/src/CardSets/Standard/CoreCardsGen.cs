@@ -1968,7 +1968,7 @@ namespace SabberStoneCore.CardSets.Standard
 			{
 				Aura = new Aura(AuraType.BOARD, "EX1_084e")
 				{
-					Condition = SelfCondition.IsTagValue(GameTag.CHARGE, 1),
+					Condition = SelfCondition.HasCharge,
 					Restless = true
 				}
 			}));

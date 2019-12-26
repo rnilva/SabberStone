@@ -596,7 +596,8 @@ namespace SabberStoneCore.CardSets
 				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
 				{
 					TriggerSource = TriggerSource.HERO,
-					SingleTask = new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.HERO)
+					//SingleTask = new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.HERO)
+					SingleTask = ComplexTask.SetUnexhaustedTask(EntityType.HERO)
 				}
 			}));
 
@@ -1107,7 +1108,8 @@ namespace SabberStoneCore.CardSets
 				{
 					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
-						new GetGameTagTask(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, EntityType.TARGET),
+						//new GetGameTagTask(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, EntityType.TARGET),
+						new GetEventNumberTask(),
 						new RandomMinionNumberTask(GameTag.COST),
 						new SummonTask(),
 						new DamageWeaponTask(false))

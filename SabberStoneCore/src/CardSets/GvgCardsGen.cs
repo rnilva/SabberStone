@@ -2004,7 +2004,7 @@ namespace SabberStoneCore.CardSets
 				Trigger = new Trigger(TriggerType.SUMMON)
 				{
 					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsTagValue(GameTag.ATK, 1),
+					Condition = SelfCondition.IsATK(1),
 					SingleTask = new AddEnchantmentTask("GVG_104a", EntityType.TARGET)
 				}
 			});
@@ -2221,7 +2221,7 @@ namespace SabberStoneCore.CardSets
 				Trigger = new Trigger(TriggerType.CAST_SPELL)
 				{
 					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsTagValue(GameTag.COST, 1),
+					Condition = SelfCondition.IsCurrentEventNumber(1, RelaSign.EQ),
 					SingleTask = ComplexTask.Create(
 						new RandomCardTask(CardType.INVALID, CardClass.INVALID, Race.MECHANICAL),
 						new AddStackTo(EntityType.HAND))

@@ -488,6 +488,7 @@ namespace SabberStoneCore.Model.Entities
 		protected int _creatorId;
 
 		protected sbyte _echoEffects;
+		protected bool _ghostly;
 
 		public override void Reset()
 		{
@@ -506,8 +507,8 @@ namespace SabberStoneCore.Model.Entities
 			set
 			{
 				_zonePosition = value;
-				if (_history)
-					this[GameTag.ZONE_POSITION] = value + 1;
+				//if (_history)
+				//	this[GameTag.ZONE_POSITION] = value + 1;
 			}
 		}
 
@@ -540,11 +541,19 @@ namespace SabberStoneCore.Model.Entities
 			set
 			{
 				_exhausted = value;
-				if (_history || _logging)
-				{
-					this[GameTag.EXHAUSTED] = value ? 1 : 0;
-				}
+				//if (_history || _logging)
+				//{
+				//	this[GameTag.EXHAUSTED] = value ? 1 : 0;
+				//}
 			}
+		}
+
+		public bool IsRevealed
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => this[GameTag.REVEALED] == 1;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => this[GameTag.REVEALED] = value ? 1 : 0;
 		}
 
 		public int Overload
@@ -559,6 +568,18 @@ namespace SabberStoneCore.Model.Entities
 			get => _echoEffects > 0 || Card.Echo;
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _echoEffects += (value ? (sbyte) 1 : (sbyte) -1);
+		}
+
+		/// <summary>
+		/// True if this playable is created by Echo effect and
+		/// to be removed by the end of this turn.
+		/// </summary>
+		public bool Ghostly
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _ghostly;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _ghostly = value;
 		}
 
 		public virtual bool HasLifeSteal
@@ -578,7 +599,16 @@ namespace SabberStoneCore.Model.Entities
 		{
 			effect.ApplyTo(this);
 		}
+
+		internal void ApplyEffect(PlayableEffect effect)
+		{
+			effect.ApplyTo(this);
+		}
 		internal override void RemoveEffect(AbstractEffect effect)
+		{
+			effect.RemoveFrom(this);
+		}
+		internal void RemoveEffect(PlayableEffect effect)
 		{
 			effect.RemoveFrom(this);
 		}

@@ -127,14 +127,14 @@ namespace SabberStoneCore.CardSets
 					new ConditionTask(EntityType.SOURCE, SelfCondition.IsNotBoardFull),
 					new FlagTask(true, ComplexTask.Create(
 						new IncludeTask(EntityType.DECK),
-						new FilterStackTask(SelfCondition.IsTagValue(GameTag.COST, 1), SelfCondition.IsMinion),
+						new FilterStackTask(SelfCondition.IsCost(1), SelfCondition.IsMinion),
 						new RandomTask(1, EntityType.STACK),
 						new RemoveFromDeck(EntityType.STACK),
 						new SummonTask())),
 					new ConditionTask(EntityType.SOURCE, SelfCondition.IsOpNotBoardFull),
 					new FlagTask(true, ComplexTask.Create(
 						new IncludeTask(EntityType.OP_DECK),
-						new FilterStackTask(SelfCondition.IsTagValue(GameTag.COST, 1), SelfCondition.IsMinion),
+						new FilterStackTask(SelfCondition.IsCost(1), SelfCondition.IsMinion),
 						new RandomTask(1, EntityType.STACK),
 						new RemoveFromDeck(EntityType.STACK),
 						new SummonOpTask())))
@@ -491,16 +491,20 @@ namespace SabberStoneCore.CardSets
 			// RefTag:
 			// - OVERLOAD = 1
 			// --------------------------------------------------------
-			cards.Add("LOE_018", new CardDef(new Power
-			{
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
-				{
-					Condition = SelfCondition.IsOverloadCard,
-					SingleTask = ComplexTask.Create(
-						new GetGameTagTask(GameTag.OVERLOAD, EntityType.TARGET),
-						new AddEnchantmentTask("LOE_018e", EntityType.SOURCE, true))
-				}
-			}));
+			cards.Add("LOE_018", new Power {
+				//Trigger = new Trigger(TriggerType.PLAY_CARD)
+				//{
+				//	Condition = SelfCondition.IsOverloadCard,
+				//	SingleTask = ComplexTask.Create(
+				//		new GetGameTagTask(GameTag.OVERLOAD, EntityType.TARGET),
+				//		new AddEnchantmentTask("LOE_018e", EntityType.SOURCE, true))
+				//}
+				Trigger = TriggerBuilder
+					.Type(TriggerType.OVERLOAD)
+					.SetTask(ComplexTask.Create(
+						new GetEventNumberTask(),
+						new AddEnchantmentTask("LOE_018e", EntityType.SOURCE, true)))
+			});
 
 			// ----------------------------------------- SPELL - SHAMAN
 			// [LOE_113] Everyfin is Awesome - COST:7
@@ -933,7 +937,8 @@ namespace SabberStoneCore.CardSets
 				{
 					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
-						new GetGameTagTask(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, EntityType.TARGET),
+						//new GetGameTagTask(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, EntityType.TARGET),
+						new GetEventNumberTask(),
 						new RandomMinionNumberTask(GameTag.COST),
 						new SummonTask())
 				}

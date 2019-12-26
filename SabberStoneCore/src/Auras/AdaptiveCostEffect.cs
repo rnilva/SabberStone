@@ -188,11 +188,14 @@ namespace SabberStoneCore.Auras
 			owner.Game.Auras.Add(instance);
 		}
 
-		public void Apply(ref int value)
+		public bool Apply(ref int value)
 		{
 			if (_initialisationFunction != null)
+			{
 				value += _cachedValue;
-			
+				return true;
+			}
+
 			if (_costFunction != null && (_condition == null || _condition.Eval(_owner)))
 			{
 				if (_operator == EffectOperator.SUB)
@@ -203,10 +206,16 @@ namespace SabberStoneCore.Auras
 					value += _costFunction.Invoke(_owner);
 				else
 					value *= _costFunction.Invoke(_owner);
+				return true;
 			}
 
 			if (_isAppliedThisTurn)
+			{
 				value = _value;
+				return true;
+			}
+
+			return false;
 		}
 
 		public void Remove()

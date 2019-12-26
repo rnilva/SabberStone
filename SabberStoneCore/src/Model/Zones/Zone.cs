@@ -225,6 +225,11 @@ namespace SabberStoneCore.Model.Zones
 			return new ReadOnlySpan<T>(_entities, 0, _count);
 		}
 
+		public ReadOnlySpan<TReturn> GetSpan<TReturn>() where TReturn: Playable
+		{
+			return new ReadOnlySpan<TReturn>((TReturn[]) (Playable[]) _entities);
+		}
+
 		public void ForEach(Action<T> action)
 		{
 			T[] entities = _entities;
@@ -615,6 +620,12 @@ namespace SabberStoneCore.Model.Zones
 			T[] entities = _entities;
 			for (int i = zonePosition; i < _count; ++i)
 				entities[i].ZonePosition = i;
+
+			if (Game.History)
+			{
+				for (int i = _count - 1; i >= zonePosition; --i)
+					entities[i].SendPowerHistoryTagChange(GameTag.ZONE_POSITION, i + 1);
+			}
 		}
 
 		public override void Add(T entity, int zonePosition = -1)

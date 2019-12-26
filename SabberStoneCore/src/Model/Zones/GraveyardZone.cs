@@ -28,11 +28,11 @@ namespace SabberStoneCore.Model.Zones
 		{
 		}
 
-		public override void Add(Playable entity, int zonePosition = -1)
+		public new void Add(Playable entity, int lastBoardPosition = 0)
 		{
-			//entity.Zone = this;
+			base.Add(entity);
 
-			base.Add(entity, zonePosition);
+			entity.ZonePosition = lastBoardPosition;
 
 			// Add enchantments here.
 			List<Enchantment> enchantments = entity.AppliedEnchantments;
@@ -45,6 +45,13 @@ namespace SabberStoneCore.Model.Zones
 					enchantments.Add(e);
 			}
 		}
+
+		//public override void Add(Playable entity, int zonePosition = -1)
+		//{
+		//	//entity.Zone = this;
+
+
+		//}
 
 		public GraveyardZone Clone(Controller c)
 		{

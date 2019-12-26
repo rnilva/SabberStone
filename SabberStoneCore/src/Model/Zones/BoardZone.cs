@@ -122,10 +122,16 @@ namespace SabberStoneCore.Model.Zones
 			// Add new Entity
 			newEntity.OrderOfPlay = Game.NextOop;
 			_entities[pos] = newEntity;
-			if (newEntity.Game.History)
-				newEntity[GameTag.ZONE] = (int)Type;
 			newEntity.Zone = this;
 			newEntity.ZonePosition = pos;
+
+			if (Game.History)
+			{
+				newEntity.SendPowerHistoryTagChange(GameTag.ZONE, (int) Type);
+				newEntity.SendPowerHistoryTagChange(GameTag.ZONE_POSITION, pos + 1);
+			}
+
+
 			ActivateAura(newEntity);
 			if (newEntity.Card.Untouchable)
 			{
@@ -144,6 +150,9 @@ namespace SabberStoneCore.Model.Zones
 				else
 					newEntity.IsExhausted = true;
 			}
+
+
+
 		}
 
 		/// <summary>

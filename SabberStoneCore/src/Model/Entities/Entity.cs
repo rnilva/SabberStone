@@ -201,19 +201,14 @@ namespace SabberStoneCore.Model.Entities
 			if (tags == null) tags = new EntityData();
 			if (type == CardType.MINION)
 			{
-				if (zone?.Type != Enums.Zone.PLAY)
-					result = new Minion(in controller, in card, tags, in id);
-				else
-					result = new MinionInPlay(in controller, in card, tags, in id);
+				result = zone?.Type != Enums.Zone.PLAY
+					? new Minion(in controller, in card, tags, in id)
+					: new MinionInPlay(in controller, in card, tags, in id);
 			}
 			else if (type == CardType.SPELL)
-			{
 				result = new Spell(in controller, in card, tags, in id);
-			}
 			else if (type == CardType.WEAPON)
-			{
 				result = new Weapon(in controller, in card, tags, in id);
-			}
 			else if (type == CardType.HERO)
 			{
 				// removing this because it's always the cards health or it is given by previous heros like for deathknight
@@ -229,7 +224,8 @@ namespace SabberStoneCore.Model.Entities
 			else if (type == CardType.HERO_POWER)
 			{
 				//tags[GameTag.COST] = card[GameTag.COST];
-				tags[GameTag.ZONE] = (int) Enums.Zone.PLAY;
+				if (game.History)
+					tags[GameTag.ZONE] = (int) Enums.Zone.PLAY;
 				//tags[GameTag.FACTION] = card[GameTag.FACTION];
 				//tags[GameTag.CARDTYPE] = card[GameTag.CARDTYPE];
 				//tags[GameTag.RARITY] = card[GameTag.RARITY];
@@ -353,11 +349,11 @@ namespace SabberStoneCore.Model.Entities
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 		public int Id { get; }
 
-		public int CardTarget
-		{
-			get { return this[GameTag.CARD_TARGET]; }
-			set { this[GameTag.CARD_TARGET] = value; }
-		}
+		//public int CardTarget
+		//{
+		//	get { return this[GameTag.CARD_TARGET]; }
+		//	set { this[GameTag.CARD_TARGET] = value; }
+		//}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 	}
 
@@ -380,5 +376,10 @@ namespace SabberStoneCore.Model.Entities
 
 		internal abstract void ApplyEffect(AbstractEffect effect);
 		internal abstract void RemoveEffect(AbstractEffect effect);
+
+		public void SendPowerHistoryTagChange(GameTag tag, int value)
+		{
+			Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, tag, value));
+		}
 	}
 }

@@ -272,6 +272,8 @@ namespace SabberStoneCore.Enchants
 
 		internal static readonly AbstractEffect Echo = new SetEchoEffect();
 
+		internal static readonly AbstractEffect Freeze = new FreezeEffect();
+
 		internal static AbstractEffect AttributeAddEffect(IntAttributes intAttr, int value) =>
 			new AddIntAttrEffect(intAttr, value);
 

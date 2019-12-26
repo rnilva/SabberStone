@@ -201,7 +201,8 @@ namespace SabberStoneCore.Tasks
 									? c.Controller.Opponent.BoardZone.GetAll(null)[index]
 									: c.Controller.Opponent.BoardZone[index];
 
-				t.CardTarget = ((Playable)t).GetValidPlayTargets().RandomElement(g.Random).Id;
+				//t.CardTarget = ((Playable)t).GetValidPlayTargets().RandomElement(g.Random).Id;
+				g.CurrentEventData.EventTarget = ((Playable) t).GetValidPlayTargets().RandomElement(g.Random);
 				g.OnRandomHappened(true);
 			});
 

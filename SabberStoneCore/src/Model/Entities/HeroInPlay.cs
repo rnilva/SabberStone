@@ -14,6 +14,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			_v1 = card.ATK;
 			Auras = new List<Aura>();
+			Zone = controller.BoardZone;
 		}
 
 		private HeroInPlay(in Controller controller, HeroInPlay hero) : base(in controller, hero)
@@ -22,6 +23,7 @@ namespace SabberStoneCore.Model.Entities
 			DamageTakenThisTurn = hero.DamageTakenThisTurn;
 			Armor = hero.Armor;
 			_attrs = hero._attrs;
+			Zone = controller.BoardZone;
 		}
 
 		public static HeroInPlay FromCard(in Controller c, in Card card)
@@ -163,6 +165,8 @@ namespace SabberStoneCore.Model.Entities
 				Weapon[GameTag.ZONE_POSITION] = 0;
 				EquippedWeapon = weapon.Id;
 			}
+
+			Weapon.Zone = Controller.BoardZone;
 			if (weapon.HasWindfury && IsExhausted && NumAttacksThisTurn == 1)
 				IsExhausted = false;
 
@@ -195,7 +199,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			Weapon.ActivatedTrigger?.Remove();
 			Weapon.OngoingEffect?.Remove();
-			if (Weapon.AppliedEnchantments != null && Weapon[GameTag.KEEP_ENCHANTMENTS] != 1)
+			if (Weapon.AppliedEnchantments != null /*&& Weapon[GameTag.KEEP_ENCHANTMENTS] != 1*/)
 				for (int i = Weapon.AppliedEnchantments.Count - 1; i >= 0; i--)
 					Weapon.AppliedEnchantments[i].Remove();
 			Weapon = null;
