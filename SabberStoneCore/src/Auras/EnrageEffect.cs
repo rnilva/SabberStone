@@ -80,10 +80,12 @@ namespace SabberStoneCore.Auras
 				}
 				if (_currentInstance != null)
 				{
-					_currentInstance.Remove();
-					foreach (IEffect eff in EnchantmentCard.Power.Enchant.Effects)
-						Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(
-							m.Id, eff.Tag, m[eff.Tag]));
+					_currentInstance.Remove(true);
+
+					if (Game.History)
+						foreach (AbstractEffect eff in EnchantmentCard.Power.Enchant.Effects)
+							Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(
+								m.Id, eff.Tag, m[eff.Tag]));
 				}
 				//if (_target != null)
 				//	for (int i = 0; i < Effects.Length; i++)
@@ -100,7 +102,7 @@ namespace SabberStoneCore.Auras
 
 				if (_target != weapon)
 				{
-					_currentInstance?.Remove();
+					_currentInstance?.Remove(true);
 					_currentInstance = null;
 
 					_target = weapon;
@@ -127,10 +129,11 @@ namespace SabberStoneCore.Auras
 
 				if (_currentInstance != null)
 				{
-					_currentInstance.Remove();
-					foreach (IEffect eff in EnchantmentCard.Power.Enchant.Effects)
-						Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(
-							_target.Id, eff.Tag, _target[eff.Tag]));
+					_currentInstance.Remove(true);
+					if (Game.History)
+						foreach (AbstractEffect eff in EnchantmentCard.Power.Enchant.Effects)
+							Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(
+								_target.Id, eff.Tag, _target[eff.Tag]));
 				}
 				_enraged = false;
 			}

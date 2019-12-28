@@ -33,36 +33,37 @@ namespace SabberStonePowerLog.src.Sync
 
 		public void Sync()
 		{
-			Player1 = new Controller(this, _powerGame.Player1.Name, 1, Game.Player1.Id,
-				new EntityData
-				{
-					//[GameTag.HERO_ENTITY] = heroId,
-					[GameTag.MAXHANDSIZE] = 10,
-					[GameTag.STARTHANDSIZE] = 4,
-					[GameTag.PLAYER_ID] = 1,
-					[GameTag.TEAM_ID] = 1,
-					[GameTag.ZONE] = (int)SabberStoneCore.Enums.Zone.PLAY,
-					[GameTag.CONTROLLER] = 1,
-					[GameTag.ENTITY_ID] = Game.Player1.Id,
-					[GameTag.MAXRESOURCES] = 10,
-					[GameTag.CARDTYPE] = (int)CardType.PLAYER
+			Player1 = new Controller(this, _powerGame.Player1.Name, 1, Game.Player1.Id);
+			Player2 = new Controller(this, _powerGame.Player2.Name, 2, Game.Player2.Id);
 
-				});
-			Player2 = new Controller(this, _powerGame.Player2.Name, 2, Game.Player2.Id,
-				new EntityData
-				{
-					//[GameTag.HERO_ENTITY] = heroId,
-					[GameTag.MAXHANDSIZE] = 10,
-					[GameTag.STARTHANDSIZE] = 4,
-					[GameTag.PLAYER_ID] = 2,
-					[GameTag.TEAM_ID] = 2,
-					[GameTag.ZONE] = (int)SabberStoneCore.Enums.Zone.PLAY,
-					[GameTag.CONTROLLER] = 2,
-					[GameTag.ENTITY_ID] = Game.Player2.Id,
-					[GameTag.MAXRESOURCES] = 10,
-					[GameTag.CARDTYPE] = (int)CardType.PLAYER
+			Player1.SetTags(new EntityData
+			{
+				//[GameTag.HERO_ENTITY] = heroId,
+				[GameTag.MAXHANDSIZE] = 10,
+				[GameTag.STARTHANDSIZE] = 4,
+				[GameTag.PLAYER_ID] = 1,
+				[GameTag.TEAM_ID] = 1,
+				[GameTag.ZONE] = (int) SabberStoneCore.Enums.Zone.PLAY,
+				[GameTag.CONTROLLER] = 1,
+				[GameTag.ENTITY_ID] = Game.Player1.Id,
+				[GameTag.MAXRESOURCES] = 10,
+				[GameTag.CARDTYPE] = (int) CardType.PLAYER
 
-				});
+			});
+			Player2.SetTags(new EntityData
+			{
+				//[GameTag.HERO_ENTITY] = heroId,
+				[GameTag.MAXHANDSIZE] = 10,
+				[GameTag.STARTHANDSIZE] = 4,
+				[GameTag.PLAYER_ID] = 2,
+				[GameTag.TEAM_ID] = 2,
+				[GameTag.ZONE] = (int) SabberStoneCore.Enums.Zone.PLAY,
+				[GameTag.CONTROLLER] = 2,
+				[GameTag.ENTITY_ID] = Game.Player2.Id,
+				[GameTag.MAXRESOURCES] = 10,
+				[GameTag.CARDTYPE] = (int) CardType.PLAYER
+
+			});
 
 			var entities = _powerGame.Entities.Values;
 			var cards = entities.Where(a =>

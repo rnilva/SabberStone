@@ -57,7 +57,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			in TaskStack stack = null)
 		{
 			IList<Playable> entities = IncludeTask.GetEntities(in _type, in controller, source, target, stack.Playables);
-
+			if (entities.Count == 0) return TaskState.STOP;
 			stack.Number = _getter(entities[0]);
 			return TaskState.COMPLETE;
 		}

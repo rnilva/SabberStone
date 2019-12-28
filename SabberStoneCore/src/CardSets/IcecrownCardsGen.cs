@@ -522,8 +522,8 @@ namespace SabberStoneCore.CardSets.Standard
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.EVENT_TARGET, SelfCondition.IsMinion),
 						new FlagTask(true, ComplexTask.Create(
-						new GetGameTagTask(GameTag.ENTITY_ID, EntityType.EVENT_TARGET),
-						new AddEnchantmentTask("ICC_314t1e", EntityType.SOURCE, true, true))))
+						new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.EVENT_TARGET),
+						new AddEnchantmentTask("ICC_314t1e", EntityType.SOURCE, false, true))))
 				}
 			});
 

@@ -44,8 +44,8 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="card">The card which this character embodies.</param>
 		/// <param name="tags">Properties of this entity.</param>
 		/// <param name="id">Integral id of this entity. </param>
-		protected Character(in Controller controller, in Card card, in EntityData tags, in int id)
-			: base(in controller, in card, in tags, in id)
+		protected Character(in Controller controller, in Card card, in int id)
+			: base(in controller, in card, in id)
 		{
 		}
 
@@ -270,6 +270,7 @@ namespace SabberStoneCore.Model.Entities
 				game.TaskQueue.StartEvent();
 				PreDamageTrigger.Invoke(this);
 				game.ProcessTasks();
+				game.TaskQueue.EndEvent();
 				amount = game.CurrentEventData.EventNumber;
 				if (amount == 0 && armor == 0)
 				{

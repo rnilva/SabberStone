@@ -46,15 +46,19 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				return TaskState.STOP;
 
 			{	// Copy Tags from target to source.
-				EntityData sourceTags = minionSource._data;
-				sourceTags.CopyFrom(in minionTarget._data);
-				if (game.History)
+				if (minionTarget._data != null)
 				{
-					sourceTags[GameTag.ENTITY_ID] = minionSource.Id;
-					sourceTags[GameTag.CONTROLLER] = minionSource.Controller.PlayerId;
-					sourceTags[GameTag.ZONE_POSITION] = minionSource.ZonePosition + 1;
+					EntityData sourceTags = minionSource._data ?? new EntityData();
+					sourceTags.CopyFrom(in minionTarget._data);
+					if (game.History)
+					{
+						sourceTags[GameTag.ENTITY_ID] = minionSource.Id;
+						sourceTags[GameTag.CONTROLLER] = minionSource.Controller.PlayerId;
+						sourceTags[GameTag.ZONE_POSITION] = minionSource.ZonePosition + 1;
+					}
 				}
 			}
+
 
 			minionSource = (MinionInPlay) Generic.ChangeEntityBlock(controller, minionSource, minionTarget.Card, true);
 

@@ -44,7 +44,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						game.OneTurnEffects.Remove((e.Target.Id, eff));
 			}
 
-			e.Remove();
+			e.Remove(true);
 
 			return TaskState.COMPLETE;
 		}

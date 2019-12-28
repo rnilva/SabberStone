@@ -1005,50 +1005,39 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		[Fact]
 		public void Kalecgos_DAL_609()
 		{
-			for (int i = 0; i < 100; ++i)
+			var game = new Game(new GameConfig
 			{
-				var game = new Game(new GameConfig
+				StartPlayer = 1,
+				Player1HeroClass = CardClass.MAGE,
+				Player1Deck = new List<Card>()
 				{
-					StartPlayer = 1,
-					Player1HeroClass = CardClass.MAGE,
-					Player1Deck = new List<Card>()
-					{
-						Cards.FromName("Kalecgos"),
-					},
-					Player2HeroClass = CardClass.MAGE,
-					Shuffle = false,
-					FillDecks = true,
-					FillDecksPredictably = true
-				});
-				game.StartGame();
-				game.Player1.BaseMana = 10;
-				game.Player2.BaseMana = 10;
-				var testMinion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Kalecgos"));
-				Spell testSpell = (Spell) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
-				Minion testCard = game.ProcessCard<Minion>("Kalecgos");
-				Playable chosen = game.ChooseNthChoice(1);
-				if (chosen.Card.Name == "Scorch")
-					;
-				Assert.Equal(CardType.SPELL, chosen.Card.Type);
-				//Assert.Equal(0, chosen.Cost);
-				if (chosen.Cost != 0)
-					;
-				//Assert.Equal(0, testSpell.Cost);
-				if (testSpell.Cost != 0)
-					;
-				Assert.NotEqual(0, testMinion.Cost);
-				game.ProcessCard(testSpell, game.CurrentOpponent.Hero);
-				Assert.Equal(chosen.Card.Cost, chosen.Cost);
-				testCard.Kill();
-				game.EndTurn();
-				game.EndTurn();
-				game.ProcessCard("Elemental Evocation");
-				game.ProcessCard("Kalecgos");
-				chosen = game.ChooseNthChoice(1);
-				Assert.Equal(chosen.Card.Cost, chosen.Cost);
-			}
-
-
+					Cards.FromName("Kalecgos"),
+				},
+				Player2HeroClass = CardClass.MAGE,
+				Shuffle = false,
+				FillDecks = true,
+				FillDecksPredictably = true
+			});
+			game.StartGame();
+			game.Player1.BaseMana = 10;
+			game.Player2.BaseMana = 10;
+			Playable testMinion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Kalecgos"));
+			Spell testSpell = (Spell) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
+			Minion testCard = game.ProcessCard<Minion>("Kalecgos");
+			Playable chosen = game.ChooseNthChoice(1);
+			Assert.Equal(CardType.SPELL, chosen.Card.Type);
+			Assert.Equal(0, chosen.Cost);
+			Assert.Equal(0, testSpell.Cost);
+			Assert.NotEqual(0, testMinion.Cost);
+			game.ProcessCard(testSpell, game.CurrentOpponent.Hero);
+			Assert.Equal(chosen.Card.Cost, chosen.Cost);
+			testCard.Kill();
+			game.EndTurn();
+			game.EndTurn();
+			game.ProcessCard("Elemental Evocation");
+			game.ProcessCard("Kalecgos");
+			chosen = game.ChooseNthChoice(1);
+			Assert.Equal(chosen.Card.Cost, chosen.Cost);
 		}
 
 		// ------------------------------------------- SPELL - MAGE
@@ -1884,6 +1873,8 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(2, target.AttackDamage);
 			clone.EndTurn();
 			Assert.Equal(9, target.AttackDamage);
+
+
 		}
 
 		// ----------------------------------------- SPELL - PRIEST

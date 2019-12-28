@@ -261,13 +261,22 @@ namespace SabberStoneCore.Conditions
 			});
 		}
 
+		public static SelfCondition IsId(int value, RelaSign relaSign = RelaSign.EQ)
+		{
+			if (relaSign == RelaSign.EQ)
+				return new SelfCondition(me => me.Id == value);
+			if (relaSign == RelaSign.GEQ)
+				return new SelfCondition(me => me.Id >= value);
+			return new SelfCondition(me => me.Id <= value);
+		}
+
 		public static SelfCondition IsATK(int value, RelaSign relaSign = RelaSign.EQ)
 		{
 			if (relaSign == RelaSign.EQ)
-				return new SelfCondition(me => ((Character) me).AttackDamage == value);
+				return new SelfCondition(me => me is Character c && c.AttackDamage == value);
 			if (relaSign == RelaSign.GEQ)
-				return new SelfCondition(me => ((Character) me).AttackDamage >= value);
-			return new SelfCondition(me => ((Character) me).AttackDamage <= value);
+				return new SelfCondition(me => me is Character c && c.AttackDamage >= value);
+			return new SelfCondition(me => me is Character c && c.AttackDamage <= value);
 		}
 
 		public static SelfCondition IsCost(int value, RelaSign relaSign = RelaSign.EQ)

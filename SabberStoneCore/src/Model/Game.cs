@@ -229,6 +229,11 @@ namespace SabberStoneCore.Model
 		public EntityList IdEntityDic { get; private set; }
 
 		/// <summary>
+		/// Gets a list containing all generated enchantments.
+		/// </summary>
+		public List<Enchantment> AllEnchantments { get; private set;}
+
+		/// <summary>
 		/// Gets the dictionary containing all generated choice sets for this game.
 		/// </summary>
 		/// <value><see cref="PowerEntityChoices"/></value>
@@ -249,23 +254,17 @@ namespace SabberStoneCore.Model
 		/// <summary>Initializes a new instance of the <see cref="Game"/> class.</summary>
 		/// <param name="gameConfig">The game configuration.</param>
 		/// <param name="setupHeroes"></param>
-		public Game(in GameConfig gameConfig, bool setupHeroes = true)
-			: base(null, Card.CardGame, new EntityData
-			{
-				[GameTag.ENTITY_ID] = GAME_ENTITYID,
-				[GameTag.ZONE] = (int)Enums.Zone.PLAY,
-				[GameTag.CARDTYPE] = (int)CardType.GAME
-			})
+		public Game(GameConfig gameConfig, bool setupHeroes = true)
+			: base(null, Card.CardGame)
 		{
 			Random = gameConfig.RandomSeed is null ?
 				new Util.DeepCloneableRandom() :
 				new Util.DeepCloneableRandom(gameConfig.RandomSeed.Value);
 			IdEntityDic = new EntityList(75);
-			History = gameConfig.History;
-			Logging = gameConfig.Logging;
-			Game = this;
+			AllEnchantments = new List<Enchantment>(8);
 			_gameConfig = gameConfig;
-			_attrs = new GameAttributes();
+            _attrs = new GameAttributes();
+			Game = this;
 			Auras = new List<IAura>();
 			Triggers = new List<Trigger>();
 			//GamesEventManager = new GameEventManager(this);
@@ -275,6 +274,12 @@ namespace SabberStoneCore.Model
 			// add power history create game
 			if (history)
 			{
+				_data = new EntityData
+				{
+					[GameTag.ENTITY_ID] = GAME_ENTITYID,
+					[GameTag.ZONE] = (int) Enums.Zone.PLAY,
+					[GameTag.CARDTYPE] = (int) CardType.GAME
+				};
 				History = true;
 				EntityChoicesMap = new Dictionary<int, PowerEntityChoices>();
 				AllOptionsMap = new Dictionary<int, PowerAllOptions>();
@@ -299,11 +304,7 @@ namespace SabberStoneCore.Model
 					[GameTag.MAXRESOURCES] = Controller.MaxResources,
 					[GameTag.CARDTYPE] = (int) CardType.PLAYER
 				}
-				: new EntityData(64)
-				{
-					{GameTag.MAXRESOURCES, 10},
-					{GameTag.MAXHANDSIZE, 10}
-				};
+				: null;
 			EntityData p2Dict = history
 				? new EntityData(64)
 				{
@@ -317,13 +318,14 @@ namespace SabberStoneCore.Model
 					[GameTag.MAXRESOURCES] = 10,
 					[GameTag.CARDTYPE] = (int) CardType.PLAYER
 				}
-				: new EntityData(64)
-				{
-					{GameTag.MAXRESOURCES, 10},
-					{GameTag.MAXHANDSIZE, 10}
-				};
-			Player1 = new Controller(this, gameConfig.Player1Name, 1, 2, p1Dict);
-			Player2 = new Controller(this, gameConfig.Player2Name, 2, 3, p2Dict);
+				: null;
+			Player1 = new Controller(this, gameConfig.Player1Name, 1, 2);
+			Player2 = new Controller(this, gameConfig.Player2Name, 2, 3);
+			if (history)
+			{
+				Player1.SetTags(p1Dict);
+				Player2.SetTags(p2Dict);
+			}
 
 			Player1.Opponent = Player2;
 			Player2.Opponent = Player1;
@@ -363,12 +365,12 @@ namespace SabberStoneCore.Model
 			gameConfig.Player1Deck?.ForEach(p =>
 			{
 				Player1.DeckCards.Add(p);
-				FromCard(Player1, p, null, Player1.DeckZone);
+				FromCard(Player1, p, Player1.DeckZone);
 			});
 			gameConfig.Player2Deck?.ForEach(p =>
 			{
 				Player2.DeckCards.Add(p);
-				FromCard(Player2, p, null, Player2.DeckZone);
+				FromCard(Player2, p, Player2.DeckZone);
 			});
 			if (gameConfig.FillDecks)
 			{
@@ -389,6 +391,7 @@ namespace SabberStoneCore.Model
 		{
 			//IdEntityDic = new Dictionary<int, Playable>(game.IdEntityDic.Count);
 			IdEntityDic = new EntityList(game.IdEntityDic.Capacity);
+			AllEnchantments = new List<Enchantment>(game.AllEnchantments.Capacity);
 			Game = this;
 
 			if (logging)
@@ -429,7 +432,17 @@ namespace SabberStoneCore.Model
 			Player1.Opponent = Player2;
 			Player2.Opponent = Player1;
 			if (game._currentPlayer != null)
+			{
 				CurrentPlayer = game.CurrentPlayer.Id == 2 ? Player1 : Player2;
+				FirstPlayer = game.FirstPlayer.PlayerId == 1 ? Player1 : Player2;
+			}
+
+			foreach (Enchantment enchantment in game.AllEnchantments)
+			{
+				if (enchantment.IsRemoved)
+					continue;
+				enchantment.Clone(this);
+			}
 
 			// Clone auras lastly
 			foreach (IAura aura in game.Auras)
@@ -699,12 +712,14 @@ namespace SabberStoneCore.Model
 					// 4th card for second player
 					Generic.Draw(p);
 
-					Playable coin = FromCard(FirstPlayer.Opponent, Cards.FromId("GAME_005"), new EntityData
-					{
-						[GameTag.ZONE] = (int)Enums.Zone.HAND,
-						[GameTag.CARDTYPE] = (int)CardType.SPELL,
-						[GameTag.CREATOR] = FirstPlayer.Opponent.PlayerId
-					});
+					Playable coin = FromCard(FirstPlayer.Opponent, Cards.FromId("GAME_005")
+						//,new EntityData
+						//{
+						//	[GameTag.ZONE] = (int)Enums.Zone.HAND,
+						//	[GameTag.CARDTYPE] = (int)CardType.SPELL,
+						//	[GameTag.CREATOR] = FirstPlayer.Opponent.PlayerId
+						//}
+					);
 					Generic.AddHandPhase(FirstPlayer.Opponent, coin);
 				}
 
@@ -938,7 +953,11 @@ namespace SabberStoneCore.Model
 
 			if (RushMinions.Count > 0)
 			{
-				RushMinions.ForEach(i => IdEntityDic[i][GameTag.ATTACKABLE_BY_RUSH] = 0);
+				foreach (int id in RushMinions)
+				{
+					if (IdEntityDic[id] is MinionInPlay m)
+						m.AttackableByRush = false;
+				}
 				RushMinions.Clear();
 			}
 
@@ -980,7 +999,7 @@ namespace SabberStoneCore.Model
 			{
 				List<Enchantment> enchantments = OneTurnEffectEnchantments;
 				for (int i = enchantments.Count - 1; i >= 0; --i)
-					enchantments[i].Remove();	
+					enchantments[i].Remove(true);
 			}
 			if (OneTurnEffects.Count > 0)
 			{
@@ -1391,11 +1410,11 @@ namespace SabberStoneCore.Model
 		/// The controller which goes 'first'. This player's turn starts after Mulligan.
 		/// </summary>
 		/// <value><see cref="Controller"/></value>
-		public Controller FirstPlayer
-		{
-			get => Player1[GameTag.FIRST_PLAYER] == 1 ? Player1 : Player2[GameTag.FIRST_PLAYER] == 1 ? Player2 : null;
-			set => value[GameTag.FIRST_PLAYER] = 1;
-		}
+		public Controller FirstPlayer { get; set;  }
+		//{
+		//	get => Player1[GameTag.FIRST_PLAYER] == 1 ? Player1 : Player2[GameTag.FIRST_PLAYER] == 1 ? Player2 : null;
+		//	set => value[GameTag.FIRST_PLAYER] = 1;
+		//}
 
 		/// <summary>
 		/// Gets or sets the controller delegating the current turn.

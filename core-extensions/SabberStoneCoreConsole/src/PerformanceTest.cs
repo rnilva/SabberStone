@@ -47,10 +47,43 @@ namespace SabberStoneCoreConsole
 				"Frost Elemental",
 				"Frost Elemental",
 			};
+			//var deck = new[]
+			//{
+			//	"Elven Archer",
+			//	"Elven Archer",
+			//	"Whirlwind",
+			//	"Whirlwind",
+			//	"Amani Berserker",
+			//	"Amani Berserker",
+			//	"Battle Rage",
+			//	"Battle Rage",
+			//	"Bloodsail Raider",
+			//	"Bloodsail Raider",
+			//	"Cruel Taskmaster",
+			//	"Cruel Taskmaster",
+			//	"Execute",
+			//	"Execute",
+			//	"Acolyte of Pain",
+			//	"Acolyte of Pain",
+			//	"Fiery War Axe",
+			//	"Fiery War Axe",
+			//	"Frothing Berserker",
+			//	"Frothing Berserker",
+			//	"Raging Worgen",
+			//	"Raging Worgen",
+			//	"Tauren Warrior",
+			//	"Tauren Warrior",
+			//	"Arathi Weaponsmith",
+			//	"Arathi Weaponsmith",
+			//	"Kor'kron Elite",
+			//	"Brawl",
+			//	"Spiteful Smith",
+			//	"Spiteful Smith",
+			//};
 			var game = new Game(new GameConfig
 			{
-				Player1HeroClass = CardClass.MAGE,
-				Player2HeroClass = CardClass.MAGE,
+				Player1HeroClass = CardClass.WARRIOR,
+				Player2HeroClass = CardClass.WARRIOR,
 				Player1Deck = deck.Select(Cards.FromName).ToList(),
 				Player2Deck = deck.Select(Cards.FromName).ToList(),
 				Shuffle = true,
@@ -73,12 +106,15 @@ namespace SabberStoneCoreConsole
 				} while (g.State != State.COMPLETE);
 			}
 
-			var roundRecords = new double[round];
+			//var roundRecords = new double[round];
+
+			long totalSum = 0;
 
 			for (int r = 0; r < round; ++r)
 			{
-				var record = new long[count];
+				//var record = new long[count];
 
+				long sum = 0;
 				for (int i = 0; i < count; ++i)
 				{
 					watch.Start();
@@ -89,23 +125,32 @@ namespace SabberStoneCoreConsole
 						List<PlayerTask> options = g.CurrentPlayer.Options();
 						g.Process(options[rnd.Next(options.Count)]);
 
-					} while (g.State != State.COMPLETE);
-					watch.Stop();
+						//watch.Start();
+						//g = g.Clone();
+						//watch.Stop();
 
-					record[i] = watch.ElapsedMilliseconds;
+					} while (g.State != State.COMPLETE);
+					
+					watch.Stop();
+					//record[i] = watch.ElapsedMilliseconds;
 				}
 
-				double sum = record.Sum();
-				double average = record.Average();
+				sum = watch.ElapsedMilliseconds;
+				double average = (double) sum / count;
+
+				//double sum = record.Sum();
+				////double average = record.Average();
+				
 				Console.WriteLine($"Round {r}");
 				Console.WriteLine($"Total duration for {count} games: {sum} ms");
-				Console.WriteLine($"Average duration for {count} games: {average} ms");
+				//Console.WriteLine($"Average duration for {count} games: {average} ms");
 				Console.WriteLine();
-				roundRecords[r] = average;
+				//roundRecords[r] = sum;
+				totalSum += sum;
 				watch.Reset();
 			}
 
-			Console.WriteLine($"Average duration per round: {roundRecords.Average()} ms");
+			Console.WriteLine($"Average duration per round: {(double) totalSum / round} ms");
 		}
 	}
 }

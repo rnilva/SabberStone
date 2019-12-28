@@ -352,8 +352,11 @@ namespace SabberStoneCore.Actions
 				{
 					// 12.0 Game Mechanics Update: Clear all applied enchantments when shifting
 					if (source.AppliedEnchantments != null)
+					{
 						for (int i = source.AppliedEnchantments.Count - 1; i >= 0; i--)
 							source.AppliedEnchantments[i].Remove();
+						source.AppliedEnchantments.Clear();
+					}
 
 					//if (p is Minion m)
 					//	m.Reset();
@@ -427,16 +430,16 @@ namespace SabberStoneCore.Actions
 					switch (newCard.Type)
 					{
 						case CardType.MINION:
-							newEntity = new Minion(c, newCard, data, id);
+							newEntity = new Minion(c, newCard, id);
 							break;
 						case CardType.SPELL:
-							newEntity = new Spell(c, newCard, data, id);
+							newEntity = new Spell(c, newCard, id);
 							break;
 						case CardType.HERO:
-							newEntity = new Hero(c, newCard, data, id);
+							newEntity = new Hero(c, newCard, id);
 							break;
 						case CardType.WEAPON:
-							newEntity = new Weapon(c, newCard, data, id);
+							newEntity = new Weapon(c, newCard, id);
 							break;
 						default:
 							throw new ArgumentNullException();
@@ -503,10 +506,10 @@ namespace SabberStoneCore.Actions
 					if (newCard.AssetId == 43310)
 					{
 						var chooseOnes = new Playable[4];
-						chooseOnes[0] = Entity.FromCard(in c, Cards.FromId("TRL_343at1"), null, c.SetasideZone);
-						chooseOnes[1] = Entity.FromCard(in c, Cards.FromId("TRL_343ct1"), null, c.SetasideZone);
-						chooseOnes[2] = Entity.FromCard(in c, Cards.FromId("TRL_343dt1"), null, c.SetasideZone);
-						chooseOnes[3] = Entity.FromCard(in c, Cards.FromId("TRL_343bt1"), null, c.SetasideZone);
+						chooseOnes[0] = Entity.FromCard(in c, Cards.FromId("TRL_343at1"), c.SetasideZone);
+						chooseOnes[1] = Entity.FromCard(in c, Cards.FromId("TRL_343ct1"), c.SetasideZone);
+						chooseOnes[2] = Entity.FromCard(in c, Cards.FromId("TRL_343dt1"), c.SetasideZone);
+						chooseOnes[3] = Entity.FromCard(in c, Cards.FromId("TRL_343bt1"), c.SetasideZone);
 
 						source.ChooseOnePlayables = chooseOnes;
 					}
@@ -516,8 +519,8 @@ namespace SabberStoneCore.Actions
 							source.ChooseOnePlayables = new Playable[2];
 
 
-						source.ChooseOnePlayables[0] = Entity.FromCard(c, Cards.FromId(newCard.Id + "a"), null, c.SetasideZone);
-						source.ChooseOnePlayables[1] = Entity.FromCard(c, Cards.FromId(newCard.Id + "b"), null, c.SetasideZone);
+						source.ChooseOnePlayables[0] = Entity.FromCard(c, Cards.FromId(newCard.Id + "a"), c.SetasideZone);
+						source.ChooseOnePlayables[1] = Entity.FromCard(c, Cards.FromId(newCard.Id + "b"), c.SetasideZone);
 					}
 				}
 

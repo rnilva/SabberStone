@@ -781,11 +781,16 @@ namespace SabberStoneCore.CardSets.Standard
 			// - REQ_NUM_MINION_SLOTS = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_254", new Power {
-				PowerTask = new EnqueueTask(2,
-					ComplexTask.Create(
-						new FuncNumberTask(p => 2 + p.Controller.CurrentSpellPower),
+				//PowerTask = new EnqueueTask(2,
+				//	ComplexTask.Create(
+				//		new FuncNumberTask(p => 2 + p.Controller.CurrentSpellPower),
+				//		new RandomMinionNumberTask(GameTag.COST),
+				//		new SummonTask()))
+				PowerTask = ComplexTask.Create(
+					new FuncNumberTask(p => 2 + p.Controller.CurrentSpellPower),
+					ComplexTask.Repeat(ComplexTask.Create(
 						new RandomMinionNumberTask(GameTag.COST),
-						new SummonTask()))
+						new SummonTask()), 2))
 
 			});
 
@@ -1180,8 +1185,8 @@ namespace SabberStoneCore.CardSets.Standard
 				{
 					TriggerSource = TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER,
 					SingleTask = ComplexTask.Create(
-						new GetGameTagTask(GameTag.ENTITY_ID, EntityType.TARGET),
-						new AddEnchantmentTask("BOT_558e", EntityType.SOURCE, true, true))
+						new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.TARGET),
+						new AddEnchantmentTask("BOT_558e", EntityType.SOURCE, false, true))
 				}
             });
 
@@ -1369,7 +1374,10 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("BOT_566e", new Power {
 				Trigger = new Trigger(TriggerType.TURN_END)
 				{
-					SingleTask = new DestroyTask(EntityType.TARGET)
+					SingleTask = ComplexTask.Create(
+						new ConditionTask(EntityType.TARGET, SelfCondition.IsInZone(Zone.PLAY)),
+						new FlagTask(true,
+						new DestroyTask(EntityType.TARGET)))
 				}
 			});
 
@@ -1430,8 +1438,8 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("BOT_243", new Power {
 				PowerTask = new DiscoverTask(DiscoverType.DEATHRATTLE_MINIONS,
 					ComplexTask.Create(
-						new GetGameTagTask(GameTag.ENTITY_ID, EntityType.TARGET),
-						new AddEnchantmentTask("BOT_243e", EntityType.SOURCE, true, true)))
+						new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.TARGET),
+						new AddEnchantmentTask("BOT_243e", EntityType.SOURCE, false, true)))
 			});
 
 			// ----------------------------------------- MINION - ROGUE

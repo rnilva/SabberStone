@@ -141,34 +141,15 @@ namespace SabberStoneCore.Model.Entities
         /// </summary>
         public Controller Opponent { get; internal set;}
 
-        public override int this[GameTag t]
-		{
-			get
-			{
-				_data.TryGetValue(t, out int value);
-				return value;
-			}
-			set
-			{
-				if (_logging)
-					Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Entity", !Game.Logging ? "" : $"{this} set data {t} to {value}");
-				if (_history && (int)t < 1000)
-					if (value != this[t])
-						Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, t, value));
-
-				_data[t] = value;
-			}
-		}
-
-		/// <summary>
+        /// <summary>
 		/// Create a new controller instance.
 		/// </summary>
 		/// <param name="game">The game to which it registers.</param>
 		/// <param name="name">The name of the player.</param>
 		/// <param name="playerId">The player index; The first player will get assigned 1.</param>
 		/// <param name="id">Entity ID of this controller.</param>
-		public Controller(Game game, string name, int playerId, int id, EntityData tags)
-			: base(in game, Card.CardPlayer, in tags, in id)
+		public Controller(Game game, string name, int playerId, int id)
+			: base(in game, Card.CardPlayer, in id)
 		{
 			Name = name;
 			PlayerId = playerId;
@@ -235,18 +216,18 @@ namespace SabberStoneCore.Model.Entities
 			CardsPlayedThisTurn = new List<Card>(controller.CardsPlayedThisTurn);
 
 			// Cloning applied enchantments.
-			{
-				List<Enchantment> originalEnchantments = controller.AppliedEnchantments;
-				if (originalEnchantments != null)
-				{
-					var enchantments = new List<Enchantment>(originalEnchantments.Count);
-					foreach (Enchantment p in originalEnchantments)
-					{
-						enchantments.Add((Enchantment) p.Clone(this));
-					}
-					AppliedEnchantments = enchantments;
-				}
-			}
+			//{
+			//	List<Enchantment> originalEnchantments = controller.AppliedEnchantments;
+			//	if (originalEnchantments != null)
+			//	{
+			//		var enchantments = new List<Enchantment>(originalEnchantments.Capacity);
+			//		foreach (Enchantment p in originalEnchantments)
+			//		{
+			//			enchantments.Add((Enchantment) p.Clone());
+			//		}
+			//		AppliedEnchantments = enchantments;
+			//	}
+			//}
 
 			// non-tag attributes
 			//_playerId = controller._playerId;
@@ -302,8 +283,7 @@ namespace SabberStoneCore.Model.Entities
 			if (Game.History)
 				Hero[GameTag.ZONE] = (int) Enums.Zone.PLAY;
 			HeroId = Hero.Id;
-			Hero.HeroPower = FromCard(this, powerCard ?? Cards.FromAssetId(Hero[GameTag.HERO_POWER]),
-				new EntityData { [GameTag.CREATOR] = Hero.Id }) as HeroPower;
+			Hero.HeroPower = FromCard(this, powerCard ?? Cards.FromAssetId(Hero[GameTag.HERO_POWER]), creator: Hero) as HeroPower;
 			Hero.Weapon = weapon;
 			//Hero.AuraEffects = auraEffects;
 		}

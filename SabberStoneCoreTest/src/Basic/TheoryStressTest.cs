@@ -685,5 +685,19 @@ namespace SabberStoneCoreTest.Basic
 			apprentice2.Kill();
 			Assert.Equal(3, secret.Cost);
 		}
+
+		[Fact]
+		public static void TaskProcessorTest()
+		{
+			var game = new Game(new GameConfig());
+			game.StartGame();
+
+			game.ProcessCard("Wisp");
+			game.ProcessCard("Wisp");
+			game.ProcessCard("Acolyte of Pain", asZeroCost: true);
+			game.ProcessCard("Bloodfen Raptor", asZeroCost: true);
+			game.ProcessCard("Commanding Shout", asZeroCost: true);
+			game.ProcessCard("Whirlwind", asZeroCost: true);
+		}
 	}
 }

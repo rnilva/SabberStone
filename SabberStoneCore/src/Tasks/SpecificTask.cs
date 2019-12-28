@@ -80,8 +80,7 @@ namespace SabberStoneCore.Tasks
 							notContained[k++] = i;
 					}
 					Entity.FromCard(p.Controller, Cards.FromId(entourage[notContained[
-							p.Game.Random.Next(k)]]),
-						null, p.Controller.BoardZone);
+							p.Game.Random.Next(k)]]), p.Controller.BoardZone);
 					p.Game.OnRandomHappened(true);
 					return 0;
 				}));
@@ -375,11 +374,7 @@ namespace SabberStoneCore.Tasks
 					Playable p = list[0];
 					if (p.Controller.HandZone.IsFull)
 						return new List<Playable>(0);
-					Playable entity = Entity.FromCard(p.Controller, Cards.FromId("ICC_827t"),
-						new EntityData
-						{
-							{GameTag.CREATOR, p.Id}
-						}, p.Controller.HandZone);
+					Playable entity = Entity.FromCard(p.Controller, Cards.FromId("ICC_827t"), p.Controller.HandZone, creator: p);
 					return new List<Playable> {entity};
 				}),
 				new AddEnchantmentTask("ICC_827e", EntityType.STACK));
@@ -392,7 +387,7 @@ namespace SabberStoneCore.Tasks
 				{
 					Enchantment e = (Enchantment) pList[0];
 					Playable previous = (Playable) e.Target;
-					e.Remove();
+					e.Remove(true);
 
 					Playable newEntity = Generic.ChangeEntityBlock.Invoke(e.Controller, previous, pList[1].Card, false);
 
@@ -454,13 +449,13 @@ namespace SabberStoneCore.Tasks
 				{
 					Weapon deadWeapon = (Weapon) p;
 
-					var tags = new EntityData
-					{
-						{GameTag.ATK, deadWeapon[GameTag.ATK]},
-						{GameTag.POISONOUS, deadWeapon[GameTag.POISONOUS]},
-						{GameTag.LIFESTEAL, deadWeapon[GameTag.LIFESTEAL]}
-					};
-					Weapon newWeapon = (Weapon) Entity.FromCard(deadWeapon.Controller, deadWeapon.Card, tags);
+					//var tags = new EntityData
+					//{
+					//	{GameTag.ATK, deadWeapon[GameTag.ATK]},
+					//	{GameTag.POISONOUS, deadWeapon[GameTag.POISONOUS]},
+					//	{GameTag.LIFESTEAL, deadWeapon[GameTag.LIFESTEAL]}
+					//};
+					Weapon newWeapon = (Weapon) Entity.FromCard(deadWeapon.Controller, deadWeapon.Card);
 					deadWeapon.AppliedEnchantments?.ForEach(e =>
 					{
 						Enchantment instance = Enchantment.GetInstance(deadWeapon.Game, deadWeapon.Controller, newWeapon, newWeapon, e.Card);
@@ -1073,11 +1068,7 @@ namespace SabberStoneCore.Tasks
 						break;
 				}
 				HeroPower heroPower =
-					(HeroPower) Entity.FromCard(in controller, heroPowerCard, new EntityData
-					{
-						{GameTag.CREATOR, source.Id},
-						{GameTag.ZONE, (int)Zone.PLAY}
-					});
+					(HeroPower) Entity.FromCard(in controller, heroPowerCard, creator: source);
 				controller.SetasideZone.Add(controller.Hero.HeroPower);
 				controller.Hero.HeroPower = heroPower;
 
@@ -1091,14 +1082,14 @@ namespace SabberStoneCore.Tasks
 					controller.HandZone.Remove(entity);
 					controller.SetasideZone.Add(entity);
 					var tags = new EntityData();
-					if (game.History)
-					{
-						tags.Add(GameTag.ZONE_POSITION, i + 1);
-						tags.Add(GameTag.CREATOR, source.Id);
-					}
+					//if (game.History)
+					//{
+					//	tags.Add(GameTag.ZONE_POSITION, i + 1);
+					//	tags.Add(GameTag.CREATOR, source.Id);
+					//}
 
-					Playable newEntity = Entity.FromCard(in controller, cards.Choose(rnd), tags, controller.HandZone, -1, i);
-					newEntity.CreatorId = source.Id;
+					Playable newEntity = Entity.FromCard(in controller, cards.Choose(rnd), controller.HandZone, -1, i, source);
+					//newEntity.CreatorId = source.Id;
 					newEntity.Cost = newEntity.Card.Cost - 1;
 				}
 
@@ -1109,8 +1100,8 @@ namespace SabberStoneCore.Tasks
 					Playable entity = deck[i];
 					if (entity.Card.Class != CardClass.WARLOCK) continue;
 
-					Card randCard = Util.Choose(cards);
-					Playable newEntity = Entity.FromCard(in controller, in randCard, null, controller.DeckZone);
+					Card randCard = cards.Choose(rnd);
+					Playable newEntity = Entity.FromCard(in controller, in randCard, controller.DeckZone);
 					newEntity.CreatorId = source.Id;
 
 					//Enchantment.GetInstance(Controller, (Playable) Source, newEntity, EnchantmentCard);
@@ -1140,7 +1131,7 @@ namespace SabberStoneCore.Tasks
 				in TaskStack stack = null)
 			{
 				Card pick = PastLegendaryMinions.Choose(game.Random);
-				Entity.FromCard(in controller, in pick, null, controller.HandZone);
+				Entity.FromCard(in controller, in pick, controller.HandZone);
 				return TaskState.COMPLETE;
 			}
 		}

@@ -20,6 +20,7 @@ using SabberStoneCore.Tasks.PlayerTasks;
 
 using Generic = SabberStoneCore.Actions.Generic;
 using System.Collections.Generic;
+using SabberStoneCore.Model.Entities;
 
 namespace SabberStoneCoreTest.Cloning
 {
@@ -172,9 +173,9 @@ namespace SabberStoneCoreTest.Cloning
 			clone.Process(task2);
 			Game clone2 = clone.Clone();
 
-			var minion = game.CurrentPlayer.BoardZone[0];
-			var cloneMinion = clone.CurrentPlayer.BoardZone[0];
-			var clone2Minion = clone2.CurrentPlayer.BoardZone[0];
+			MinionInPlay minion = game.CurrentPlayer.BoardZone[0];
+			MinionInPlay cloneMinion = clone.CurrentPlayer.BoardZone[0];
+			MinionInPlay clone2Minion = clone2.CurrentPlayer.BoardZone[0];
 
 			Assert.Equal(2, minion.AttackDamage);
 			Assert.Equal(2, cloneMinion.AttackDamage);
