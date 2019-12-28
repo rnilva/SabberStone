@@ -876,7 +876,7 @@ namespace SabberStoneCore.CardSets
 				{
 					TriggerSource = TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER,
 					SingleTask = ComplexTask.Create(
-						new GetGameTagTask(GameTag.ENTITY_ID, EntityType.TARGET),
+						new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.TARGET),
 						new AddEnchantmentTask("UNG_953e", EntityType.SOURCE, false, true))
 				}
 			});

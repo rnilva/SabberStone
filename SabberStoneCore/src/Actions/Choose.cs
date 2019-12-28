@@ -45,6 +45,7 @@ namespace SabberStoneCore.Actions
 
                 g.Log(LogLevel.INFO, BlockType.ACTION, "ChoicePick", !g.Logging? "":$"{c.Name} Picks {playable.Card.Name} as choice!");
 
+				bool actionSuceess = true;
 				switch (c.Choice.ChoiceAction)
 				{
 					case ChoiceAction.HAND:
@@ -53,7 +54,11 @@ namespace SabberStoneCore.Actions
 							AddHandPhase.Invoke(c, playable);
 							playable = g.IdEntityDic[choice];
 						}
-                        break;
+						else
+						{
+							actionSuceess = false;
+						}
+						break;
 
 					case ChoiceAction.CAST:
 						RemoveFromZone(c, playable);
@@ -69,6 +74,10 @@ namespace SabberStoneCore.Actions
 							CastSpell.Invoke(c, g, (Spell)playable, randTarget, 0);
 							g.TaskQueue.EndEvent();
 						}
+						else
+						{
+							actionSuceess = false;
+						}
 						break;
 
 					case ChoiceAction.SUMMON:
@@ -76,6 +85,10 @@ namespace SabberStoneCore.Actions
 						{
 							//Minion m = (Minion) playable;
 							SummonBlock(g, ref playable, -1, g.IdEntityDic[c.Choice.SourceId]);
+						}
+						else
+						{
+							actionSuceess = false;
 						}
                         break;
 
@@ -111,6 +124,10 @@ namespace SabberStoneCore.Actions
 							c.SetasideZone.Add(c.Hero.HeroPower);
 							c.Hero.HeroPower = (HeroPower) playable;
 						}
+						else
+						{
+							actionSuceess = false;
+						}
 						break;
 
 					case ChoiceAction.STACK:
@@ -129,6 +146,10 @@ namespace SabberStoneCore.Actions
 						{
 							if (RemoveFromZone(c, playable))
 								AddHandPhase.Invoke(c, playable);
+						}
+						else
+						{
+							actionSuceess = false;
 						}
 						break;
 
@@ -162,7 +183,7 @@ namespace SabberStoneCore.Actions
 				g.IdEntityDic[choice].CreatorId = c.Choice.SourceId;
 
 				// aftertask here
-				if (c.Choice.AfterChooseTask != null)
+				if (actionSuceess && c.Choice.AfterChooseTask != null)
 				{
 					// choice creator as Source
 					// selected card as Target

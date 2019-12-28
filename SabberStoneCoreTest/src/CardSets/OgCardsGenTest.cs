@@ -3075,7 +3075,7 @@ namespace SabberStoneCoreTest.CardSets
 			};
 			overriddenYoggCard.Tags.Remove(GameTag.COST);
 
-			Playable testCard = Entity.FromCard(game.CurrentPlayer, overriddenYoggCard, null, game.CurrentPlayer.HandZone);
+			Playable testCard = Entity.FromCard(game.CurrentPlayer, overriddenYoggCard, game.CurrentPlayer.HandZone);
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 
 			Assert.Equal(2, YoggTestTask.NumSpellCasted);

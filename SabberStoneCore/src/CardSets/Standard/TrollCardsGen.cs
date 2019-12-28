@@ -412,7 +412,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - REQ_NUM_MINION_SLOTS = 1
 			// --------------------------------------------------------
 			cards.Add("TRL_254b", new Power {
-				PowerTask = new SummonTask("TRL_254b", 2)
+				PowerTask = new SummonTask("TRL_254t", 2)
 			});
 
 		}
@@ -865,7 +865,7 @@ namespace SabberStoneCore.CardSets.Standard
 					{
 						if (c.BoardZone.IsFull) return;
 						Card instance = Card.GetTigerCard(g.CurrentEventData.EventNumber, g.History);
-						Entity.FromCard(in c, in instance, zone: c.BoardZone, creator: in s);
+						Entity.FromCard(in c, in instance, zone: c.BoardZone, creator: s);
 					}))
 					.SetSource(TriggerSource.FRIENDLY)
 					.GetTrigger())
@@ -1028,7 +1028,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("TRL_259", new Power {
 				PowerTask = ComplexTask.Create(
 					new IncludeTask(EntityType.HAND),
-					new FilterStackTask(SelfCondition.IsTagValue(GameTag.ENTITY_ID, 68, RelaSign.GEQ), SelfCondition.IsMinion),
+					new FilterStackTask(SelfCondition.IsId(68, RelaSign.GEQ), SelfCondition.IsMinion),
 					new SummonStackTask(true))
 			});
 

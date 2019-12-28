@@ -152,13 +152,14 @@ namespace SabberStoneCore.Auras
 
 			if (ignoreEnchantments) return;
 
-			if (EnchantmentCard != null && (_history || EnchantmentCard.Power.Trigger != null))
+			if (EnchantmentCard != null && _history)
 			{
 				int cardId = EnchantmentCard.AssetId;
 				List<Enchantment> enchantments = m.AppliedEnchantments;
 				for (int i = enchantments.Count - 1; i >= 0; i--)
 					if (enchantments[i].Creator == _owner && enchantments[i].Card.AssetId == cardId)
 					{
+						enchantments[i].Remove();
 						enchantments.RemoveAt(i);
 						break;
 					}

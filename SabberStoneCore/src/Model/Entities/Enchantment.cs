@@ -21,41 +21,52 @@ using SabberStoneCore.Model.Zones;
 
 namespace SabberStoneCore.Model.Entities
 {
-	public partial class Enchantment : Playable
+	public class Enchantment : Playable
 	{
 		//private int _creatorId;
-		private int _controllerId;
+		//private int _controllerId;
+		private bool _isOneTurnActive;
+		private int _orderOfPlay;
 		private Playable _creator;
 		private Card _capturedCard;
+		private bool _removed;
 		//private IAura _ongoingEffect;
 
-		private Enchantment(in Controller controller, in Card card, in EntityData tags, in int id)
-			: base(in controller, in card, in tags, in id)
+		private Enchantment(in Controller controller, in Card card, in int id)
+			: base(in controller, in card, in id)
 		{
-
+			//_controllerId = controller.Id;
 		}
 
-		private Enchantment(in Controller c, in Enchantment e) : base(in c, e)
+		private Enchantment(in Controller c, in Enchantment e) : base(in c, e.Card, e.Id)
 		{
-			//Game = c.Game;
-			//Card = e.Card;
-			//Id = e.Id;
-
-			Target = e.Target is Playable ? (Entity) Game.IdEntityDic[e.Target.Id] : c;
-			_controllerId = e._controllerId;
+			_v1 = e._v1;
+			_v2 = e._v2;
+			//Target = e.Target is Playable ? (Entity) Game.IdEntityDic[e.Target.Id] : c;
+			Target = e.Target is Playable
+				? (Entity) Game.IdEntityDic[e.Target.Id]
+				: Game.ControllerById(e.Target.Id);
+			Target.AppliedEnchantments?.Add(this);
+			//_controllerId = e._controllerId;
+			_isOneTurnActive = e._isOneTurnActive;
+			_orderOfPlay = e._orderOfPlay;
 			_creatorId = e._creatorId;
 			_capturedCard = e._capturedCard;
 
 			if (e.IsOneTurnActive)
-				c.Game.OneTurnEffectEnchantments.Add(this);
+				Game.OneTurnEffectEnchantments.Add(this);
+
+			Game.IdEntityDic[Id] = this;
+			Game.AllEnchantments.Add(this);
+			e.ActivatedTrigger?.Activate(Game, this);
 
 			Zone = c.BoardZone;
 
 			if (Power.Enchant?.RemoveWhenPlayed ?? false)
 				Enchant.RemoveWhenPlayedTrigger.Activate(Game, this);
 
-			if (e.Creator is Enchantment eCreator)
-				eCreator.Clone(in c);
+			//if (e.Creator is Enchantment eCreator)
+			//	eCreator.Clone(Game);
 		}
 
 		/// <summary>
@@ -64,7 +75,7 @@ namespace SabberStoneCore.Model.Entities
 		public Entity Target { get; set; }
 
 		/// <summary>
-		/// <see cref="SabberStoneCore.Model.Card"/> information captured in this instance.
+		/// <see cref="Card"/> information captured in this instance.
 		/// </summary>
 		public Card CapturedCard
 		{
@@ -83,7 +94,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public Playable Creator
 		{
-			get => _creator ?? (_creator = Game.IdEntityDic[_creatorId]);
+			get => _creator ?? (!Game.IdEntityDic.TryGetValue(_creatorId, out _creator) ? null : _creator);
 			private set
 			{
 				_creatorId = value.Id;
@@ -91,7 +102,17 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		public bool IsOneTurnActive { get; private set; }
+		public bool IsOneTurnActive
+		{
+			get => _isOneTurnActive;
+			private set => _isOneTurnActive = value;
+		}
+
+		public int OrderOfPlay
+		{
+			get => _orderOfPlay;
+			private set => _orderOfPlay = value;
+		}
 
 		public int ScriptTag1
 		{
@@ -121,9 +142,9 @@ namespace SabberStoneCore.Model.Entities
 		{
 			int id = game.NextId;
 
-			var tags = new EntityData(0);
+			//var tags = new EntityData(0);
 
-			var instance = new Enchantment(in controller, in card, in tags, in id)
+			var instance = new Enchantment(in controller, in card, in id)
 			{
 				Creator = creator,
 				Target = target,
@@ -134,12 +155,13 @@ namespace SabberStoneCore.Model.Entities
 			target.AppliedEnchantments.Add(instance);
 
 			//game.IdEntityDic.Add(instance.Id, instance);
+			game.AllEnchantments.Add(instance);
 			game.IdEntityDic[instance.Id] = instance;
 
 			if (game.History)
 			{
 				//tags.Add(GameTag.ENTITY_ID, id);
-				tags.Add(GameTag.ZONE, (int)Enums.Zone.SETASIDE);
+				//tags.Add(GameTag.ZONE, (int)Enums.Zone.SETASIDE);
 				//tags.Add(GameTag.CONTROLLER, controller.PlayerId);
 
 				game.PowerHistory.Add(new PowerHistoryFullEntity
@@ -147,7 +169,13 @@ namespace SabberStoneCore.Model.Entities
 					Entity = new PowerHistoryEntity
 					{
 						Id = instance.Id,
-						Tags = tags.ToDictionary(k => k.Key, k => k.Value)
+						//Tags = tags.ToDictionary(k => k.Key, k => k.Value)
+						Tags = new Dictionary<GameTag, int>
+						{
+							{GameTag.ENTITY_ID, id},
+							{GameTag.ZONE, (int)Enums.Zone.SETASIDE},
+							{GameTag.CONTROLLER, controller.PlayerId}
+						}
 					}
 				});
 
@@ -220,7 +248,12 @@ namespace SabberStoneCore.Model.Entities
 
 		public override Playable Clone(in Controller controller)
 		{
-			return new Enchantment(in controller, this);
+			throw new NotImplementedException();
+		}
+
+		public Enchantment Clone(Game game)
+		{
+			return new Enchantment(game.ControllerById(Controller.Id), this);
 		}
 
 		public override int this[GameTag t]
@@ -239,7 +272,7 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		public void Remove()
+		public void Remove(bool removeFromList = false)
 		{
 			if (Game.History)
 			{
@@ -258,23 +291,24 @@ namespace SabberStoneCore.Model.Entities
 			OngoingEffect?.Remove();
 			ActivatedTrigger?.Remove();
 
-			Target.AppliedEnchantments.Remove(this);
+			if (removeFromList)
+				Target.AppliedEnchantments.Remove(this);
 
 			if (IsOneTurnActive)
 				Game.OneTurnEffectEnchantments.Remove(this);
 
 			Game.Log(LogLevel.VERBOSE, BlockType.ACTION, "Enchantment",
 				!Game.Logging ? "" : $"Enchantment {this} is removed from {Target}.");
+
+			//if (!Creator?.Card.Modular ?? true)
+			_removed = true;
 		}
+
+		public bool IsRemoved => _removed;
 
 		public override string ToString()
 		{
 			return $"'{Card.Name}[{Id}]'";
 		}
-	}
-
-	public partial class Enchantment
-	{
-		public int OrderOfPlay { get; set; }
 	}
 }

@@ -364,8 +364,8 @@ namespace SabberStoneCore.Auras
 					throw new NotImplementedException();
 			}
 
-			if (Owner is Enchantment e)
-				e.Remove();
+			//if (Owner is Enchantment e)
+			//	e.Remove(true);
 		}
 
 		void IAura.Activate(Playable owner)
@@ -430,6 +430,7 @@ namespace SabberStoneCore.Auras
 					for (int i = enchantments.Count - 1; i >= 0; i--)
 						if (enchantments[i].Creator == Owner && enchantments[i].Card.AssetId == cardId)
 						{
+							enchantments[i].Remove();
 							enchantments.RemoveAt(i);
 							break;
 						}
@@ -582,9 +583,17 @@ namespace SabberStoneCore.Auras
 					(id, ownerId, idDict) =>
 					{
 						Playable entity = idDict[id];
-						for (int i = entity.AppliedEnchantments.Count - 1; i >= 0; i--)
-							if (entity.AppliedEnchantments[i].Creator.Id == ownerId)
-								entity.AppliedEnchantments[i].Remove();
+
+						List<Enchantment> enchantments = entity.AppliedEnchantments;
+						if (enchantments == null)
+							return;
+
+						for (int i = enchantments.Count - 1; i >= 0; i--)
+							if (enchantments[i].Creator.Id == ownerId)
+							{
+								enchantments[i].Remove();
+								enchantments.RemoveAt(i);
+							}
 					});
 			}
 
@@ -624,12 +633,14 @@ namespace SabberStoneCore.Auras
 			{
 				int cardId = EnchantmentCard.AssetId;
 				List<Enchantment> enchantments = entity.AppliedEnchantments;
-				for (int i = enchantments.Count - 1; i >= 0; i--)
-					if (enchantments[i].Creator == Owner && enchantments[i].Card.AssetId == cardId)
-					{
-						enchantments.RemoveAt(i);
-						break;
-					}
+				if (enchantments != null)
+					for (int i = enchantments.Count - 1; i >= 0; i--)
+						if (enchantments[i].Creator == Owner && enchantments[i].Card.AssetId == cardId)
+						{
+							enchantments[i].Remove();
+							enchantments.RemoveAt(i);
+							break;
+						}
 			}
 
 			if (Game.Logging)

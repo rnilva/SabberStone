@@ -8,7 +8,7 @@ namespace SabberStoneCore.Model.Entities
 {
 	public class MinionInPlay : Minion
 	{
-		public MinionInPlay(in Controller controller, in Card card, in EntityData tags, in int id = -1) : base(in controller, in card, in tags, in id)
+		public MinionInPlay(in Controller controller, in Card card, in int id = -1) : base(in controller, in card, in id)
 		{
 			_v1 = card.ATK;
 			_v2 = card.Health;
@@ -22,9 +22,9 @@ namespace SabberStoneCore.Model.Entities
 			_attrs = minion._attrs;
 		}
 
-		public static MinionInPlay FromCard(in Controller c, in Card card, in EntityData tags = null)
+		public static MinionInPlay FromCard(in Controller c, in Card card)
 		{
-			var entity = new MinionInPlay(in c, in card, tags ?? new EntityData());
+			var entity = new MinionInPlay(in c, in card);
 			c.Game.IdEntityDic[entity.Id] = entity;
 			// TODO: History
 			if (card.ChooseOne) CreateChooseOnePlayables(in c, entity, in card, -1);
@@ -35,8 +35,9 @@ namespace SabberStoneCore.Model.Entities
 		{
 			if (minion is MinionInPlay mp) return mp;
 
-			var inPlay = new MinionInPlay(minion.Controller, minion.Card, minion._data, minion.Id)
+			var inPlay = new MinionInPlay(minion.Controller, minion.Card, minion.Id)
 			{
+				_data = minion._data,
 				_v1 = minion._v1 ?? minion.Card.ATK,
 				_v2 = minion._v2 ?? minion.Card.Health,
 				ChooseOnePlayables = minion.ChooseOnePlayables,
@@ -389,6 +390,7 @@ namespace SabberStoneCore.Model.Entities
 					if (AppliedEnchantments[i].Creator.Power?.Aura != null)
 						continue;
 					AppliedEnchantments[i].Remove();
+					AppliedEnchantments.RemoveAt(i);
 				}
 
 			// reset ATK and Health

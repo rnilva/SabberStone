@@ -602,12 +602,13 @@ namespace SabberStoneCore.CardSets.Standard
 							if (t.Controller.BoardZone.IsFull) return;
 
 							var target = (Playable) t;
-							Entity.FromCard(t.Controller, t.Card,
-								new EntityData {{GameTag.COPIED_BY_KHADGAR, 1}},
-								c.BoardZone, zonePos: target.ZonePosition + 1, creator: in s);
+							Playable summoned = Entity.FromCard(t.Controller, t.Card,
+								c.BoardZone, zonePos: target.ZonePosition + 1, creator: s);
+							//summoned[GameTag.COPIED_BY_KHADGAR] = 1;
 						}))
 					.SetCondition(new SelfCondition(p => p.Game.CurrentEventData.EventSource != p
-					                                     && p[GameTag.COPIED_BY_KHADGAR] != 1))
+					                                     //&& p[GameTag.COPIED_BY_KHADGAR] != 1))
+														 && (p.CreatorId == 0 || p.Game.IdEntityDic[p.CreatorId].Card.AssetId != 52502)))
 					.SetSource(TriggerSource.FRIENDLY_EVENT_SOURCE)
 			});
 
@@ -1647,7 +1648,7 @@ namespace SabberStoneCore.CardSets.Standard
 						//{
 						//	{GameTag.GHOSTLY, 1}
 						//};
-						Playable echoPlayable = Entity.FromCard(in c, s.Card, null, c.HandZone);
+						Playable echoPlayable = Entity.FromCard(in c, s.Card, c.HandZone);
 						echoPlayable.Ghostly = true;
 						echoPlayable.CreatorId = s.Id;
 						c.Game.AuraUpdate();

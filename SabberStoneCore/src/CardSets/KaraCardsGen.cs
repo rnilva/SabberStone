@@ -711,7 +711,7 @@ namespace SabberStoneCore.CardSets
 			cards.Add("KAR_041", new Power {
 				InfoCardId = "KAR_041e",
 				PowerTask = ComplexTask.Create(
-					new GetGameTagTask(GameTag.ENTITY_ID, EntityType.TARGET),
+					new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.TARGET),
 					new DestroyTask(EntityType.TARGET),
 					new SetGameTagNumberTask(GameTag.MOAT_LURKER_MINION, EntityType.SOURCE)),
 				DeathrattleTask = ComplexTask.Create(
@@ -726,7 +726,7 @@ namespace SabberStoneCore.CardSets
 						if (originalTarget.Controller.BoardZone.IsFull)
 							return null;
 						Entity.FromCard(originalTarget.Controller,
-							originalTarget.Card, null,
+							originalTarget.Card,
 							originalTarget.Controller.BoardZone,
 							creator: p[0]);
 						return null;

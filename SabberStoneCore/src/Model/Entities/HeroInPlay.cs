@@ -10,7 +10,7 @@ namespace SabberStoneCore.Model.Entities
 {
 	public class HeroInPlay : Hero
 	{
-		public HeroInPlay(in Controller controller, in Card card, in EntityData tags, in int id = -1) : base(in controller, in card, in tags, in id)
+		public HeroInPlay(in Controller controller, in Card card, in int id = -1) : base(in controller, in card, in id)
 		{
 			_v1 = card.ATK;
 			Auras = new List<Aura>();
@@ -28,7 +28,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public static HeroInPlay FromCard(in Controller c, in Card card)
 		{
-			var entity = new HeroInPlay(in c, in card, new EntityData(1));
+			var entity = new HeroInPlay(in c, in card);
 			c.Game.IdEntityDic[entity.Id] = entity;
 			if (card.ChooseOne) CreateChooseOnePlayables(in c, entity, in card, -1);
 			return entity;
@@ -131,7 +131,11 @@ namespace SabberStoneCore.Model.Entities
 
 		public static HeroInPlay FromHero(ref Hero hero)
 		{
-			var inPlay = new HeroInPlay(hero.Controller, hero.Card, hero._data, hero.Id);
+			var inPlay = new HeroInPlay(hero.Controller, hero.Card, hero.Id)
+			{
+				_data = hero._data,
+				ChooseOnePlayables = hero.ChooseOnePlayables
+			};
 			inPlay.ChooseOnePlayables = hero.ChooseOnePlayables;
 			hero.Game.IdEntityDic[hero.Id] = inPlay;
 			hero = inPlay;
@@ -163,7 +167,7 @@ namespace SabberStoneCore.Model.Entities
 			{
 				Weapon[GameTag.ZONE] = (int)Enums.Zone.PLAY;
 				Weapon[GameTag.ZONE_POSITION] = 0;
-				EquippedWeapon = weapon.Id;
+				//EquippedWeapon = weapon.Id;
 			}
 
 			Weapon.Zone = Controller.BoardZone;
@@ -200,10 +204,14 @@ namespace SabberStoneCore.Model.Entities
 			Weapon.ActivatedTrigger?.Remove();
 			Weapon.OngoingEffect?.Remove();
 			if (Weapon.AppliedEnchantments != null /*&& Weapon[GameTag.KEEP_ENCHANTMENTS] != 1*/)
+			{
 				for (int i = Weapon.AppliedEnchantments.Count - 1; i >= 0; i--)
 					Weapon.AppliedEnchantments[i].Remove();
+				Weapon.AppliedEnchantments.Clear();
+			}
+
 			Weapon = null;
-			EquippedWeapon = 0;
+			//EquippedWeapon = 0;
 		}
 
 		public override Playable Clone(in Controller controller)
@@ -246,11 +254,7 @@ namespace SabberStoneCore.Model.Entities
 			g.Player1.PlayState = PlayState.TIED;
 			g.Player2.PlayState = PlayState.TIED;
 		};
-		public int EquippedWeapon
-		{
-			get { return this[GameTag.WEAPON]; }
-			set { this[GameTag.WEAPON] = value; }
-		}
+		public int EquippedWeapon => Weapon?.Id ?? 0;
 
 		private Attributes _attrs;
 

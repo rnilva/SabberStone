@@ -77,7 +77,7 @@ namespace SabberStoneCore.Auras
 					//eff.RemoveFrom(_target);
 					_target.RemoveEffect(eff);
 				}
-				_currentInstance?.Remove();
+				_currentInstance?.Remove(true);
 				//if (_target != null)
 				//	for (int i = 0; i < Effects.Length; i++)
 				//		Effects[i].RemoveFrom(_target.AuraEffects);
@@ -93,7 +93,7 @@ namespace SabberStoneCore.Auras
 
 				if (_target != weapon)
 				{
-					_currentInstance?.Remove();
+					_currentInstance?.Remove(true);
 					_currentInstance = null;
 
 					_target = weapon;
@@ -118,7 +118,7 @@ namespace SabberStoneCore.Auras
 				foreach (AbstractEffect eff in EnchantmentCard.Power.Enchant.Effects)
 					m.RemoveEffect(eff);
 
-				_currentInstance?.Remove();
+				_currentInstance?.Remove(true);
 				_enraged = false;
 			}
 

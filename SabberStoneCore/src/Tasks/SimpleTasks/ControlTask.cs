@@ -47,7 +47,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				MinionInPlay removedEntity = (MinionInPlay) p.Zone.Remove(p);
 				game.AuraUpdate();
 				removedEntity.Controller = Opposite ? controller.Opponent : controller;
-				removedEntity[GameTag.CONTROLLER] = removedEntity.Controller.PlayerId;
+				if (game.History)
+					removedEntity[GameTag.CONTROLLER] = removedEntity.Controller.PlayerId;
 				game.Log(LogLevel.INFO, BlockType.PLAY, "ControlTask",
 					!game.Logging ? "" : $"{controller.Name} is taking control of {p}.");
 

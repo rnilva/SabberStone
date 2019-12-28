@@ -1459,7 +1459,10 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			BoardZone board = game.CurrentPlayer.BoardZone;
 
-			Assert.Equal(2, board.Count);
+			if (board[0].Card.Name == "Khadgar")
+				Assert.Equal(3, board.Count);
+			else
+				Assert.Equal(2, board.Count);
 			Assert.True(board.ToList().TrueForAll(p => p is Minion m && m.Cost == 2));
 		}
 

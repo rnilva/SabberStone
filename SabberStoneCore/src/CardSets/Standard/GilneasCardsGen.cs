@@ -2329,7 +2329,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("GIL_614", new Power {
 				PowerTask = ComplexTask.Create(
-					new GetGameTagTask(GameTag.ENTITY_ID, EntityType.TARGET),
+					new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.TARGET),
 					new AddEnchantmentTask("GIL_614e2", EntityType.SOURCE, true),
 					new AddEnchantmentTask("GIL_614e1", EntityType.TARGET))
 			});

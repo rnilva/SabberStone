@@ -27,8 +27,8 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="controller">The controller.</param>
 		/// <param name="card">The card.</param>
 		/// <param name="tags">The tags.</param>
-		public HeroPower(in Controller controller, in Card card, in EntityData tags, in int id = -1)
-			: base(in controller, in card, in tags, in id)
+		public HeroPower(in Controller controller, in Card card, in int id = -1)
+			: base(in controller, in card, in id)
 		{
 			Game.Log(LogLevel.VERBOSE, BlockType.PLAY, "HeroPower", !Game.Logging? "":$"{this} ({ Card.Class}) was created.");
 		}

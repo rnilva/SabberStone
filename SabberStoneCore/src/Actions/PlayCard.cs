@@ -97,7 +97,7 @@ namespace SabberStoneCore.Actions
 					//{
 					//	{GameTag.GHOSTLY, 1}
 					//};
-					Playable echoPlayable = Entity.FromCard(c, source.Card, null, c.HandZone);
+					Playable echoPlayable = Entity.FromCard(c, source.Card, c.HandZone);
 					echoPlayable.Ghostly = true;
 					echoPlayable.CreatorId = source.Id;
 

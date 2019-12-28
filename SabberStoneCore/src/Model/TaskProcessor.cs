@@ -236,12 +236,12 @@ namespace SabberStoneCore.Model
 				_game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(task.IsTrigger ? BlockType.TRIGGER : BlockType.POWER, source.Id, "", -1, target?.Id ?? 0));
 
 			TaskState success;
-#if DEBUG
+#if !DEBUG
 			try
 			{
 #endif
 				success = task.Process(in _game, in controller, in source, in target);
-#if DEBUG
+#if !DEBUG
 			}
 			catch (Exception e)
 			{

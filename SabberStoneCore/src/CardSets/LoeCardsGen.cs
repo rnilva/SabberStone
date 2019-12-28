@@ -406,7 +406,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOE_019", new Power {
 				PowerTask = ComplexTask.Create(
-					new GetGameTagTask(GameTag.ENTITY_ID, EntityType.TARGET),
+					new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.TARGET),
 					new AddEnchantmentTask("LOE_019e", EntityType.SOURCE, false, true))
 			});
 

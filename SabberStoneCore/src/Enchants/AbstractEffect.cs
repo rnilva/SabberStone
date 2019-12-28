@@ -513,7 +513,7 @@ namespace SabberStoneCore.Enchants
 			ref int? target = ref character._v1;
 			if (target == null)
 				target = character.Card.ATK;
-			character._v1 += _value;
+			target += _value;
 		}
 		public override void RemoveFrom(Character character)
 		{
@@ -1058,6 +1058,9 @@ namespace SabberStoneCore.Enchants
 
 		public override void ApplyTo(Entity entity)
 		{
+			if (entity._data == null)
+				entity._data = new EntityData();
+
 			int oldValue = 0;
 			if (_operator != EffectOperator.SET)
 				entity._data.TryGetValue(_tag, out oldValue);
@@ -1083,6 +1086,9 @@ namespace SabberStoneCore.Enchants
 
 		public override void RemoveFrom(Entity entity)
 		{
+			if (entity._data == null)
+				return;
+
 			int oldValue = 0;
 			if (_operator != EffectOperator.SET)
 				entity._data.TryGetValue(_tag, out oldValue);

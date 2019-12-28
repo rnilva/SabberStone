@@ -1990,6 +1990,7 @@ namespace SabberStoneCoreTest.CardSets
 				},
 				Player2HeroClass = CardClass.MAGE,
 				FillDecks = true,
+				Shuffle = false,
 				FillDecksPredictably = true
 			});
 			game.StartGame();
@@ -2000,6 +2001,8 @@ namespace SabberStoneCoreTest.CardSets
 
 			Assert.Equal(5, game.CurrentPlayer.SecretZone.Count);
 			Assert.Equal(5, game.CurrentPlayer.SecretZone.Select(p => p.Card.Id).Distinct().Count());
+
+
 		}
 
 		// ------------------------------------------- SPELL - MAGE

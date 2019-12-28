@@ -72,7 +72,9 @@ namespace SabberStoneCore.Kettle
 
 		public static PowerHistoryFullEntity FullEntity(Entity entity)
 		{
-			var tags = new Dictionary<GameTag, int>(entity._data);
+			Dictionary<GameTag, int> tags = entity._data == null
+				? new Dictionary<GameTag, int>()
+				: new Dictionary<GameTag, int>(entity._data);
 			gameTagsEntities.ForEach(p => tags[p] = entity[p]);
 			if (entity is Character c)
 			{
@@ -128,7 +130,9 @@ namespace SabberStoneCore.Kettle
 
 		public static PowerHistoryShowEntity ShowEntity(Entity entity)
 		{
-			var tags = new Dictionary<GameTag, int>(entity._data);
+			Dictionary<GameTag, int> tags = entity._data == null
+				? new Dictionary<GameTag, int>()
+				: new Dictionary<GameTag, int>(entity._data);
 			gameTagsEntities.ForEach(p => tags[p] = entity[p]);
 			//tags[GameTag.TAG_LAST_KNOWN_COST_IN_HAND] = playable[GameTag.COST];
 

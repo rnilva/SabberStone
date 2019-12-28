@@ -341,7 +341,7 @@ namespace SabberStoneCore.CardSets
 					new FilterStackTask(SelfCondition.IsDeathrattleMinion),
 					new RandomTask(1, EntityType.STACK),
 					new CopyTask(EntityType.STACK, Zone.SETASIDE, addToStack: true),
-					new GetGameTagTask(GameTag.ENTITY_ID, EntityType.STACK),
+					new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.STACK),
 					new AddEnchantmentTask("LOOT_520e", EntityType.SOURCE, false, true))
 			});
 
@@ -2978,7 +2978,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_161", new Power {
 				PowerTask = ComplexTask.Create(
-					new GetGameTagTask(GameTag.ENTITY_ID, EntityType.TARGET),
+					new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.TARGET),
 					new AddEnchantmentTask("LOOT_161e", EntityType.SOURCE, false, true),
 					new DestroyTask(EntityType.TARGET))
 			});

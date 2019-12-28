@@ -91,6 +91,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						                e.Power?.DeathrattleTask != null)
 							? ((Minion) source).ZonePosition
 							: -1;
+						if (zonePosition > controller.BoardZone.Count)
+							zonePosition = -1;
 						break;
 					case EntityType.EVENT_SOURCE:
 						toBeCopied = game.CurrentEventData?.EventSource;

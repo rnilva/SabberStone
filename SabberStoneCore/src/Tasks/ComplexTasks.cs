@@ -466,7 +466,7 @@ namespace SabberStoneCore.Tasks
 				for (--k; k >= 0; --k)
 				{
 					Entity.FromCard(in c, graveyard[buffer[k]].Card,
-						zone: board, creator: in s);
+						zone: board, creator: s);
 					if (board.IsFull) return;
 				}
 			});
