@@ -45,7 +45,7 @@ namespace SabberStoneCore.Auras
 		//private readonly TriggerManager.TriggerHandler _removedHandler;
 		private readonly AdaptiveCostEffectTriggerStub _updateHandler;
 		private readonly AdaptiveCostEffectEndTurnRemoveTriggerStub _removeHandler;
-		private readonly Trigger _updateTrigger;
+		//private readonly Trigger _updateTrigger;
 		private readonly Action<Game, TriggerStub> _triggerActivator;
 		private readonly Action<Game, TriggerStub> _triggerDeactivator;
 
