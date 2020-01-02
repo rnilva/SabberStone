@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -138,9 +138,8 @@ namespace SabberStoneCore.CardSets
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("LOE_021", new Power {
-				Trigger = new Trigger(TriggerType.INSPIRE)
+				Trigger = new Trigger(TriggerType.INSPIRE, eitherTurn: true)
 				{
-					EitherTurn =  true,
 					SingleTask = ComplexTask.Secret(ComplexTask.DamageRandomTargets(1, EntityType.ENEMIES, 5, true))
 				}
 			});
@@ -446,10 +445,8 @@ namespace SabberStoneCore.CardSets
 			// - BATTLECRY = 1
 			// --------------------------------------------------------
 			cards.Add("LOE_016", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, TriggerSource.FRIENDLY, SelfCondition.IsBattlecryMinion)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsBattlecryMinion,
 					SingleTask = ComplexTask.DamageRandomTargets(1, EntityType.ENEMIES, 2)
 				}
 			});
@@ -878,9 +875,8 @@ namespace SabberStoneCore.CardSets
 			// Text: Whenever you cast a spell, summon a random minion of the same Cost.
 			// --------------------------------------------------------
 			cards.Add("LOE_086", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
 						//new GetGameTagTask(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, EntityType.TARGET),
 						new GetEventNumberTask(),
@@ -1139,3 +1135,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

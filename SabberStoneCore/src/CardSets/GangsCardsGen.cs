@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -279,11 +279,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_333", new Power
 			{
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, SelfCondition.IsEventTargetIs(CardType.MINION))
 				{
-					TriggerSource = TriggerSource.SELF,
-					//Condition = new SelfCondition(p => p.Game.IdEntityDic[p.Game.ProposedDefender] is Minion),
-					Condition = SelfCondition.IsEventTargetIs(CardType.MINION),
 					SingleTask = ComplexTask.Create(
 						new GetGameTagTask(GameTag.ATK, EntityType.SOURCE),
 						new DamageNumberTask(EntityType.OP_HERO))
@@ -379,9 +376,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_337", new Power
 			{
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = new SummonTask("CFM_337t")
 				}
 			});
@@ -744,9 +740,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_800", new Power
 			{
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = ComplexTask.Secret(
 						new CopyTask(EntityType.TARGET, Zone.HAND)),
 					RemoveAfterTriggered = true
@@ -832,9 +827,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_606", new Power
 			{
-				Trigger = new Trigger(TriggerType.HEAL)
+				Trigger = new Trigger(TriggerType.HEAL, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new SummonTask("CFM_606t", SummonSide.RIGHT)
 				}
 			});
@@ -1014,11 +1008,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_634", new Power
 			{
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, SelfCondition.IsDefenderDead)
 				{
-					TriggerSource = TriggerSource.SELF,
 					//Condition = new SelfCondition(p => p.Game.IdEntityDic[p.Game.ProposedDefender].ToBeDestroyed),
-					Condition = SelfCondition.IsDefenderDead,
 					//SingleTask = new SetGameTagTask(GameTag.STEALTH, 1, EntityType.SOURCE)
 					SingleTask = new ApplyEffectTask(EntityType.SOURCE, Effects.StealthEff)
 				}
@@ -1111,9 +1103,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_781", new Power
 			{
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = ComplexTask.Create(
 						new RandomCardTask(EntityType.OP_HERO),
 						new AddStackTo(EntityType.HAND))
@@ -1255,11 +1246,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_697", new Power
 			{
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, SelfCondition.IsEventTargetIs(CardType.HERO))
 				{
-					TriggerSource = TriggerSource.SELF,
 					//Condition = new SelfCondition(p => p.Game.IdEntityDic[p.Game.ProposedDefender] is Hero),
-					Condition = SelfCondition.IsEventTargetIs(CardType.HERO),
 					SingleTask = new TransformMinionTask(EntityType.SOURCE, 2)
 				}
 			});
@@ -1472,9 +1461,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_900", new Power
 			{
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new DamageTask(5, EntityType.HERO)
 				}
 			});
@@ -1608,9 +1596,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_756", new Power
 			{
-				Trigger = new Trigger(TriggerType.DEAL_DAMAGE)
+				Trigger = new Trigger(TriggerType.DEAL_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = ComplexTask.Create(
 						new GetEventNumberTask(),
 						new ArmorTask())
@@ -1675,9 +1662,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_631", new Power
 			{
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = ComplexTask.BuffRandomMinion(EntityType.HAND, "CFM_631e")
 				}
 			});
@@ -1722,12 +1708,10 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_025", new Power
 			{
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF,  new SelfCondition(
+					p => !((Character)p).ToBeDestroyed
+					     && p.Game.CurrentEventData.EventTarget is Minion))
 				{
-					TriggerSource = TriggerSource.SELF,
-					Condition = new SelfCondition(
-						p => !((Character)p).ToBeDestroyed
-						     && p.Game.CurrentEventData.EventTarget is Minion),
 					SingleTask = new DrawTask()
 				}
 			});
@@ -1751,9 +1735,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_060", new Power
 			{
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("CFM_060e", EntityType.SOURCE)
 				}
 			});
@@ -1787,11 +1770,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_064", new Power
 			{
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)	// PRESUMMON
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, TriggerSource.FRIENDLY, SelfCondition.IsBattlecryMinion)	// PRESUMMON
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsBattlecryMinion,
 					SingleTask = new AddEnchantmentTask("CFM_064e", EntityType.SOURCE)
 				}
 			});
@@ -1929,11 +1910,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_344", new Power
 			{
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, SelfCondition.IsDefenderDead)
 				{
-					TriggerSource = TriggerSource.SELF,
-					//Condition = new SelfCondition(p => p.Game.IdEntityDic[p.Game.ProposedDefender].ToBeDestroyed),
-					Condition = SelfCondition.IsDefenderDead,
 					SingleTask = ComplexTask.Create(
 						new IncludeTask(EntityType.DECK),
 						new FilterStackTask(SelfCondition.IsRace(Race.MURLOC)),
@@ -2017,11 +1995,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_637", new Power
 			{
-				Trigger = new Trigger(TriggerType.PLAY_MINION)
+				Trigger = new Trigger(TriggerType.PLAY_MINION, TriggerSource.FRIENDLY, SelfCondition.IsRace(Race.PIRATE))
 				{
 					TriggerActivation = TriggerActivation.DECK,
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsRace(Race.PIRATE),
 					SingleTask = SpecificTask.PatchesThePirate
 				}
 			});
@@ -2187,9 +2163,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_658", new Power
 			{
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = new AddEnchantmentTask("CFM_658e", EntityType.SOURCE)
 				}
 			});
@@ -2275,9 +2250,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_669", new Power
 			{
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.ENEMY)
 				{
-					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = new AddCardTo("GAME_005", EntityType.HAND)
 				}
 			});
@@ -2439,9 +2413,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_807", new Power
 			{
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					//SingleTask = new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.HERO_POWER)
 					SingleTask = ComplexTask.SetUnexhaustedTask(EntityType.HERO_POWER)
 				}
@@ -2458,9 +2431,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_808", new Power
 			{
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = ComplexTask.Create(new FuncNumberTask(p =>
 						{
 							Controller controller = p.Controller;
@@ -2526,9 +2498,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("CFM_851", new Power
 			{
-				Trigger = new Trigger(TriggerType.DRAW)
+				Trigger = new Trigger(TriggerType.DRAW, TriggerSource.ENEMY)
 				{
-					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = new AddEnchantmentTask("CFM_851e", EntityType.SOURCE)
 				}
 			});
@@ -3880,3 +3851,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

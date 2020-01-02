@@ -92,9 +92,8 @@ namespace SabberStoneCore.CardSets
 			// - 717 = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_329", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new SummonCopyTask(EntityType.EVENT_SOURCE)
 				}
 			});
@@ -146,9 +145,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_051", new Power {
 				PowerTask = new DamageTask(2, EntityType.TARGET),
-				Trigger = new Trigger(TriggerType.ARMOR)
+				Trigger = new Trigger(TriggerType.ARMOR, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					TriggerActivation = TriggerActivation.HAND,
 					FastExecution = true,
 					SingleTask = ComplexTask.ProgressSpellStoneUpdateUsingEventNumber("LOOT_051t1")
@@ -222,9 +220,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_051t1", new Power {
 				PowerTask = new DamageTask(4, EntityType.TARGET),
-				Trigger = new Trigger(TriggerType.ARMOR)
+				Trigger = new Trigger(TriggerType.ARMOR, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					TriggerActivation = TriggerActivation.HAND,
 					FastExecution = true,
 					SingleTask = ComplexTask.ProgressSpellStoneUpdateUsingEventNumber("LOOT_051t2")
@@ -288,10 +285,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_078", new Power {
 				// TODO Test: Cave Hydra_LOOT_078
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, SelfCondition.IsProposedDefender(CardType.MINION))
 				{
-					Condition = SelfCondition.IsProposedDefender(CardType.MINION),
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = ComplexTask.Create(
 						new FuncNumberTask(p =>
 						{
@@ -371,9 +366,8 @@ namespace SabberStoneCore.CardSets
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_079", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, SelfCondition.IsProposedDefender(CardType.HERO))
 				{
-					Condition = SelfCondition.IsProposedDefender(CardType.HERO),
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.SOURCE, SelfCondition.IsNotBoardFull),
 						new FlagTask(true, ComplexTask.Secret(
@@ -394,10 +388,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_080", new Power {
 				PowerTask = new SummonTask("LOOT_077t", 2),
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY, SelfCondition.IsSecret)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsSecret,
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = new ChangeEntityTask("LOOT_080t2"),
 					RemoveAfterTriggered = true
@@ -493,9 +485,8 @@ namespace SabberStoneCore.CardSets
 			// - DURABILITY = 3
 			// --------------------------------------------------------
 			cards.Add("LOOT_222", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = new AddEnchantmentTask("DS1_188e", EntityType.HERO)
 				}
 			});
@@ -522,10 +513,8 @@ namespace SabberStoneCore.CardSets
 			cards.Add("LOOT_080t2", new Power
 			{
 				PowerTask = new SummonTask("LOOT_077t", 3),
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY, SelfCondition.IsSecret)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsSecret,
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = new ChangeEntityTask("LOOT_080t3"),
 					RemoveAfterTriggered = true
@@ -567,9 +556,8 @@ namespace SabberStoneCore.CardSets
 			// Text: Whenever you cast a spell, gain Armor equal to its_Cost.
 			// --------------------------------------------------------
 			cards.Add("LOOT_231", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
 						//new GetGameTagTask(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, EntityType.TARGET),
 						new GetEventNumberTask(),
@@ -646,10 +634,9 @@ namespace SabberStoneCore.CardSets
 				PowerTask = ComplexTask.Create(
 					new RandomCardTask(CardType.SPELL, CardClass.MAGE),
 					new AddStackTo(EntityType.HAND)),
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, SelfCondition.IsRace(Race.ELEMENTAL))
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					Condition = SelfCondition.IsRace(Race.ELEMENTAL),
 					SingleTask = ComplexTask.ProgressSpellStoneUpdate("LOOT_103t1")
 				}
 			});
@@ -767,10 +754,9 @@ namespace SabberStoneCore.CardSets
 				PowerTask = new EnqueueTask(2, ComplexTask.Create(
 					new RandomCardTask(CardType.SPELL, CardClass.MAGE),
 					new AddStackTo(EntityType.HAND))),
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, SelfCondition.IsRace(Race.ELEMENTAL))
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					Condition = SelfCondition.IsRace(Race.ELEMENTAL),
 					SingleTask = ComplexTask.ProgressSpellStoneUpdate("LOOT_103t2")
 					//SingleTask = ComplexTask.Create(
 					//	new GetGameTagTask(GameTag.TAG_SCRIPT_DATA_NUM_1, EntityType.SOURCE),
@@ -912,9 +898,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_091", new Power {
 				PowerTask = new SummonTask("LOOT_091t"),
-				Trigger = new Trigger(TriggerType.HEAL)
+				Trigger = new Trigger(TriggerType.HEAL, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = ComplexTask.Create(
 						new GetGameTagTask(GameTag.TAG_SCRIPT_DATA_NUM_1, EntityType.SOURCE),
@@ -1048,9 +1033,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_091t1", new Power {
 				PowerTask = new SummonTask("LOOT_091t1t"),
-				Trigger = new Trigger(TriggerType.HEAL)
+				Trigger = new Trigger(TriggerType.HEAL, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = ComplexTask.Create(
 						new GetGameTagTask(GameTag.TAG_SCRIPT_DATA_NUM_1, EntityType.SOURCE),
@@ -1306,9 +1290,8 @@ namespace SabberStoneCore.CardSets
 			cards.Add("LOOT_507", new Power {
 				// Test: Lesser Diamond Spellstone_LOOT_507
 				PowerTask = SpecificTask.DiamondSpellstone(2),
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = ComplexTask.ProgressSpellStoneUpdate("LOOT_507t")
 				}
@@ -1326,9 +1309,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_209", new Power {
 				Trigger = new MultiTrigger(
-					new Trigger(TriggerType.CAST_SPELL)
+					new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 					{
-						TriggerSource = TriggerSource.FRIENDLY,
 						SingleTask = ComplexTask.Create(
 							new GetGameTagTask(GameTag.TAG_SCRIPT_DATA_NUM_1, EntityType.SOURCE),
 							new MathAddTask(1),
@@ -1455,9 +1437,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_507t", new Power {
 				PowerTask = SpecificTask.DiamondSpellstone(3),
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = ComplexTask.ProgressSpellStoneUpdate("LOOT_507t2")
 				}
@@ -1518,9 +1499,8 @@ namespace SabberStoneCore.CardSets
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_165", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = ComplexTask.Create(
 						new CopyTask(EntityType.TARGET, Zone.HAND, addToStack: true),
 						new AddEnchantmentTask("LOOT_165e", EntityType.STACK),
@@ -1575,9 +1555,8 @@ namespace SabberStoneCore.CardSets
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_204", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = ComplexTask.Secret(
 						new ReturnHandTask(EntityType.TARGET),
 						new AddEnchantmentTask("LOOT_204e", EntityType.TARGET))
@@ -1594,9 +1573,8 @@ namespace SabberStoneCore.CardSets
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_210", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, SelfCondition.IsProposedDefender(CardType.HERO))
 				{
-					Condition = SelfCondition.IsProposedDefender(CardType.HERO),
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.TARGET, SelfCondition.IsBoardCount(1)),
 						new FlagTask(false, ComplexTask.Secret(
@@ -1616,9 +1594,8 @@ namespace SabberStoneCore.CardSets
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("LOOT_214", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = ComplexTask.Secret(
 						new AddEnchantmentTask("LOOT_214e", EntityType.HERO))
 				} 
@@ -1643,11 +1620,9 @@ namespace SabberStoneCore.CardSets
 			cards.Add("LOOT_503", new Power {
 				// TODO Test: Lesser Onyx Spellstone_LOOT_503
 				PowerTask = ComplexTask.DestroyRandomTargets(1, EntityType.OP_MINIONS),
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				Trigger = new Trigger(TriggerType.PLAY_CARD, TriggerSource.FRIENDLY, SelfCondition.IsDeathrattleCard)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					TriggerActivation = TriggerActivation.HAND,
-					Condition = SelfCondition.IsDeathrattleCard,
 					SingleTask = ComplexTask.ProgressSpellStoneUpdate("LOOT_503t")
 				}
 			});
@@ -1728,11 +1703,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_503t", new Power {
 				PowerTask = ComplexTask.DestroyRandomTargets(2, EntityType.OP_MINIONS),
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD, TriggerSource.FRIENDLY, SelfCondition.IsDeathrattleCard)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					TriggerActivation = TriggerActivation.HAND,
-					Condition = SelfCondition.IsDeathrattleCard,
 					SingleTask = ComplexTask.ProgressSpellStoneUpdate("LOOT_503t2")
 				}
 			});
@@ -1940,9 +1913,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_506", new Power {
 				// TODO Test: The Runespear_LOOT_506
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = new DiscoverTask(DiscoverType.SPELL_RANDOM)
 				}
 			});
@@ -2167,11 +2139,10 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_043", new Power {
 				PowerTask = new DamageTask(3, EntityType.TARGET, true),
-				Trigger = new Trigger(TriggerType.DEAL_DAMAGE)
+				Trigger = new Trigger(TriggerType.DEAL_DAMAGE, TriggerSource.FRIENDLY,
+					new SelfCondition(p => !(p is HeroPower) && p.Game.CurrentEventData.EventTarget == p.Controller.Hero))
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = new SelfCondition(p => !(p is HeroPower) && p.Game.CurrentEventData.EventTarget == p.Controller.Hero),
 					SingleTask = new ChangeEntityTask("LOOT_043t2")
 				}
 			});
@@ -2278,11 +2249,10 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_043t2", new Power {
 				PowerTask = new DamageTask(5, EntityType.TARGET, true),
-				Trigger = new Trigger(TriggerType.DEAL_DAMAGE)
+				Trigger = new Trigger(TriggerType.DEAL_DAMAGE, TriggerSource.FRIENDLY,
+					new SelfCondition(p => !(p is HeroPower) && p.Game.CurrentEventData.EventTarget == p.Controller.Hero))
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = new SelfCondition(p => !(p is HeroPower) && p.Game.CurrentEventData.EventTarget == p.Controller.Hero),
 					SingleTask = new ChangeEntityTask("LOOT_043t3")
 				}
 			});
@@ -2467,10 +2437,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_203", new Power {
 				PowerTask = new SummonTask("LOOT_203t4"),
-				Trigger = new Trigger(TriggerType.EQUIP_WEAPON)
+				Trigger = new Trigger(TriggerType.EQUIP_WEAPON, TriggerSource.FRIENDLY)
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					TriggerSource = TriggerSource.FRIENDLY,
 					FastExecution = true,
 					SingleTask = new ChangeEntityTask("LOOT_203t2")
 				}
@@ -2554,9 +2523,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_380", new Power {
 				// TODO Test: Woecleaver_LOOT_380
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = new RecruitTask(1)
 				}
 			});
@@ -2595,10 +2563,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("LOOT_203t2", new Power {
 				PowerTask = new SummonTask("LOOT_203t4", 2),
-				Trigger = new Trigger(TriggerType.EQUIP_WEAPON)
+				Trigger = new Trigger(TriggerType.EQUIP_WEAPON, TriggerSource.FRIENDLY)
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					TriggerSource = TriggerSource.FRIENDLY,
 					FastExecution = true,
 					SingleTask = new ChangeEntityTask("LOOT_203t3")
 				}
@@ -2892,10 +2859,9 @@ namespace SabberStoneCore.CardSets
 			// Text: Costs (1) less whenever a minion dies while this is_in_your hand.
 			// --------------------------------------------------------
 			cards.Add("LOOT_149", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.ALL_MINIONS)
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					TriggerSource = TriggerSource.ALL_MINIONS,
 					SingleTask = new AddEnchantmentTask("LOOT_149e", EntityType.SOURCE)
 				}
 			});
@@ -3039,10 +3005,8 @@ namespace SabberStoneCore.CardSets
 			// Text: After this minion attacks a hero, add a copy of it to_your hand.
 			// --------------------------------------------------------
 			cards.Add("LOOT_218", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, SelfCondition.IsEventTargetIs(CardType.HERO))
 				{
-					TriggerSource = TriggerSource.SELF,
-					Condition = SelfCondition.IsEventTargetIs(CardType.HERO),
 					SingleTask = new AddCardTo("LOOT_218", EntityType.HAND)
 				}
 			});
@@ -3696,9 +3660,9 @@ namespace SabberStoneCore.CardSets
 				{
 					RemoveTrigger = (TriggerType.TURN_END, null),
 				},
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD,
+					new SelfCondition(p => p.Card.Id != "LOOT_517" && p.Card.Battlecry))
 				{
-					Condition = new SelfCondition(p => p.Card.Id != "LOOT_517" && p.Card.Battlecry),
 					SingleTask = RemoveEnchantmentTask.Task
 				}
 			});
@@ -3714,9 +3678,10 @@ namespace SabberStoneCore.CardSets
 				{
 					IsOneTurnEffect = true,
 				},
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD,
+					new SelfCondition(p => p.Card.Id != "LOOT_517" && p.Card[GameTag.BATTLECRY] == 1))
 				{
-					Condition = new SelfCondition(p => p.Card.Id != "LOOT_517" && p.Card[GameTag.BATTLECRY] == 1),
+					
 					SingleTask = RemoveEnchantmentTask.Task
 				}
 			});
@@ -3964,3 +3929,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

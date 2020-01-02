@@ -145,9 +145,8 @@ namespace SabberStoneCore.CardSets
 			// Text: After you summon a minion, give it +1/+1.
 			// --------------------------------------------------------
 			cards.Add("OG_313", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, TriggerSource.MINIONS_EXCEPT_SELF)
 				{
-					TriggerSource = TriggerSource.MINIONS_EXCEPT_SELF,
 					SingleTask = new AddEnchantmentTask("OG_313e", EntityType.TARGET)
 				}
 			});
@@ -384,11 +383,9 @@ namespace SabberStoneCore.CardSets
 			// Text: Whenever this attacks and kills a minion, it may attack again.
 			// --------------------------------------------------------
 			cards.Add("OG_308", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, SelfCondition.IsDefenderDead)
 				{
-					TriggerSource = TriggerSource.SELF,
 					//Condition = new SelfCondition(p => p.Game.IdEntityDic[p.Game.ProposedDefender].ToBeDestroyed),
-					Condition = SelfCondition.IsDefenderDead,
 					SingleTask = ComplexTask.SetUnexhaustedTask(EntityType.SOURCE)
 				}
 			});
@@ -507,9 +504,8 @@ namespace SabberStoneCore.CardSets
 			// - FREEZE = 1
 			// --------------------------------------------------------
 			cards.Add("OG_085", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
 						new RandomTask(1, EntityType.ENEMIES),
 						ComplexTask.Freeze(EntityType.STACK))
@@ -571,9 +567,8 @@ namespace SabberStoneCore.CardSets
 			// - RITUAL = 1
 			// --------------------------------------------------------
 			cards.Add("OG_303", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new RitualTask(1)
 				}
 			});
@@ -694,9 +689,8 @@ namespace SabberStoneCore.CardSets
 			// - DIVINE_SHIELD = 1
 			// --------------------------------------------------------
 			cards.Add("OG_310", new Power {
-				Trigger = new Trigger(TriggerType.SUMMON)
+				Trigger = new Trigger(TriggerType.SUMMON, SelfCondition.IsHealth(1, RelaSign.EQ))
 				{
-					Condition = SelfCondition.IsHealth(1, RelaSign.EQ),
 					SingleTask = ComplexTask.DivineShield(EntityType.TARGET)
 				}
 			});
@@ -1252,10 +1246,8 @@ namespace SabberStoneCore.CardSets
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("OG_209", new Power {
-				Trigger = new Trigger(TriggerType.DEAL_DAMAGE)
+				Trigger = new Trigger(TriggerType.DEAL_DAMAGE, TriggerSource.FRIENDLY, SelfCondition.IsSpell)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsSpell,
 					FastExecution = true,
 					SingleTask = ComplexTask.Create(
 						new GetEventNumberTask(),
@@ -1393,9 +1385,8 @@ namespace SabberStoneCore.CardSets
 			//        gain +1 Attack.
 			// --------------------------------------------------------
 			cards.Add("OG_113", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, TriggerSource.MINIONS_EXCEPT_SELF)
 				{
-					TriggerSource = TriggerSource.MINIONS_EXCEPT_SELF,
 					SingleTask = new AddEnchantmentTask("OG_113e", EntityType.SOURCE)
 				}
 			});
@@ -1438,9 +1429,8 @@ namespace SabberStoneCore.CardSets
 			// - RITUAL = 1
 			// --------------------------------------------------------
 			cards.Add("OG_302", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = new RitualTask(1)
 				}
 			});
@@ -2049,9 +2039,9 @@ namespace SabberStoneCore.CardSets
 			//       at the end of your turn, merge them into 'The Ancient One'.
 			// --------------------------------------------------------
 			cards.Add("OG_173", new Power {
-				Trigger = new Trigger(TriggerType.TURN_END)
+				Trigger = new Trigger(TriggerType.TURN_END,
+					new SelfCondition(p => p.Controller.BoardZone.CountOf(m => m.Card.Id == "OG_173") > 1))
 				{
-					Condition = new SelfCondition(p => p.Controller.BoardZone.CountOf(m => m.Card.Id == "OG_173") > 1),
 					SingleTask = ComplexTask.Create(
 						new IncludeTask(EntityType.MINIONS),
 						new FilterStackTask(SelfCondition.IsCardId("OG_173")),
@@ -2231,10 +2221,9 @@ namespace SabberStoneCore.CardSets
 				PowerTask = ComplexTask.Create(
 					new GetGameTagTask(GameTag.ATK, EntityType.SOURCE),
 					new EnqueueNumberTask(ComplexTask.DamageRandomTargets(1, EntityType.ENEMIES, 1))),
-				Trigger = new Trigger(TriggerType.ZONE)
+				Trigger = new Trigger(TriggerType.ZONE, TriggerSource.SELF)
 				{
 					TriggerActivation = TriggerActivation.HAND_OR_PLAY,
-					TriggerSource = TriggerSource.SELF,
 					RemoveAfterTriggered = true,
 					FastExecution = true,
 					SingleTask = new CopyCthun()
@@ -2349,11 +2338,9 @@ namespace SabberStoneCore.CardSets
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("OG_300", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, SelfCondition.IsDefenderDead)
 				{
-					TriggerSource = TriggerSource.SELF,
 					//Condition = new SelfCondition(p => p.Game.IdEntityDic[p.Game.ProposedDefender].ToBeDestroyed),
-					Condition = SelfCondition.IsDefenderDead,
 					SingleTask = new AddEnchantmentTask("OG_300e", EntityType.SOURCE)
 				}
 			});
@@ -2388,9 +2375,8 @@ namespace SabberStoneCore.CardSets
 			// - TAUNT = 1
 			// --------------------------------------------------------
 			cards.Add("OG_318", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new SummonTask("OG_318t", SummonSide.RIGHT)
 				}
 			});
@@ -2425,9 +2411,8 @@ namespace SabberStoneCore.CardSets
 			cards.Add("OG_321", new Power {
 				// TODO Test: Crazed Worshipper_OG_321
 				InfoCardId = "OG_321e",
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new RitualTask(1)
 				}
 			});
@@ -2502,10 +2487,9 @@ namespace SabberStoneCore.CardSets
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("OG_338", new Power {
-				Trigger = new Trigger(TriggerType.TURN_START)
+				Trigger = new Trigger(TriggerType.TURN_START, SelfCondition.IsOpTurn, true)
 				{
-					EitherTurn = true,
-					Condition = SelfCondition.IsOpTurn,
+
 					SingleTask = ComplexTask.Create(
 						new ChanceTask(),
 						new DrawOpTask())
@@ -3089,3 +3073,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

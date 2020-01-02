@@ -51,7 +51,8 @@ namespace SabberStoneCore.Actions
 					g.CurrentEventData = null;
 					return false;
 				}
-				Trigger.ValidateTriggers(g, source, SequenceType.Target);
+				//Trigger.ValidateTriggers(g, source, SequenceType.Target);
+				g.TriggerManager.ValidateTriggers(source, SequenceType.Target);
 				if (!AttackPhase.Invoke(c, source, target, skipDeathPhase))
 				{
 					// end block

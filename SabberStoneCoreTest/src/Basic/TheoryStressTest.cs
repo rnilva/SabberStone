@@ -324,23 +324,23 @@ namespace SabberStoneCoreTest.Basic
 		public static void UmbraTaldaramVoidlord()
 		{
 			var game = new Game(new GameConfig
-			{
-				StartPlayer = 1,
-				FillDecks = false,
-				Shuffle = false
-			});
-			game.Player1.BaseMana = 10;
-			game.Player2.BaseMana = 10;
-			game.StartGame();
+				{
+					StartPlayer = 1,
+					FillDecks = false,
+					Shuffle = false
+				});
+				game.Player1.BaseMana = 10;
+				game.Player2.BaseMana = 10;
+				game.StartGame();
 
-			game.ProcessCard("Spiritsinger Umbra", null, true);
-			game.ProcessCard("Voidlord", null, true);
-			Assert.Equal(5, game.CurrentPlayer.BoardZone.Count);
-			game.CurrentPlayer.BoardZone[4].Kill();
-			game.CurrentPlayer.BoardZone[3].Kill();
-			game.CurrentPlayer.BoardZone[2].Kill();
-			game.ProcessCard("Prince Taldaram", game.CurrentPlayer.BoardZone[1], true);
-			Assert.Equal(6, game.CurrentPlayer.BoardZone.Count);
+				game.ProcessCard("Spiritsinger Umbra", null, true);
+				game.ProcessCard("Voidlord", null, true);
+				Assert.Equal(5, game.CurrentPlayer.BoardZone.Count);
+				game.CurrentPlayer.BoardZone[4].Kill();
+				game.CurrentPlayer.BoardZone[3].Kill();
+				game.CurrentPlayer.BoardZone[2].Kill();
+				game.ProcessCard("Prince Taldaram", game.CurrentPlayer.BoardZone[1], true);
+				Assert.Equal(6, game.CurrentPlayer.BoardZone.Count);
 		}
 
 		[Fact]

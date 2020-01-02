@@ -29,9 +29,8 @@ namespace SabberStoneCore.Enchants
 	public class Enchant
 	{
 		public static readonly Trigger RemoveWhenPlayedTrigger =
-			new Trigger(TriggerType.PLAY_CARD)
+			new Trigger(TriggerType.PLAY_CARD, TriggerSource.ENCHANTMENT_TARGET)
 			{
-				TriggerSource = TriggerSource.ENCHANTMENT_TARGET,
 				SingleTask = RemoveEnchantmentTask.Task,
 				RemoveAfterTriggered = true,
 				IsAncillaryTrigger = true,

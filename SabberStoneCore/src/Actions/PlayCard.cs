@@ -70,11 +70,13 @@ namespace SabberStoneCore.Actions
 				{	// Don't use CardTarget any more; Use EventMetaData.Target instead.
 
 					//source.CardTarget = target.Id;
-					Trigger.ValidateTriggers(g, source, SequenceType.Target);
+					//Trigger.ValidateTriggers(g, source, SequenceType.Target);
+					g.TriggerManager.ValidateTriggers(source, SequenceType.Target);
 				}
 
 
-				Trigger.ValidateTriggers(g, source, SequenceType.PlayCard);
+				//Trigger.ValidateTriggers(g, source, SequenceType.PlayCard);
+				g.TriggerManager.ValidateTriggers(source, SequenceType.PlayCard);
 				switch (source)
 				{
 					case Hero hero:
@@ -241,7 +243,8 @@ namespace SabberStoneCore.Actions
 		public static Func<Game, Controller, Minion, Character, int, int, bool> PlayMinion
 			=> delegate (Game g, Controller c, Minion minion, Character target, int zonePosition, int chooseOne)
 			{
-				Trigger.ValidateTriggers(g, minion, SequenceType.PlayMinion);
+				//Trigger.ValidateTriggers(g, minion, SequenceType.PlayMinion);
+				g.TriggerManager.ValidateTriggers(minion, SequenceType.PlayMinion);
 				TriggerManager triggerManager = g.TriggerManager;
 
 				g.Log(LogLevel.INFO, BlockType.ACTION, "PlayMinion", !g.Logging? "":$"{c.Name} plays Minion {minion} {(target != null ? "with target " + target : "to board")} " +
@@ -314,7 +317,8 @@ namespace SabberStoneCore.Actions
 		public static Func<Game, Controller, Spell, Character, int, bool> PlaySpell
 			=> delegate (Game g, Controller c, Spell spell, Character target, int chooseOne)
 			{
-				Trigger.ValidateTriggers(g, spell, SequenceType.PlaySpell);
+				//Trigger.ValidateTriggers(g, spell, SequenceType.PlaySpell);
+				g.TriggerManager.ValidateTriggers(spell, SequenceType.PlaySpell);
 				TriggerManager triggerManager = g.TriggerManager;
 
 				if (g.History)

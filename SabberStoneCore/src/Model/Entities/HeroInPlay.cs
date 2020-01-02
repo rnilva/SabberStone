@@ -201,7 +201,7 @@ namespace SabberStoneCore.Model.Entities
 		/// </summary>
 		public void ClearWeapon()
 		{
-			Weapon.ActivatedTrigger?.Remove();
+			Weapon.ActivatedTrigger?.Remove(Game);
 			Weapon.OngoingEffect?.Remove();
 			if (Weapon.AppliedEnchantments != null /*&& Weapon[GameTag.KEEP_ENCHANTMENTS] != 1*/)
 			{

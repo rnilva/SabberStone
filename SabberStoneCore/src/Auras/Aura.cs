@@ -9,6 +9,7 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Model.Zones;
+using SabberStoneCore.Triggers;
 
 namespace SabberStoneCore.Auras
 {
@@ -71,7 +72,9 @@ namespace SabberStoneCore.Auras
 		private protected readonly Util.PriorityQueue<AuraUpdateInstruction> AuraUpdateInstructionsQueue;
 		private protected readonly Util.SmallFastCollection AppliedEntityIdCollection;
 
-		private readonly TriggerManager.TriggerHandler _removeHandler;
+		//private readonly TriggerManager.TriggerHandler _removeHandler;
+		private RemoveTriggerStub _removeHandler;
+		private Action<Game, TriggerStub> _removeTriggerActivator;
 		private readonly int _ownerId;
 
 		private Playable _owner;
@@ -91,52 +94,29 @@ namespace SabberStoneCore.Auras
 		/// Only entities satisfying this condtion will be affected by this aura.
 		/// </summary>
 		public SelfCondition Condition;
+
+		private (TriggerType type, SelfCondition condition) _removeTrigger;
 		/// <summary>
 		/// This aura will be removed when the given type of trigger is handled.
 		/// Condition checks the trigger sender.
 		/// </summary>
-		public (TriggerType Type, SelfCondition Condition) RemoveTrigger;
+		public (TriggerType Type, SelfCondition Condition) RemoveTrigger
+		{
+			get => _removeTrigger;
+			set
+			{
+				_removeTrigger = value;
+				_removeTriggerActivator = Trigger.GetActivator(value.Type);
+			}
+		}
 
 		public Playable Owner => _owner ?? (_owner = Game.IdEntityDic[_ownerId]);
 
 		public Aura(AuraType type, params AbstractEffect[] effects)
 		{
 			Type = type;
-			//Effects = effects;
-			//for (int i = 0; i < effects.Length; ++i)
-			//{
-			//	if (effects[i] is Effect eff)
-			//	{
-			//		int attr = (int) AttributeHelpers.GameTagToIntAttribute(eff.Tag);
-			//		if (attr != -1)
-			//		{
-			//			effects[i] = new AttributeAddEffect((IntAttributes) attr, eff.Value);
-			//			continue;
-			//		}
-
-			//		attr = (int) AttributeHelpers.GameTagToControllerBoolAttribute(eff.Tag);
-			//		if (attr != -1)
-			//		{
-			//			effects[i] = new SetControllerBoolAttr((ControllerBoolAttributes) attr);
-			//			continue;
-			//		}
-
-			//		attr = (int) AttributeHelpers.GameTagToControllerIntAttribute(eff.Tag);
-			//		if (attr != -1)
-			//		{
-			//			effects[i] = new AddControllerIntAttr((ControllerIntAttributes) attr, eff.Value);
-			//			continue;
-			//		}
-			//	}
-			//}
 			Effects = effects;
 		}
-
-//		public Aura(AuraType type, params AbstractEffect[] effects)
-//		{
-//			Type = type;
-//			Effects = effects;
-//		}
 
 		public Aura(AuraType type, string enchantmentId)
 		{
@@ -164,7 +144,8 @@ namespace SabberStoneCore.Auras
 			_owner = owner;
 			_ownerId = owner.Id;
 
-			_removeHandler = TriggeredRemove;
+			//_removeHandler = TriggeredRemove;
+			_removeHandler = prototype._removeHandler;
 		}
 
 		/// <summary>
@@ -179,30 +160,8 @@ namespace SabberStoneCore.Auras
 
 			AddToGame(owner, instance);
 
-			if (RemoveTrigger.Type != TriggerType.NONE)
-			{
-				switch (RemoveTrigger.Type)
-				{
-					case TriggerType.PLAY_MINION:
-						owner.Game.TriggerManager.PlayMinionTrigger += instance._removeHandler;
-						break;
-					case TriggerType.CAST_SPELL:
-						owner.Game.TriggerManager.CastSpellTrigger += instance._removeHandler;
-						break;
-					case TriggerType.TURN_END:
-						owner.Game.TriggerManager.EndTurnTrigger += instance._removeHandler;
-						break;
-					case TriggerType.PLAY_CARD:
-						owner.Game.TriggerManager.PlayCardTrigger += instance._removeHandler;
-						break;
-					case TriggerType.AFTER_PLAY_CARD:
-						owner.Game.TriggerManager.AfterPlayCardTrigger += instance._removeHandler;
-						break;
-					case TriggerType.INSPIRE:
-						owner.Game.TriggerManager.InspireTrigger += instance._removeHandler;
-						break;
-				}
-			}
+
+			_removeTriggerActivator?.Invoke(owner.Game, new RemoveTriggerStub(instance, _removeTrigger));
 
 			if (!cloning && !Restless)
 				instance.AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
@@ -338,31 +297,7 @@ namespace SabberStoneCore.Auras
 					break;
 			}
 
-			switch (RemoveTrigger.Type)
-			{
-				case TriggerType.NONE:
-					break;
-				case TriggerType.CAST_SPELL:
-					Game.TriggerManager.CastSpellTrigger -= _removeHandler;
-					break;
-				case TriggerType.TURN_END:
-					Game.TriggerManager.EndTurnTrigger -= _removeHandler;
-					break;
-				case TriggerType.PLAY_MINION:
-					Game.TriggerManager.PlayMinionTrigger -= _removeHandler;
-					break;
-				case TriggerType.PLAY_CARD:
-					Game.TriggerManager.PlayCardTrigger -= _removeHandler;
-					break;
-				case TriggerType.AFTER_PLAY_CARD:
-					Game.TriggerManager.AfterPlayCardTrigger -= _removeHandler;
-					break;
-				case TriggerType.INSPIRE:
-					Game.TriggerManager.InspireTrigger -= _removeHandler;
-					break;
-				default:
-					throw new NotImplementedException();
-			}
+			_removeHandler?.Remove(Game);
 
 			//if (Owner is Enchantment e)
 			//	e.Remove(true);
@@ -605,19 +540,6 @@ namespace SabberStoneCore.Auras
 			return false;
 		}
 
-		private void TriggeredRemove(Entity source)
-		{
-			if (RemoveTrigger.Condition != null)
-			{
-				if (source is Controller)
-					source = Owner;
-				if (!RemoveTrigger.Condition.Eval((Playable)source))
-					return;
-			}
-
-			Remove();
-		}
-
 		internal void DeApply(Playable entity)
 		{
 			if (!AppliedEntityIdCollection.Remove(entity.Id))
@@ -784,6 +706,58 @@ namespace SabberStoneCore.Auras
 			sb.Append(On ? "[ON]" : "[OFF]");
 			//sb.Append(ToBeUpdated ? "[U]" : "[NU]");
 			return sb.ToString();
+		}
+
+		private class RemoveTriggerStub : TriggerStub
+		{
+			private readonly Aura _aura;
+			private readonly SelfCondition _condition;
+			private readonly Action<Game, TriggerStub> _deactivator;
+
+			public RemoveTriggerStub(Aura aura, (TriggerType type, SelfCondition condition) trigger)
+			{
+				_aura = aura;
+				_condition = trigger.condition;
+				_deactivator = Trigger.GetDeactivator(trigger.type);
+			}
+
+			#region Overrides of TriggerStub
+
+			public override bool Process(Entity source)
+			{
+				if (_condition != null && !_condition.Eval(source is Controller ? _aura.Owner : (Playable)source))
+					return true;
+
+				_aura.Remove();
+				return false;
+			}
+
+			public override void Remove(Game game)
+			{
+				_deactivator(game, this);
+			}
+
+			public override void Validate(Entity source)
+			{
+				
+			}
+
+			public override void Invalidate()
+			{
+				
+			}
+
+			public override TriggerStub Clone(Playable owner)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override TriggerStub Combine(Trigger trigger)
+			{
+				throw new NotImplementedException();
+			}
+
+			#endregion
 		}
 
 		// For debugging

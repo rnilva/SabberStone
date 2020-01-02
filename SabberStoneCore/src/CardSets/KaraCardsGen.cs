@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -117,9 +117,8 @@ namespace SabberStoneCore.CardSets
 			// - STEALTH = 1
 			// --------------------------------------------------------
 			cards.Add("KAR_004", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.ENEMY)
 				{
-					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = ComplexTask.Secret(
 						new SummonTask("KAR_004a", SummonSide.SPELL))
 				}
@@ -281,9 +280,8 @@ namespace SabberStoneCore.CardSets
 			//       your hero.
 			// --------------------------------------------------------
 			cards.Add("KAR_035", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new HealTask(3, EntityType.HERO)
 				}
 			});
@@ -397,9 +395,8 @@ namespace SabberStoneCore.CardSets
 			// Text: Whenever you cast a spell, summon a random basic_Totem.
 			// --------------------------------------------------------
 			cards.Add("KAR_021", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
 						new IncludeTask(EntityType.SOURCE),
 						new FuncPlayablesTask(list =>
@@ -458,9 +455,8 @@ namespace SabberStoneCore.CardSets
 			// Text: Whenever you discard a card, draw a card.
 			// --------------------------------------------------------
 			cards.Add("KAR_089", new Power {
-				Trigger = new Trigger(TriggerType.DISCARD)
+				Trigger = new Trigger(TriggerType.DISCARD, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new DrawTask()
 				}
 			});
@@ -475,10 +471,9 @@ namespace SabberStoneCore.CardSets
 			// - InvisibleDeathrattle = 1
 			// --------------------------------------------------------
 			cards.Add("KAR_205", new Power {
-				Trigger = new Trigger(TriggerType.DISCARD)
+				Trigger = new Trigger(TriggerType.DISCARD, TriggerSource.SELF)
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new SummonTask("KAR_205")
 				}
 			});
@@ -570,9 +565,8 @@ namespace SabberStoneCore.CardSets
 			cards.Add("KAR_028", new Power {
 //				Aura = new Aura(AuraType.HERO, new Effect(GameTag.CANNOT_ATTACK_HEROES, EffectOperator.SET, 1)),
 				Aura = new Aura(AuraType.HERO, Effects.SetAttributeEffect(BoolAttributes.CannotAttackHeroes)),
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					//SingleTask = new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.HERO)
 					SingleTask = ComplexTask.SetUnexhaustedTask(EntityType.HERO)
 				}
@@ -665,9 +659,8 @@ namespace SabberStoneCore.CardSets
 			//       +1 Health.
 			// --------------------------------------------------------
 			cards.Add("KAR_036", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("KAR_036e", EntityType.SOURCE)
 				}
 			});
@@ -1057,9 +1050,8 @@ namespace SabberStoneCore.CardSets
 			// - DURABILITY = 3
 			// --------------------------------------------------------
 			cards.Add("KAR_097t", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
 						//new GetGameTagTask(GameTag.TAG_LAST_KNOWN_COST_IN_HAND, EntityType.TARGET),
 						new GetEventNumberTask(),
@@ -1091,3 +1083,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

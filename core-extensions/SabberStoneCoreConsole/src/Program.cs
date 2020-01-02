@@ -39,8 +39,8 @@ namespace SabberStoneCoreConsole
 
 			Console.WriteLine("Start Test!");
 
-			//PerformanceTest.MageExpertTest(20000, 10);
-			StabilityTest.CloneStabilityTest();
+			PerformanceTest.MageExpertTest(20000, 10);
+			//StabilityTest.CloneStabilityTest();
 			return;
 
 			//ChameleosPintSizedSummonerDouble();

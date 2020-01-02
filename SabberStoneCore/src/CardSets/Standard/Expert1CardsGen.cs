@@ -727,10 +727,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever a friendly Beast dies, gain +2/+1.
 			// --------------------------------------------------------
 			cards.Add("EX1_531", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.FRIENDLY, SelfCondition.IsRace(Race.BEAST))
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsRace(Race.BEAST),
 					SingleTask = new AddEnchantmentTask("EX1_531e", EntityType.SOURCE)
 				}
 			});
@@ -770,9 +768,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_533", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, SelfCondition.IsProposedDefender(CardType.HERO))
 				{
-					Condition = SelfCondition.IsProposedDefender(CardType.HERO),
 					SingleTask = ComplexTask.Create(
 						new IncludeTask(EntityType.ALL, new[] { EntityType.TARGET, EntityType.HERO }),
 						new FilterStackTask(SelfCondition.IsNotDead, SelfCondition.IsNotImmune),
@@ -865,9 +862,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_554", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, SelfCondition.IsProposedDefender(CardType.MINION))
 				{
-					Condition = SelfCondition.IsProposedDefender(CardType.MINION),
 					SingleTask = ComplexTask.Secret(new SummonTask("EX1_554t", 3))
 				}
 			});
@@ -901,9 +897,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_610", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, SelfCondition.IsProposedDefender(CardType.HERO))
 				{
-					Condition = SelfCondition.IsProposedDefender(CardType.HERO),
 					SingleTask = ComplexTask.Secret(new DamageTask(2, EntityType.ENEMIES, true))
 				}
 			});
@@ -918,9 +913,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_611", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, TriggerSource.OP_MINIONS)
 				{
-					TriggerSource = TriggerSource.OP_MINIONS,
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.TARGET, SelfCondition.IsNotDead),
 						new FlagTask(true, ComplexTask.Secret(
@@ -955,9 +949,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - IMMUNE = 1
 			// --------------------------------------------------------
 			cards.Add("DS1_188", new Power {
-				Trigger = new Trigger(TriggerType.TARGET)
+				Trigger = new Trigger(TriggerType.TARGET, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = new AddEnchantmentTask("DS1_188e", EntityType.HERO)
 				}
 			});
@@ -977,9 +970,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_536", new Power {
-				Trigger = new Trigger(TriggerType.SECRET_REVEALED)
+				Trigger = new Trigger(TriggerType.SECRET_REVEALED, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("EX1_536e", EntityType.WEAPON)
 				}
 			});
@@ -994,9 +986,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("DS1_188e", new Power {
 				Enchant = new Enchant(Effects.Immune),
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = RemoveEnchantmentTask.Task
 				}
 			});
@@ -1082,9 +1073,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_274", new Power {
-				Trigger = new Trigger(TriggerType.TURN_END)
+				Trigger = new Trigger(TriggerType.TURN_END, SelfCondition.IsControllingSecret)
 				{
-					Condition = SelfCondition.IsControllingSecret,
 					SingleTask = new AddEnchantmentTask("EX1_274e", EntityType.SOURCE)
 				}
 			});
@@ -1099,9 +1089,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_559", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddCardTo("CS2_029", EntityType.HAND)
 				}
 			});
@@ -1146,9 +1135,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever you cast a spell, gain +1 Attack.
 			// --------------------------------------------------------
 			cards.Add("NEW1_012", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("NEW1_012o", EntityType.SOURCE)
 				}
 			});
@@ -1252,7 +1240,7 @@ namespace SabberStoneCore.CardSets.Standard
 						new CustomTask((g,c,s,t,stack) =>
 						{
 							((Spell) t).IsCountered = true;
-							Trigger.InvalidateAll(g);
+							g.TriggerManager.InvalidateTriggers();
 						})),
 					FastExecution = true,
 				}
@@ -1270,9 +1258,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_289", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, SelfCondition.IsProposedDefender(CardType.HERO))
 				{
-					Condition = SelfCondition.IsProposedDefender(CardType.HERO),
 					SingleTask = ComplexTask.Secret(new ArmorTask(8))
 				}
 			});
@@ -1306,10 +1293,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_594", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, TriggerSource.OP_MINIONS, SelfCondition.IsProposedDefender(CardType.HERO))
 				{
-					TriggerSource = TriggerSource.OP_MINIONS,
-					Condition = SelfCondition.IsProposedDefender(CardType.HERO),
 					FastExecution = true,
 					SingleTask = ComplexTask.Secret(new DestroyTask(EntityType.TARGET))
 				}
@@ -1325,9 +1310,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("tt_010", new Power {
-				Trigger = new Trigger(TriggerType.TARGET)
+				Trigger = new Trigger(TriggerType.TARGET, SelfCondition.IsSpellTargetingMinion)
 				{
-					Condition = SelfCondition.IsSpellTargetingMinion,
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.SOURCE, SelfCondition.IsNotBoardFull/*, SelfCondition.IsTagValue(GameTag.CANT_PLAY, 0)*/),
 						new FlagTask(true, ComplexTask.Secret(
@@ -1465,9 +1449,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_130", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, TriggerSource.ENEMY)
 				{
-					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = ComplexTask.Secret(
 						new SummonTask("EX1_130a", SummonSide.SPELL, true),
 						new ChangeAttackingTargetTask(EntityType.TARGET, EntityType.STACK))
@@ -1484,9 +1467,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_132", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = ComplexTask.Secret(
 						new GetEventNumberTask(),
 						new DamageNumberTask(EntityType.OP_HERO, true))
@@ -1503,9 +1485,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_136", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = ComplexTask.Secret(
 						new CopyTask(EntityType.TARGET, Zone.PLAY, addToStack: true),
 						new FuncPlayablesTask(list =>
@@ -1666,9 +1647,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DURABILITY = 5
 			// --------------------------------------------------------
 			cards.Add("EX1_366", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
 						new AddEnchantmentTask("EX1_366e", EntityType.TARGET),
 						new DamageWeaponTask(false))
@@ -1696,9 +1676,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: When this minion attacks, the player who blessed it draws a card.
 			// --------------------------------------------------------
 			cards.Add("EX1_363e", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, TriggerSource.ENCHANTMENT_TARGET)
 				{
-					TriggerSource = TriggerSource.ENCHANTMENT_TARGET,
 					SingleTask = new DrawTask()
 				}
 			});
@@ -2436,9 +2415,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - OVERLOAD = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_258", new Power {
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				Trigger = new Trigger(TriggerType.PLAY_CARD, SelfCondition.IsOverloadCard)
 				{
-					Condition = SelfCondition.IsOverloadCard,
 					SingleTask = new AddEnchantmentTask("EX1_258e", EntityType.SOURCE)
 				}
 			});
@@ -2656,9 +2634,8 @@ namespace SabberStoneCore.CardSets.Standard
 					Effects.ReduceCost(3)
 					//, new Effect(GameTag.DISPLAYED_CREATOR, EffectOperator.SET, 1)
 					),
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				Trigger = new Trigger(TriggerType.PLAY_CARD, TriggerSource.ENCHANTMENT_TARGET)
 				{
-					TriggerSource = TriggerSource.ENCHANTMENT_TARGET,
 					RemoveAfterTriggered = true,
 					SingleTask = RemoveEnchantmentTask.Task
 				}
@@ -3042,9 +3019,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever a friendly minion_takes damage, gain 1 Armor.
 			// --------------------------------------------------------
 			cards.Add("EX1_402", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = new ArmorTask(1)
 				}
 			});
@@ -3093,9 +3069,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever a minion takes damage, gain +1 Attack.
 			// --------------------------------------------------------
 			cards.Add("EX1_604", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.ALL_MINIONS)
 				{
-					TriggerSource = TriggerSource.ALL_MINIONS,
 					SingleTask = new AddEnchantmentTask("EX1_604o", EntityType.SOURCE)
 				}
 			});
@@ -3252,10 +3227,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DURABILITY = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_411", new Power {
-				Trigger = new Trigger(TriggerType.TARGET)
+				Trigger = new Trigger(TriggerType.TARGET, TriggerSource.HERO, SelfCondition.IsProposedDefender(CardType.MINION))
 				{
-					TriggerSource = TriggerSource.HERO,
-					Condition = SelfCondition.IsProposedDefender(CardType.MINION),
 					FastExecution = true,
 					SingleTask = new AddEnchantmentTask("EX1_411e", EntityType.SOURCE)
 				},
@@ -3296,9 +3269,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("EX1_411e", new Power {
 				Enchant = new Enchant(Effects.Immune),
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					FastExecution = true,
 					SingleTask = ComplexTask.Create(
 						RemoveEnchantmentTask.Task,
@@ -3376,9 +3348,8 @@ namespace SabberStoneCore.CardSets.Standard
 				// Trigger implementation is introduced for performance;
 				// otherwise Sabber have to check Character[GameTag.HEALTH_MINIMUM]
 				// everytime when the character is damaged.
-				Trigger = new Trigger(TriggerType.PREDAMAGE)
+				Trigger = new Trigger(TriggerType.PREDAMAGE, TriggerSource.ENCHANTMENT_TARGET)
 				{
-					TriggerSource = TriggerSource.ENCHANTMENT_TARGET,
 					FastExecution = true,
 					SingleTask = ComplexTask.Create(
 						new IncludeTask(EntityType.TARGET),
@@ -3730,9 +3701,8 @@ namespace SabberStoneCore.CardSets.Standard
 			//          random one in your hand.
 			// --------------------------------------------------------
 			cards.Add("EX1_006", new Power {
-				Trigger = new Trigger(TriggerType.TURN_START)
+				Trigger = new Trigger(TriggerType.TURN_START, SelfCondition.HasMinionInHand)
 				{
-					Condition = SelfCondition.HasMinionInHand,
 					SingleTask = ComplexTask.Conditional(SelfCondition.IsNotDead, ComplexTask.Create(
 							//new GetGameTagTask(GameTag.ZONE_POSITION, EntityType.SOURCE),
 							new GetPlayableAttributeTask(PlayableAttributes.ZonePosition, EntityType.SOURCE),
@@ -3754,9 +3724,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever this minion takes damage, draw a_card.
 			// --------------------------------------------------------
 			cards.Add("EX1_007", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new DrawTask()
 				}
 			});
@@ -3941,9 +3910,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever you play a card, gain +1/+1.
 			// --------------------------------------------------------
 			cards.Add("EX1_044", new Power {
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				Trigger = new Trigger(TriggerType.PLAY_CARD, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("EX1_044e", EntityType.SOURCE)
 				}
 			});
@@ -4023,9 +3991,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever you cast a spell, gain +2 Attack this turn.
 			// --------------------------------------------------------
 			cards.Add("EX1_055", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("EX1_055o", EntityType.SOURCE)
 				}
 			});
@@ -4129,9 +4096,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_080", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, SelfCondition.IsSecret)
 				{
-					Condition = SelfCondition.IsSecret,
 					SingleTask = new AddEnchantmentTask("EX1_080o", EntityType.SOURCE)
 				}
 			});
@@ -4230,9 +4196,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever you cast a spell, draw a card.
 			// --------------------------------------------------------
 			cards.Add("EX1_095", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new DrawTask()
 				}
 			});
@@ -4408,9 +4373,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("EX1_187", new Power
 			{
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("EX1_187e", EntityType.SOURCE)
 				}
 			});
@@ -4588,10 +4552,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever you summon a Murloc, gain +1 Attack.
 			// --------------------------------------------------------
 			cards.Add("EX1_509", new Power {
-				Trigger = new Trigger(TriggerType.SUMMON)
+				Trigger = new Trigger(TriggerType.SUMMON, TriggerSource.FRIENDLY, SelfCondition.IsRace(Race.MURLOC))
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsRace(Race.MURLOC),
 					SingleTask = new AddEnchantmentTask("EX1_509e", EntityType.SOURCE)
 				}
 			});
@@ -4830,9 +4792,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever one of your other minions dies, draw a card.
 			// --------------------------------------------------------
 			cards.Add("EX1_595", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = new DrawTask()
 				}
 			});
@@ -4864,9 +4825,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_614", new Power {
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				Trigger = new Trigger(TriggerType.PLAY_CARD, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new SummonTask("EX1_614t", SummonSide.RIGHT)
 				}
 			});
@@ -4932,9 +4892,8 @@ namespace SabberStoneCore.CardSets.Standard
 			//       to a random enemy.
 			// --------------------------------------------------------
 			cards.Add("NEW1_019", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, TriggerSource.MINIONS_EXCEPT_SELF)
 				{
-					TriggerSource = TriggerSource.MINIONS_EXCEPT_SELF,
 					SingleTask = ComplexTask.DamageRandomTargets(1, EntityType.ENEMIES, 1)
 				}
 			});
@@ -4946,9 +4905,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: After you cast a spell, deal 1 damage to ALL minions.
 			// --------------------------------------------------------
 			cards.Add("NEW1_020", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new DamageTask(1, EntityType.ALLMINIONS)
 				}
 			});
@@ -5031,9 +4989,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever you cast a spell, summon a 1/1 Violet Apprentice.
 			// --------------------------------------------------------
 			cards.Add("NEW1_026", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new SummonTask("NEW1_026t", SummonSide.RIGHT)
 				}
 			});
@@ -5110,9 +5067,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("NEW1_038", new Power {
-				Trigger = new Trigger(TriggerType.TURN_END)
+				Trigger = new Trigger(TriggerType.TURN_END, eitherTurn: true)
 				{
-					EitherTurn = true,
 					SingleTask = new AddEnchantmentTask("NEW1_038o", EntityType.SOURCE)
 				}
 			});
@@ -5162,9 +5118,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever a minion dies, gain +1 Attack.
 			// --------------------------------------------------------
 			cards.Add("tt_004", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.ALL_MINIONS)
 				{
-					TriggerSource = TriggerSource.ALL_MINIONS,
 					SingleTask = new AddEnchantmentTask("tt_004o", EntityType.SOURCE)
 				}
 			});
@@ -5733,3 +5688,14 @@ namespace SabberStoneCore.CardSets.Standard
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+

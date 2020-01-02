@@ -626,7 +626,7 @@ namespace SabberStoneCore.Model
 			Turn = 1;
 
 			// triggers Start of Game triggers (but does not process tasks here)
-			TriggerManager.OnGameStartTrigger();
+			TriggerManager.OnGameStartTrigger(this);
 
 			if (stopBeforeShuffling)
 				return;

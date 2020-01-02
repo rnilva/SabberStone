@@ -29,7 +29,8 @@ namespace SabberStoneCore.Model.Entities
 		private int _orderOfPlay;
 		private Playable _creator;
 		private Card _capturedCard;
-		private bool _removed;
+
+		internal bool _removed;
 		//private IAura _ongoingEffect;
 
 		private Enchantment(in Controller controller, in Card card, in int id)
@@ -58,7 +59,8 @@ namespace SabberStoneCore.Model.Entities
 
 			Game.IdEntityDic[Id] = this;
 			Game.AllEnchantments.Add(this);
-			e.ActivatedTrigger?.Activate(Game, this);
+			//e.ActivatedTrigger?.Activate(Game, this);
+			ActivatedTrigger = e.ActivatedTrigger?.Clone(this);
 
 			Zone = c.BoardZone;
 
@@ -289,7 +291,7 @@ namespace SabberStoneCore.Model.Entities
 			}
 
 			OngoingEffect?.Remove();
-			ActivatedTrigger?.Remove();
+			ActivatedTrigger?.Remove(Game);
 
 			if (removeFromList)
 				Target.AppliedEnchantments.Remove(this);

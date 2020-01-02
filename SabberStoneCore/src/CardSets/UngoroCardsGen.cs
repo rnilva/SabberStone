@@ -219,10 +219,8 @@ namespace SabberStoneCore.CardSets
 			// - 676 = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_116", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, TriggerSource.FRIENDLY, SelfCondition.IsATK(5, RelaSign.GEQ))
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsATK(5, RelaSign.GEQ),
 					SingleTask = new QuestProgressTask("UNG_116t")
 				}
 			});
@@ -436,9 +434,8 @@ namespace SabberStoneCore.CardSets
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_919", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, TriggerSource.ENEMY)
 				{
-					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = ComplexTask.Create(
 						new IncludeTask(EntityType.SOURCE),
 						new IncludeTask(EntityType.EVENT_SOURCE, addFlag: true),
@@ -510,10 +507,8 @@ namespace SabberStoneCore.CardSets
 			// - 676 = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_920", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, TriggerSource.FRIENDLY, new SelfCondition(p => p.Cost == 1))
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = new SelfCondition(p => p.Cost == 1),
 					SingleTask = new QuestProgressTask("UNG_920t1")
 				}
 			});
@@ -530,9 +525,8 @@ namespace SabberStoneCore.CardSets
 			// - TAG_ONE_TURN_EFFECT = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_916e", new Power {
-				Trigger = new Trigger(TriggerType.PLAY_MINION)
+				Trigger = new Trigger(TriggerType.PLAY_MINION, SelfCondition.IsRace(Race.BEAST))
 				{
-					Condition = SelfCondition.IsRace(Race.BEAST),
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.TARGET, SelfCondition.IsHandFull),
 						new FlagTask(false, ComplexTask.Create(
@@ -704,10 +698,8 @@ namespace SabberStoneCore.CardSets
 			// - 676 = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_028", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY, SelfCondition.IsNotStartInDeck)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsNotStartInDeck,
 					SingleTask = new QuestProgressTask("UNG_028t")
 				}
 			});
@@ -872,9 +864,8 @@ namespace SabberStoneCore.CardSets
 			// - 542 = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_953", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER)
 				{
-					TriggerSource = TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER,
 					SingleTask = ComplexTask.Create(
 						new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.TARGET),
 						new AddEnchantmentTask("UNG_953e", EntityType.SOURCE, false, true))
@@ -947,9 +938,8 @@ namespace SabberStoneCore.CardSets
 			// - 676 = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_954", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY_SPELL_CASTED_ON_OWN_MINIONS)
 				{
-					TriggerSource = TriggerSource.FRIENDLY_SPELL_CASTED_ON_OWN_MINIONS,
 					SingleTask = new QuestProgressTask("UNG_954t1")
 				}
 			});
@@ -997,9 +987,8 @@ namespace SabberStoneCore.CardSets
 			// - DURABILITY = 3
 			// --------------------------------------------------------
 			cards.Add("UNG_950", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = new SummonTask("CS2_101t", 2)
 				}
 			});
@@ -1170,9 +1159,8 @@ namespace SabberStoneCore.CardSets
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_963", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
 						new RandomCardTask(CardType.SPELL, CardClass.PRIEST),
 						new AddStackTo(EntityType.HAND))
@@ -1246,9 +1234,8 @@ namespace SabberStoneCore.CardSets
 			// - DEATHRATTLE = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_940", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, SelfCondition.IsDeathrattleMinion)
 				{
-					Condition = SelfCondition.IsDeathrattleMinion,
 					SingleTask = new QuestProgressTask("UNG_940t8")
 				}
 			});
@@ -1406,9 +1393,8 @@ namespace SabberStoneCore.CardSets
 			// - 676 = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_067", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new FuncNumberTask(p =>
 					{
 						Card justPlayed = p.Game.CurrentEventData.EventSource.Card;
@@ -1511,9 +1497,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("UNG_065t", new Power {
 				Trigger = new MultiTrigger(
-					new Trigger(TriggerType.AFTER_PLAY_CARD)
+					new Trigger(TriggerType.AFTER_PLAY_CARD, TriggerSource.FRIENDLY)
 					{
-						TriggerSource = TriggerSource.FRIENDLY,
 						SingleTask = ComplexTask.Create(
 							new ConditionTask(EntityType.SOURCE, SelfCondition.IsTagValue(GameTag.TAG_SCRIPT_DATA_NUM_1, 2, RelaSign.LEQ)),
 							new FlagTask(true, ComplexTask.Create(
@@ -1710,9 +1695,8 @@ namespace SabberStoneCore.CardSets
 			// - 676 = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_942", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, SelfCondition.IsRace(Race.MURLOC))
 				{
-					Condition = SelfCondition.IsRace(Race.MURLOC),
 					SingleTask = new QuestProgressTask("UNG_942t")
 				}
 			});
@@ -1951,9 +1935,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("UNG_836", new Power {
 				// TODO [UNG_836] Clutchmother Zavas
-				Trigger = new Trigger(TriggerType.DISCARD)
+				Trigger = new Trigger(TriggerType.DISCARD, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = ComplexTask.Create(
 						new IncludeTask(EntityType.SOURCE),
@@ -1992,9 +1975,8 @@ namespace SabberStoneCore.CardSets
 			// - 676 = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_829", new Power {
-				Trigger = new Trigger(TriggerType.DISCARD)
+				Trigger = new Trigger(TriggerType.DISCARD, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new QuestProgressTask("UNG_829t1")
 				}
 			});
@@ -2251,10 +2233,8 @@ namespace SabberStoneCore.CardSets
 			// - TAUNT = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_934", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, TriggerSource.FRIENDLY, SelfCondition.HasTaunt)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.HasTaunt,
 					SingleTask = new QuestProgressTask("UNG_934t1")
 				}
 			});
@@ -2487,11 +2467,9 @@ namespace SabberStoneCore.CardSets
 			// - ADAPT = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_075", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, SelfCondition.IsEventTargetIs(CardType.HERO))
 				{
-					TriggerSource = TriggerSource.SELF,
 					//Condition = new SelfCondition(p => p.Game.IdEntityDic[p.Game.ProposedDefender] is Hero),
-					Condition = SelfCondition.IsEventTargetIs(CardType.HERO),
 					SingleTask = new AdaptTask(EntityType.SOURCE)
 				}
 			});
@@ -2519,9 +2497,8 @@ namespace SabberStoneCore.CardSets
 			// - FREEZE = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_079", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new ApplyEffectTask(EntityType.SOURCE, Effects.Freeze)
 				}
 			});
@@ -2597,9 +2574,8 @@ namespace SabberStoneCore.CardSets
 			// Text: Whenever this minion takes damage, deal 3 damage to_your hero.
 			// --------------------------------------------------------
 			cards.Add("UNG_087", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new DamageTask(3, EntityType.HERO)
 				}
 			});
@@ -2900,9 +2876,8 @@ namespace SabberStoneCore.CardSets
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_843", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER)
 				{
-					TriggerSource = TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER,
 					SingleTask = ComplexTask.Create(
 						new SummonTask("UNG_999t2t1", SummonSide.RIGHT, true),
 						new IncludeTask(EntityType.TARGET, null, true),
@@ -3001,10 +2976,8 @@ namespace SabberStoneCore.CardSets
 			// - DEATHRATTLE = 1
 			// --------------------------------------------------------
 			cards.Add("UNG_900", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, TriggerSource.FRIENDLY, SelfCondition.IsDeathrattleMinion)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsDeathrattleMinion,
 					SingleTask = new ActivateDeathrattleTask(EntityType.TARGET)
 				}
 			});
@@ -3563,3 +3536,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

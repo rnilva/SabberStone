@@ -381,7 +381,7 @@ namespace SabberStoneCore.Model.Entities
 			// remove enchantments, aura and trigger
 			OngoingEffect?.Remove();
 			Game.OneTurnEffects.RemoveAll(p => p.entityId == Id);
-			ActivatedTrigger?.Remove();
+			ActivatedTrigger?.Remove(Game);
 			//Controller.BoardZone.Auras.ForEach(aura => aura.EntityRemoved(this));
 
 			if (AppliedEnchantments != null)

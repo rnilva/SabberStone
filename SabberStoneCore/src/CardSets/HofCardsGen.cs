@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -69,10 +69,8 @@ namespace SabberStoneCore.CardSets
 			// - IMMUNE = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_295", new Power {
-				Trigger = new Trigger(TriggerType.PREDAMAGE)
+				Trigger = new Trigger(TriggerType.PREDAMAGE, TriggerSource.HERO, SelfCondition.IsHeroLethalPreDamaged)
 				{
-					TriggerSource = TriggerSource.HERO,
-					Condition = SelfCondition.IsHeroLethalPreDamaged,
 					FastExecution = true,
 					SingleTask = ComplexTask.Secret(
 						new AddEnchantmentTask("EX1_295o", EntityType.HERO))
@@ -180,9 +178,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("EX1_316e", new Power {
 				Enchant = Enchants.Enchants.GetAutoEnchantFromText("EX1_316e"),
-				Trigger = new Trigger(TriggerType.TURN_END)
+				Trigger = new Trigger(TriggerType.TURN_END, eitherTurn: true)
 				{
-					EitherTurn = true,
 					SingleTask = new DestroyTask(EntityType.TARGET)
 				}
 			});
@@ -514,3 +511,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

@@ -21,20 +21,27 @@ using SabberStoneCore.Tasks;
 
 namespace SabberStoneCore.Triggers
 {
-    public class Trigger
-	{ 
-		private readonly TriggerManager.TriggerHandler _processHandler;
-		private readonly int _sourceId;
-		private readonly TriggerType _triggerType;
-		private readonly SequenceType _sequenceType;
-		private readonly bool _isSecret;
-		private bool _removed;
+	public class Trigger
+    {
+	    private static int _idGen;
 
-		protected readonly Playable _owner;
+		//private readonly TriggerManager.TriggerHandler _processHandler;
+		private readonly Action<Game, TriggerStub> _activator;
+		private readonly Action<Game, TriggerStub> _deactivator;
+		private readonly Func<Entity, Playable, bool> _validator;
+		//private readonly int _id;
+		//private readonly int _sourceId;
+		private readonly TriggerType _triggerType;
+		private readonly bool _eitherTurn;
+		private readonly bool _isSecret;
+		private readonly SequenceType _sequenceType;
+		//private bool _removed;
+
+		//protected readonly Playable _owner;
 
 	    internal bool IsAncillaryTrigger;
 
-		public readonly Game Game;
+		//public readonly Game Game;
 		/// <summary>
 		/// Indicates the Zone at which the effect is triggered.
 		/// </summary>
@@ -42,79 +49,74 @@ namespace SabberStoneCore.Triggers
 	    /// <summary>
 	    /// Indicates which entities can trigger the effect.
 	    /// </summary>
-		public TriggerSource TriggerSource;
+		public TriggerSource TriggerSource { get; private set; }
 		/// <summary>
 		/// Task to do when this effect is triggered.
 		/// </summary>
 		public SimpleTask SingleTask;
 
 	    /// <summary> Additional condition for trigger sources </summary>
-	    public SelfCondition Condition;
+	    public SelfCondition Condition { get; private set; }
 
 		/// <summary> 
 		/// This option is only meaningful when this the type of this trigger is <see cref="TriggerType.TURN_END"/> or <see cref="TriggerType.TURN_START"/>.
 		/// </summary>
 		/// <value>	true means the effect can be triggered at both player's turn.</value>
-		public bool EitherTurn;
+		public bool EitherTurn => _eitherTurn;
 	    public bool FastExecution;
 		/// <value> true means this trigger will be immediately disposed after triggered.</value>
 	    public bool RemoveAfterTriggered;
 
-	    public Trigger(TriggerType type)
+	    public Trigger(TriggerType type, TriggerSource source = TriggerSource.ALL, SelfCondition condition = null, bool eitherTurn = false)
 	    {
-			_triggerType = type;
+		    //_id = _idGen++;
 
-		    switch (type)
+			_triggerType = type;
+			TriggerSource = source;
+			Condition = condition;
+			_eitherTurn = eitherTurn;
+
+			switch (type)
 		    {
 				case TriggerType.PLAY_CARD:
 				case TriggerType.AFTER_PLAY_CARD:
 					_sequenceType = SequenceType.PlayCard;
-					return;
+					break;
 			    case TriggerType.PLAY_MINION:
 			    case TriggerType.AFTER_PLAY_MINION:
 				    _sequenceType = SequenceType.PlayMinion;
-					return;
+					break;
 			    case TriggerType.CAST_SPELL:
 			    case TriggerType.AFTER_CAST:
 				    _sequenceType = SequenceType.PlaySpell;
-					return;
+					break;
 				case TriggerType.TARGET:
 					_sequenceType = SequenceType.Target;
-					return;
+					break;
 				case TriggerType.TURN_END:
 				case TriggerType.WORGEN_TRANSFORM:
 					FastExecution = true;
-					return;
+					break;
 		    }
+
+			_activator = GetActivator(type);
+			_validator = GetValidator();
+			_deactivator = GetDeactivator(type);
 	    }
 
-	    protected Trigger(Trigger prototype, Game game, Entity owner)
-	    {
-			Game = game;
-			_sourceId = owner.Id;
-		    _owner = (Playable)owner;
-		    _triggerType = prototype._triggerType;
-		    _sequenceType = prototype._sequenceType;
-		    TriggerSource = prototype.TriggerSource;
-			Condition = prototype.Condition;
-		    SingleTask = prototype.SingleTask;
-			if (SingleTask != null)
-				SingleTask.IsTrigger = true;
-		    EitherTurn = prototype.EitherTurn;
-			FastExecution = prototype.FastExecution;
-			RemoveAfterTriggered = prototype.RemoveAfterTriggered;
-		    _isSecret = prototype.Game == null ? owner.Card.IsSecret : prototype._isSecret;
-		    IsAncillaryTrigger = prototype.IsAncillaryTrigger;
+	    public Trigger(TriggerType type, SelfCondition condition, bool eitherTurn = false)
+		    : this(type, TriggerSource.ALL, condition, eitherTurn) { }
 
-			_processHandler = Process;
-	    }
+	    public bool Validated { get; set; }
 
-		public bool Validated { get; set; }
+		public SequenceType SequenceType => _sequenceType;
+		public TriggerType Type => _triggerType;
+		public bool IsSecret => _isSecret;
 
 		/// <summary>
 		/// Create a new instance of <see cref="Trigger"/> object in source's Game. During activation, the instance's <see cref="Process(Entity)"/> subscribes to the events in <see cref="TriggerManager"/>.
 		/// </summary>
-		public virtual Trigger Activate(Game game, Playable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
+		public virtual TriggerStub Activate(Game game, Playable source, TriggerActivation activation = TriggerActivation.PLAY, bool cloning = false, bool asAncillary = false)
 		{
 			if (source.ActivatedTrigger != null && !IsAncillaryTrigger && !asAncillary)
 				throw new Exceptions.EntityException($"{source} already has an activated trigger.");
@@ -128,150 +130,12 @@ namespace SabberStoneCore.Triggers
 					return null;
 			}
 
-			var instance = new Trigger(this, game, source);
+			var instance = new BasicTriggerStub(source, this, asAncillary);
 
-			if (asAncillary)
-				instance.IsAncillaryTrigger = true;
-			else if (!IsAncillaryTrigger)
+			_activator(game, instance);
+
+			if (!cloning && !asAncillary && !IsAncillaryTrigger)
 				source.ActivatedTrigger = instance;
-
-			if (_sequenceType != SequenceType.None)
-				game.Triggers.Add(instance);
-
-			//if (activation == TriggerActivation.DECK)
-			//	source.Controller.DeckZone.Triggers.Add(instance);
-
-			switch (_triggerType)
-			{
-				case TriggerType.DEAL_DAMAGE:
-					game.TriggerManager.DealDamageTrigger += instance._processHandler;
-					break;
-				case TriggerType.TAKE_DAMAGE:
-					if (TriggerSource == TriggerSource.SELF)
-					{
-						if (source is Minion m)
-							m.TakeDamageTrigger += instance._processHandler;
-						else
-							throw new NotImplementedException();
-						break;
-					}
-					if (TriggerSource == TriggerSource.HERO)
-					{
-						source.Controller.Hero.TakeDamageTrigger += instance._processHandler;
-						break;
-					}
-					game.TriggerManager.DamageTrigger += instance._processHandler;
-					break;
-				case TriggerType.HEAL:
-					game.TriggerManager.HealTrigger += instance._processHandler;
-					break;
-				case TriggerType.TURN_END:
-				case TriggerType.WORGEN_TRANSFORM:
-					game.TriggerManager.EndTurnTrigger += instance._processHandler;
-					break;
-				case TriggerType.TURN_START:
-					game.TriggerManager.TurnStartTrigger += instance._processHandler;
-					break;
-				case TriggerType.SUMMON:
-					game.TriggerManager.SummonTrigger += instance._processHandler;
-					break;
-				case TriggerType.AFTER_SUMMON:
-					game.TriggerManager.AfterSummonTrigger += instance._processHandler;
-					break;
-				case TriggerType.ATTACK:
-					game.TriggerManager.AttackTrigger += instance._processHandler;
-					break;
-				case TriggerType.AFTER_ATTACK:
-					switch (TriggerSource)
-					{
-						case TriggerSource.HERO:
-							source.Controller.Hero.AfterAttackTrigger += instance._processHandler;
-							break;
-						case TriggerSource.SELF:
-							((Minion)source).AfterAttackTrigger += instance._processHandler;
-							break;
-						case TriggerSource.ENCHANTMENT_TARGET:
-							((Minion)((Enchantment)source).Target).AfterAttackTrigger += instance._processHandler;
-							break;
-						default:
-							throw new NotImplementedException();
-					}
-					break;
-				case TriggerType.DEATH:
-					game.TriggerManager.DeathTrigger += instance._processHandler;
-					break;
-				case TriggerType.PLAY_CARD:
-					game.TriggerManager.PlayCardTrigger += instance._processHandler;
-					break;
-				case TriggerType.AFTER_PLAY_CARD:
-					game.TriggerManager.AfterPlayCardTrigger += instance._processHandler;
-					break;
-				case TriggerType.PLAY_MINION:
-					game.TriggerManager.PlayMinionTrigger += instance._processHandler;
-					break;
-				case TriggerType.AFTER_PLAY_MINION:
-					game.TriggerManager.AfterPlayMinionTrigger += instance._processHandler;
-					break;
-				case TriggerType.CAST_SPELL:
-					game.TriggerManager.CastSpellTrigger += instance._processHandler;
-					break;
-				case TriggerType.AFTER_CAST:
-					game.TriggerManager.AfterCastTrigger += instance._processHandler;
-					break;
-				case TriggerType.PREDAMAGE:
-					switch (TriggerSource)
-					{
-						case TriggerSource.HERO:
-							source.Controller.Hero.PreDamageTrigger += instance._processHandler;
-							break;
-						case TriggerSource.SELF:
-							((Minion)source).PreDamageTrigger += instance._processHandler;
-							break;
-						case TriggerSource.ENCHANTMENT_TARGET:
-							((Minion) ((Enchantment) source).Target).PreDamageTrigger += instance._processHandler;
-							break;
-					}
-					break;
-				case TriggerType.SECRET_REVEALED:
-					game.TriggerManager.SecretRevealedTrigger += instance._processHandler;
-					break;
-				case TriggerType.ZONE:
-					game.TriggerManager.ZoneTrigger += instance._processHandler;
-					break;
-				case TriggerType.DISCARD:
-					game.TriggerManager.DiscardTrigger += instance._processHandler;
-					break;
-				case TriggerType.GAME_START:
-					game.TriggerManager.GameStartTrigger += instance._processHandler;
-					break;
-				case TriggerType.DRAW:
-					game.TriggerManager.DrawTrigger += instance._processHandler;
-					break;
-				case TriggerType.TARGET:
-					game.TriggerManager.TargetTrigger += instance._processHandler;
-					break;
-				case TriggerType.LOSE_DIVINE_SHIELD:
-					game.TriggerManager.LoseDivineShield += instance._processHandler;
-					break;
-				case TriggerType.INSPIRE:
-					game.TriggerManager.InspireTrigger += instance._processHandler;
-					break;
-				case TriggerType.FROZEN:
-					game.TriggerManager.FreezeTrigger += instance._processHandler;
-					break;
-				case TriggerType.ARMOR:
-					game.TriggerManager.ArmorTrigger += instance._processHandler;
-					break;
-				case TriggerType.EQUIP_WEAPON:
-					game.TriggerManager.EquipWeaponTrigger += instance._processHandler;
-					break;
-				case TriggerType.SHUFFLE_INTO_DECK:
-					game.TriggerManager.ShuffleIntoDeckTrigger += instance._processHandler;
-					break;
-				case TriggerType.OVERLOAD:
-					game.TriggerManager.OverloadTrigger += instance._processHandler;
-					break;
-			}
 
 			if (game.Logging)
 				game.Log(LogLevel.DEBUG, BlockType.POWER, "Trigger",
@@ -280,315 +144,444 @@ namespace SabberStoneCore.Triggers
 			return instance;
 		}
 
-		private void Process(Entity source)
-		{
-			// TODO: Report debug log here;
+		//internal void Process(Entity source)
+		//{
+		//	// TODO: Report debug log here;
 
-			if (_removed)
-				return;
+		//	if (_removed)
+		//		return;
 
-			if (_sequenceType == SequenceType.None)
-				Validate(source);
+		//	if (_sequenceType == SequenceType.None)
+		//		Validate(source);
 
-			if (!Validated)
-				return;
+		//	if (!Validated)
+		//		return;
 
-		    ProcessInternal(source);
+		//    ProcessInternal(source);
 
-			if (_triggerType == TriggerType.TURN_END && _owner.Controller.ExtraEndTurnEffect && !_removed)
-				ProcessInternal(source);
-		}
+		//	if (_triggerType == TriggerType.TURN_END && _owner.Controller.ExtraEndTurnEffect && !_removed)
+		//		ProcessInternal(source);
+		//}
 
-	    private void ProcessInternal(Entity source)
-	    {
-		    Validated = false;
+	 //   private void ProcessInternal(Entity source)
+	 //   {
+		//    Validated = false;
 
-			Game.Log(LogLevel.INFO, BlockType.TRIGGER, "Trigger",
-			    !Game.Logging ? "" : $"{_owner}'s {_triggerType} Trigger is triggered by {source}.");
+		//	Game.Log(LogLevel.INFO, BlockType.TRIGGER, "Trigger",
+		//	    !Game.Logging ? "" : $"{_owner}'s {_triggerType} Trigger is triggered by {source}.");
 
-		    if (RemoveAfterTriggered)
-			    Remove();
+		//    if (RemoveAfterTriggered)
+		//	    Remove();
 
-			// Enqueue tasks
-			// Source: The owner of this trigger
-			// Target: The source of this trigger or
-			//			if the owner is Enchantment, the target of the enchantment.
-			if (FastExecution)
-			    Game.TaskQueue.Execute(SingleTask, _owner.Controller, _owner,
-				    source is Playable playable ? playable
-										: _owner is Enchantment ew && ew.Target is Playable p ? p
-										: null);
-		    else
-		    {
-			    Game.TaskQueue.Enqueue(SingleTask, _owner.Controller,
-				    /*_owner is Enchantment ec ? ec : */_owner,
-				    source is Playable pSource?
-					    pSource :
-					    _owner is Enchantment ew && ew.Target is Playable p ?
-						    p :
-						    null);
-		    }
+		//	// Enqueue tasks
+		//	// Source: The owner of this trigger
+		//	// Target: The source of this trigger or
+		//	//			if the owner is Enchantment, the target of the enchantment.
+		//	if (FastExecution)
+		//	    Game.TaskQueue.Execute(SingleTask, _owner.Controller, _owner,
+		//		    source is Playable playable ? playable
+		//								: _owner is Enchantment ew && ew.Target is Playable p ? p
+		//								: null);
+		//    else
+		//    {
+		//	    Game.TaskQueue.Enqueue(SingleTask, _owner.Controller,
+		//		    /*_owner is Enchantment ec ? ec : */_owner,
+		//		    source is Playable pSource?
+		//			    pSource :
+		//			    _owner is Enchantment ew && ew.Target is Playable p ?
+		//				    p :
+		//				    null);
+		//    }
 
-			if (_isSecret)
-			{
-				if (Game.History)
-					_owner.IsRevealed = true;
-				Game.TriggerManager.OnSecretRevealedTrigger(_owner);
-			}
-	    }
+		//	if (_isSecret)
+		//	{
+		//		if (Game.History)
+		//			_owner.IsRevealed = true;
+		//		Game.TriggerManager.OnSecretRevealedTrigger(_owner);
+		//	}
+	 //   }
 
 		/// <summary>
 		/// Remove this object from the Game and unsubscribe from the related event.
 		/// </summary>
-	    public virtual void Remove()
+	 //   public virtual void Remove()
+		//{
+		//	if (_removed) return;
+
+		//	switch (_triggerType)
+		//    {
+		//		case TriggerType.DEAL_DAMAGE:
+		//			Game.TriggerManager.DealDamageTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.TAKE_DAMAGE:
+		//			//if (TriggerSource == TriggerSource.SELF)
+		//			//{
+		//			//	if (_owner is Minion m)
+		//			//		m.TakeDamageTrigger.Remove(this);
+		//			//	else
+		//			//		throw new NotImplementedException();
+		//			//	break;
+		//			//}
+		//			//if (TriggerSource == TriggerSource.HERO)
+		//			//{
+		//			//	_owner.Controller.Hero.TakeDamageTrigger.Remove(this);
+		//			//	break;
+		//			//}
+		//			//Game.TriggerManager.DamageTrigger.Remove(this);
+		//			break;
+		//	    case TriggerType.HEAL:
+		//		    Game.TriggerManager.HealTrigger.Remove(this);
+		//		    break;
+		//		case TriggerType.TURN_END:
+		//		case TriggerType.WORGEN_TRANSFORM:
+		//			Game.TriggerManager.EndTurnTrigger.Remove(this);
+		//		    break;
+		//	    case TriggerType.TURN_START:
+		//		    Game.TriggerManager.TurnStartTrigger.Remove(this);
+		//		    break;
+		//		case TriggerType.SUMMON:
+		//			Game.TriggerManager.SummonTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.AFTER_SUMMON:
+		//		    Game.TriggerManager.AfterSummonTrigger.Remove(this);
+		//		    break;
+		//		case TriggerType.ATTACK:
+		//			Game.TriggerManager.AttackTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.AFTER_ATTACK:
+		//			//switch (TriggerSource)
+		//			//{
+		//			//	case TriggerSource.HERO:
+		//			//		_owner.Controller.Hero.AfterAttackTrigger.Remove(this);
+		//			//		break;
+		//			//	case TriggerSource.SELF:
+		//			//		((Minion)_owner).AfterAttackTrigger.Remove(this);
+		//			//		break;
+		//			//	case TriggerSource.ENCHANTMENT_TARGET:
+		//			//		((Minion)((Enchantment)_owner).Target).AfterAttackTrigger.Remove(this);
+		//			//		break;
+		//			//	default:
+		//			//		throw new NotImplementedException();
+		//			//}
+		//			break;
+		//		case TriggerType.DEATH:
+		//		    Game.TriggerManager.DeathTrigger.Remove(this);
+		//		    break;
+		//		case TriggerType.PLAY_CARD:
+		//			Game.TriggerManager.PlayCardTrigger.Remove(this);
+		//			break;
+		//	    case TriggerType.AFTER_PLAY_CARD:
+		//			Game.TriggerManager.AfterPlayCardTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.PLAY_MINION:
+		//		    Game.TriggerManager.PlayMinionTrigger.Remove(this);
+		//		    break;
+		//		case TriggerType.AFTER_PLAY_MINION:
+		//			Game.TriggerManager.AfterPlayMinionTrigger.Remove(this);
+		//			break;
+		//	    case TriggerType.CAST_SPELL:
+		//		    Game.TriggerManager.CastSpellTrigger.Remove(this);
+		//		    break;
+		//	    case TriggerType.AFTER_CAST:
+		//		    Game.TriggerManager.AfterCastTrigger.Remove(this);
+		//		    break;
+		//		case TriggerType.PREDAMAGE:
+		//			//switch (TriggerSource)
+		//			//{
+		//			//	case TriggerSource.HERO:
+		//			//		_owner.Controller.Hero.PreDamageTrigger.Remove(this);
+		//			//		break;
+		//			//	case TriggerSource.SELF:
+		//			//		((Minion)_owner).PreDamageTrigger.Remove(this);
+		//			//		break;
+		//			//	case TriggerSource.ENCHANTMENT_TARGET:
+		//			//		((Minion)((Enchantment)_owner).Target).PreDamageTrigger.Remove(this);
+		//			//		break;
+		//			//	default:
+		//			//		throw new NotImplementedException();
+		//			//}
+		//			break;
+		//		case TriggerType.SECRET_REVEALED:
+		//			Game.TriggerManager.SecretRevealedTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.ZONE:
+		//			Game.TriggerManager.ZoneTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.DISCARD:
+		//			Game.TriggerManager.DiscardTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.GAME_START:
+		//			Game.TriggerManager.GameStartTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.DRAW:
+		//			Game.TriggerManager.DrawTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.TARGET:
+		//			Game.TriggerManager.TargetTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.LOSE_DIVINE_SHIELD:
+		//			Game.TriggerManager.LoseDivineShieldTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.INSPIRE:
+		//			Game.TriggerManager.InspireTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.FROZEN:
+		//			Game.TriggerManager.FrozenTrigger.Remove(this);
+		//			break;
+		//	    case TriggerType.ARMOR:
+		//		    Game.TriggerManager.ArmorTrigger.Remove(this);
+		//		    break;
+		//		case TriggerType.EQUIP_WEAPON:
+		//			Game.TriggerManager.EquipWeaponTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.SHUFFLE_INTO_DECK:
+		//			Game.TriggerManager.ShuffleIntoDeckTrigger.Remove(this);
+		//			break;
+		//		case TriggerType.OVERLOAD:
+		//			Game.TriggerManager.OverloadTrigger.Remove(this);
+		//			break;
+		//		default:
+		//		    throw new ArgumentOutOfRangeException();
+		//    }
+
+		//	if (!IsAncillaryTrigger)
+		//		_owner.ActivatedTrigger = null;
+
+		//	if (_sequenceType != SequenceType.None)
+		//		Game.Triggers.Remove(this);
+
+		//	_removed = true;
+
+		//    Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Trigger",
+		//	    !Game.Logging ? "" : $"{_owner}'s {_triggerType} Trigger is removed.");
+	 //   }
+
+		public virtual void  Deactivate(Game game, TriggerStub stub)
 		{
-			if (_removed) return;
-
-			switch (_triggerType)
-		    {
-				case TriggerType.DEAL_DAMAGE:
-					Game.TriggerManager.DealDamageTrigger -= _processHandler;
-					break;
-				case TriggerType.TAKE_DAMAGE:
-					if (TriggerSource == TriggerSource.SELF)
-					{
-						if (_owner is Minion m)
-							m.TakeDamageTrigger -= _processHandler;
-						else
-							throw new NotImplementedException();
-						break;
-					}
-					if (TriggerSource == TriggerSource.HERO)
-					{
-						_owner.Controller.Hero.TakeDamageTrigger -= _processHandler;
-						break;
-					}
-					Game.TriggerManager.DamageTrigger -= _processHandler;
-					break;
-			    case TriggerType.HEAL:
-				    Game.TriggerManager.HealTrigger -= _processHandler;
-				    break;
-				case TriggerType.TURN_END:
-				case TriggerType.WORGEN_TRANSFORM:
-					Game.TriggerManager.EndTurnTrigger -= _processHandler;
-				    break;
-			    case TriggerType.TURN_START:
-				    Game.TriggerManager.TurnStartTrigger -= _processHandler;
-				    break;
-				case TriggerType.SUMMON:
-					Game.TriggerManager.SummonTrigger -= _processHandler;
-					break;
-				case TriggerType.AFTER_SUMMON:
-				    Game.TriggerManager.AfterSummonTrigger -= _processHandler;
-				    break;
-				case TriggerType.ATTACK:
-					Game.TriggerManager.AttackTrigger -= _processHandler;
-					break;
-				case TriggerType.AFTER_ATTACK:
-					switch (TriggerSource)
-					{
-						case TriggerSource.HERO:
-							_owner.Controller.Hero.AfterAttackTrigger -= _processHandler;
-							break;
-						case TriggerSource.SELF:
-							((Minion)_owner).AfterAttackTrigger -= _processHandler;
-							break;
-						case TriggerSource.ENCHANTMENT_TARGET:
-							((Minion)((Enchantment)_owner).Target).AfterAttackTrigger -= _processHandler;
-							break;
-						default:
-							throw new NotImplementedException();
-					}
-					break;
-				case TriggerType.DEATH:
-				    Game.TriggerManager.DeathTrigger -= _processHandler;
-				    break;
-				case TriggerType.PLAY_CARD:
-					Game.TriggerManager.PlayCardTrigger -= _processHandler;
-					break;
-			    case TriggerType.AFTER_PLAY_CARD:
-					Game.TriggerManager.AfterPlayCardTrigger -= _processHandler;
-					break;
-				case TriggerType.PLAY_MINION:
-				    Game.TriggerManager.PlayMinionTrigger -= _processHandler;
-				    break;
-				case TriggerType.AFTER_PLAY_MINION:
-					Game.TriggerManager.AfterPlayMinionTrigger -= _processHandler;
-					break;
-			    case TriggerType.CAST_SPELL:
-				    Game.TriggerManager.CastSpellTrigger -= _processHandler;
-				    break;
-			    case TriggerType.AFTER_CAST:
-				    Game.TriggerManager.AfterCastTrigger -= _processHandler;
-				    break;
-				case TriggerType.PREDAMAGE:
-					switch (TriggerSource)
-					{
-						case TriggerSource.HERO:
-							_owner.Controller.Hero.PreDamageTrigger -= _processHandler;
-							break;
-						case TriggerSource.SELF:
-							((Minion)_owner).PreDamageTrigger -= _processHandler;
-							break;
-						case TriggerSource.ENCHANTMENT_TARGET:
-							((Minion)((Enchantment)_owner).Target).PreDamageTrigger -= _processHandler;
-							break;
-						default:
-							throw new NotImplementedException();
-					}
-					break;
-				case TriggerType.SECRET_REVEALED:
-					Game.TriggerManager.SecretRevealedTrigger -= _processHandler;
-					break;
-				case TriggerType.ZONE:
-					Game.TriggerManager.ZoneTrigger -= _processHandler;
-					break;
-				case TriggerType.DISCARD:
-					Game.TriggerManager.DiscardTrigger -= _processHandler;
-					break;
-				case TriggerType.GAME_START:
-					Game.TriggerManager.GameStartTrigger -= _processHandler;
-					break;
-				case TriggerType.DRAW:
-					Game.TriggerManager.DrawTrigger -= _processHandler;
-					break;
-				case TriggerType.TARGET:
-					Game.TriggerManager.TargetTrigger -= _processHandler;
-					break;
-				case TriggerType.LOSE_DIVINE_SHIELD:
-					Game.TriggerManager.LoseDivineShield -= _processHandler;
-					break;
-				case TriggerType.INSPIRE:
-					Game.TriggerManager.InspireTrigger -= _processHandler;
-					break;
-				case TriggerType.FROZEN:
-					Game.TriggerManager.FreezeTrigger -= _processHandler;
-					break;
-			    case TriggerType.ARMOR:
-				    Game.TriggerManager.ArmorTrigger -= _processHandler;
-				    break;
-				case TriggerType.EQUIP_WEAPON:
-					Game.TriggerManager.EquipWeaponTrigger -= _processHandler;
-					break;
-				case TriggerType.SHUFFLE_INTO_DECK:
-					Game.TriggerManager.ShuffleIntoDeckTrigger -= _processHandler;
-					break;
-				case TriggerType.OVERLOAD:
-					Game.TriggerManager.OverloadTrigger -= _processHandler;
-					break;
-				default:
-				    throw new ArgumentOutOfRangeException();
-		    }
-
-			if (!IsAncillaryTrigger)
-				_owner.ActivatedTrigger = null;
-
-			if (_sequenceType != SequenceType.None)
-				Game.Triggers.Remove(this);
-
-			_removed = true;
-
-		    Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Trigger",
-			    !Game.Logging ? "" : $"{_owner}'s {_triggerType} Trigger is removed.");
-	    }
+			_deactivator(game, stub);
+		}
 
 		/// <summary>
 		/// Checks triggers related to the current Sequence at once before the Sequence starts.
 		/// </summary>
-	    public static void ValidateTriggers(Game game, Entity source, SequenceType type)
-	    {
-			List<Trigger> triggers = game.Triggers;
-			for (int i = 0; i < triggers.Count; i++)
-				if (triggers[i]._sequenceType == type)
-					triggers[i].Validate(source);
-	    }
+	 //   public static void ValidateTriggers(Game game, Entity source, SequenceType type)
+	 //   {
+		//	List<Trigger> triggers = game.Triggers;
+		//	for (int i = 0; i < triggers.Count; i++)
+		//		if (triggers[i]._sequenceType == type)
+		//			triggers[i].Validate(source);
+	 //   }
 
-	    public static void ValidateTriggers(Game game, Entity source, TriggerType type)
-	    {
-		    List<Trigger> triggers = game.Triggers;
-			for (int i = 0; i < triggers.Count; i++)
-			    if (triggers[i]._triggerType == type)
-				    triggers[i].Validate(source);
-		}
+	 //   public static void ValidateTriggers(Game game, Entity source, TriggerType type)
+	 //   {
+		//    List<Trigger> triggers = game.Triggers;
+		//	for (int i = 0; i < triggers.Count; i++)
+		//	    if (triggers[i]._triggerType == type)
+		//		    triggers[i].Validate(source);
+		//}
 
-	    public static void Invalidate(Game game, SequenceType type)
-	    {
-		    game.Triggers.ForEach(p =>
-		    {
-			    if (p._sequenceType == type)
-				    p.Validated = false;
-		    });
-
-			//if (game.TaskQueue.Count <= 0) return;
-			//if (game.TaskQueue.CurrentEventTasks.Count > 0)
-			// game.TaskQueue.CurrentEventTasks.Clear();
-			//else if
-			//(game.TaskQueue.TaskList.Count > 0)
-			// game.TaskQueue.TaskList.Clear();
-
-			if (game.TaskQueue.IsEmpty) return;
-		    game.TaskQueue.ClearCurrentEvent();
-	    }
-
-	    public static void InvalidateAll(Game game)
+		public static void InvalidateAll(Game game)
 	    {
 			game.Triggers.ForEach(p => p.Validated = false);
 			if (game.TaskQueue.IsEmpty) return;
 			game.TaskQueue.ClearCurrentEvent();
 	    }
 
-	    private void Validate(Entity source)
+	    public bool Validate(Entity source, Playable owner)
 	    {
-		    if (_isSecret && _owner.IsExhausted && _triggerType != TriggerType.TURN_START)
-			    return;
+		    if (owner.Card.IsSecret && owner.IsExhausted && _triggerType != TriggerType.TURN_START)
+			    return false;
+
+		    return _validator?.Invoke(source, owner) ?? true;
+	    }
+
+		public override string ToString()
+		{
+			return $"[Type:{_triggerType}]";
+		}
+
+		private static readonly Dictionary<TriggerType, Action<Game, TriggerStub>> ActivatorDict;
+		private static readonly Dictionary<TriggerType, Action<Game, TriggerStub>> DeactivatorDict;
+
+		static Trigger()
+		{
+			ActivatorDict = new Dictionary<TriggerType, Action<Game, TriggerStub>>
+			{
+				{TriggerType.NONE, null},
+				{TriggerType.MULTITRIGGER, null},
+				{TriggerType.TURN_END, (g, t) => g.TriggerManager.EndTurnTrigger.Add(t)},
+				{TriggerType.TURN_START, (g, t) => g.TriggerManager.TurnStartTrigger.Add(t)},
+				{TriggerType.DEATH, (g, t) => g.TriggerManager.DeathTrigger.Add(t)},
+				{TriggerType.INSPIRE, (g, t) => g.TriggerManager.InspireTrigger.Add(t)},
+				{TriggerType.DEAL_DAMAGE, (g, t) => g.TriggerManager.DealDamageTrigger.Add(t)},
+				{TriggerType.TAKE_DAMAGE, (g, t) => g.TriggerManager.TakeDamageTrigger.Add(t)},
+				{TriggerType.PREDAMAGE, (g, t) => g.TriggerManager.PredamageTrigger.Add(t)},
+				{TriggerType.HEAL, (g, t) => g.TriggerManager.HealTrigger.Add(t)},
+				{TriggerType.LOSE_DIVINE_SHIELD, (g, t) => g.TriggerManager.LoseDivineShieldTrigger.Add(t)},
+				{TriggerType.ATTACK, (g, t) => g.TriggerManager.AttackTrigger.Add(t)},
+				{TriggerType.AFTER_ATTACK, (g, t) => g.TriggerManager.AfterAttackTrigger.Add(t)},
+				{TriggerType.SUMMON, (g, t) => g.TriggerManager.SummonTrigger.Add(t)},
+				{TriggerType.AFTER_SUMMON, (g, t) => g.TriggerManager.AfterSummonTrigger.Add(t)},
+				{TriggerType.PLAY_CARD, (g, t) => g.TriggerManager.PlayCardTrigger.Add(t)},
+				{TriggerType.AFTER_PLAY_CARD, (g, t) => g.TriggerManager.AfterPlayCardTrigger.Add(t)},
+				{TriggerType.PLAY_MINION, (g, t) => g.TriggerManager.PlayMinionTrigger.Add(t)},
+				{TriggerType.AFTER_PLAY_MINION, (g, t) => g.TriggerManager.AfterPlayMinionTrigger.Add(t)},
+				{TriggerType.CAST_SPELL, (g, t) => g.TriggerManager.CastSpellTrigger.Add(t)},
+				{TriggerType.AFTER_CAST, (g, t) => g.TriggerManager.AfterCastTrigger.Add(t)},
+				{TriggerType.SECRET_REVEALED, (g, t) => g.TriggerManager.SecretRevealedTrigger.Add(t)},
+				{TriggerType.ZONE, (g, t) => g.TriggerManager.ZoneTrigger.Add(t)},
+				{TriggerType.DISCARD, (g, t) => g.TriggerManager.DiscardTrigger.Add(t)},
+				{TriggerType.GAME_START, (g, t) => g.TriggerManager.GameStartTrigger.Add(t)},
+				{TriggerType.DRAW, (g, t) => g.TriggerManager.DrawTrigger.Add(t)},
+				{TriggerType.TARGET, (g, t) => g.TriggerManager.TargetTrigger.Add(t)},
+				{TriggerType.FROZEN, (g, t) => g.TriggerManager.FrozenTrigger.Add(t)},
+				{TriggerType.ARMOR, (g, t) => g.TriggerManager.ArmorTrigger.Add(t)},
+				{TriggerType.EQUIP_WEAPON, (g, t) => g.TriggerManager.EquipWeaponTrigger.Add(t)},
+				{TriggerType.SHUFFLE_INTO_DECK, (g, t) => g.TriggerManager.ShuffleIntoDeckTrigger.Add(t)},
+				{TriggerType.OVERLOAD, (g, t) => g.TriggerManager.OverloadTrigger.Add(t)},
+			};
+			ActivatorDict.Add(TriggerType.WORGEN_TRANSFORM, ActivatorDict[TriggerType.TURN_END]);
+
+			DeactivatorDict = new Dictionary<TriggerType, Action<Game, TriggerStub>>
+			{
+				{TriggerType.NONE, null},
+				{TriggerType.MULTITRIGGER, null},
+				{TriggerType.TURN_END, (g, t) => g.TriggerManager.EndTurnTrigger.Remove(t)},
+				{TriggerType.TURN_START, (g, t) => g.TriggerManager.TurnStartTrigger.Remove(t)},
+				{TriggerType.DEATH, (g, t) => g.TriggerManager.DeathTrigger.Remove(t)},
+				{TriggerType.INSPIRE, (g, t) => g.TriggerManager.InspireTrigger.Remove(t)},
+				{TriggerType.DEAL_DAMAGE, (g, t) => g.TriggerManager.DealDamageTrigger.Remove(t)},
+				{TriggerType.TAKE_DAMAGE, (g, t) => g.TriggerManager.TakeDamageTrigger.Remove(t)},
+				{TriggerType.PREDAMAGE, (g, t) => g.TriggerManager.PredamageTrigger.Remove(t)},
+				{TriggerType.HEAL, (g, t) => g.TriggerManager.HealTrigger.Remove(t)},
+				{TriggerType.LOSE_DIVINE_SHIELD, (g, t) => g.TriggerManager.LoseDivineShieldTrigger.Remove(t)},
+				{TriggerType.ATTACK, (g, t) => g.TriggerManager.AttackTrigger.Remove(t)},
+				{TriggerType.AFTER_ATTACK, (g, t) => g.TriggerManager.AfterAttackTrigger.Remove(t)},
+				{TriggerType.SUMMON, (g, t) => g.TriggerManager.SummonTrigger.Remove(t)},
+				{TriggerType.AFTER_SUMMON, (g, t) => g.TriggerManager.AfterSummonTrigger.Remove(t)},
+				{TriggerType.PLAY_CARD, (g, t) => g.TriggerManager.PlayCardTrigger.Remove(t)},
+				{TriggerType.AFTER_PLAY_CARD, (g, t) => g.TriggerManager.AfterPlayCardTrigger.Remove(t)},
+				{TriggerType.PLAY_MINION, (g, t) => g.TriggerManager.PlayMinionTrigger.Remove(t)},
+				{TriggerType.AFTER_PLAY_MINION, (g, t) => g.TriggerManager.AfterPlayMinionTrigger.Remove(t)},
+				{TriggerType.CAST_SPELL, (g, t) => g.TriggerManager.CastSpellTrigger.Remove(t)},
+				{TriggerType.AFTER_CAST, (g, t) => g.TriggerManager.AfterCastTrigger.Remove(t)},
+				{TriggerType.SECRET_REVEALED, (g, t) => g.TriggerManager.SecretRevealedTrigger.Remove(t)},
+				{TriggerType.ZONE, (g, t) => g.TriggerManager.ZoneTrigger.Remove(t)},
+				{TriggerType.DISCARD, (g, t) => g.TriggerManager.DiscardTrigger.Remove(t)},
+				{TriggerType.GAME_START, (g, t) => g.TriggerManager.GameStartTrigger.Remove(t)},
+				{TriggerType.DRAW, (g, t) => g.TriggerManager.DrawTrigger.Remove(t)},
+				{TriggerType.TARGET, (g, t) => g.TriggerManager.TargetTrigger.Remove(t)},
+				{TriggerType.FROZEN, (g, t) => g.TriggerManager.FrozenTrigger.Remove(t)},
+				{TriggerType.ARMOR, (g, t) => g.TriggerManager.ArmorTrigger.Remove(t)},
+				{TriggerType.EQUIP_WEAPON, (g, t) => g.TriggerManager.EquipWeaponTrigger.Remove(t)},
+				{TriggerType.SHUFFLE_INTO_DECK, (g, t) => g.TriggerManager.ShuffleIntoDeckTrigger.Remove(t)},
+				{TriggerType.OVERLOAD, (g, t) => g.TriggerManager.OverloadTrigger.Remove(t)},
+			};
+
+			DeactivatorDict.Add(TriggerType.WORGEN_TRANSFORM, DeactivatorDict[TriggerType.TURN_END]);
+		}
+
+		internal static Action<Game, TriggerStub> GetActivator(TriggerType type)
+		{
+			return ActivatorDict.TryGetValue(type, out Action<Game, TriggerStub> value)
+				? value
+				: throw new NotImplementedException();
+		}
+
+		internal static Action<Game, TriggerStub> GetDeactivator(TriggerType type)
+		{
+			return DeactivatorDict.TryGetValue(type, out Action<Game, TriggerStub> value)
+				? value
+				: throw new NotImplementedException();
+		}
+
+		private Func<Entity, Playable, bool> GetValidator()
+		{
+			Func<Entity, Playable, bool> validator;
+
+			Func<Entity, Playable, bool> sourceValidator = null;
+
+			Func<Entity, Playable, bool> typeValidator = null;
+
+			Func<Entity, Playable, bool> conditionValidator = null;
+
+
+
 
 		    switch (TriggerSource)
 		    {
 				case TriggerSource.ALL:
 					break;
 				case TriggerSource.FRIENDLY:
-				    if (source.Controller != _owner.Controller) return;
+					sourceValidator = (s, o) => s.Controller == o.Controller;
+				    //if (source.Controller != _owner.Controller) return;
 				    break;
-			    case TriggerSource.ENEMY when source.Controller == _owner.Controller: return;
+			    //case TriggerSource.ENEMY when source.Controller == _owner.Controller: return;
+				case TriggerSource.ENEMY:
+					sourceValidator = (s, o) => s.Controller != o.Controller;
+					break;
 			    case TriggerSource.SELF:
-				    if (source.Id != _sourceId) return;
+				    //if (source.Id != _sourceId) return;
+					sourceValidator = (s, o) => s.Id == o.Id;
 				    break;
 			    case TriggerSource.ALL_MINIONS:
-				    if (!(source is Minion)) return;
+				    //if (!(source is Minion)) return;
+					sourceValidator = (s, o) => s.Card.Type == CardType.MINION;
 				    break;
 			    case TriggerSource.MINIONS:
-				    if (!(source is Minion) || source.Controller != _owner.Controller) return;
+				    //if (!(source is Minion) || source.Controller != _owner.Controller) return;
+					sourceValidator = (s, o) => s.Card.Type == CardType.MINION && s.Controller == o.Controller;
 				    break;
 			    case TriggerSource.MINIONS_EXCEPT_SELF:
-				    if (!(source is Minion) || source.Controller != _owner.Controller || source.Id == _sourceId ||
-				        source.Zone.Type != Zone.PLAY) return;
+				    //if (!(source is Minion) || source.Controller != _owner.Controller || source.Id == _sourceId ||
+				    //    source.Zone.Type != Zone.PLAY) return;
+				    sourceValidator = (s, o) =>
+					    s.Card.Type == CardType.MINION &&
+					    s.Controller == o.Controller &&
+					    s.Id != o.Id &&
+					    s.Zone?.Type == Zone.PLAY;
 					break;
 				case TriggerSource.ALL_MINIONS_EXCEPT_SELF:
-					if (!(source is Minion) || source == _owner) return;
+					//if (!(source is Minion) || source == _owner) return;
+					sourceValidator = (s, o) => s.Card.Type == CardType.MINION && s.Id != o.Id;
 				    break;
 				case TriggerSource.OP_MINIONS:
-					if (!(source is Minion) || source.Controller == _owner.Controller) return;
+					//if (!(source is Minion) || source.Controller == _owner.Controller) return;
+					sourceValidator = (s, o) => s.Card.Type == CardType.MINION && s.Controller == o.Controller.Opponent;
 					break;
 			    case TriggerSource.HERO:
-				    if (!(source is Hero) || source.Controller != _owner.Controller) return;
+				    //if (!(source is Hero) || source.Controller != _owner.Controller) return;
+					sourceValidator = (s, o) => s.Card.Type == CardType.HERO && s.Controller == o.Controller;
 				    break;
 			    case TriggerSource.ENCHANTMENT_TARGET:
-				    if (!(_owner is Enchantment e) || e.Target.Id != source.Id) return;
+				    //if (!(_owner is Enchantment e) || e.Target.Id != source.Id) return;
+					sourceValidator = (s, o)  => o is Enchantment e && e.Target.Id == s.Id;
 				    break;
 				case TriggerSource.WEAPON:
-					if (!(source is Weapon w) || w.Controller != source.Controller) return;
+					//if (!(source is Weapon w) || w.Controller != source.Controller) return;
+					sourceValidator = (s, o) => s.Card.Type == CardType.WEAPON && s.Controller == o.Controller;
 					break;
 				case TriggerSource.HERO_POWER:
-					if (!(source is HeroPower hp) || hp.Controller != source.Controller) return;
+					//if (!(source is HeroPower hp) || hp.Controller != source.Controller) return;
+					sourceValidator = (s, o) => s.Card.Type == CardType.HERO_POWER && s.Controller == o.Controller;
 					break;
 				case TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER:
-					if (!(source is Spell) || source.Controller != _owner.Controller || Game.CurrentEventData?.EventTarget != _owner) return;
+					//if (!(source is Spell) || source.Controller != _owner.Controller || Game.CurrentEventData?.EventTarget != _owner) return;
+					sourceValidator = (s, o) =>
+						s.Controller == o.Controller &&
+						s.Game.CurrentEventData?.EventTarget == o &&
+						s.Card.Type == CardType.SPELL;
 					break;
 				case TriggerSource.FRIENDLY_SPELL_CASTED_ON_OWN_MINIONS:
-					if (!(source is Spell) || source.Controller != _owner.Controller || Game.CurrentEventData?.EventTarget?.Controller != _owner.Controller) return;
+					//if (!(source is Spell) || source.Controller != _owner.Controller || Game.CurrentEventData?.EventTarget?.Controller != _owner.Controller) return;
+					sourceValidator = (s, o) =>
+						s.Controller == o.Controller &&
+						s.Game.CurrentEventData?.EventTarget?.Controller == o.Controller &&
+						s.Card.Type == CardType.SPELL;
 					break;
 				case TriggerSource.FRIENDLY_EVENT_SOURCE:
-					if (Game.CurrentEventData?.EventSource.Controller != _owner.Controller) return;
+					//if (Game.CurrentEventData?.EventSource.Controller != _owner.Controller) return;
+					sourceValidator = (s, o) => s.Game.CurrentEventData?.EventSource.Controller == o.Controller;
 					break;
 			}
 
@@ -596,35 +589,73 @@ namespace SabberStoneCore.Triggers
 
 		    switch (_triggerType)
 		    {
-			    case TriggerType.PLAY_CARD when source.Id == _owner.Id:
-				case TriggerType.SUMMON when source == _owner:
-			    case TriggerType.AFTER_SUMMON when source.Id == _owner.Id:
-			    case TriggerType.TURN_START when !EitherTurn && source != _owner.Controller:
-			    case TriggerType.DEATH when _owner is MinionInPlay m && m.ToBeDestroyed:
-			    case TriggerType.INSPIRE when !EitherTurn && Game.CurrentPlayer != _owner.Controller:
-				case TriggerType.SHUFFLE_INTO_DECK when Game.CurrentEventData?.EventSource.Card.AssetId == 49269:
-					return;
-				case TriggerType.TURN_END:
-			    case TriggerType.WORGEN_TRANSFORM:
-					if (!EitherTurn && source != _owner.Controller) return;
-				    //if (!(SingleTask is RemoveEnchantmentTask) && Owner.Controller.ExtraEndTurnEffect)
-					   // extra = true;
+				//case TriggerType.PLAY_CARD when source.Id == _owner.Id:
+				//case TriggerType.SUMMON when source == _owner:
+				//case TriggerType.AFTER_SUMMON when source.Id == _owner.Id:
+				//case TriggerType.TURN_START when !EitherTurn && source != _owner.Controller:
+				//case TriggerType.DEATH when _owner is MinionInPlay m && m.ToBeDestroyed:
+				//case TriggerType.INSPIRE when !EitherTurn && Game.CurrentPlayer != _owner.Controller:
+				//case TriggerType.SHUFFLE_INTO_DECK when Game.CurrentEventData?.EventSource.Card.AssetId == 49269:
+				//	return;
+				//case TriggerType.TURN_END:
+				//case TriggerType.WORGEN_TRANSFORM:
+				//	if (!EitherTurn && source != _owner.Controller) return;
+				//	if (!(SingleTask is RemoveEnchantmentTask) && Owner.Controller.ExtraEndTurnEffect)
+				//		extra = true;
+				//	break;
+				case TriggerType.SUMMON:
+			    case TriggerType.PLAY_CARD:
+				case TriggerType.AFTER_SUMMON:
+					typeValidator = (s, o) => s.Id != o.Id;
 				    break;
+				case TriggerType.TURN_START:
+					if (!EitherTurn)
+						typeValidator = (s, o) => s == o.Controller;
+					break;
+				case TriggerType.DEATH:
+					typeValidator = (s, o) => !(o is MinionInPlay m && m.ToBeDestroyed);
+					break;
+				case TriggerType.INSPIRE:
+					if (!EitherTurn)
+						typeValidator = (s, o) => s.Game.CurrentPlayer == o.Controller;
+					break;
+				case TriggerType.SHUFFLE_INTO_DECK:
+					typeValidator = (s, o) => s.Game.CurrentEventData?.EventSource.Card.AssetId != 49269;
+					break;
+				case TriggerType.TURN_END:
+				case TriggerType.WORGEN_TRANSFORM:
+					if (!EitherTurn)
+						typeValidator = (s, o) => s == o.Controller;
+					break;
 		    }
 
 		    if (Condition != null)
 		    {
-			    Playable s = source as Playable ?? _owner;
-			    if (!Condition.Eval(s))
-				    return;
+			    //Playable s = source as Playable ?? _owner;
+			    //if (!Condition.Eval(s))
+				   // return;
+
+			    conditionValidator = (s, o) => s is Playable p ? Condition.Eval(p) : Condition.Eval(o);
 		    }
 
-		    Validated = true;
-	    }
+			
 
-		public override string ToString()
-		{
-			return $"{{Owner:{_owner}}}[Type:{_triggerType}]";
+			//if (sourceValidator != null && typeValidator != null)
+			//	validator = (s, o) => { return sourceValidator(s, o) && typeValidator(s, o); }
+
+			validator = sourceValidator != null
+				? typeValidator != null ? conditionValidator != null
+					? (Func<Entity, Playable, bool>) ((s, o) =>
+						sourceValidator(s, o) && typeValidator(s, o) && conditionValidator(s, o))
+					: (s, o) => sourceValidator(s, o) && typeValidator(s, o) :
+				conditionValidator != null ? (s, o) => sourceValidator(s, o) && conditionValidator(s, o) :
+				sourceValidator
+				: typeValidator != null
+					? conditionValidator != null ? (s, o) => typeValidator(s, o) && conditionValidator(s, o) :
+					typeValidator
+					: conditionValidator;
+
+			return validator;
 		}
 	}
 }

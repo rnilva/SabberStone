@@ -58,7 +58,8 @@ namespace SabberStoneCore.Model.Entities
 			controller.Game.IdEntityDic[playable.Id] = this;
 
 			//playable.OngoingEffect?.Clone(this);
-			playable.ActivatedTrigger?.Activate(controller.Game, this, cloning: true);
+			//playable.ActivatedTrigger?.Activate(controller.Game, this, cloning: true);
+			ActivatedTrigger = playable.ActivatedTrigger?.Clone(this);
 
 			// Cloning applied enchantments.
 			//{
@@ -124,7 +125,7 @@ namespace SabberStoneCore.Model.Entities
 		/// Nullifying this field does not mean deactivation of the trigger.
 		/// Use <see cref="Trigger.Remove()"/> instead.
 		/// </summary>
-		public Trigger ActivatedTrigger
+		public TriggerStub ActivatedTrigger
 		{
 			get => _activatedTrigger;
 			set => _activatedTrigger = value;
@@ -484,7 +485,7 @@ namespace SabberStoneCore.Model.Entities
 		internal int? _v2;
 
 		protected IAura _ongoingEffect;
-		protected Trigger _activatedTrigger;
+		protected TriggerStub _activatedTrigger;
 
 		protected bool _exhausted;
 		protected int _zonePosition;

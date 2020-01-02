@@ -53,10 +53,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			{
 				if (t.ActivatedTrigger != null)
 				{
-					var aggregatedTrigger = new MultiTrigger(t.ActivatedTrigger, s.Power.Trigger);
-					t.ActivatedTrigger.Remove();
-					t.ActivatedTrigger = null;
-					aggregatedTrigger.Activate(game, t);
+					//var aggregatedTrigger = new MultiTrigger(t.ActivatedTrigger, s.Power.Trigger);
+					//t.ActivatedTrigger.Remove();
+					//t.ActivatedTrigger = null;
+					//aggregatedTrigger.Activate(game, t);
+
+					t.ActivatedTrigger = t.ActivatedTrigger.Combine(s.Power.Trigger);
 				}
 				else
 				{

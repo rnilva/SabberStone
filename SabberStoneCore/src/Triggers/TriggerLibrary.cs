@@ -31,10 +31,9 @@ namespace SabberStoneCore.Triggers
 	 //   }
 
 	    public static readonly Trigger RevealUnidentifiedItem
-		    = new Trigger(TriggerType.ZONE)
+		    = new Trigger(TriggerType.ZONE, TriggerSource.SELF)
 		    {
 			    TriggerActivation = TriggerActivation.HAND,
-			    TriggerSource = TriggerSource.SELF,
 			    RemoveAfterTriggered = true,
 			    SingleTask = new ChangeUnidentifiedTask()
 		    };

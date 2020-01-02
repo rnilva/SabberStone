@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -200,9 +200,8 @@ namespace SabberStoneCore.CardSets
 			// Text: After you cast a spell, deal 2 damage randomly split among all enemies.
 			// --------------------------------------------------------
 			cards.Add("BRM_002", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new EnqueueTask(2, ComplexTask.DamageRandomTargets(1, EntityType.ENEMIES, 1))
 				}
 			});
@@ -399,9 +398,8 @@ namespace SabberStoneCore.CardSets
 			// Text: Whenever this minion takes damage, summon a 1/1 Imp.
 			// --------------------------------------------------------
 			cards.Add("BRM_006", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new SummonTask("BRM_006t", SummonSide.RIGHT)
 				}
 			});
@@ -443,9 +441,8 @@ namespace SabberStoneCore.CardSets
 			// Text: Whenever this minion takes damage, deal 2 damage to the enemy hero.
 			// --------------------------------------------------------
 			cards.Add("BRM_016", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new DamageTask(2, EntityType.OP_HERO)
 				}
 			});
@@ -474,10 +471,8 @@ namespace SabberStoneCore.CardSets
 			// Text: After this minion survives damage, summon another Grim Patron.
 			// --------------------------------------------------------
 			cards.Add("BRM_019", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF, SelfCondition.IsNotDead)
 				{
-					TriggerSource = TriggerSource.SELF,
-					Condition = SelfCondition.IsNotDead,
 					SingleTask = new SummonTask("BRM_019", SummonSide.RIGHT),
 				}
 			});
@@ -489,9 +484,8 @@ namespace SabberStoneCore.CardSets
 			// Text: Whenever <b>you</b> target this minion with a spell, gain +1/+1.
 			// --------------------------------------------------------
 			cards.Add("BRM_020", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER)
 				{
-					TriggerSource = TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER,
 					SingleTask = new AddEnchantmentTask("BRM_020e", EntityType.SOURCE)
 				}
 			});
@@ -503,9 +497,8 @@ namespace SabberStoneCore.CardSets
 			// Text: Whenever this minion takes damage, summon a 2/1 Whelp.
 			// --------------------------------------------------------
 			cards.Add("BRM_022", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new SummonTask("BRM_004t", SummonSide.RIGHT)
 				}
 			});
@@ -625,9 +618,8 @@ namespace SabberStoneCore.CardSets
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("BRM_031", new Power {
-				Trigger = new Trigger(TriggerType.DRAW)
+				Trigger = new Trigger(TriggerType.DRAW, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new CopyTask(EntityType.TARGET, Zone.HAND)
 				}
 			});
@@ -781,3 +773,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

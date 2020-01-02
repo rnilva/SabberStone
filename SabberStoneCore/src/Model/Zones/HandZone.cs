@@ -49,7 +49,7 @@ namespace SabberStoneCore.Model.Zones
 		public override Playable Remove(Playable entity)
 		{
 			entity.ResetCost();
-			entity.AppliedEnchantments?.ForEach(p => p.ActivatedTrigger?.Remove());
+			entity.AppliedEnchantments?.ForEach(p => p.ActivatedTrigger?.Remove(Game));
 			return base.Remove(entity);
 		}
 

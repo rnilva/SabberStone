@@ -113,7 +113,7 @@ namespace SabberStoneCore.Model.Zones
 				oldEntity.AppliedEnchantments.Clear();
 			}
 
-			oldEntity.ActivatedTrigger?.Remove();
+			oldEntity.ActivatedTrigger?.Remove(Game);
 			if (oldEntity.Card.Untouchable && --_untouchableCount == 0)
 				_hasUntouchables = false;
 			oldEntity.ZonePosition = 0;
