@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
@@ -3462,3 +3462,14 @@ namespace SabberStoneCore.CardSets.Standard
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+

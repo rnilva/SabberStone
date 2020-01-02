@@ -63,9 +63,8 @@ namespace SabberStoneCore.CardSets.Standard
 			//       spell to your hand.
 			// --------------------------------------------------------
 			cards.Add("GIL_504h", new Power {
-				Trigger = new Trigger(TriggerType.PLAY_MINION)
+				Trigger = new Trigger(TriggerType.PLAY_MINION, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.AddRandomShamanSpell
 				}
 			});
@@ -372,10 +371,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - POISONOUS = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_607", new Power {
-				Trigger = new Trigger(TriggerType.PLAY_MINION)
+				Trigger = new Trigger(TriggerType.PLAY_MINION, TriggerSource.FRIENDLY, SelfCondition.IsBaseTagValue(GameTag.COST, 1))
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsBaseTagValue(GameTag.COST, 1),
 					SingleTask = new AddEnchantmentTask("GIL_607e", EntityType.TARGET)
 				}
 			});
@@ -459,9 +456,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_577", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD, new SelfCondition(p => p.Controller.NumCardsPlayedThisTurn == 3))
 				{
-					Condition = new SelfCondition(p => p.Controller.NumCardsPlayedThisTurn == 3),
 					SingleTask = ComplexTask.Secret(new SummonTask("GIL_577t"))
 				}
 			});
@@ -579,9 +575,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever you draw a card, gain +1/+1.
 			// --------------------------------------------------------
 			cards.Add("GIL_640", new Power {
-				Trigger = new Trigger(TriggerType.DRAW)
+				Trigger = new Trigger(TriggerType.DRAW, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("GIL_640e", EntityType.SOURCE)
 				}
 			});
@@ -609,9 +604,8 @@ namespace SabberStoneCore.CardSets.Standard
 			//       2-Cost minion.
 			// --------------------------------------------------------
 			cards.Add("GIL_664", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
 						new RandomMinionTask(GameTag.COST, 2),
 						new SummonTask())
@@ -628,10 +622,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_691", new Power {
-				Trigger = new Trigger(TriggerType.DRAW)
+				Trigger = new Trigger(TriggerType.DRAW, TriggerSource.FRIENDLY, SelfCondition.IsMinion)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsMinion,
 					SingleTask = new CopyTask(EntityType.TARGET, Zone.HAND)
 				}
 			});
@@ -828,9 +820,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DIVINE_SHIELD = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_817", new Power {
-				Trigger = new Trigger(TriggerType.HEAL)
+				Trigger = new Trigger(TriggerType.HEAL, SelfCondition.IsEventSourceFriendly)
 				{
-					Condition = SelfCondition.IsEventSourceFriendly,
 					SingleTask = ComplexTask.DivineShield(EntityType.SOURCE)
 				}
 			});
@@ -876,9 +867,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_903", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD, new SelfCondition(p => p.Controller.NumCardsPlayedThisTurn == 3))
 				{
-					Condition = new SelfCondition(p => p.Controller.NumCardsPlayedThisTurn == 3),
 					SingleTask = ComplexTask.Secret(new DrawTask(2))
 				}
 			});
@@ -893,9 +883,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DURABILITY = 4
 			// --------------------------------------------------------
 			cards.Add("GIL_596", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = new AddEnchantmentTask("GIL_596e", EntityType.MINIONS)
 
 				}
@@ -965,9 +954,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever a friendly minion is healed, summon a 3/3_Whelp.
 			// --------------------------------------------------------
 			cards.Add("GIL_190", new Power {
-				Trigger = new Trigger(TriggerType.HEAL)
+				Trigger = new Trigger(TriggerType.HEAL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new SummonTask("GIL_190t")
 				}
 			});
@@ -1139,10 +1127,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ECHO = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_510", new Power {
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				Trigger = new Trigger(TriggerType.PLAY_CARD, TriggerSource.FRIENDLY, SelfCondition.IsEchoCard)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsEchoCard,
 					SingleTask = new AddEnchantmentTask("GIL_510e", EntityType.SOURCE)
 				}
 			});
@@ -1291,10 +1277,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - LIFESTEAL = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_672", new Power {
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				Trigger = new Trigger(TriggerType.PLAY_CARD, TriggerSource.FRIENDLY,
+					new SelfCondition(p => p.Card.Class != p.Controller.Hero.Card.Class))
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = new SelfCondition(p => p.Card.Class != p.Controller.Hero.Card.Class),
 					SingleTask = new AddEnchantmentTask("GIL_672e", EntityType.SOURCE)
 				}
 			});
@@ -1430,9 +1415,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever you cast a spell, draw a minion from your_deck.
 			// --------------------------------------------------------
 			cards.Add("GIL_807", new Power {
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.DrawFromDeck(1, SelfCondition.IsMinion)
 				}
 			});
@@ -1751,9 +1735,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - CANT_ATTACK = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_152", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = ComplexTask.DamageRandomTargets(1, EntityType.ENEMIES, 3)
 				}
 			});
@@ -1787,10 +1770,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RUSH = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_547", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, SelfCondition.IsDefenderDead)
 				{
-					TriggerSource = TriggerSource.SELF,
-					Condition = SelfCondition.IsDefenderDead,
 					SingleTask = new AddEnchantmentTask("GIL_547e", EntityType.SOURCE)
 				}
 			});
@@ -2213,9 +2194,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: After your hero attacks, give this minion +1/+1.
 			// --------------------------------------------------------
 			cards.Add("GIL_534", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = new AddEnchantmentTask("GIL_534t", EntityType.SOURCE)
 				}
 			});
@@ -2367,9 +2347,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_620", new Power {
-				Trigger = new Trigger(TriggerType.DRAW)
+				Trigger = new Trigger(TriggerType.DRAW, SelfCondition.IsMinion)
 				{
-					Condition = SelfCondition.IsMinion,
 					SingleTask = ComplexTask.Create(
 						new CopyTask(EntityType.TARGET, Zone.PLAY, addToStack: true),
 						new AddEnchantmentTask("GIL_620e", EntityType.STACK))
@@ -2540,10 +2519,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - START_OF_GAME = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_692", new Power {
-				Trigger = new Trigger(TriggerType.GAME_START)
+				Trigger = new Trigger(TriggerType.GAME_START, SelfCondition.HasNoOddCostInDeck)
 				{
 					TriggerActivation = TriggerActivation.DECK,
-					Condition = SelfCondition.HasNoOddCostInDeck,
 					SingleTask = new AddEnchantmentTask("GIL_692e", EntityType.HERO_POWER),
 					RemoveAfterTriggered = true
 				}
@@ -2600,9 +2578,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: After a friendly minion dies, add a random Shaman spell to your hand.
 			// --------------------------------------------------------
 			cards.Add("GIL_819", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = ComplexTask.AddRandomShamanSpell
 				}
 			});
@@ -2622,10 +2599,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - START_OF_GAME = 1
 			// --------------------------------------------------------
 			cards.Add("GIL_826", new Power {
-				Trigger = new Trigger(TriggerType.GAME_START)
+				Trigger = new Trigger(TriggerType.GAME_START, SelfCondition.HasNoEvenCostInDeck)
 				{
 					TriggerActivation = TriggerActivation.DECK,
-					Condition = SelfCondition.HasNoEvenCostInDeck,
 					SingleTask = SpecificTask.JusticarTrueheart,
 					RemoveAfterTriggered = true
 				}
@@ -3223,3 +3199,14 @@ namespace SabberStoneCore.CardSets.Standard
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -272,10 +272,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("ICC_829p", new Power {
 				PowerTask = SpecificTask.TotemicCall,
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
-				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = new SelfCondition(p =>
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, TriggerSource.FRIENDLY,
+					new SelfCondition(p =>
 					{
 						if (p.Controller.BoardZone.Count < 4)
 							return false;
@@ -284,7 +282,8 @@ namespace SabberStoneCore.CardSets.Standard
 							if (boards[i] == "ICC_829t2")
 								return boards[i + 3] == "ICC_829t5";
 						return false;
-					}),
+					}))
+				{
 					SingleTask = new DestroyTask(EntityType.OP_HERO)
 				}
 			});
@@ -303,9 +302,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("ICC_830p", new Power {
 				PowerTask = new DamageTask(2, EntityType.TARGET),
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					//SingleTask = new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.SOURCE)
 					SingleTask = ComplexTask.SetUnexhaustedTask(EntityType.SOURCE)
 				}
@@ -515,10 +513,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DEATHRATTLE = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_314t1", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO, SelfCondition.IsDefenderDead)
 				{
-					TriggerSource = TriggerSource.HERO,
-					Condition = SelfCondition.IsDefenderDead,
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.EVENT_TARGET, SelfCondition.IsMinion),
 						new FlagTask(true, ComplexTask.Create(
@@ -600,9 +596,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAUNT = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_808", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_SUMMON)
+				Trigger = new Trigger(TriggerType.AFTER_SUMMON, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("ICC_808e", EntityType.SOURCE)
 				}
 			});
@@ -935,10 +930,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - SECRET = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_204", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY, SelfCondition.IsSecret)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsSecret,
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.SOURCE, SelfCondition.IsZoneCount(Zone.SECRET, 4, RelaSign.LEQ)),
 						new FlagTask(true, SpecificTask.RandomHunterSecretPlay))
@@ -1060,14 +1053,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - POISONOUS = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_200", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, SelfCondition.IsEventTargetIs(CardType.MINION))
 				{
-					//Condition = new SelfCondition(p =>
-					//{
-					//	Playable target = p.Game.IdEntityDic[p.Game.ProposedDefender];
-					//	return target is Minion && target.Controller != p.Controller;
-					//}),
-					Condition = SelfCondition.IsEventTargetIs(CardType.MINION),
 					SingleTask = ComplexTask.Secret(
 						new SummonTask("EX1_170"))
 				}
@@ -1359,9 +1346,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever your hero is healed, deal that much damage to a random enemy minion.
 			// --------------------------------------------------------
 			cards.Add("ICC_245", new Power {
-				Trigger = new Trigger(TriggerType.HEAL)
+				Trigger = new Trigger(TriggerType.HEAL, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = ComplexTask.Create(
 						new RandomTask(1, EntityType.OP_MINIONS),
 						new GetEventNumberTask(),
@@ -1410,9 +1396,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DIVINE_SHIELD = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_858", new Power {
-				Trigger = new Trigger(TriggerType.LOSE_DIVINE_SHIELD)
+				Trigger = new Trigger(TriggerType.LOSE_DIVINE_SHIELD, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("ICC_858e", EntityType.SOURCE)
 				}
 			});
@@ -1461,9 +1446,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DIVINE_SHIELD = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_071", new Power {
-				Trigger = new Trigger(TriggerType.LOSE_DIVINE_SHIELD)
+				Trigger = new Trigger(TriggerType.LOSE_DIVINE_SHIELD, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("ICC_071e", EntityType.SOURCE)
 				}
 			});
@@ -2078,9 +2062,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - FREEZE = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_289", new Power {
-				Trigger = new Trigger(TriggerType.FROZEN)
+				Trigger = new Trigger(TriggerType.FROZEN, TriggerSource.ALL_MINIONS_EXCEPT_SELF)
 				{
-					TriggerSource = TriggerSource.ALL_MINIONS_EXCEPT_SELF,
 					SingleTask = new CopyTask(EntityType.TARGET, Zone.HAND)
 				}
 			});
@@ -2165,10 +2148,9 @@ namespace SabberStoneCore.CardSets.Standard
 				//			new List<Playable> { p[0].Game.IdEntityDic[p[0].Game.ProposedDefender]}),
 				//		new DestroyTask(EntityType.STACK))
 				//}
-				Trigger = new Trigger(TriggerType.DEAL_DAMAGE)
+				Trigger = new Trigger(TriggerType.DEAL_DAMAGE, TriggerSource.HERO,
+					new SelfCondition(p => p.Game.CurrentEventData.EventTarget[GameTag.FROZEN] > 0))
 				{
-					TriggerSource = TriggerSource.HERO,
-					Condition = new SelfCondition(p => p.Game.CurrentEventData.EventTarget[GameTag.FROZEN] > 0),
 					SingleTask = new DestroyTask(EntityType.EVENT_TARGET)
 				}
 			});
@@ -2197,9 +2179,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever this minion takes damage, discard a_random card.
 			// --------------------------------------------------------
 			cards.Add("ICC_218", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = ComplexTask.Create(
 						new RandomTask(1, EntityType.HAND),
 						new DiscardTask(EntityType.STACK))
@@ -2359,9 +2340,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: After you play a minion, deal 1 damage to it.
 			// --------------------------------------------------------
 			cards.Add("ICC_238", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new DamageTask(1, EntityType.EVENT_SOURCE)
 				}
 			});
@@ -2379,10 +2359,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("ICC_405", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF, SelfCondition.IsNotDead)
 				{
-					TriggerSource = TriggerSource.SELF,
-					Condition = SelfCondition.IsNotDead,
 					SingleTask = ComplexTask.Create(
 						new RandomMinionTask(GameTag.RARITY, (int)Rarity.LEGENDARY),
 						new SummonTask())
@@ -2398,10 +2376,8 @@ namespace SabberStoneCore.CardSets.Standard
 			//       summon a 2/2 Ghoul.
 			// --------------------------------------------------------
 			cards.Add("ICC_408", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF, SelfCondition.IsNotDead)
 				{
-					TriggerSource = TriggerSource.SELF,
-					Condition = SelfCondition.IsNotDead,
 					SingleTask = new SummonTask("ICC_900t")
 				}
 			});
@@ -2491,10 +2467,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DURABILITY = 3
 			// --------------------------------------------------------
 			cards.Add("ICC_834w", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_ATTACK)
+				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.HERO, SelfCondition.IsProposedDefender(CardType.MINION))
 				{
-					Condition = SelfCondition.IsProposedDefender(CardType.MINION),
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = ComplexTask.Create(
 						new FuncNumberTask(p =>
 						{
@@ -2639,9 +2613,8 @@ namespace SabberStoneCore.CardSets.Standard
 			//       damage, gain +2 Attack.
 			// --------------------------------------------------------
 			cards.Add("ICC_031", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new AddEnchantmentTask("ICC_031e", EntityType.SOURCE)
 				}
 			});
@@ -2761,9 +2734,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever your weapon is destroyed, gain +1/+1.
 			// --------------------------------------------------------
 			cards.Add("ICC_097", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.WEAPON)
 				{
-					TriggerSource = TriggerSource.WEAPON,
 					SingleTask = new AddEnchantmentTask("ICC_097e", EntityType.SOURCE)
 				}
 			});
@@ -2905,9 +2877,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever this minion attacks, deal 2 damage to_the enemy hero.
 			// --------------------------------------------------------
 			cards.Add("ICC_468", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new DamageTask(2, EntityType.OP_HERO)
 				}
 			});
@@ -3166,9 +3137,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever one of your other minions dies, summon a 2/2 Ghoul.
 			// --------------------------------------------------------
 			cards.Add("ICC_900", new Power {
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = new SummonTask("ICC_900t")
 				}
 			});
@@ -3232,9 +3202,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever you play a card, remove the top 3 cards of_your deck.
 			// --------------------------------------------------------
 			cards.Add("ICC_911", new Power {
-				Trigger = new Trigger(TriggerType.PLAY_CARD)
+				Trigger = new Trigger(TriggerType.PLAY_CARD, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new EnqueueTask(3, new MoveToGraveYard(EntityType.TOPCARDFROMDECK))
 				}
 			});
@@ -3689,3 +3658,7 @@ namespace SabberStoneCore.CardSets.Standard
 		}
 	}
 }
+
+
+
+

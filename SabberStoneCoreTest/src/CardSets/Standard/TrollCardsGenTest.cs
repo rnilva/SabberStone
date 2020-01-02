@@ -1208,7 +1208,6 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		[Fact]
 		public void BlastWave_TRL_317()
 		{
-			// TODO BlastWave_TRL_317 test
 			var game = new Game(new GameConfig
 			{
 				StartPlayer = 1,
@@ -1231,7 +1230,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.ProcessCard("Wisp");
 			game.ProcessCard("Wisp");
 			game.ProcessCard("River Crocolisk");
-			var testCard = (Spell)game.ProcessCard<Spell>("Blast Wave");
+			var testCard = (Spell) game.ProcessCard<Spell>("Blast Wave");
 
 			Assert.Equal(7, game.CurrentPlayer.HandZone.Count);
 			Assert.True(game.CurrentPlayer.HandZone.Skip(4).ToList().TrueForAll(p => p.Card.Class == CardClass.MAGE));

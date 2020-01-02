@@ -1,4 +1,22 @@
-﻿using System;
+#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+
+#if NOSPAN
+using SabberStoneCore.Model.Zones;
+#else
+using System;
+#endif
 using System.Collections.Generic;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Conditions;
@@ -501,9 +519,8 @@ namespace SabberStoneCore.CardSets
 			// - INSPIRE = 1
 			// --------------------------------------------------------
 			cards.Add("AT_059", new Power {
-				Trigger = new Trigger(TriggerType.INSPIRE)
+				Trigger = new Trigger(TriggerType.INSPIRE, SelfCondition.IsHandEmpty)
 				{
-					Condition = SelfCondition.IsHandEmpty,
 					SingleTask = new DamageTask(2, EntityType.OP_HERO)
 				}
 			});
@@ -2044,9 +2061,8 @@ namespace SabberStoneCore.CardSets
 			// Text: You can use your Hero Power twice a turn.
 			// --------------------------------------------------------
 			cards.Add("AT_080", new Power {
-				Trigger = new Trigger(TriggerType.INSPIRE)
+				Trigger = new Trigger(TriggerType.INSPIRE, new SelfCondition(p => p.Controller.HeroPowerActivationsThisTurn == 1))
 				{
-					Condition = new SelfCondition(p => p.Controller.HeroPowerActivationsThisTurn == 1),
 					SingleTask = ComplexTask.SetUnexhaustedTask(EntityType.HERO_POWER)
 				}
 			});
@@ -3090,3 +3106,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

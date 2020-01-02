@@ -1329,7 +1329,7 @@ namespace SabberStoneCoreTest.Basic
         [Fact]
         public void CopyWithAdjacentAuras()
         {
-	        Game game = new Game(new GameConfig());
+	        var game = new Game(new GameConfig());
 	        game.StartGame();
 
 	        Minion target = game.ProcessCard<Minion>("Wisp");
@@ -1345,7 +1345,7 @@ namespace SabberStoneCoreTest.Basic
 													  zonePosition: 1);
 			// [ {target} {copied2} {aura} {filler} {copied} ]
 			Assert.Equal(1, target.AttackDamage);
-			Assert.Equal(2, copied2.AttackDamage);	// Adjacent aura updated.;
+			Assert.Equal(2, copied2.AttackDamage);	// Adjacent aura updated.
         }
 
 		[Fact]

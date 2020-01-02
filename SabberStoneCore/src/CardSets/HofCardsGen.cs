@@ -1,4 +1,23 @@
-﻿using System.Collections.Generic;
+#region copyright
+// SabberStone, Hearthstone Simulator in C# .NET Core
+// Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
+//
+// SabberStone is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+// SabberStone is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+#endregion
+
+#if NOSPAN
+using SabberStoneCore.Model.Zones;
+#else
+using System;
+#endif
+using System.Collections.Generic;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Conditions;
@@ -46,10 +65,8 @@ namespace SabberStoneCore.CardSets
 			// - IMMUNE = 1
 			// --------------------------------------------------------
 			cards.Add("EX1_295", new Power {
-				Trigger = new Trigger(TriggerType.PREDAMAGE)
+				Trigger = new Trigger(TriggerType.PREDAMAGE, TriggerSource.HERO, SelfCondition.IsHeroLethalPreDamaged)
 				{
-					TriggerSource = TriggerSource.HERO,
-					Condition = SelfCondition.IsHeroLethalPreDamaged,
 					FastExecution = true,
 					SingleTask = ComplexTask.Secret(
 						new AddEnchantmentTask("EX1_295o", EntityType.HERO))
@@ -133,9 +150,8 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("EX1_316e", new Power {
 				Enchant = Enchants.Enchants.GetAutoEnchantFromText("EX1_316e"),
-				Trigger = new Trigger(TriggerType.TURN_END)
+				Trigger = new Trigger(TriggerType.TURN_END, eitherTurn: true)
 				{
-					EitherTurn = true,
 					SingleTask = new DestroyTask(EntityType.TARGET)
 				}
 			});
@@ -466,3 +482,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

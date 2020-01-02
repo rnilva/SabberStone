@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -2671,3 +2671,7 @@ namespace SabberStoneCore.CardSets.Adventure
 		}
 	}
 }
+
+
+
+

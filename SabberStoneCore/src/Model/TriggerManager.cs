@@ -13,14 +13,122 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Triggers;
+
 // ReSharper disable PossibleNullReferenceException
 
 namespace SabberStoneCore.Model
 {
     public class TriggerManager
     {
+		[DebuggerTypeProxy(typeof(DebuggerView))]
+		[DebuggerDisplay("Count = {_position}")]
+	    public class FastTriggerHandler
+	    {
+		    private static readonly TriggerStub[] EmptyArray = new TriggerStub[0];
+		    private const int InitSize = 4;
+
+		    private TriggerStub[] _triggers;
+			private int _position;
+			private bool _invoking;
+
+			internal FastTriggerHandler()
+			{
+				_triggers = EmptyArray;
+			}
+
+			public bool IsEmpty => _position == 0;
+
+			public void Add(TriggerStub trigger)
+			{
+				if (_position == _triggers.Length) Resize();
+				_triggers[_position++] = trigger;
+			}
+
+			public void Remove(TriggerStub trigger)
+			{
+				if (_invoking)
+					return;
+
+				for (int i = 0; i < _position; ++i)
+					if (_triggers[i].Equals(trigger))
+					{
+						Array.Copy(_triggers, i + 1, _triggers, i, --_position - i);
+						break;
+					}
+			}
+
+			public void Invoke(Entity entity)
+			{
+				_invoking = true;
+				int pos = _position;
+				for (int i = 0; i < pos; ++i)
+				{
+					if (!_triggers[i].Process(entity))
+					{
+						Array.Copy(_triggers, i + 1,  _triggers, i, --_position - i--);
+						--pos;
+					}
+				}
+
+				_invoking = false;
+			}
+
+			public void ValidateAll(Entity entity)
+			{
+				for (int i = 0; i < _position; ++i)
+					_triggers[i].Validate(entity);
+			}
+
+			public void InvalidateAll()
+			{
+				for (int i = 0; i < _position; ++i)
+					_triggers[i].Invalidate();
+			}
+
+			private void Resize()
+			{
+				if (_triggers.Length == 0)
+				{
+					// Lazy initialisation.
+					_triggers = new TriggerStub[InitSize];
+					return;
+				}
+
+				var newArr = new TriggerStub[_triggers.Length << 1];
+				Array.Copy(_triggers, 0, newArr, 0, _triggers.Length);
+				_triggers = newArr;
+			}
+
+			public static FastTriggerHandler operator +(FastTriggerHandler handler, TriggerStub trigger)
+			{
+				handler.Add(trigger);
+				return handler;
+			}
+
+			public static FastTriggerHandler operator -(FastTriggerHandler handler, TriggerStub trigger)
+			{
+				handler.Remove(trigger);
+				return handler;
+			}
+
+			private class DebuggerView
+			{
+				[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+				private FastTriggerHandler _handler;
+				public DebuggerView(FastTriggerHandler handler)
+				{
+					_handler = handler;
+				}
+
+				[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+				public Span<TriggerStub> Triggers => _handler._triggers.AsSpan(0, _handler._position);
+			}
+		}
+
 	    internal TriggerManager(Game g)
 	    {
 		    StartEvent += g.TaskQueue.StartEvent;
@@ -36,57 +144,91 @@ namespace SabberStoneCore.Model
 
 		public delegate void TriggerHandler(Entity sender);
 
-	    public event TriggerHandler DealDamageTrigger;
-	    public event TriggerHandler DamageTrigger;
-	    public event TriggerHandler HealTrigger;
-	    public event TriggerHandler LoseDivineShield;
+		public readonly FastTriggerHandler PredamageTrigger = new FastTriggerHandler();
+		public readonly FastTriggerHandler TakeDamageTrigger =  new FastTriggerHandler();
+		public readonly FastTriggerHandler AfterAttackTrigger =  new FastTriggerHandler();
+		public readonly FastTriggerHandler DealDamageTrigger =  new FastTriggerHandler();
+	    public readonly FastTriggerHandler DamageTrigger =  new FastTriggerHandler();
+	    public readonly FastTriggerHandler HealTrigger =  new FastTriggerHandler();
+	    public readonly FastTriggerHandler LoseDivineShieldTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler EndTurnTrigger;
-	    public event TriggerHandler TurnStartTrigger;
+	    public readonly FastTriggerHandler EndTurnTrigger =  new FastTriggerHandler();
+	    public readonly FastTriggerHandler TurnStartTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler SummonTrigger;
-	    public event TriggerHandler AfterSummonTrigger;
+	    public readonly FastTriggerHandler SummonTrigger =  new FastTriggerHandler();
+	    public readonly FastTriggerHandler AfterSummonTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler AttackTrigger;
+	    public readonly FastTriggerHandler AttackTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler DeathTrigger;
+	    public readonly FastTriggerHandler DeathTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler PlayCardTrigger;
-	    public event TriggerHandler AfterPlayCardTrigger;
+	    public readonly FastTriggerHandler PlayCardTrigger =  new FastTriggerHandler();
+	    public readonly FastTriggerHandler AfterPlayCardTrigger =  new FastTriggerHandler();
 
-		public event TriggerHandler PlayMinionTrigger;
-	    public event TriggerHandler AfterPlayMinionTrigger;
+		public readonly FastTriggerHandler PlayMinionTrigger =  new FastTriggerHandler();
+	    public readonly FastTriggerHandler AfterPlayMinionTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler CastSpellTrigger;
-	    public event TriggerHandler AfterCastTrigger;
+	    public readonly FastTriggerHandler CastSpellTrigger =  new FastTriggerHandler();
+	    public readonly FastTriggerHandler AfterCastTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler SecretRevealedTrigger;
+	    public readonly FastTriggerHandler SecretRevealedTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler ZoneTrigger;
+	    public readonly FastTriggerHandler ZoneTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler DiscardTrigger;
+	    public readonly FastTriggerHandler DiscardTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler GameStartTrigger;
+	    public readonly FastTriggerHandler GameStartTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler DrawTrigger;
+	    public readonly FastTriggerHandler DrawTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler TargetTrigger;
+	    public readonly FastTriggerHandler TargetTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler InspireTrigger;
+	    public readonly FastTriggerHandler InspireTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler FreezeTrigger;
+	    public readonly FastTriggerHandler FrozenTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler ArmorTrigger;
+	    public readonly FastTriggerHandler ArmorTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler EquipWeaponTrigger;
+	    public readonly FastTriggerHandler EquipWeaponTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler ShuffleIntoDeckTrigger;
+	    public readonly FastTriggerHandler ShuffleIntoDeckTrigger =  new FastTriggerHandler();
 
-	    public event TriggerHandler OverloadTrigger;
+	    public readonly FastTriggerHandler OverloadTrigger =  new FastTriggerHandler();
 
 		public bool HasTargetTrigger => TargetTrigger != null;
 		public bool HasOnSummonTrigger => SummonTrigger != null;
 		public bool HasShuffleIntoDeckTrigger => ShuffleIntoDeckTrigger != null;
+
+		public void ValidateTriggers(Entity source, SequenceType type)
+		{
+			switch (type)
+			{
+				case SequenceType.PlayCard:
+					PlayCardTrigger.ValidateAll(source);
+					AfterPlayCardTrigger.ValidateAll(source);
+					break;
+				case SequenceType.PlayMinion:
+					PlayMinionTrigger.ValidateAll(source);
+					AfterPlayMinionTrigger.ValidateAll(source);
+					break;
+				case SequenceType.PlaySpell:
+					CastSpellTrigger.ValidateAll(source);
+					AfterCastTrigger.ValidateAll(source);
+					break;
+				case SequenceType.Target:
+					TargetTrigger.ValidateAll(source);
+					break;
+			}
+		}
+
+		public void InvalidateTriggers()
+		{
+			PlayCardTrigger.InvalidateAll();
+			AfterPlayCardTrigger.InvalidateAll();
+			CastSpellTrigger.InvalidateAll();
+			AfterCastTrigger.InvalidateAll();
+			TargetTrigger.InvalidateAll();
+		}
 
 		internal void OnDamageTriggers(Playable source, Character target)
 		{
@@ -95,21 +237,21 @@ namespace SabberStoneCore.Model
 
 		internal bool OnDealDamageTrigger(Entity sender)
 	    {
-	        if (DealDamageTrigger == null) return false;
+	        if (DealDamageTrigger.IsEmpty) return false;
 	        //StartEvent();
 	        DealDamageTrigger.Invoke(sender);
 	        return true;
 	    }
 	    internal bool OnDamageTrigger(Entity sender)
 	    {
-	        if (DamageTrigger == null) return false;
+	        if (DamageTrigger.IsEmpty) return false;
 	        //StartEvent();
 	        DamageTrigger.Invoke(sender);
 	        return true;
 	    }
 	    internal void OnHealTrigger(Entity sender)
 	    {
-	        if (HealTrigger == null) return;
+	        if (HealTrigger.IsEmpty) return;
 	        StartEvent();
 	        HealTrigger.Invoke(sender);
 	        ProcessTasks();
@@ -117,11 +259,11 @@ namespace SabberStoneCore.Model
 	    }
 	    internal void OnLoseDivineShield(Entity sender)
 	    {
-		    LoseDivineShield?.Invoke(sender);
+		    LoseDivineShieldTrigger?.Invoke(sender);
 	    }
 	    internal void OnEndTurnTrigger(Entity sender)
 	    {
-	        if (EndTurnTrigger == null) return;
+	        if (EndTurnTrigger.IsEmpty) return;
 	        StartEvent();
 	        EndTurnTrigger.Invoke(sender);
 	        EndEvent();
@@ -129,14 +271,14 @@ namespace SabberStoneCore.Model
 	    }
 	    internal bool OnTurnStartTrigger(Entity sender)
 	    {
-	        if (TurnStartTrigger == null) return false;
+	        if (TurnStartTrigger.IsEmpty) return false;
 	        TurnStartTrigger.Invoke(sender);
 	        ProcessTasks();
 	        return true;
 	    }
 	    internal void OnSummonTrigger(Entity sender, bool srs = false)
 	    {
-	        if (SummonTrigger == null) return;
+	        if (SummonTrigger.IsEmpty) return;
 	        if (!srs) StartEvent();
 	        SummonTrigger.Invoke(sender);
 	        ProcessTasks();
@@ -144,7 +286,7 @@ namespace SabberStoneCore.Model
 	    }
 	    internal void OnAfterSummonTrigger(Entity sender)
 	    {
-		    if (AfterSummonTrigger == null)
+		    if (AfterSummonTrigger.IsEmpty)
 			    return;
 		    StartEvent();
 		    AfterSummonTrigger.Invoke(sender);
@@ -153,7 +295,7 @@ namespace SabberStoneCore.Model
 	    }
 	    internal void OnAttackTrigger(Entity sender)
 	    {
-	        if (AttackTrigger == null) return;
+	        if (AttackTrigger.IsEmpty) return;
 	        StartEvent();
 	        AttackTrigger.Invoke(sender);
 	        ProcessTasks();
@@ -166,13 +308,13 @@ namespace SabberStoneCore.Model
 
 	    internal void OnPlayCardTrigger(Entity sender)
 	    {
-			if (PlayCardTrigger == null) return;
+			if (PlayCardTrigger.IsEmpty) return;
 			StartEvent();
 			PlayCardTrigger.Invoke(sender);
 	    }
 	    internal void OnAfterPlayCardTrigger(Entity sender)
 	    {
-	        if (AfterPlayCardTrigger == null) return;
+	        if (AfterPlayCardTrigger.IsEmpty) return;
 	        StartEvent();
 	        AfterPlayCardTrigger.Invoke(sender);
 	        ProcessTasks();
@@ -181,9 +323,9 @@ namespace SabberStoneCore.Model
 	    }
 	    internal void OnPlayMinionTrigger(Entity sender)
 	    {
-		    if (PlayMinionTrigger == null)
+		    if (PlayMinionTrigger.IsEmpty)
 		    {
-			    if (PlayCardTrigger == null)
+			    if (PlayCardTrigger.IsEmpty)
 				    return;
 
 				StartEvent();
@@ -202,11 +344,11 @@ namespace SabberStoneCore.Model
 	    }
 	    internal void OnAfterPlayMinionTrigger(Entity sender)
 	    {
-		    if (AfterPlayMinionTrigger == null)
+		    if (AfterPlayMinionTrigger.IsEmpty)
 		    {
-			    if (AfterPlayCardTrigger == null)
+			    if (AfterPlayCardTrigger.IsEmpty)
 			    {
-					if (AfterSummonTrigger == null)
+					if (AfterSummonTrigger.IsEmpty)
 						return;
 
 					StartEvent();
@@ -233,9 +375,9 @@ namespace SabberStoneCore.Model
 	    }
 	    internal void OnCastSpellTrigger(Entity sender)
 	    {
-		    if (CastSpellTrigger == null)
+		    if (CastSpellTrigger.IsEmpty)
 		    {
-			    if (PlayCardTrigger == null)
+			    if (PlayCardTrigger.IsEmpty)
 				    return;
 			    StartEvent();
 			    PlayCardTrigger.Invoke(sender);
@@ -253,9 +395,9 @@ namespace SabberStoneCore.Model
 	    }
 	    internal void OnAfterCastTrigger(Entity sender)
 	    {
-		    if (AfterCastTrigger == null)
+		    if (AfterCastTrigger.IsEmpty)
 		    {
-				if (AfterPlayCardTrigger == null)
+				if (AfterPlayCardTrigger.IsEmpty)
 					return;
 				StartEvent();
 				AfterPlayCardTrigger.Invoke(sender);
@@ -277,7 +419,7 @@ namespace SabberStoneCore.Model
 	    }
 	    internal void OnZoneTrigger(Entity sender)
 	    {
-		    if (ZoneTrigger == null) return;
+		    if (ZoneTrigger.IsEmpty) return;
 		    StartEvent();
 		    ZoneTrigger.Invoke(sender);
 		    ProcessTasks();
@@ -285,18 +427,18 @@ namespace SabberStoneCore.Model
 	    }
 	    internal bool OnDiscardTrigger(Entity sender)
 	    {
-	        if (DiscardTrigger == null) return false;
+	        if (DiscardTrigger.IsEmpty) return false;
 	        StartEvent();
 	        DiscardTrigger.Invoke(sender);
 	        return true;
 	    }
-	    internal void OnGameStartTrigger()
+	    internal void OnGameStartTrigger(Game game)
 	    {
-		    GameStartTrigger?.Invoke(null);
+		    GameStartTrigger?.Invoke(game);
 	    }
 	    internal void OnDrawTrigger(Entity sender)
 	    {
-	        if (DrawTrigger == null) return;
+	        if (DrawTrigger.IsEmpty) return;
 	        StartEvent();
 	        DrawTrigger.Invoke(sender);
 	        ProcessTasks();
@@ -304,7 +446,7 @@ namespace SabberStoneCore.Model
 	    }
 	    internal bool OnTargetTrigger(Entity sender)
 	    {
-		    if (TargetTrigger == null) return false;
+		    if (TargetTrigger.IsEmpty) return false;
 		    StartEvent();
 		    TargetTrigger.Invoke(sender);
 		    ProcessTasks();
@@ -313,7 +455,7 @@ namespace SabberStoneCore.Model
 	    }
 	    internal void OnInspireTrigger(Entity sender)
 	    {
-	        if (InspireTrigger == null) return;
+	        if (InspireTrigger.IsEmpty) return;
 	        StartEvent();
 	        InspireTrigger.Invoke(sender);
 	        ProcessTasks();
@@ -322,7 +464,7 @@ namespace SabberStoneCore.Model
 	    }
 	    internal void OnFreezeTrigger(Entity sender)
 	    {
-		    FreezeTrigger?.Invoke(sender);
+		    FrozenTrigger?.Invoke(sender);
 	    }
 	    internal void OnArmorTrigger(Entity sender)
 	    {
@@ -340,7 +482,7 @@ namespace SabberStoneCore.Model
 
 	    internal void OnOverloadTrigger(Playable sender, int amount)
 	    {
-			if (OverloadTrigger == null)
+			if (OverloadTrigger.IsEmpty)
 				return;
 
 			EventMetaData temp = sender.Game.CurrentEventData;
@@ -348,180 +490,6 @@ namespace SabberStoneCore.Model
 			OverloadTrigger.Invoke(sender);
 			ProcessTasks();
 			sender.Game.CurrentEventData = temp;
-	    }
-
-	    public void AddTrigger(TriggerType type, TriggerHandler method)
-	    {
-			switch (type)
-			{
-				case TriggerType.TURN_END:
-					EndTurnTrigger += method;
-					return;
-				case TriggerType.TURN_START:
-					TurnStartTrigger += method;
-					return;
-				case TriggerType.DEATH:
-					DeathTrigger += method;
-					return;
-				case TriggerType.INSPIRE:
-					InspireTrigger += method;
-					return;
-				case TriggerType.DEAL_DAMAGE:
-					DealDamageTrigger += method;
-					return;
-				case TriggerType.TAKE_DAMAGE:
-					DamageTrigger += method;
-					return;
-				case TriggerType.HEAL:
-					HealTrigger += method;
-					return;
-				case TriggerType.LOSE_DIVINE_SHIELD:
-					LoseDivineShield += method;
-					return;
-				case TriggerType.ATTACK:
-					AttackTrigger += method;
-					return;
-				case TriggerType.SUMMON:
-					SummonTrigger += method;
-					return;
-				case TriggerType.AFTER_SUMMON:
-					AfterSummonTrigger += method;
-					return;
-				case TriggerType.PLAY_CARD:
-					PlayCardTrigger += method;
-					return;
-				case TriggerType.AFTER_PLAY_CARD:
-					AfterPlayMinionTrigger += method;
-					return;
-				case TriggerType.PLAY_MINION:
-					PlayMinionTrigger += method;
-					return;
-				case TriggerType.AFTER_PLAY_MINION:
-					AfterPlayMinionTrigger += method;
-					return;
-				case TriggerType.CAST_SPELL:
-					CastSpellTrigger += method;
-					return;
-				case TriggerType.AFTER_CAST:
-					AfterCastTrigger += method;
-					return;
-				case TriggerType.SECRET_REVEALED:
-					SecretRevealedTrigger += method;
-					return;
-				case TriggerType.ZONE:
-					ZoneTrigger += method;
-					return;
-				case TriggerType.DISCARD:
-					DiscardTrigger += method;
-					return;
-				case TriggerType.GAME_START:
-					GameStartTrigger += method;
-					return;
-				case TriggerType.DRAW:
-					DrawTrigger += method;
-					return;
-				case TriggerType.TARGET:
-					TargetTrigger += method;
-					return;
-				case TriggerType.FROZEN:
-					FreezeTrigger += method;
-					return;
-				case TriggerType.ARMOR:
-					ArmorTrigger += method;
-					return;
-				case TriggerType.EQUIP_WEAPON:
-					EquipWeaponTrigger += method;
-					return;
-				default:
-					throw new NotImplementedException();
-			}
-		}
-
-	    public void RemoveTrigger(TriggerType type, TriggerHandler method)
-	    {
-		    switch (type)
-		    {
-			    case TriggerType.TURN_END:
-				    EndTurnTrigger -= method;
-				    return;
-			    case TriggerType.TURN_START:
-				    TurnStartTrigger -= method;
-				    return;
-			    case TriggerType.DEATH:
-				    DeathTrigger -= method;
-				    return;
-			    case TriggerType.INSPIRE:
-				    InspireTrigger -= method;
-				    return;
-			    case TriggerType.DEAL_DAMAGE:
-				    DealDamageTrigger -= method;
-				    return;
-			    case TriggerType.TAKE_DAMAGE:
-				    DamageTrigger -= method;
-				    return;
-			    case TriggerType.HEAL:
-				    HealTrigger -= method;
-				    return;
-				case TriggerType.LOSE_DIVINE_SHIELD:
-				    LoseDivineShield -= method;
-				    return;
-			    case TriggerType.ATTACK:
-				    AttackTrigger -= method;
-				    return;
-			    case TriggerType.SUMMON:
-				    SummonTrigger -= method;
-				    return;
-			    case TriggerType.AFTER_SUMMON:
-				    AfterSummonTrigger -= method;
-				    return;
-			    case TriggerType.PLAY_CARD:
-				    PlayCardTrigger -= method;
-				    return;
-			    case TriggerType.AFTER_PLAY_CARD:
-				    AfterPlayMinionTrigger -= method;
-				    return;
-			    case TriggerType.PLAY_MINION:
-				    PlayMinionTrigger -= method;
-				    return;
-			    case TriggerType.AFTER_PLAY_MINION:
-				    AfterPlayMinionTrigger -= method;
-				    return;
-			    case TriggerType.CAST_SPELL:
-				    CastSpellTrigger -= method;
-				    return;
-			    case TriggerType.AFTER_CAST:
-				    AfterCastTrigger -= method;
-				    return;
-			    case TriggerType.SECRET_REVEALED:
-				    SecretRevealedTrigger -= method;
-				    return;
-			    case TriggerType.ZONE:
-				    ZoneTrigger -= method;
-				    return;
-			    case TriggerType.DISCARD:
-				    DiscardTrigger -= method;
-				    return;
-			    case TriggerType.GAME_START:
-				    GameStartTrigger -= method;
-				    return;
-			    case TriggerType.DRAW:
-				    DrawTrigger -= method;
-				    return;
-			    case TriggerType.TARGET:
-				    TargetTrigger -= method;
-				    return;
-			    case TriggerType.FROZEN:
-				    FreezeTrigger -= method;
-				    return;
-			    case TriggerType.ARMOR:
-				    ArmorTrigger -= method;
-				    return;
-			    case TriggerType.EQUIP_WEAPON:
-				    EquipWeaponTrigger -= method;
-				    return;
-			    default:
-				    throw new NotImplementedException();
-		    }
 	    }
     }
 }

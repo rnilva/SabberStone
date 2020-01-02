@@ -37,7 +37,7 @@ namespace SabberStoneCoreTest.Cloning
 				CardClass.ROGUE, CardClass.SHAMAN, CardClass.WARLOCK, CardClass.WARRIOR
 			};
 
-			for (int i = 0; i < 300; i++)
+			for (int i = 0; i < 1000; i++)
 			{
 				var game = new Game(new GameConfig
 				{
@@ -45,7 +45,8 @@ namespace SabberStoneCoreTest.Cloning
 					Player1HeroClass = classes[rnd.Next(classes.Length)],
 					Player2HeroClass = classes[rnd.Next(classes.Length)],
 					FillDecks = true,
-					Logging = false
+					Logging = true,
+					History = false
 				});
 				game.StartGame();
 

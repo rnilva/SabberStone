@@ -18,6 +18,7 @@ using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Triggers;
 
 namespace SabberStoneCore.Auras
 {
@@ -25,8 +26,11 @@ namespace SabberStoneCore.Auras
 	{
 		private readonly SelfCondition _initialisationCondtion;
 		private readonly TriggerType _offTrigger;
-		private readonly TriggerManager.TriggerHandler _offHandler;
-		private readonly TriggerManager.TriggerHandler _onHandler;
+		//private readonly TriggerManager.TriggerHandler _offHandler;
+		//private readonly TriggerManager.TriggerHandler _onHandler;
+
+		private readonly SwitchingAuraTriggerStub _offHandler;
+		private readonly SwitchingAuraTriggerStub _onHandler;
 
 		private bool _removed;
 
@@ -46,8 +50,8 @@ namespace SabberStoneCore.Auras
 		{
 			_initialisationCondtion = prototype._initialisationCondtion;
 			_offTrigger = prototype._offTrigger;
-			_offHandler = TurnOff;
-			_onHandler = TurnOn;
+			_offHandler = new SwitchingAuraTriggerStub(this, false);
+			_onHandler = new SwitchingAuraTriggerStub(this, true);
 		}
 
 		public override void Activate(Playable owner, bool cloning = false)
@@ -59,16 +63,16 @@ namespace SabberStoneCore.Auras
 
 			AddToGame(owner, instance);
 
-			owner.Game.TriggerManager.TurnStartTrigger += instance._onHandler;
-			owner.Game.TriggerManager.EndTurnTrigger += instance._offHandler;
+			owner.Game.TriggerManager.TurnStartTrigger.Add(instance._onHandler);
+			owner.Game.TriggerManager.EndTurnTrigger.Add(instance._offHandler);
 
 			switch (_offTrigger)
 			{
 				case TriggerType.PLAY_MINION:
-					owner.Game.TriggerManager.PlayMinionTrigger += instance._offHandler;
+					owner.Game.TriggerManager.PlayMinionTrigger.Add(instance._offHandler);
 					break;
 				case TriggerType.CAST_SPELL:
-					owner.Game.TriggerManager.CastSpellTrigger += instance._offHandler;
+					owner.Game.TriggerManager.CastSpellTrigger.Add(instance._offHandler);
 					break;
 				default:
 					throw new NotImplementedException();
@@ -89,20 +93,20 @@ namespace SabberStoneCore.Auras
 
 			_removed = true;
 
-			Game.TriggerManager.TurnStartTrigger -= _onHandler;
-			Game.TriggerManager.EndTurnTrigger -= _offHandler;
+			//Game.TriggerManager.TurnStartTrigger.Remove(_onHandler);
+			//Game.TriggerManager.EndTurnTrigger.Remove(_offHandler);
 
-			switch (_offTrigger)
-			{
-				case TriggerType.PLAY_MINION:
-					Game.TriggerManager.PlayMinionTrigger -= _offHandler;
-					break;
-				case TriggerType.CAST_SPELL:
-					Game.TriggerManager.CastSpellTrigger -= _offHandler;
-					break;
-				default:
-					throw new NotImplementedException();
-			}
+			//switch (_offTrigger)
+			//{
+			//	case TriggerType.PLAY_MINION:
+			//		Game.TriggerManager.PlayMinionTrigger.Remove(_offHandler);
+			//		break;
+			//	case TriggerType.CAST_SPELL:
+			//		Game.TriggerManager.CastSpellTrigger.Remove(_offHandler);
+			//		break;
+			//	default:
+			//		throw new NotImplementedException();
+			//}
 		}
 
 		//protected override void UpdateInternal()
@@ -152,6 +156,59 @@ namespace SabberStoneCore.Auras
 
 			On = true;
 			AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
+		}
+
+		private class SwitchingAuraTriggerStub : TriggerStub
+		{
+			private readonly SwitchingAura _aura;
+			private readonly bool _type;
+
+			public SwitchingAuraTriggerStub(SwitchingAura aura, bool type)
+			{
+				_aura = aura;
+				_type = type;
+			}
+
+			#region Overrides of TriggerStub
+
+			public override bool Process(Entity source)
+			{
+				if (_aura._removed)
+					return false;
+
+				if (_type)
+					_aura.TurnOn(source);
+				else
+					_aura.TurnOff(source);
+				return true;
+			}
+
+			public override void Remove(Game game)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override void Validate(Entity source)
+			{
+				
+			}
+
+			public override void Invalidate()
+			{
+				
+			}
+
+			public override TriggerStub Clone(Playable owner)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override TriggerStub Combine(Trigger trigger)
+			{
+				throw new NotImplementedException();
+			}
+
+			#endregion
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -91,11 +91,9 @@ namespace SabberStoneCore.CardSets
 			// GameTag:
 			// - SECRET = 1
 			// --------------------------------------------------------
-			cards.Add("FP1_018", new CardDef(new Power
-			{
-				Trigger = new Trigger(TriggerType.DEATH)
+			cards.Add("FP1_018", new Power {
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.SOURCE, SelfCondition.IsHandFull),
 						new FlagTask(false, ComplexTask.Secret(
@@ -119,9 +117,8 @@ namespace SabberStoneCore.CardSets
 			cards.Add("FP1_020", new CardDef(new Power
 			{
 				InfoCardId = "FP1_020e",
-				Trigger = new Trigger(TriggerType.DEATH)
+				Trigger = new Trigger(TriggerType.DEATH, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = ComplexTask.Create(
 						new ConditionTask(EntityType.SOURCE, SelfCondition.IsBoardCount(0)),
 						new FlagTask(false, ComplexTask.Secret(
@@ -437,11 +434,9 @@ namespace SabberStoneCore.CardSets
 			// GameTag:
 			// - ELITE = 1
 			// --------------------------------------------------------
-			cards.Add("FP1_013", new CardDef(new Power
-			{
-				Trigger = new Trigger(TriggerType.TURN_END)
+			cards.Add("FP1_013", new Power {
+				Trigger = new Trigger(TriggerType.TURN_END, eitherTurn: true)
 				{
-					EitherTurn = true,
 					SingleTask = ComplexTask.SummonAllFriendlyDiedThisTurn()
 				}
 			}));
@@ -568,12 +563,9 @@ namespace SabberStoneCore.CardSets
 			// RefTag:
 			// - DEATHRATTLE = 1
 			// --------------------------------------------------------
-			cards.Add("FP1_028", new CardDef(new Power
-			{
-				Trigger = new Trigger(TriggerType.SUMMON)
+			cards.Add("FP1_028", new Power {
+				Trigger = new Trigger(TriggerType.SUMMON, TriggerSource.FRIENDLY, SelfCondition.IsDeathrattleMinion)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsDeathrattleMinion,
 					SingleTask = new AddEnchantmentTask("FP1_028e", EntityType.SOURCE)
 				}
 			}));
@@ -733,3 +725,7 @@ namespace SabberStoneCore.CardSets
 		}
 	}
 }
+
+
+
+

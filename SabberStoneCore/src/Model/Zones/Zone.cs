@@ -561,7 +561,7 @@ namespace SabberStoneCore.Model.Zones
 
 			entity.Zone = null;
 
-			entity.ActivatedTrigger?.Remove();
+			entity.ActivatedTrigger?.Remove(Game);
 
 			return entity;
 		}
@@ -583,7 +583,7 @@ namespace SabberStoneCore.Model.Zones
 
 			entity.Zone = null;
 
-			entity.ActivatedTrigger?.Remove();
+			entity.ActivatedTrigger?.Remove(Game);
 
 			return entity;
 		}
@@ -659,7 +659,7 @@ namespace SabberStoneCore.Model.Zones
 
 			entity.Zone = null;
 
-			entity.ActivatedTrigger?.Remove();
+			entity.ActivatedTrigger?.Remove(Game);
 
 			for (int i = Auras.Count - 1; i >= 0; i--)
 				Auras[i].EntityRemoved(entity);

@@ -19,6 +19,7 @@ using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Model.Zones;
+using SabberStoneCore.Triggers;
 
 // ReSharper disable InconsistentNaming
 
@@ -40,8 +41,13 @@ namespace SabberStoneCore.Auras
 		private readonly TriggerType _triggerType;
 		private readonly TriggerSource _triggerSource;
 		private readonly SelfCondition _condition;
-		private readonly TriggerManager.TriggerHandler _updateHandler;
-		private readonly TriggerManager.TriggerHandler _removedHandler;
+		//private readonly TriggerManager.TriggerHandler _updateHandler;
+		//private readonly TriggerManager.TriggerHandler _removedHandler;
+		private readonly AdaptiveCostEffectTriggerStub _updateHandler;
+		private readonly AdaptiveCostEffectEndTurnRemoveTriggerStub _removeHandler;
+		private readonly Trigger _updateTrigger;
+		private readonly Action<Game, TriggerStub> _triggerActivator;
+		private readonly Action<Game, TriggerStub> _triggerDeactivator;
 
 		private readonly Func<Playable, int> _initialisationFunction;
 		private int _cachedValue = -1;
@@ -84,6 +90,8 @@ namespace SabberStoneCore.Auras
 			_triggerSource = triggerSource;
 			_condition = triggerCondition;
 			IsSetEffect = true;
+
+			_triggerActivator = Trigger.GetActivator(trigger);
 		}
 
 		/// <summary>
@@ -104,6 +112,9 @@ namespace SabberStoneCore.Auras
 			_triggerType = trigger;
 			_triggerSource = triggerSource;
 			_condition = triggerCondition;
+
+			_triggerActivator = Trigger.GetActivator(trigger);
+			_triggerDeactivator = Trigger.GetDeactivator(trigger);
 		}
 
 		private AdaptiveCostEffect(AdaptiveCostEffect prototype, Playable owner)
@@ -124,6 +135,10 @@ namespace SabberStoneCore.Auras
 					_triggerSource = prototype._triggerSource;
 					_condition = prototype._condition;
 					IsSetEffect = true;
+					_updateHandler = new AdaptiveCostEffectTriggerStub(this, _triggerSource, _condition);
+					_removeHandler = new AdaptiveCostEffectEndTurnRemoveTriggerStub(this);
+					_triggerActivator = prototype._triggerActivator;
+					_triggerDeactivator = prototype._triggerDeactivator;
 					break;
 				case Type.TriggeredWithInitialisation:
 					_initialisationFunction = prototype._initialisationFunction;
@@ -132,13 +147,16 @@ namespace SabberStoneCore.Auras
 					_triggerType = prototype._triggerType;
 					_triggerSource = prototype._triggerSource;
 					_condition = prototype._condition;
+					_updateHandler = new AdaptiveCostEffectTriggerStub(this, _triggerSource, _condition);
+					_triggerActivator = prototype._triggerActivator;
+					_triggerDeactivator = prototype._triggerDeactivator;
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
 
-			_updateHandler = Trigger;
-			_removedHandler = RemoveAtEnd;
+			//_updateHandler = Trigger;
+			//_removedHandler = RemoveAtEnd;
 			_isTriggered = prototype._isTriggered;
 			_isAppliedThisTurn = prototype._isAppliedThisTurn;
 		}
@@ -156,34 +174,7 @@ namespace SabberStoneCore.Auras
 			owner.GetCostManager().ActivateAdaptiveEffect(instance);
 			owner.OngoingEffect = instance;
 
-			switch (_triggerType)
-			{
-				case TriggerType.NONE:
-					break;
-				case TriggerType.HEAL:
-					owner.Game.TriggerManager.HealTrigger += instance._updateHandler;
-					break;
-				case TriggerType.DEATH:
-					owner.Game.TriggerManager.DeathTrigger += instance._updateHandler;
-					break;
-				case TriggerType.CAST_SPELL:
-					owner.Game.TriggerManager.CastSpellTrigger += instance._updateHandler;
-					break;
-				case TriggerType.AFTER_CAST:
-					owner.Game.TriggerManager.AfterCastTrigger += instance._updateHandler;
-					break;
-				case TriggerType.TURN_START:
-					owner.Game.TriggerManager.TurnStartTrigger += instance._updateHandler;
-					break;
-				case TriggerType.ZONE:
-					owner.Game.TriggerManager.ZoneTrigger += instance._updateHandler;
-					break;
-				case TriggerType.OVERLOAD:
-					owner.Game.TriggerManager.OverloadTrigger += instance._updateHandler;
-					break;
-				default:
-					throw new NotImplementedException();
-			}
+			_triggerActivator?.Invoke(owner.Game, instance._updateHandler);
 
 			owner.Game.Auras.Add(instance);
 		}
@@ -223,34 +214,7 @@ namespace SabberStoneCore.Auras
 			_owner.Game.Auras.Remove(this);
 			_owner.GetCostManager()?.DeactivateAdaptiveEffect();
 
-			switch (_triggerType)
-			{
-				case TriggerType.NONE:
-					break;
-				case TriggerType.HEAL:
-					_owner.Game.TriggerManager.HealTrigger -= _updateHandler;
-					break;
-				case TriggerType.DEATH:
-					_owner.Game.TriggerManager.DeathTrigger -= _updateHandler;
-					break;
-				case TriggerType.CAST_SPELL:
-					_owner.Game.TriggerManager.CastSpellTrigger -= _updateHandler;
-					break;
-				case TriggerType.AFTER_CAST:
-					_owner.Game.TriggerManager.AfterCastTrigger -= _updateHandler;
-					break;
-				case TriggerType.TURN_START:
-					_owner.Game.TriggerManager.TurnStartTrigger -= _updateHandler;
-					break;
-				case TriggerType.ZONE:
-					_owner.Game.TriggerManager.ZoneTrigger -= _updateHandler;
-					break;
-				case TriggerType.OVERLOAD:
-					_owner.Game.TriggerManager.OverloadTrigger -= _updateHandler;
-					break;
-				default:
-					throw new NotImplementedException();
-			}
+			_triggerDeactivator?.Invoke(_owner.Game, _updateHandler);
 		}
 
 		void IAura.Activate(Playable owner)
@@ -299,52 +263,136 @@ namespace SabberStoneCore.Auras
 			= new AdaptiveCostEffect(p => p.Controller.NumFriendlyMinionsThatDiedThisTurn
 			                              + p.Controller.Opponent.NumFriendlyMinionsThatDiedThisTurn);
 
-		private void Trigger(Entity sender)
-		{
-			if (_isTriggered)
-				return;
-
-			switch (_triggerSource)
-			{
-				case TriggerSource.FRIENDLY when sender.Controller != Owner.Controller:
-					return;
-				case TriggerSource.ALL:
-				case TriggerSource.FRIENDLY:
-					break;
-				default:
-					throw new NotImplementedException();
-			}
-
-			if (_condition != null)
-			{
-				if (!(sender is Playable p)) p = _owner;
-
-				if (!_condition.Eval(p)) return;
-			}
-
-			if (_initialisationFunction != null)
-				_cachedValue += _costFunction.Invoke((Playable)sender);
-			else
-			{
-				_isTriggered = true;
-
-				_owner.Game.TriggerManager.EndTurnTrigger += _removedHandler;
-			}
-		}
-
-		private void RemoveAtEnd(Entity sender)
-		{
-			_owner.GetCostManager()?.UpdateAdaptiveEffect();
-			_isTriggered = false;
-			_isAppliedThisTurn = false;
-			_owner.Game.TriggerManager.EndTurnTrigger -= _removedHandler;
-		}
-
 		private enum Type
 		{
 			Variable,
 			Triggered,
 			TriggeredWithInitialisation
+		}
+
+		private class AdaptiveCostEffectTriggerStub : TriggerStub
+		{
+			private readonly AdaptiveCostEffect _adaptiveCostEffect;
+			private readonly Func<Playable, Entity, bool> _validator;
+
+			public AdaptiveCostEffectTriggerStub(AdaptiveCostEffect effect, TriggerSource source, SelfCondition condition)
+			{
+				_adaptiveCostEffect = effect;
+				_validator = GetValidator(source, condition);
+			}
+
+			#region Overrides of TriggerStub
+
+			public override bool Process(Entity source)
+			{
+				if (_adaptiveCostEffect._isTriggered)
+					return true;
+
+				if (!(_validator?.Invoke(_adaptiveCostEffect._owner, source) ?? true))
+					return true;
+
+				if (_adaptiveCostEffect._initialisationFunction != null)
+					_adaptiveCostEffect._cachedValue += _adaptiveCostEffect._costFunction.Invoke((Playable)source);
+				else
+				{
+					_adaptiveCostEffect._isTriggered = true;
+
+					//_owner.Game.TriggerManager.EndTurnTrigger += _removedHandler;
+					source.Game.TriggerManager.EndTurnTrigger.Add(_adaptiveCostEffect._removeHandler);
+				}
+
+				return true;
+			}
+
+			public override void Remove(Game game)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override void Validate(Entity source)
+			{
+				
+			}
+
+			public override void Invalidate()
+			{
+				
+			}
+
+			public override TriggerStub Clone(Playable owner)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override TriggerStub Combine(Trigger trigger)
+			{
+				throw new NotImplementedException();
+			}
+
+			#endregion
+
+			private static Func<Playable, Entity, bool> GetValidator(TriggerSource source, SelfCondition condition)
+			{
+				return source == TriggerSource.FRIENDLY
+					? condition != null
+						? (Func<Playable, Entity, bool>) ((o, s) =>
+							o.Controller == s.Controller && condition.Eval(s is Playable p ? p : o))
+						: (o, s) => o.Controller == s.Controller
+					: condition != null
+						? (Func<Playable, Entity, bool>) ((o, s) => condition.Eval(s is Playable p ? p : o))
+						: null;
+			}
+		}
+
+		private class AdaptiveCostEffectEndTurnRemoveTriggerStub : TriggerStub
+		{
+			private readonly AdaptiveCostEffect _adaptiveCostEffect;
+			//private readonly Playable _owner;
+
+			public AdaptiveCostEffectEndTurnRemoveTriggerStub(AdaptiveCostEffect adaptiveCostEffect)
+			{
+				_adaptiveCostEffect = adaptiveCostEffect;
+				//_owner = owner;
+			}
+
+			#region Overrides of TriggerStub
+
+			public override bool Process(Entity source)
+			{
+				_adaptiveCostEffect._owner.GetCostManager()?.UpdateAdaptiveEffect();
+				_adaptiveCostEffect._isTriggered = false;
+				_adaptiveCostEffect._isAppliedThisTurn = false;
+				//_owner.Game.TriggerManager.EndTurnTrigger -= _removedHandler;
+				//source.Game.TriggerManager.EndTurnTrigger.Remove(this);
+				return false;
+			}
+
+			public override void Remove(Game game)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override void Validate(Entity source)
+			{
+				
+			}
+
+			public override void Invalidate()
+			{
+				
+			}
+
+			public override TriggerStub Clone(Playable owner)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override TriggerStub Combine(Trigger trigger)
+			{
+				throw new NotImplementedException();
+			}
+
+			#endregion
 		}
 	}
 }

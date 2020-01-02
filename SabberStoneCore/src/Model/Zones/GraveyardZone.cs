@@ -40,10 +40,15 @@ namespace SabberStoneCore.Model.Zones
 			for (int i = enchantments.Count - 1; i >= 0; i--)
 			{
 				Enchantment e = enchantments[i];
+				e.Remove();
 				if (!e.Card.Modular)
 				{
-					e.Remove();
+					//e.Remove();
 					enchantments.RemoveAt(i);
+				}
+				else
+				{
+					e._removed = false;
 				}
 			}
 		}

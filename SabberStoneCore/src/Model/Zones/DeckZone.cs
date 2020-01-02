@@ -193,7 +193,7 @@ namespace SabberStoneCore.Model.Zones
 				if (entities[i].Id == id)
 				{
 					Playable p = entities[i];
-					p.ActivatedTrigger?.Remove();
+					p.ActivatedTrigger?.Remove(Game);
 					p.Zone = null;
 
 					if (i != --c)

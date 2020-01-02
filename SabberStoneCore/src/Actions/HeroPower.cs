@@ -43,8 +43,9 @@ namespace SabberStoneCore.Actions
 				if (target != null)
 				{
 					game.CurrentEventData = new EventMetaData(heroPower, target);
-					Trigger.ValidateTriggers(game, heroPower, SequenceType.Target);
-					game.TaskQueue.StartEvent();
+					//Trigger.ValidateTriggers(game, heroPower, SequenceType.Target);
+					game.TriggerManager.ValidateTriggers(heroPower, SequenceType.Target);
+					game.CurrentEventData = new EventMetaData(heroPower, target);
 					game.TriggerManager.OnTargetTrigger(heroPower);
 				}
 

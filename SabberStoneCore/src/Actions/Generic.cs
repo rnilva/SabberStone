@@ -364,7 +364,7 @@ namespace SabberStoneCore.Actions
 					//	((Playable) p).ResetCost();
 				}
 
-				source.ActivatedTrigger?.Remove();
+				source.ActivatedTrigger?.Remove(c.Game);
 				source.OngoingEffect?.Remove();
 
 				HandZone hand = source.Zone as HandZone;

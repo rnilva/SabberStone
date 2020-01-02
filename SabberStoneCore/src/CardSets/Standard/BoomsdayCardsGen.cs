@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -246,10 +246,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// - ELITE = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_434", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD, TriggerSource.MINIONS)
 				{
 					TriggerActivation = TriggerActivation.HAND,
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = ComplexTask.Create(
 						new IncludeTask(EntityType.SOURCE),
 						new IncludeTask(EntityType.TARGET, addFlag: true),
@@ -376,9 +375,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Transforming into recent minions.
 			// --------------------------------------------------------
 			cards.Add("BOT_434e", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD, TriggerSource.MINIONS)
 				{
-					TriggerSource = TriggerSource.MINIONS,
 					SingleTask = ComplexTask.Create(
 						new IncludeTask(EntityType.SOURCE),
 						new IncludeTask(EntityType.TARGET, addFlag: true),
@@ -689,9 +687,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("BOT_103", new Power {
 				// TODO: tag=LUNAHIGHLIGHTHINT
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD, new SelfCondition(p => p.ZonePosition == p.Controller.HandZone.Count))
 				{
-					Condition = new SelfCondition(p => p.ZonePosition == p.Controller.HandZone.Count),
 					SingleTask = new DrawTask()
 				}
 			});
@@ -1009,9 +1006,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - DIVINE_SHIELD = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_908", new Power {
-				Trigger = new Trigger(TriggerType.ATTACK)
+				Trigger = new Trigger(TriggerType.ATTACK, SelfCondition.IsEventTargetIs(CardType.MINION))
 				{
-					Condition = SelfCondition.IsEventTargetIs(CardType.MINION),
 					SingleTask = ComplexTask.Secret(
 						ComplexTask.DivineShield(EntityType.EVENT_TARGET))
 				}
@@ -1146,9 +1142,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - 542 = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_258", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER)
 				{
-					TriggerSource = TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER,
 					SingleTask = new AddEnchantmentTask("BOT_258e", EntityType.SOURCE),
 					RemoveAfterTriggered = true
 				}
@@ -1181,9 +1176,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - 542 = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_558", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_CAST)
+				Trigger = new Trigger(TriggerType.AFTER_CAST, TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER)
 				{
-					TriggerSource = TriggerSource.FRIENDLY_SPELL_CASTED_ON_THE_OWNER,
 					SingleTask = ComplexTask.Create(
 						new GetPlayableAttributeTask(PlayableAttributes.Entity_Id, EntityType.TARGET),
 						new AddEnchantmentTask("BOT_558e", EntityType.SOURCE, false, true))
@@ -1209,9 +1203,8 @@ namespace SabberStoneCore.CardSets.Standard
 				{
 					Condition = SelfCondition.IsDeathrattleMinion
 				},
-				Trigger = new Trigger(TriggerType.PLAY_MINION)
+				Trigger = new Trigger(TriggerType.PLAY_MINION, SelfCondition.IsDeathrattleMinion)
 				{
-					Condition = SelfCondition.IsDeathrattleMinion,
 					SingleTask = new AddEnchantmentTask("BOT_566e", EntityType.TARGET)
 				}
 			});
@@ -1705,10 +1698,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - RUSH = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_407", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD, TriggerSource.FRIENDLY, SelfCondition.IsOverloadCard)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
-					Condition = SelfCondition.IsOverloadCard,
 					SingleTask = new SummonTask("BOT_102t", 2, SummonSide.ALTERNATE)
 				}
 			});
@@ -1898,10 +1889,9 @@ namespace SabberStoneCore.CardSets.Standard
 				{
 					IsOneTurnEffect = true
 				},
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_CARD, SelfCondition.IsSpell)
 				{
-					Condition = SelfCondition.IsSpell,
-					SingleTask = new RemoveEnchantmentTask()
+					SingleTask = RemoveEnchantmentTask.Task
 				}
             });
 
@@ -2154,9 +2144,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: Whenever this minion takes damage, gain 2_Armor.
 			// --------------------------------------------------------
 			cards.Add("BOT_059", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new ArmorTask(2)
 				}
 			});
@@ -2189,7 +2178,7 @@ namespace SabberStoneCore.CardSets.Standard
 			// - TAUNT = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_218", new Power {
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
 					SingleTask = new SummonTask("BOT_218t", 1)
 				}
@@ -2555,9 +2544,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// Text: After your opponent plays a minion, summon a 1/1_copy of it.
 			// --------------------------------------------------------
 			cards.Add("BOT_280", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, TriggerSource.ENEMY)
 				{
-					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = ComplexTask.Create(
 						new SummonCopyTask(EntityType.TARGET, false, true, SummonSide.RIGHT),
 						new AddEnchantmentTask("BOT_280e", EntityType.STACK))
@@ -2932,9 +2920,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// - STEALTH = 1
 			// --------------------------------------------------------
 			cards.Add("BOT_555", new Power {
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, TriggerSource.ENEMY)
 				{
-					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = new TransformCopyTask()
 				}
 			});
@@ -2947,9 +2934,8 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("BOT_559", new Power {
 				InfoCardId = "BOT_559e",
-				Trigger = new Trigger(TriggerType.SHUFFLE_INTO_DECK)
+				Trigger = new Trigger(TriggerType.SHUFFLE_INTO_DECK, TriggerSource.FRIENDLY_EVENT_SOURCE)
 				{
-					TriggerSource = TriggerSource.FRIENDLY_EVENT_SOURCE,
 					SingleTask = new CopyTask(EntityType.TARGET, Zone.DECK)
 				}
 			});
@@ -3507,3 +3493,14 @@ namespace SabberStoneCore.CardSets.Standard
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -1219,9 +1219,8 @@ namespace SabberStoneCore.CardSets.Adventure
 			cards.Add("LOOTA_BOSS_19p", new CardDef(new Power
 			{
 				// TODO Implement Tunnel Trogg first && Test: Digest Magic_LOOTA_BOSS_19p
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.ENEMY)
 				{
-					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = new SummonTask("LOE_018")
 				}
 			}));
@@ -1462,14 +1461,9 @@ namespace SabberStoneCore.CardSets.Adventure
 			// Text: <b>Passive Hero Power</b>
 			//       After you play a minion, give it <b>Charge</b>.
 			// --------------------------------------------------------
-			// GameTag:
-			// - HIDE_WATERMARK = 1
-			// --------------------------------------------------------
-			cards.Add("LOOTA_BOSS_31p", new CardDef(new Power
-			{
-				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION)
+			cards.Add("LOOTA_BOSS_31p", new Power {
+				Trigger = new Trigger(TriggerType.AFTER_PLAY_MINION, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new AddEnchantmentTask("LOOTA_BOSS_12e", EntityType.EVENT_SOURCE)
 				}
 			}));
@@ -1487,9 +1481,8 @@ namespace SabberStoneCore.CardSets.Adventure
 			cards.Add("LOOTA_BOSS_33p", new CardDef(new Power
 			{
 				// TODO Test: Metabolized Magic_LOOTA_BOSS_33p
-				Trigger = new Trigger(TriggerType.CAST_SPELL)
+				Trigger = new Trigger(TriggerType.CAST_SPELL, TriggerSource.ENEMY)
 				{
-					TriggerSource = TriggerSource.ENEMY,
 					SingleTask = ComplexTask.Create(
 						new DrawTask(true),
 						new ChangeCostTask(Effects.ReduceCost(1), EntityType.STACK))
@@ -1768,9 +1761,8 @@ namespace SabberStoneCore.CardSets.Adventure
 			cards.Add("LOOTA_BOSS_48p", new CardDef(new Power
 			{
 				// TODO Test: Alarm_LOOTA_BOSS_48p
-				Trigger = new Trigger(TriggerType.SECRET_REVEALED)
+				Trigger = new Trigger(TriggerType.SECRET_REVEALED, TriggerSource.FRIENDLY)
 				{
-					TriggerSource = TriggerSource.FRIENDLY,
 					SingleTask = new SummonTask("LOOTA_BOSS_48t")
 				}
 			}));
@@ -5382,3 +5374,7 @@ namespace SabberStoneCore.CardSets.Adventure
 		}
 	}
 }
+
+
+
+

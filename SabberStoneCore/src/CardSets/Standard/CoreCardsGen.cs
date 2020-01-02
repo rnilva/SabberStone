@@ -1,4 +1,4 @@
-﻿#region copyright
+#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -470,12 +470,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Whenever you summon a Beast, draw a card.
 			// --------------------------------------------------------
-			cards.Add("CS2_237", new CardDef(new Power
-			{
-				Trigger = new Trigger(TriggerType.SUMMON)
+			cards.Add("CS2_237", new Power {
+				Trigger = new Trigger(TriggerType.SUMMON, TriggerSource.MINIONS_EXCEPT_SELF, SelfCondition.IsRace(Race.BEAST))
 				{
-					TriggerSource = TriggerSource.MINIONS_EXCEPT_SELF,
-					Condition = SelfCondition.IsRace(Race.BEAST),
 					SingleTask = new DrawTask()
 				}
 			}));
@@ -1048,11 +1045,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// GameTag:
 			// - DURABILITY = 2
 			// --------------------------------------------------------
-			cards.Add("CS2_097", new CardDef(new Power
-			{
-				Trigger = new Trigger(TriggerType.ATTACK)
+			cards.Add("CS2_097", new Power {
+				Trigger = new Trigger(TriggerType.ATTACK, TriggerSource.HERO)
 				{
-					TriggerSource = TriggerSource.HERO,
 					SingleTask = new HealTask(2, EntityType.HERO)
 				}
 			}));
@@ -1109,11 +1104,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Whenever a minion is healed, draw a card.
 			// --------------------------------------------------------
-			cards.Add("CS2_235", new CardDef(new Power
-			{
-				Trigger = new Trigger(TriggerType.HEAL)
+			cards.Add("CS2_235", new Power {
+				Trigger = new Trigger(TriggerType.HEAL, TriggerSource.ALL_MINIONS)
 				{
-					TriggerSource = TriggerSource.ALL_MINIONS,
 					SingleTask = new DrawTask()
 				}
 			}));
@@ -2588,11 +2581,9 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			// Text: Whenever this minion takes damage, gain +3_Attack.
 			// --------------------------------------------------------
-			cards.Add("EX1_399", new CardDef(new Power
-			{
-				Trigger = new Trigger(TriggerType.TAKE_DAMAGE)
+			cards.Add("EX1_399", new Power {
+				Trigger = new Trigger(TriggerType.TAKE_DAMAGE, TriggerSource.SELF)
 				{
-					TriggerSource = TriggerSource.SELF,
 					SingleTask = new AddEnchantmentTask("EX1_399e", EntityType.SOURCE),
 				}
 			}));
@@ -2885,3 +2876,14 @@ namespace SabberStoneCore.CardSets.Standard
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
