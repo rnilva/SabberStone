@@ -82,8 +82,8 @@ namespace SabberStoneCoreConsole
 			//};
 			var game = new Game(new GameConfig
 			{
-				Player1HeroClass = CardClass.WARRIOR,
-				Player2HeroClass = CardClass.WARRIOR,
+				Player1HeroClass = CardClass.MAGE,
+				Player2HeroClass = CardClass.MAGE,
 				Player1Deck = deck.Select(Cards.FromName).ToList(),
 				Player2Deck = deck.Select(Cards.FromName).ToList(),
 				Shuffle = true,

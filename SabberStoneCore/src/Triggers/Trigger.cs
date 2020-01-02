@@ -23,7 +23,7 @@ namespace SabberStoneCore.Triggers
 {
 	public class Trigger
     {
-	    private static int _idGen;
+	    //private static int _idGen;
 
 		//private readonly TriggerManager.TriggerHandler _processHandler;
 		private readonly Action<Game, TriggerStub> _activator;
@@ -33,7 +33,7 @@ namespace SabberStoneCore.Triggers
 		//private readonly int _sourceId;
 		private readonly TriggerType _triggerType;
 		private readonly bool _eitherTurn;
-		private readonly bool _isSecret;
+		//private readonly bool _isSecret;
 		private readonly SequenceType _sequenceType;
 		//private bool _removed;
 
@@ -111,7 +111,7 @@ namespace SabberStoneCore.Triggers
 
 		public SequenceType SequenceType => _sequenceType;
 		public TriggerType Type => _triggerType;
-		public bool IsSecret => _isSecret;
+		//public bool IsSecret => _isSecret;
 
 		/// <summary>
 		/// Create a new instance of <see cref="Trigger"/> object in source's Game. During activation, the instance's <see cref="Process(Entity)"/> subscribes to the events in <see cref="TriggerManager"/>.
