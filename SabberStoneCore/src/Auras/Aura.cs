@@ -76,6 +76,7 @@ namespace SabberStoneCore.Auras
 		//private readonly TriggerManager.TriggerHandler _removeHandler;
 		private RemoveTriggerStub _removeHandler;
 		private Action<Game, TriggerStub> _removeTriggerActivator;
+		private Action<Game, TriggerStub> _removeTriggerDeactivator;
 		private readonly int _ownerId;
 
 		private Playable _owner;
@@ -108,6 +109,7 @@ namespace SabberStoneCore.Auras
 			{
 				_removeTrigger = value;
 				_removeTriggerActivator = Trigger.GetActivator(value.Type);
+				_removeTriggerDeactivator = Trigger.GetDeactivator(value.Type);
 			}
 		}
 
@@ -130,7 +132,9 @@ namespace SabberStoneCore.Auras
 			Type = prototype.Type;
 			Effects = prototype.Effects;
 			Condition = prototype.Condition;
-			RemoveTrigger = prototype.RemoveTrigger;
+			_removeTrigger = prototype._removeTrigger;
+			_removeTriggerActivator = prototype._removeTriggerActivator;
+			_removeTriggerDeactivator = prototype._removeTriggerDeactivator;
 			EnchantmentCard = prototype.EnchantmentCard;
 			Restless = prototype.Restless;
 			On = prototype.On;
@@ -147,6 +151,9 @@ namespace SabberStoneCore.Auras
 
 			//_removeHandler = TriggeredRemove;
 			_removeHandler = prototype._removeHandler;
+
+			_removeTriggerActivator?.Invoke(owner.Game,
+				new RemoveTriggerStub(this, _removeTrigger.condition, _removeTriggerDeactivator));
 		}
 
 		/// <summary>
@@ -160,9 +167,6 @@ namespace SabberStoneCore.Auras
 			var instance = new Aura(this, owner);
 
 			AddToGame(owner, instance);
-
-
-			_removeTriggerActivator?.Invoke(owner.Game, new RemoveTriggerStub(instance, _removeTrigger));
 
 			if (!cloning && !Restless)
 				instance.AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
@@ -728,11 +732,11 @@ namespace SabberStoneCore.Auras
 			private readonly SelfCondition _condition;
 			private readonly Action<Game, TriggerStub> _deactivator;
 
-			public RemoveTriggerStub(Aura aura, (TriggerType type, SelfCondition condition) trigger)
+			public RemoveTriggerStub(Aura aura, SelfCondition condition, Action<Game, TriggerStub> deactivator)
 			{
 				_aura = aura;
-				_condition = trigger.condition;
-				_deactivator = Trigger.GetDeactivator(trigger.type);
+				_condition = condition;
+				_deactivator = deactivator;
 			}
 
 			#region Overrides of TriggerStub

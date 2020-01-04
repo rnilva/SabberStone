@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
+
 using System;
 using System.Collections.Generic;
 using SabberStoneCore.Conditions;
@@ -21,7 +22,7 @@ using SabberStoneCore.Tasks;
 
 namespace SabberStoneCore.Triggers
 {
-	public class Trigger
+	public partial class Trigger
     {
 	    //private static int _idGen;
 
@@ -398,101 +399,6 @@ namespace SabberStoneCore.Triggers
 		public override string ToString()
 		{
 			return $"[Type:{_triggerType}]";
-		}
-
-		private static readonly Dictionary<TriggerType, Action<Game, TriggerStub>> ActivatorDict;
-		private static readonly Dictionary<TriggerType, Action<Game, TriggerStub>> DeactivatorDict;
-
-		static Trigger()
-		{
-			ActivatorDict = new Dictionary<TriggerType, Action<Game, TriggerStub>>
-			{
-				{TriggerType.NONE, null},
-				{TriggerType.MULTITRIGGER, null},
-				{TriggerType.TURN_END, (g, t) => g.TriggerManager.EndTurnTrigger.Add(t)},
-				{TriggerType.TURN_START, (g, t) => g.TriggerManager.TurnStartTrigger.Add(t)},
-				{TriggerType.DEATH, (g, t) => g.TriggerManager.DeathTrigger.Add(t)},
-				{TriggerType.INSPIRE, (g, t) => g.TriggerManager.InspireTrigger.Add(t)},
-				{TriggerType.DEAL_DAMAGE, (g, t) => g.TriggerManager.DealDamageTrigger.Add(t)},
-				{TriggerType.TAKE_DAMAGE, (g, t) => g.TriggerManager.TakeDamageTrigger.Add(t)},
-				{TriggerType.PREDAMAGE, (g, t) => g.TriggerManager.PredamageTrigger.Add(t)},
-				{TriggerType.HEAL, (g, t) => g.TriggerManager.HealTrigger.Add(t)},
-				{TriggerType.LOSE_DIVINE_SHIELD, (g, t) => g.TriggerManager.LoseDivineShieldTrigger.Add(t)},
-				{TriggerType.ATTACK, (g, t) => g.TriggerManager.AttackTrigger.Add(t)},
-				{TriggerType.AFTER_ATTACK, (g, t) => g.TriggerManager.AfterAttackTrigger.Add(t)},
-				{TriggerType.SUMMON, (g, t) => g.TriggerManager.SummonTrigger.Add(t)},
-				{TriggerType.AFTER_SUMMON, (g, t) => g.TriggerManager.AfterSummonTrigger.Add(t)},
-				{TriggerType.PLAY_CARD, (g, t) => g.TriggerManager.PlayCardTrigger.Add(t)},
-				{TriggerType.AFTER_PLAY_CARD, (g, t) => g.TriggerManager.AfterPlayCardTrigger.Add(t)},
-				{TriggerType.PLAY_MINION, (g, t) => g.TriggerManager.PlayMinionTrigger.Add(t)},
-				{TriggerType.AFTER_PLAY_MINION, (g, t) => g.TriggerManager.AfterPlayMinionTrigger.Add(t)},
-				{TriggerType.CAST_SPELL, (g, t) => g.TriggerManager.CastSpellTrigger.Add(t)},
-				{TriggerType.AFTER_CAST, (g, t) => g.TriggerManager.AfterCastTrigger.Add(t)},
-				{TriggerType.SECRET_REVEALED, (g, t) => g.TriggerManager.SecretRevealedTrigger.Add(t)},
-				{TriggerType.ZONE, (g, t) => g.TriggerManager.ZoneTrigger.Add(t)},
-				{TriggerType.DISCARD, (g, t) => g.TriggerManager.DiscardTrigger.Add(t)},
-				{TriggerType.GAME_START, (g, t) => g.TriggerManager.GameStartTrigger.Add(t)},
-				{TriggerType.DRAW, (g, t) => g.TriggerManager.DrawTrigger.Add(t)},
-				{TriggerType.TARGET, (g, t) => g.TriggerManager.TargetTrigger.Add(t)},
-				{TriggerType.FROZEN, (g, t) => g.TriggerManager.FrozenTrigger.Add(t)},
-				{TriggerType.ARMOR, (g, t) => g.TriggerManager.ArmorTrigger.Add(t)},
-				{TriggerType.EQUIP_WEAPON, (g, t) => g.TriggerManager.EquipWeaponTrigger.Add(t)},
-				{TriggerType.SHUFFLE_INTO_DECK, (g, t) => g.TriggerManager.ShuffleIntoDeckTrigger.Add(t)},
-				{TriggerType.OVERLOAD, (g, t) => g.TriggerManager.OverloadTrigger.Add(t)},
-			};
-			ActivatorDict.Add(TriggerType.WORGEN_TRANSFORM, ActivatorDict[TriggerType.TURN_END]);
-
-			DeactivatorDict = new Dictionary<TriggerType, Action<Game, TriggerStub>>
-			{
-				{TriggerType.NONE, null},
-				{TriggerType.MULTITRIGGER, null},
-				{TriggerType.TURN_END, (g, t) => g.TriggerManager.EndTurnTrigger.Remove(t)},
-				{TriggerType.TURN_START, (g, t) => g.TriggerManager.TurnStartTrigger.Remove(t)},
-				{TriggerType.DEATH, (g, t) => g.TriggerManager.DeathTrigger.Remove(t)},
-				{TriggerType.INSPIRE, (g, t) => g.TriggerManager.InspireTrigger.Remove(t)},
-				{TriggerType.DEAL_DAMAGE, (g, t) => g.TriggerManager.DealDamageTrigger.Remove(t)},
-				{TriggerType.TAKE_DAMAGE, (g, t) => g.TriggerManager.TakeDamageTrigger.Remove(t)},
-				{TriggerType.PREDAMAGE, (g, t) => g.TriggerManager.PredamageTrigger.Remove(t)},
-				{TriggerType.HEAL, (g, t) => g.TriggerManager.HealTrigger.Remove(t)},
-				{TriggerType.LOSE_DIVINE_SHIELD, (g, t) => g.TriggerManager.LoseDivineShieldTrigger.Remove(t)},
-				{TriggerType.ATTACK, (g, t) => g.TriggerManager.AttackTrigger.Remove(t)},
-				{TriggerType.AFTER_ATTACK, (g, t) => g.TriggerManager.AfterAttackTrigger.Remove(t)},
-				{TriggerType.SUMMON, (g, t) => g.TriggerManager.SummonTrigger.Remove(t)},
-				{TriggerType.AFTER_SUMMON, (g, t) => g.TriggerManager.AfterSummonTrigger.Remove(t)},
-				{TriggerType.PLAY_CARD, (g, t) => g.TriggerManager.PlayCardTrigger.Remove(t)},
-				{TriggerType.AFTER_PLAY_CARD, (g, t) => g.TriggerManager.AfterPlayCardTrigger.Remove(t)},
-				{TriggerType.PLAY_MINION, (g, t) => g.TriggerManager.PlayMinionTrigger.Remove(t)},
-				{TriggerType.AFTER_PLAY_MINION, (g, t) => g.TriggerManager.AfterPlayMinionTrigger.Remove(t)},
-				{TriggerType.CAST_SPELL, (g, t) => g.TriggerManager.CastSpellTrigger.Remove(t)},
-				{TriggerType.AFTER_CAST, (g, t) => g.TriggerManager.AfterCastTrigger.Remove(t)},
-				{TriggerType.SECRET_REVEALED, (g, t) => g.TriggerManager.SecretRevealedTrigger.Remove(t)},
-				{TriggerType.ZONE, (g, t) => g.TriggerManager.ZoneTrigger.Remove(t)},
-				{TriggerType.DISCARD, (g, t) => g.TriggerManager.DiscardTrigger.Remove(t)},
-				{TriggerType.GAME_START, (g, t) => g.TriggerManager.GameStartTrigger.Remove(t)},
-				{TriggerType.DRAW, (g, t) => g.TriggerManager.DrawTrigger.Remove(t)},
-				{TriggerType.TARGET, (g, t) => g.TriggerManager.TargetTrigger.Remove(t)},
-				{TriggerType.FROZEN, (g, t) => g.TriggerManager.FrozenTrigger.Remove(t)},
-				{TriggerType.ARMOR, (g, t) => g.TriggerManager.ArmorTrigger.Remove(t)},
-				{TriggerType.EQUIP_WEAPON, (g, t) => g.TriggerManager.EquipWeaponTrigger.Remove(t)},
-				{TriggerType.SHUFFLE_INTO_DECK, (g, t) => g.TriggerManager.ShuffleIntoDeckTrigger.Remove(t)},
-				{TriggerType.OVERLOAD, (g, t) => g.TriggerManager.OverloadTrigger.Remove(t)},
-			};
-
-			DeactivatorDict.Add(TriggerType.WORGEN_TRANSFORM, DeactivatorDict[TriggerType.TURN_END]);
-		}
-
-		internal static Action<Game, TriggerStub> GetActivator(TriggerType type)
-		{
-			return ActivatorDict.TryGetValue(type, out Action<Game, TriggerStub> value)
-				? value
-				: throw new NotImplementedException();
-		}
-
-		internal static Action<Game, TriggerStub> GetDeactivator(TriggerType type)
-		{
-			return DeactivatorDict.TryGetValue(type, out Action<Game, TriggerStub> value)
-				? value
-				: throw new NotImplementedException();
 		}
 
 		private Func<Entity, Playable, bool> GetValidator()
