@@ -268,9 +268,9 @@ namespace SabberStoneCore.Tasks
 					result, null);
 				g.OnRandomHappened(true);
 			});
-		private static ReadOnlyCollection<Card> _glimmerrootMemory1;
+		private static IReadOnlyList<Card> _glimmerrootMemory1;
 		private static HashSet<int> _glimmerrootMemory2;
-		private static ReadOnlyCollection<Card> _glimmerrootMemory3;
+		private static IReadOnlyList<Card> _glimmerrootMemory3;
 		private static readonly object locker = new object();
 
 		public static SimpleTask UngoroPack
@@ -458,7 +458,7 @@ namespace SabberStoneCore.Tasks
 					newWeapon._v1 = deadWeapon._v1;
 					newWeapon._v2 = deadWeapon._v2;
 					newWeapon.Poisonous = deadWeapon.Poisonous;
-					newWeapon.HasLifeSteal = deadWeapon.HasLifeSteal;
+					newWeapon.HasLifesteal = deadWeapon.HasLifesteal;
 
 					Generic.ShuffleIntoDeck(deadWeapon.Controller, newWeapon, newWeapon);
 					return 0;

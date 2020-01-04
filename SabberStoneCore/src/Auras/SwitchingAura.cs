@@ -63,16 +63,18 @@ namespace SabberStoneCore.Auras
 
 			AddToGame(owner, instance);
 
-			owner.Game.TriggerManager.TurnStartTrigger.Add(instance._onHandler);
-			owner.Game.TriggerManager.EndTurnTrigger.Add(instance._offHandler);
+			//owner.Game.TriggerManager.TurnStartTrigger.Add(instance._onHandler);A
+			//owner.Game.TriggerManager.EndTurnTrigger.Add(instance._offHandler);
+			owner.Game.TriggerManager.AddTurnStartTrigger(instance._onHandler);
+			owner.Game.TriggerManager.AddEndTurnTrigger(instance._offHandler);
 
 			switch (_offTrigger)
 			{
 				case TriggerType.PLAY_MINION:
-					owner.Game.TriggerManager.PlayMinionTrigger.Add(instance._offHandler);
+					owner.Game.TriggerManager.AddPlayMinionTrigger(instance._offHandler);
 					break;
 				case TriggerType.CAST_SPELL:
-					owner.Game.TriggerManager.CastSpellTrigger.Add(instance._offHandler);
+					owner.Game.TriggerManager.AddCastSpellTrigger(instance._offHandler);
 					break;
 				default:
 					throw new NotImplementedException();

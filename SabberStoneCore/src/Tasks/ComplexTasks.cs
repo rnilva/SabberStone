@@ -208,39 +208,16 @@ namespace SabberStoneCore.Tasks
 		{
 			return Create(
 				new IncludeTask(type),
-				new FilterStackTask(SelfCondition.IsMinion),
-				new FilterStackTask(list),
+				new FilterStackTask(list.Prepend(SelfCondition.IsMinion).ToArray()),
 				new RandomTask(1, EntityType.STACK),
 				new AddEnchantmentTask(enchantmentId, EntityType.STACK));
-		}
-
-		public static SimpleTask SummonRandomMinion(EntityType type, params RelaCondition[] list)
-		{
-			return Create(
-				new IncludeTask(type),
-				new FilterStackTask(EntityType.SOURCE, list),
-				new RandomTask(1, EntityType.STACK),
-				new ConditionTask(EntityType.HERO, SelfCondition.IsNotBoardFull),
-				new FlagTask(true, new RemoveFromDeck(EntityType.STACK)),
-				new FlagTask(true, new SummonTask()));
-		}
-
-		public static SimpleTask SummonOpRandomMinion(EntityType type, params RelaCondition[] list)
-		{
-			return Create(
-				new IncludeTask(type),
-				new FilterStackTask(EntityType.SOURCE, list),
-				new RandomTask(1, EntityType.STACK),
-				new ConditionTask(EntityType.OP_HERO, SelfCondition.IsNotBoardFull),
-				new FlagTask(true, new RemoveFromDeck(EntityType.STACK)),
-				new FlagTask(true, new SummonOpTask()));
 		}
 
 		public static SimpleTask SummonRandomMinionThatDied(SelfCondition selfCondition = null, int amount = 1)
 		{
 			return Create(
 				new IncludeTask(EntityType.GRAVEYARD),
-				new FilterStackTask(SelfCondition.IsDead, selfCondition),
+				selfCondition != null ? new FilterStackTask(SelfCondition.IsDead, selfCondition) : new FilterStackTask(SelfCondition.IsDead),
 				new RandomTask(amount, EntityType.STACK),
 				new CopyTask(EntityType.STACK, Zone.PLAY));
 		}
@@ -275,7 +252,7 @@ namespace SabberStoneCore.Tasks
 						Controller c = stack[0].Controller;
 						do
 						{
-							Playable pick = ((List<Playable>)stack).Choose(c.Game.Random);
+							Playable pick = stack.Choose(c.Game.Random);
 							if (c.SecretZone.Any(p => p.Card.AssetId == pick.Card.AssetId))
 							{
 								stack.Remove(pick);

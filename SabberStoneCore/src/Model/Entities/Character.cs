@@ -326,7 +326,7 @@ namespace SabberStoneCore.Model.Entities
 			game.CurrentEventData = temp;
 
 			// Check if the source is lifesteal
-			if (source.HasLifeSteal && !_lifestealChecker)
+			if (source.HasLifesteal && !_lifestealChecker)
 			{
 				if (game.History)
 					game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, source.Id, source.Card.Id, -1, 0)); // TriggerKeyword=LIFESTEAL

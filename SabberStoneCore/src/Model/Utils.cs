@@ -47,12 +47,14 @@ namespace SabberStoneCore.Model
 		/// <typeparam name="T"></typeparam>
 		/// <param name="list">The list.</param>
 		/// <returns></returns>
-		//public static T Choose<T>(List<T> list) => list[Random.Next(list.Count)];
+		public static T Choose<T>(this IList<T> list, Random rnd) => list[rnd.Next(list.Count)];
 		public static T Choose<T>(this IReadOnlyList<T> list, Random rnd) => list[rnd.Next(list.Count)];
-		//public static T Choose<T>(this IList<T> list, Random rnd) => list[rnd.Next(list.Count)];
+		public static T Choose<T>(this List<T> list, Random rnd) => list[rnd.Next(list.Count)];
+		public static T Choose<T>(this T[] list, Random rnd) => list[rnd.Next(list.Length)];
+		public static T Choose<T>(this IList<T> list, DeepCloneableRandom rnd) => list[rnd.Next(list.Count)];
 		public static T Choose<T>(this IReadOnlyList<T> list, DeepCloneableRandom rnd) => list[rnd.Next(list.Count)];
-		//public static T Choose<T>(this IList<T> list, DeepCloneableRandom rnd) => list[rnd.Next(list.Count)];
-		//public static T Choose<T>(T[] array) => array[Random.Next(array.Length)];
+		public static T Choose<T>(this List<T> list, DeepCloneableRandom rnd) => list[rnd.Next(list.Count)];
+		public static T Choose<T>(this T[] list, DeepCloneableRandom rnd) => list[rnd.Next(list.Length)];
 
 		/// <summary>Gets the power set, a set of any subset of the provided set.. including the empty set and itself.</summary>
 		/// <typeparam name="T"></typeparam>

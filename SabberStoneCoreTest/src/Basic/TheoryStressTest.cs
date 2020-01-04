@@ -699,5 +699,25 @@ namespace SabberStoneCoreTest.Basic
 			game.ProcessCard("Commanding Shout", asZeroCost: true);
 			game.ProcessCard("Whirlwind", asZeroCost: true);
 		}
+
+		[Fact]
+		public static void AuraWithMagnetic()
+		{
+			var game = new Game(new GameConfig());
+			game.StartGame();
+
+			Minion aura = game.ProcessCard<Minion>("Houndmaster Shaw", asZeroCost: true);
+			game.ProcessCard("Zilliax", asZeroCost: true);
+			game.ProcessCard("Spider Bomb", asZeroCost: true, zonePosition: 1);
+
+			Assert.Equal(2, game.CurrentPlayer.BoardZone.Count);
+			Assert.Equal(5, game.CurrentPlayer.BoardZone[1].AttackDamage);
+
+			Game clone = game.Clone();
+
+			aura.Kill();
+
+			clone.CurrentPlayer.BoardZone[0].Kill();
+		}
 	}
 }

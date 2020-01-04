@@ -55,7 +55,8 @@ namespace SabberStoneCore.Config
 			"UNG_954",
 
 			"LOOT_149", // Corridor Creeper (trigger on board)
-			"CFM_064", // Blubber Baron (trigger on board)
+			"CFM_064",	// Blubber Baron (trigger on board)
+			"DAL_185",	// Aranasi Broodmother (topdeck task)
 		};
 
 		/// <summary>

@@ -19,11 +19,10 @@ namespace SabberStoneCore.Model.Entities
 
 		private HeroInPlay(in Controller controller, HeroInPlay hero) : base(in controller, hero)
 		{
-			Auras = new List<Aura>(hero.Auras.Count);
+			Auras = new List<Aura>(hero.Auras.Capacity);
 			DamageTakenThisTurn = hero.DamageTakenThisTurn;
 			Armor = hero.Armor;
 			_attrs = hero._attrs;
-			Zone = controller.BoardZone;
 		}
 
 		public static HeroInPlay FromCard(in Controller c, in Card card)
@@ -119,7 +118,7 @@ namespace SabberStoneCore.Model.Entities
 			set => throw new NotImplementedException();
 		}
 
-		public override bool HasLifeSteal => Weapon?.HasLifeSteal ?? false;
+		public override bool HasLifesteal => Weapon?.HasLifesteal ?? false;
 
 		public override bool HasOverkill => Weapon?.HasOverkill ?? false;
 
