@@ -206,6 +206,8 @@ namespace SabberStoneCore.Model.Entities
 			SecretZone = controller.SecretZone.Clone(this);
 			controller.BoardZone.Stamp(BoardZone);
 
+			Hero.Zone = BoardZone;
+
 			DeckCards = controller.DeckCards;
 			BaseClass = controller.BaseClass;
 

@@ -2005,7 +2005,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 						Assert.Equal(mech.Card.Health + Cards.FromName("Zilliax").Health, mech.Health);
 						Assert.True(mech.HasDivineShield);
 						Assert.True(mech.HasTaunt);
-						Assert.True(mech.HasLifeSteal);
+						Assert.True(mech.HasLifesteal);
 						Assert.True(mech.AttackableByRush);
 						break;
 					case "Upgradeable Framebot":

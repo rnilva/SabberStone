@@ -175,7 +175,7 @@ namespace SabberStoneCore.Model.Entities
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[1] = value;
 		}
-		public override unsafe bool HasLifeSteal
+		public override unsafe bool HasLifesteal
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.boolAttrs[2];

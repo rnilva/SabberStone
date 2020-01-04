@@ -23,7 +23,7 @@ namespace SabberStoneCore.Auras
 	{
 		private protected enum Instruction
 		{
-			Invalid, RemoveAll, AddAll, Add, Remove, /*CheckAdjacency*/
+			Invalid, RemoveAll, Remove, AddAll, Add /*CheckAdjacency*/
 		}
 		private protected readonly struct AuraUpdateInstruction : IEquatable<AuraUpdateInstruction>
 		{
@@ -55,11 +55,6 @@ namespace SabberStoneCore.Auras
 				else
 					return Instruction.ToString();
 			}
-
-			//public override bool Equals(object obj)
-			//{
-			//	return obj != null && (obj is AuraUpdateInstruction instruction && Equals(instruction));
-			//}
 
 			public override int GetHashCode()
 			{
@@ -322,7 +317,7 @@ namespace SabberStoneCore.Auras
 			var instruction = new AuraUpdateInstruction(playable, Instruction.Add);
 
 			if (!AuraUpdateInstructionsQueue.Contains(in instruction))
-				AuraUpdateInstructionsQueue.Enqueue(instruction, 2);
+				AuraUpdateInstructionsQueue.Enqueue(instruction, 1);
 		}
 
 		/// <summary>

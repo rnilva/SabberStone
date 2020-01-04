@@ -1507,7 +1507,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Minion testCard = game.CurrentPlayer.BoardZone[0];
 
 			Assert.False(testCard.HasTaunt);
-			Assert.False(testCard.HasLifeSteal);
+			Assert.False(testCard.HasLifesteal);
 
 			game.ProcessCard("Blessing of Might", testCard);
 
@@ -2992,12 +2992,12 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player2.BaseMana = 10;
 
 			Minion test1 = game.ProcessCard<Minion>("Deathweb Spider", asZeroCost: true);
-			Assert.False(test1.HasLifeSteal);
+			Assert.False(test1.HasLifesteal);
 
 			game.PlayHeroPower();
 			Assert.True(game.CurrentPlayer.Hero.DamageTakenThisTurn > 0);
 			Minion test2 = game.ProcessCard<Minion>("Deathweb Spider", asZeroCost: true);
-			Assert.True(test2.HasLifeSteal);
+			Assert.True(test2.HasLifesteal);
 		}
 
 		// --------------------------------------- MINION - WARLOCK

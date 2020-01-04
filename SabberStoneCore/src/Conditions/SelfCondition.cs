@@ -150,7 +150,7 @@ namespace SabberStoneCore.Conditions
 		public static readonly SelfCondition HasTaunt = new SelfCondition(me => me is Minion m && m.HasTaunt);
 		public static readonly SelfCondition HasDivineShield = new SelfCondition(me => me is Minion m && m.HasDivineShield);
 		public static readonly SelfCondition HasCharge = new SelfCondition(me => me is Minion m && m.HasCharge);
-		public static readonly SelfCondition HasLifesteal = new SelfCondition(me => me.HasLifeSteal);
+		public static readonly SelfCondition HasLifesteal = new SelfCondition(me => me.HasLifesteal);
 		public static readonly SelfCondition IsFrozen = new SelfCondition(me => me is Character c && c.IsFrozen);
 		public static SelfCondition IsHeroPowerCard(string cardId) => new SelfCondition(me => me.Controller.Hero.HeroPower.Card.Id.Equals(cardId));
 		public static readonly SelfCondition IsManaCrystalFull = new SelfCondition(me => me.Controller.BaseMana == 10);

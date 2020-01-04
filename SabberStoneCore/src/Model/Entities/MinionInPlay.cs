@@ -308,7 +308,7 @@ namespace SabberStoneCore.Model.Entities
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[9] = value;
 		}
-		public override unsafe bool HasLifeSteal
+		public override unsafe bool HasLifesteal
 		{
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _attrs.boolAttrs[10];
@@ -369,7 +369,7 @@ namespace SabberStoneCore.Model.Entities
 			HasDeathrattle = false;
 			//HasBattleCry = false;
 			//HasInspire = false;
-			HasLifeSteal = false;
+			HasLifesteal = false;
 			//CantBeTargetedByHeroPowers = false;
 			CantBeTargetedBySpells = false;
 			IsImmune = false;

@@ -298,7 +298,8 @@ namespace SabberStoneCore.Auras
 					_adaptiveCostEffect._isTriggered = true;
 
 					//_owner.Game.TriggerManager.EndTurnTrigger += _removedHandler;
-					source.Game.TriggerManager.EndTurnTrigger.Add(_adaptiveCostEffect._removeHandler);
+					//source.Game.TriggerManager.EndTurnTrigger.Add(_adaptiveCostEffect._removeHandler);
+					source.Game.TriggerManager.AddEndTurnTrigger(_adaptiveCostEffect._removeHandler);
 				}
 
 				return true;

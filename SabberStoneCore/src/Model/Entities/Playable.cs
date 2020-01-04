@@ -586,7 +586,7 @@ namespace SabberStoneCore.Model.Entities
 			set => _ghostly = value;
 		}
 
-		public virtual bool HasLifeSteal
+		public virtual bool HasLifesteal
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => Card.LifeSteal;

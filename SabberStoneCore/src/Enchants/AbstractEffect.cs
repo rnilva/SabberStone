@@ -459,12 +459,12 @@ namespace SabberStoneCore.Enchants
 
 		public override void ApplyTo(Playable playable)
 		{
-			playable.HasLifeSteal = true;
+			playable.HasLifesteal = true;
 		}
 
 		public override void RemoveFrom(Playable playable)
 		{
-			playable.HasLifeSteal = false;
+			playable.HasLifesteal = false;
 		}
 	}
 
