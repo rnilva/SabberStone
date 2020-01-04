@@ -265,7 +265,7 @@ namespace SabberStoneCore.Model.Entities
 			//	PreDamage = amount;
 
 			// Predamage triggers (e.g. Ice Block)
-			if (!game.TriggerManager.PredamageTrigger.IsEmpty)
+			if (!(game.TriggerManager.PredamageTrigger?.IsEmpty ?? true))
 			{
 				game.TaskQueue.StartEvent();
 				game.TriggerManager.PredamageTrigger.Invoke(this);
@@ -308,7 +308,7 @@ namespace SabberStoneCore.Model.Entities
 
 			// on-damage triggers
 			game.TaskQueue.StartEvent();
-			game.TriggerManager.TakeDamageTrigger.Invoke(this);
+			game.TriggerManager.TakeDamageTrigger?.Invoke(this);
 			game.TriggerManager.OnDamageTrigger(this);
 			game.TriggerManager.OnDealDamageTrigger(source);
 
@@ -420,7 +420,7 @@ namespace SabberStoneCore.Model.Entities
 		public void OnAfterAttackTrigger()
 		{
 			//AfterAttackTrigger?.Invoke(this);
-			Game.TriggerManager.AfterAttackTrigger.Invoke(this);
+			Game.TriggerManager.AfterAttackTrigger?.Invoke(this);
 		}
 
 		public override string Hash(params GameTag[] ignore)

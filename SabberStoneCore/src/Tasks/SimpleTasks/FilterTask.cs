@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
@@ -56,17 +57,26 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			if (_selfConditions != null)
 			{
-				var filtered = new List<Playable>(stack.Playables.Count);
-				foreach (Playable p in stack?.Playables)
+				IList<Playable> entities = stack.Playables;
+				Span<int> indices = stackalloc int[entities.Count];
+				int k = 0;
+				for (int i = 0; i < entities.Count; ++i)
 				{
 					bool flag = true;
-					for (int i = 0; i < _selfConditions.Length; i++)
-						if (_selfConditions[i] != null)
-							flag = flag && _selfConditions[i].Eval(p);
+					for (int j = 0; j < _selfConditions.Length; ++j)
+						if (!_selfConditions[j].Eval(entities[i]))
+						{
+							flag = false;
+							break;
+						}
+					if (!flag) continue;
 
-					if (flag)
-						filtered.Add(p);
+					indices[k++] = i;
 				}
+
+				var filtered = new Playable[k];
+				for (int i = 0; i < k; ++i)
+					filtered[i] = entities[indices[i]];
 
 				stack.Playables = filtered;
 			}

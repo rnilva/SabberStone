@@ -94,7 +94,7 @@ namespace SabberStoneCoreConsole
 			var rnd = new Random();
 
 			Console.WriteLine("Warming up......");
-			for (int i = 0; i < count; ++i)
+			for (int i = 0; i < count * 2; ++i)
 			{
 				Game g = game.Clone();
 				g.StartGame();
@@ -105,6 +105,9 @@ namespace SabberStoneCoreConsole
 
 				} while (g.State != State.COMPLETE);
 			}
+
+			Console.WriteLine("Press any key to start.");
+			Console.ReadKey();
 
 			//var roundRecords = new double[round];
 
@@ -130,7 +133,7 @@ namespace SabberStoneCoreConsole
 						//watch.Stop();
 
 					} while (g.State != State.COMPLETE);
-					
+
 					watch.Stop();
 					//record[i] = watch.ElapsedMilliseconds;
 				}

@@ -102,13 +102,13 @@ namespace SabberStoneCore.Model
 		/// Gets or sets the index value for identifying the N-th clone of a game. (0-indexed)
 		/// </summary>
 		/// <value>The index of the clone.</value>
-		public string CloneIndex { get; set; } = "[0]";
+		//public string CloneIndex { get; set; } = "[0]";
 
 		/// <summary>
 		/// Gets or sets the index of the next clone.<seealso cref="CloneIndex"/>
 		/// </summary>
 		/// <value>The index of the next clone.</value>
-		public int NextCloneIndex { get; set; } = 1;
+		//public int NextCloneIndex { get; set; } = 1;
 		internal Util.DeepCloneableRandom Random { get; set; }
 
 		public void SetRandomSeed(long seed) => Random.SetSeed(seed);
@@ -417,7 +417,7 @@ namespace SabberStoneCore.Model
 			_gameConfig = game._gameConfig;
 			_attrs = game._attrs;
 
-			CloneIndex = game.CloneIndex + $"[{game.NextCloneIndex++}]";
+			//CloneIndex = game.CloneIndex + $"[{game.NextCloneIndex++}]";
 
 			Random = resetRandomSeed ? new Util.DeepCloneableRandom() : game.Random.Clone();
 
