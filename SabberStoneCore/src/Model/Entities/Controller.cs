@@ -265,8 +265,8 @@ namespace SabberStoneCore.Model.Entities
 			//AuraEffects auraEffects = null;
 			if  (Hero != null)
 			{
-				SetasideZone.MoveTo(Hero, SetasideZone.Count);
-				SetasideZone.MoveTo(Hero.HeroPower, SetasideZone.Count);
+				SetasideZone.MoveTo(Hero);
+				SetasideZone.MoveTo(Hero.HeroPower);
 				//Hero[GameTag.EXHAUSTED] = 0;
 				//Hero[GameTag.NUM_ATTACKS_THIS_TURN ] = 0;
 				//Hero[GameTag.DAMAGE] = 0;

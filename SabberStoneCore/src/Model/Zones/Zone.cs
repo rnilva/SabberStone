@@ -83,13 +83,6 @@ namespace SabberStoneCore.Model.Zones
 		public abstract T Remove(T entity);
 
 		/// <summary>
-		/// Moves the specified entity to a new position.
-		/// </summary>
-		/// <param name="entity">The entity.</param>
-		/// <param name="zonePosition">The zone position.</param>
-		public abstract void MoveTo(T entity, int zonePosition = -1);
-
-		/// <summary>
 		/// Gets a value indicating whether this contains entities or not.
 		/// </summary>
 		/// <value><c>true</c> if this zone is empty; otherwise, <c>false</c>.</value>
@@ -403,8 +396,9 @@ namespace SabberStoneCore.Model.Zones
 			if (entity.Controller != Controller)
 				throw new ZoneException("Can't add an opponent's entity to own Zones");
 
-			MoveTo(entity, zonePosition);
-			Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}'.");
+			MoveTo(entity);
+			if (Game.Logging)
+				Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}'.");
 		}
 
 		public override Playable Remove(Playable entity)
@@ -432,7 +426,7 @@ namespace SabberStoneCore.Model.Zones
 			return entity;
 		}
 
-		public override void MoveTo(Playable entity, int zonePosition = -1)
+		public void MoveTo(Playable entity)
 		{
 			if (_entities.Length == _count) Resize();
 
@@ -502,12 +496,13 @@ namespace SabberStoneCore.Model.Zones
 			if (entity.Controller != Controller)
 				throw new ZoneException("Can't add an opponent's entity to own Zones");
 
-			MoveTo(entity, zonePosition < 0 ? _count : zonePosition);
+			MoveTo(entity, zonePosition);
 
-			Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}' in position '{entity.ZonePosition}'.");
+			if (Game.Logging)
+				Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone", !Game.Logging ? "" : $"Entity '{entity} ({entity.Card.Type})' has been added to zone '{Type}' in position '{entity.ZonePosition}'.");
 		}
 
-		public override void MoveTo(T entity, int zonePosition = -1)
+		public void MoveTo(T entity, int zonePosition = -1)
 		{
 			if (entity == null)
 				throw new ZoneException();

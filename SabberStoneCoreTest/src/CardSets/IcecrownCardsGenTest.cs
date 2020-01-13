@@ -375,8 +375,6 @@ namespace SabberStoneCoreTest.CardSets
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
 			Assert.Equal(4, game.CurrentPlayer.Hero.Armor);
-			if (game.CurrentPlayer.Hero.Health != 29)
-				;
 			Assert.Equal(29, game.CurrentPlayer.Hero.Health);
 			game.Process(HeroPowerTask.Any(game.CurrentPlayer, game.CurrentOpponent.Hero));
 			Assert.Equal(27, game.CurrentOpponent.Hero.Health);
