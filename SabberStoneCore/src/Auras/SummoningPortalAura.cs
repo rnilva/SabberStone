@@ -18,15 +18,15 @@ namespace SabberStoneCore.Auras
 			owner.Controller.HandZone.Auras.Add(instance);
 			owner.Game.Auras.Add(instance);
 			if (!cloning)
-				instance.AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
+				instance._queue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
 		}
 
 		public override bool Update()
 		{
 			bool addAllProcessed = false;
-			while (AuraUpdateInstructionsQueue.Count > 0)
+			while (_queue.Count > 0)
 			{
-				AuraUpdateInstruction inst = AuraUpdateInstructionsQueue.Dequeue();
+				AuraUpdateInstruction inst = _queue.Dequeue();
 				switch (inst.Instruction)
 				{
 					case Instruction.RemoveAll:
@@ -39,10 +39,10 @@ namespace SabberStoneCore.Auras
 					case Instruction.Add:
 						if (addAllProcessed) break;
 						Apply(inst.Src);
-						AppliedEntityIdCollection.Add(inst.Src.Id);
+						_ids.Add(inst.Src.Id);
 						break;
 					case Instruction.Remove:
-						if (!AppliedEntityIdCollection.Remove(inst.Src.Id))
+						if (!_ids.Remove(inst.Src.Id))
 							break;
 						DeApply(inst.Src);
 						break;
@@ -56,13 +56,13 @@ namespace SabberStoneCore.Auras
 			Owner.Controller.HandZone.ForEach(p =>
 			{
 				Apply(p);
-				AppliedEntityIdCollection.Add(p.Id);
+				_ids.Add(p.Id);
 			});
 		}
 
 		private void RemoveAll()
 		{
-			AppliedEntityIdCollection.ForEach(Game.IdEntityDic,
+			_ids.ForEach(Game.IdEntityDic,
 				(i, dict) => DeApply(dict[i]));
 			//Game.Auras.Remove(this);
 		}

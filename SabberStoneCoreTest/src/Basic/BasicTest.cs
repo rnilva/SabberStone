@@ -29,58 +29,6 @@ namespace SabberStoneCoreTest.Basic
 	public class BasicTest
 	{
 		[Fact]
-		public void UtilTest()
-		{
-			var enumarable = new List<string>() { "A", "B", "C" };
-			var dict = new Dictionary<string, int>();
-			var rnd = new Util.DeepCloneableRandom();
-			for (int i = 0; i < 1000; i++)
-			{
-				string str = enumarable.RandomElement(rnd);
-				if (dict.ContainsKey(str))
-				{
-					dict[str] = dict[str] + 1;
-				}
-				else
-				{
-					dict[str] = 1;
-				}
-			}
-			Assert.True(dict["A"] > 300);
-			Assert.True(dict["B"] > 300);
-			Assert.True(dict["C"] > 300);
-		}
-
-		[Fact]
-		public void RandomSeedTest()
-		{
-			var globalRandom = new Random();
-			int seed = globalRandom.Next();
-
-			var rnd = new Util.DeepCloneableRandom(seed);
-			sbyte[] bytes = new sbyte[10000];
-			rnd.NextBytes(bytes);
-
-			Util.ThreadLocalRandom.SetSeed(seed);
-			rnd = new Util.DeepCloneableRandom(seed);
-			sbyte[] bytes2 = new sbyte[10000];
-			rnd.NextBytes(bytes2);
-
-			Assert.Equal(bytes, bytes2);
-		}
-
-		[Fact]
-		public void DeepClonableRandomTest()
-		{
-			var rnd1 = new Util.DeepCloneableRandom();
-			rnd1.Next();
-			Util.DeepCloneableRandom rnd2 = rnd1.Clone();
-
-			for (int i = 0; i < 1000; i++)
-				Assert.Equal( rnd1.Next(), rnd2.Next());
-		}
-
-		[Fact]
 		public void SeededGameTest()
 		{
 			var game = new Game(new GameConfig

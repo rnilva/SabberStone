@@ -85,7 +85,7 @@ namespace SabberStoneCore.Auras
 				if (!instance._initialisationCondtion.Eval(owner))
 					instance.On = false;
 				else
-					instance.AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
+					instance._queue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace SabberStoneCore.Auras
 
 		protected override bool RemoveInternal()
 		{
-			AppliedEntityIdCollection.ForEach(Game.IdEntityDic, Effects,
+			_ids.ForEach(Game.IdEntityDic, Effects,
 				(id, idDict, effs) =>
 				{
 					Playable entity = idDict[id];
@@ -129,14 +129,14 @@ namespace SabberStoneCore.Auras
 						entity.RemoveEffect(effs[i]);
 				});
 
-			AppliedEntityIdCollection.Clear();
+			_ids.Clear();
 
 			// TODO: EnchantmentCard, if there is a case
 
 			if (Game.Logging)
 				Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Aura.RemoveInternal",
 					$"{Owner}'s aura is removed from " +
-					$"{string.Join(",", AppliedEntityIdCollection.Select(i => Game.IdEntityDic[i]))})");
+					$"{string.Join(",", _ids.Select(i => Game.IdEntityDic[i]))})");
 
 			return !_removed;
 		}
@@ -149,7 +149,7 @@ namespace SabberStoneCore.Auras
 				source.Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "SwitchingAura.TurnOff",
 				$"{source} triggers {_offTrigger}. {Owner}'s aura is now turned off for this turn.");
 
-			AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.RemoveAll), 0);
+			_queue.Enqueue(new AuraUpdateInstruction(Instruction.RemoveAll), 0);
 		}
 
 		private void TurnOn(Entity source)
@@ -157,7 +157,7 @@ namespace SabberStoneCore.Auras
 			if (On) return;
 
 			On = true;
-			AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
+			_queue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
 		}
 
 		private class SwitchingAuraTriggerStub : TriggerStub

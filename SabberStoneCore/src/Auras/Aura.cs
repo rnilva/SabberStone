@@ -64,8 +64,8 @@ namespace SabberStoneCore.Auras
 			}
 		}
 
-		private protected readonly Util.PriorityQueue<AuraUpdateInstruction> AuraUpdateInstructionsQueue;
-		private protected readonly Util.SmallFastCollection AppliedEntityIdCollection;
+		private protected readonly Util.PriorityQueue<AuraUpdateInstruction> _queue;
+		private protected readonly Util.SmallFastCollection _ids;
 
 		//private readonly TriggerManager.TriggerHandler _removeHandler;
 		private RemoveTriggerStub _removeHandler;
@@ -133,11 +133,11 @@ namespace SabberStoneCore.Auras
 			Restless = prototype.Restless;
 			On = prototype.On;
 
-			AppliedEntityIdCollection = prototype.AppliedEntityIdCollection != null
-				? new Util.SmallFastCollection(prototype.AppliedEntityIdCollection)
+			_ids = prototype._ids != null
+				? new Util.SmallFastCollection(prototype._ids)
 				: new Util.SmallFastCollection();
 
-			AuraUpdateInstructionsQueue = new Util.PriorityQueue<AuraUpdateInstruction>();
+			_queue = new Util.PriorityQueue<AuraUpdateInstruction>();
 
 			Game = owner.Game;
 			_owner = owner;
@@ -163,7 +163,7 @@ namespace SabberStoneCore.Auras
 			AddToGame(owner, instance);
 
 			if (!cloning && !Restless)
-				instance.AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
+				instance._queue.Enqueue(new AuraUpdateInstruction(Instruction.AddAll), 1);
 
 			#region WIP: Correct History
 			//if (cloning || !owner.Game.History) return;
@@ -236,7 +236,7 @@ namespace SabberStoneCore.Auras
 				addAllProcessed = true;
 			}
 
-			Util.PriorityQueue<AuraUpdateInstruction> queue = AuraUpdateInstructionsQueue;
+			Util.PriorityQueue<AuraUpdateInstruction> queue = _queue;
 
 			while (queue.Count != 0)
 			{
@@ -251,7 +251,7 @@ namespace SabberStoneCore.Auras
 						break;
 					case Instruction.Add:
 						if (!addAllProcessed)
-							Apply(inst.Src);
+							ApplyUnconditionally(inst.Src);
 						break;
 					case Instruction.Remove:
 						DeApply(inst.Src);
@@ -270,7 +270,7 @@ namespace SabberStoneCore.Auras
 		{
 			On = false;
 			//ToBeUpdated = true;
-			AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(Instruction.RemoveAll), 0);
+			_queue.Enqueue(new AuraUpdateInstruction(Instruction.RemoveAll), 0);
 			Owner.OngoingEffect = null;
 
 			switch (Type)
@@ -315,10 +315,18 @@ namespace SabberStoneCore.Auras
 			if (!On)
 				return;
 
+			if (playable == Owner ||
+			    (!Condition?.Eval(playable) ?? false))
+				return;
+
+			// Check if already registered.
+			if (_ids.Contains(playable.Id))
+				return;
+
 			var instruction = new AuraUpdateInstruction(playable, Instruction.Add);
 
-			if (!AuraUpdateInstructionsQueue.Contains(in instruction))
-				AuraUpdateInstructionsQueue.Enqueue(instruction, 1);
+			if (!_queue.Contains(in instruction))
+				_queue.Enqueue(instruction, 1);
 		}
 
 		/// <summary>
@@ -331,7 +339,7 @@ namespace SabberStoneCore.Auras
 			if (playable == Owner)
 				return;
 
-			AuraUpdateInstructionsQueue.Enqueue(new AuraUpdateInstruction(playable, Instruction.Remove), 1);
+			_queue.Enqueue(new AuraUpdateInstruction(playable, Instruction.Remove), 1);
 		}
 
 		/// <summary>
@@ -348,14 +356,16 @@ namespace SabberStoneCore.Auras
 			    (!Condition?.Eval(playable) ?? false))
 				return;
 
-			AppliedEntityIdCollection.Add(playable.Id);
+			_ids.Add(playable.Id);
+
+			_queue.TryRemove(new AuraUpdateInstruction(playable, Instruction.Add));
 		}
 
 		public bool Deregister(Playable playable)
 		{
 			if (!On) return false;
 
-			if (AppliedEntityIdCollection.Remove(playable.Id))
+			if (_ids.Remove(playable.Id))
 			{
 				if (EnchantmentCard != null && (Game.History || EnchantmentCard.Power.Trigger != null))
 				{
@@ -378,7 +388,7 @@ namespace SabberStoneCore.Auras
 
 		public bool Registered(Playable playable)
 		{
-			return AppliedEntityIdCollection.Contains(playable.Id);
+			return _ids.Contains(playable.Id);
 		}
 
 		private void UpdateInternal()
@@ -497,7 +507,7 @@ namespace SabberStoneCore.Auras
 			}
 			else
 			{
-				AppliedEntityIdCollection.ForEach(Game.IdEntityDic, effects,
+				_ids.ForEach(Game.IdEntityDic, effects,
 					(id, idDict, effs) =>
 					{
 						Playable entity = idDict[id];
@@ -513,7 +523,7 @@ namespace SabberStoneCore.Auras
 			// Remove enchantments from applied entities
 			if (EnchantmentCard != null && (Game.History || EnchantmentCard.Power.Trigger != null))
 			{
-				AppliedEntityIdCollection.ForEach(_ownerId, Game.IdEntityDic,
+				_ids.ForEach(_ownerId, Game.IdEntityDic,
 					(id, ownerId, idDict) =>
 					{
 						Playable entity = idDict[id];
@@ -534,14 +544,14 @@ namespace SabberStoneCore.Auras
 			if (Game.Logging)
 				Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Aura.RemoveInternal",
 					$"{Owner}'s aura is removed from game and " +
-					$"{string.Join(",", AppliedEntityIdCollection.Select(i => Game.IdEntityDic[i]))})");
+					$"{string.Join(",", _ids.Select(i => Game.IdEntityDic[i]))})");
 
 			return false;
 		}
 
 		internal void DeApply(Playable entity)
 		{
-			if (!AppliedEntityIdCollection.Remove(entity.Id))
+			if (!_ids.Remove(entity.Id))
 				return;
 
 			for (int i = 0; i < Effects.Length; i++)
@@ -584,9 +594,6 @@ namespace SabberStoneCore.Auras
 			if (entity == null)
 				throw new ArgumentNullException();
 
-			if (AppliedEntityIdCollection.Contains(entity.Id))
-				return;
-
 			AbstractEffect[] effects = Effects;
 
 			if (Condition != null)
@@ -603,8 +610,25 @@ namespace SabberStoneCore.Auras
 				EnchantmentCard.Power.Trigger?.Activate(Game, instance);
 			}
 
-			AppliedEntityIdCollection.Add(entity.Id);
+			_ids.Add(entity.Id);
 			
+			if (Game.Logging)
+				Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Aura.Apply", $"{Owner}'s aura is applied to {entity}.");
+		}
+
+		private void ApplyUnconditionally(Playable entity)
+		{
+			for (int i = 0; i < Effects.Length; ++i)
+				entity.ApplyEffect(Effects[i]);
+
+			if (EnchantmentCard != null && ((Game.History /*&& _tempList == null*/) || EnchantmentCard.Power.Trigger != null))
+			{
+				Enchantment instance = Enchantment.GetInstance(entity.Game, entity.Controller, Owner, entity, in EnchantmentCard);
+				EnchantmentCard.Power.Trigger?.Activate(Game, instance);
+			}
+
+			_ids.Add(entity.Id);
+
 			if (Game.Logging)
 				Game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "Aura.Apply", $"{Owner}'s aura is applied to {entity}.");
 		}
@@ -612,7 +636,7 @@ namespace SabberStoneCore.Auras
 		private void RenewAll()
 		{
 			SelfCondition condition = Condition;
-			Util.SmallFastCollection collection = AppliedEntityIdCollection;
+			Util.SmallFastCollection collection = _ids;
 			void Renew(Playable p)
 			{
 				if (condition.Eval(p))
@@ -696,10 +720,10 @@ namespace SabberStoneCore.Auras
 			sb.Append("[T:");
 			sb.Append(Type);
 			sb.Append("]");
-			if (AppliedEntityIdCollection != null)
+			if (_ids != null)
 			{
 				sb.Append("[AEs:");
-				AppliedEntityIdCollection.ForEach(i => sb.Append($"{{{Game.IdEntityDic[i]}}}"));
+				_ids.ForEach(i => sb.Append($"{{{Game.IdEntityDic[i]}}}"));
 				sb.Append("]");
 			}
 			sb.Append(On ? "[ON]" : "[OFF]");
@@ -760,6 +784,6 @@ namespace SabberStoneCore.Auras
 		}
 
 		// For debugging
-		public IReadOnlyList<Playable> AppliedEntities => AppliedEntityIdCollection.Select(i => Game.IdEntityDic[i]).ToArray();
+		public IReadOnlyList<Playable> AppliedEntities => _ids.Select(i => Game.IdEntityDic[i]).ToArray();
 	}
 }

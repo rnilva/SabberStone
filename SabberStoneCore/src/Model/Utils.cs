@@ -268,7 +268,7 @@ namespace SabberStoneCore.Model
 			}
 		}
 
-		internal class PriorityQueue<TValue> where TValue : struct, IEquatable<TValue>
+		public class PriorityQueue<TValue> where TValue : struct, IEquatable<TValue>
 		{
 			[DebuggerDisplay("{DebuggerDisplay,nq}")]
 			private class Node
@@ -288,37 +288,47 @@ namespace SabberStoneCore.Model
 				private string DebuggerDisplay => $"({Value}, {Key})";
 			}
 
-			private readonly Node _head = new Node();
+			private Node _head = null;
 
-			public int Count { get; set; }
+			public int Count { get; private set; }
 
 			public void Enqueue(in TValue value, int priority)
 			{
-				Node cursor = _head;
+				ref Node cursor = ref _head;
+				var newNode = new Node(in value, priority);
 
-				while (cursor.Next != null)
+				if (cursor == null)
 				{
-					if (cursor.Next.Key <= priority)
-						cursor = cursor.Next;
-					else
-						break;
+					cursor = newNode;
+					Count = 1;
+					return;
 				}
 
-				Node temp = cursor.Next;
-				var newNode = new Node(in value, priority);
-				cursor.Next = newNode;
-				newNode.Next = temp;
+				if (priority < cursor.Key)
+				{
+					newNode.Next = cursor;
+					cursor = newNode;
+					++Count;
+					return;
+				}
 
-				Count++;
+
+				Node temp = cursor;
+				while (temp.Next != null && temp.Next.Key <= priority)
+					temp = temp.Next;
+				newNode.Next = temp.Next;
+				temp.Next = newNode;
+
+				++Count;
 			}
 
 			public TValue Dequeue()
 			{
-				Node node = _head.Next;
+				Node node = _head;
 
-				_head.Next = node.Next;
+				_head = node.Next;
 
-				Count--;
+				--Count;
 
 				return node.Value;
 			}
@@ -331,7 +341,7 @@ namespace SabberStoneCore.Model
 
 			public bool Contains(in TValue value)
 			{
-				Node cursor = _head.Next;
+				Node cursor = _head;
 
 				while (cursor != null)
 				{
@@ -358,14 +368,43 @@ namespace SabberStoneCore.Model
 				return false;
 			}
 
+			public bool TryRemove(in TValue value)
+			{
+				Node previous = null;
+				Node cursor = _head;
+
+				while (cursor != null)
+				{
+					if (cursor.Value.Equals(value))
+					{
+						if (previous != null)
+							previous.Next = cursor.Next;
+						else
+							_head = cursor.Next;
+						--Count;
+						return true;
+					}
+
+					previous = cursor;
+					cursor = cursor.Next;
+				}
+
+				return false;
+			}
+
 			public IEnumerator<TValue> GetEnumerator()
 			{
 				Node cursor = _head;
-				while (cursor.Next != null)
+				while (cursor != null)
 				{
-					yield return cursor.Next.Value;
+					yield return cursor.Value;
 					cursor = cursor.Next;
 				}
+			}
+
+			public override string ToString()
+			{
+				return $"Count: {Count}";
 			}
 		}
 
