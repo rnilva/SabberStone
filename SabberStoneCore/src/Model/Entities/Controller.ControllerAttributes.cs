@@ -133,7 +133,7 @@ namespace SabberStoneCore.Model.Entities
 			// 1 : ExtraDeathrattle
 			// 2 : ExtraBattlecry
 			// 3 : ChooseBoth
-			// 4 : SpellsCostHelath
+			// 4 : SpellsCostHealth
 			// 5 : ExtraEndTurnEffect
 			// 6 : HeroPowerDisabled
 			// 7 : ExtraBattleCryAndCombo
@@ -569,7 +569,7 @@ namespace SabberStoneCore.Model.Entities
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.sbyteAttrs[3] += value ? (sbyte) 1 : (sbyte) -1;
 		}
-		public unsafe bool SpellsCostHelath
+		public unsafe bool SpellsCostHealth
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _attrs.sbyteAttrs[4] > 0;

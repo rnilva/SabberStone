@@ -6,6 +6,7 @@ using SabberStoneCore.Config;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Tasks.PlayerTasks;
+using SabberStoneCore.Tasks.PlayerTasks.Lite;
 
 namespace SabberStoneCoreConsole
 {
@@ -13,7 +14,14 @@ namespace SabberStoneCoreConsole
 	{
 		public static void MageExpertTest(int count = 20000, int round = 5)
 		{
-			var watch = new Stopwatch();
+			const bool LineByLineMode = false;
+
+			if (LineByLineMode)
+			{
+				count = 5000;
+				round = 1;
+			}
+
 			var deck = new[]
 			{
 				"Arcane Missiles",
@@ -93,40 +101,64 @@ namespace SabberStoneCoreConsole
 
 			var rnd = new Random();
 
-			Console.WriteLine("Warming up......");
-			for (int i = 0; i < count * 2; ++i)
+			List<PlayerTask> optionBuffer = new List<PlayerTask>(64);
+			var buffer = new PlayerTaskLiteContainer();
+
+			if (!LineByLineMode)
 			{
-				Game g = game.Clone();
-				g.StartGame();
-				do
+				Console.WriteLine("Warming up......");
+				for (int i = 0; i < count * 2; ++i)
 				{
-					List<PlayerTask> options = g.CurrentPlayer.Options();
-					g.Process(options[rnd.Next(options.Count)]);
-
-				} while (g.State != State.COMPLETE);
-			}
-
-			Console.WriteLine("Press any key to start.");
-			Console.ReadKey();
-
-			//var roundRecords = new double[round];
-
-			long totalSum = 0;
-
-			for (int r = 0; r < round; ++r)
-			{
-				//var record = new long[count];
-
-				long sum = 0;
-				for (int i = 0; i < count; ++i)
-				{
-					watch.Start();
 					Game g = game.Clone();
 					g.StartGame();
 					do
 					{
-						List<PlayerTask> options = g.CurrentPlayer.Options();
-						g.Process(options[rnd.Next(options.Count)]);
+						//List<PlayerTask> options = g.CurrentPlayer.Options();
+						//g.CurrentPlayer.Options(optionBuffer);
+						g.CurrentPlayer.Options(buffer);
+						//if (options.Count != buffer.Count)
+						//	;
+						//g.Process(options[rnd.Next(options.Count)]);
+						ref readonly PlayerTaskLite option = ref buffer.GetRandom(rnd);
+						g.Process(in option);
+
+					} while (g.State != State.COMPLETE);
+				}
+			}
+
+
+
+			Console.WriteLine("Press any key to start.");
+			Console.ReadKey();
+
+			var watch = new Stopwatch();
+			var optionsWatch = new Stopwatch();
+			long totalSum = 0;
+			long optionsSum = 0;
+
+			for (int r = 0; r < round; ++r)
+			{
+				//var options = new List<PlayerTask>(64);
+				long sum = 0;
+
+				watch.Start();
+				for (int i = 0; i < count; ++i)
+				{
+					Game g = game.Clone();
+					g.StartGame();
+					do
+					{
+						//optionsWatch.Start();
+						//List<PlayerTask> options = g.CurrentPlayer.Options();
+						//PlayerTask option = options[rnd.Next(options.Count)];
+						//optionsWatch.Stop();
+						//g.Process(option);
+
+						optionsWatch.Start();
+						g.CurrentPlayer.Options(buffer);
+						ref readonly PlayerTaskLite option = ref buffer.GetRandom(rnd);
+						optionsWatch.Stop();
+						g.Process(in option);
 
 						//watch.Start();
 						//g = g.Clone();
@@ -134,26 +166,24 @@ namespace SabberStoneCoreConsole
 
 					} while (g.State != State.COMPLETE);
 
-					watch.Stop();
 					//record[i] = watch.ElapsedMilliseconds;
 				}
+				watch.Stop();
 
 				sum = watch.ElapsedMilliseconds;
-				double average = (double) sum / count;
 
-				//double sum = record.Sum();
-				////double average = record.Average();
-				
 				Console.WriteLine($"Round {r}");
 				Console.WriteLine($"Total duration for {count} games: {sum} ms");
-				//Console.WriteLine($"Average duration for {count} games: {average} ms");
+				Console.WriteLine($"Total duration for generating options: {optionsWatch.ElapsedMilliseconds} ms");
 				Console.WriteLine();
-				//roundRecords[r] = sum;
 				totalSum += sum;
+				optionsSum += optionsWatch.ElapsedMilliseconds;
 				watch.Reset();
+				optionsWatch.Reset();
 			}
 
 			Console.WriteLine($"Average duration per round: {(double) totalSum / round} ms");
+			Console.WriteLine($"Average duration for generating options per round: {(double) optionsSum / round} ms");
 		}
 	}
 }

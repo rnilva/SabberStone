@@ -32,6 +32,7 @@ namespace SabberStoneCore.Tasks.PlayerTasks
 		{
 			Controller.PlayState = PlayState.CONCEDED;
 			Controller.Game.NextStep = Step.FINAL_WRAPUP;
+			Game.FinalWrapUp();
 			return true;
 		}
 

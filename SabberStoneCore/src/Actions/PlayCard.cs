@@ -158,7 +158,7 @@ namespace SabberStoneCore.Actions
 					if (g.CurrentEventData != null)
 						g.CurrentEventData.EventNumber = cost;
 
-					if (source is Spell && c.SpellsCostHelath)
+					if (source is Spell && c.SpellsCostHealth)
 					{
 						c.Hero.TakeDamage(c.Hero, cost);
 						return true;

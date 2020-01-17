@@ -33,6 +33,16 @@ namespace SabberStoneCore.Model.Entities
 	public partial class Controller : Entity
 	{
 		/// <summary>
+		/// Maximum amount of cards in the player's hand
+		/// </summary>
+		public const int MaxHandSize = 10;
+
+		/// <summary>
+		/// Maximum amount of mana this player is allowed to spend.
+		/// </summary>
+		public const int MaxResources = 10;
+
+		/// <summary>
 		/// Available zones for this player.
 		/// </summary>
 		public ControlledZones ControlledZones;
@@ -169,11 +179,8 @@ namespace SabberStoneCore.Model.Entities
 			CardsPlayedThisTurn = new List<Card>(10);
 			//cardsPlayedThisGame = new List<Card>(30);
 			PlayHistory = new List<PlayHistoryEntry>(30);
-		
+			
 			Game.Log(LogLevel.INFO, BlockType.PLAY, "Controller", !Game.Logging? "":$"Created Controller '{name}'");
-
-			//_attrs = new ControllerAttributes {PlayerId = playerId};
-			//_attrs = 
 		}
 
 		/// <summary>
@@ -216,26 +223,6 @@ namespace SabberStoneCore.Model.Entities
 			PlayHistory = new List<PlayHistoryEntry>(controller.PlayHistory);
 			DiscardedEntities = new List<int>(controller.DiscardedEntities);
 			CardsPlayedThisTurn = new List<Card>(controller.CardsPlayedThisTurn);
-
-			// Cloning applied enchantments.
-			//{
-			//	List<Enchantment> originalEnchantments = controller.AppliedEnchantments;
-			//	if (originalEnchantments != null)
-			//	{
-			//		var enchantments = new List<Enchantment>(originalEnchantments.Capacity);
-			//		foreach (Enchantment p in originalEnchantments)
-			//		{
-			//			enchantments.Add((Enchantment) p.Clone());
-			//		}
-			//		AppliedEnchantments = enchantments;
-			//	}
-			//}
-
-			// non-tag attributes
-			//_playerId = controller._playerId;
-			//_currentSpellPower = controller._currentSpellPower;
-			//NumTotemSummonedThisGame = controller.NumTotemSummonedThisGame;
-			//TemporusFlag = controller.TemporusFlag;
 
 			_attrs = controller._attrs;
 		}
@@ -452,7 +439,7 @@ namespace SabberStoneCore.Model.Entities
 				Card card = chooseOnePlayable?.Card ?? playable.Card;
 
 				if (!spellCostHealth.HasValue)
-					spellCostHealth = SpellsCostHelath;
+					spellCostHealth = SpellsCostHealth;
 
 				bool healthCost = (playable.CardCostsHealth) ||
 				                  (spellCostHealth.Value && playable.Card.Type == CardType.SPELL);
@@ -550,7 +537,7 @@ namespace SabberStoneCore.Model.Entities
 					case TargetingType.All:
 						if (allTargets == null)
 						{
-							if (Opponent.Hero.HasStealth)
+							if (Opponent.Hero.HasStealth || Opponent.Hero.IsImmune)
 							{
 								allTargets = new Character[GetFriendlyMinions().Length + GetEnemyMinions().Length + 1];
 								allTargets[0] = Hero;
@@ -578,7 +565,7 @@ namespace SabberStoneCore.Model.Entities
 					case TargetingType.EnemyCharacters:
 						if (allEnemies == null)
 						{
-							if (!Opponent.Hero.HasStealth)
+							if (!Opponent.Hero.HasStealth || Opponent.Hero.IsImmune)
 							{
 								allEnemies = new Character[GetEnemyMinions().Length + 1];
 								allEnemies[0] = Opponent.Hero;
@@ -632,8 +619,8 @@ namespace SabberStoneCore.Model.Entities
 					}
 					else
 					{
-						if (!card.TargetingAvailabilityPredicate?.Invoke(this, card) ?? false)
-							return null;
+						//if (!card.TargetingAvailabilityPredicate?.Invoke(this, card) ?? false)
+						//	return null;
 
 						Character[] buffer = new Character[targets.Length];
 						int i = 0;
@@ -748,8 +735,6 @@ namespace SabberStoneCore.Model.Entities
 
 	public partial class Controller
 	{
-		//private ControllerAttributes _attrs;
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void CleanTurnStatistics()
 		{
@@ -764,464 +749,5 @@ namespace SabberStoneCore.Model.Entities
 		{
 			effect.RemoveFrom(this);
 		}
-
-		/// <summary>
-		/// Maximum amount of cards in the player's hand
-		/// </summary>
-		public const int MaxHandSize = 10;
-
-		/// <summary>
-		/// Maximum amount of mana this player is allowed to spend.
-		/// </summary>
-		public const int MaxResources = 10;
-
-//		/// <summary>
-//		/// Duration of seconds of this player's turn.
-//		/// </summary>
-//		public int TimeOut
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.TimeOut;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.TimeOut = value;
-//		}
-
-//		/// <summary>
-//		/// ID of the player, which is a monotone ranking order starting from 1.
-//		/// The first player gets PlayerID == 1
-//		/// </summary>
-//		public int PlayerId
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.PlayerId;
-//		}
-
-//		/// <summary>
-//		/// The EntityID of the selected Hero.
-//		/// </summary>
-//		public int HeroId
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.HeroId;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.HeroId = value;
-//		}
-
-
-//		/// <summary>
-//		/// Context in which the controller is performing.
-//		/// </summary>
-//		public PlayState PlayState
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => (PlayState) _attrs.PlayState;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.PlayState = (int) value;
-//		}
-
-//		/// <summary>
-//		/// Progress this player is making during Mulligan Phase.
-//		/// <see cref="Mulligan"/>
-//		/// </summary>
-//		public Mulligan MulliganState
-//		{
-//			get { return (Mulligan)this[GameTag.MULLIGAN_STATE]; }
-//			set { this[GameTag.MULLIGAN_STATE] = (int)value; }
-//		}
-
-//		/// <summary>
-//		/// Total amount of mana available to this player.
-//		/// This value DOES NOT contain temporary mana!
-//		/// 
-//		/// This value is limited to 1 turnand should be reset in the next turn.
-//		/// </summary>
-//		public int BaseMana
-//		{
-//			//get { return this[GameTag.RESOURCES]; }
-//			//set { this[GameTag.RESOURCES] = value; }
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.BaseMana;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.BaseMana = value;
-//		}
-
-//		/// <summary>
-//		/// Amount of mana used by this player.
-//		/// 
-//		/// This value is limited to 1 turnand should be reset in the next turn.
-//		/// </summary>
-//		public int UsedMana
-//		{
-//			//get
-//			//{
-//			//	_data.TryGetValue(GameTag.RESOURCES_USED, out int value);
-//			//	return value;
-//			//}
-//			//set { this[GameTag.RESOURCES_USED] = value; }
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.UsedMana;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.UsedMana = value;
-//		}
-
-//		/// <summary>
-//		/// Additionall mana gained during this turn.
-//		/// </summary>
-//		public int TemporaryMana
-//		{
-//			//get
-//			//{
-//			//	_data.TryGetValue(GameTag.TEMP_RESOURCES, out int value);
-//			//	return value;
-//			//}
-//			//set { this[GameTag.TEMP_RESOURCES] = value; }
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.TemporaryMana;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.TemporaryMana = value;
-//		}
-
-//		/// <summary>
-//		/// Indicates if combo power effects of next cards should be executed or not.
-//		/// 
-//		/// Combo is active if at least one card has been played this turn.
-//		/// </summary>
-//		public bool IsComboActive
-//		{
-//			//get
-//			//{
-//			//	_data.TryGetValue(GameTag.COMBO_ACTIVE, out int value);
-//			//	return value == 1;
-//			//}
-//			//set { this[GameTag.COMBO_ACTIVE] =  value ? 1 : 0; }
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.IsComboActive > 0;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.IsComboActive = value ? 1 : 0;
-//		}
-
-//#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-		
-//	    public int NumCardsDrawnThisTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.NumCardsDrawnThisTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.NumCardsDrawnThisTurn = value;
-//	    }
-	    
-//	    public int NumCardsPlayedThisTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.NumCardsPlayedThisTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.NumCardsPlayedThisTurn = value;
-//	    }
-	    
-//	    public int NumMinionsPlayedThisTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.NumMinionsPlayedThisTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.NumMinionsPlayedThisTurn = value;
-//	    }
-	    
-//	    public int NumOptionsPlayedThisTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.NumOptionsPlayedThisTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.NumOptionsPlayedThisTurn = value;
-//	    }
-	    
-//	    public int NumFriendlyMinionsThatDiedThisTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.NumFriendlyMinionThatDiedThisTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.NumFriendlyMinionThatDiedThisTurn = value;
-//	    }
-	    
-//	    public int AmountHeroHealedThisTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.AmountHeroHealedThisTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.AmountHeroHealedThisTurn = value;
-//	    }
-	    
-//	    public int NumMinionsPlayerKilledThisTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.NumMinionsPlayerKilledThisTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.NumMinionsPlayerKilledThisTurn = value;
-//	    }
-	    
-//	    public int NumElementalsPlayedThisTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.NumElementalPlayedThisTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.NumElementalPlayedThisTurn = value;
-//	    }
-	    
-//	    public int NumElementalsPlayedLastTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.NumElementalPlayedLastTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.NumElementalPlayedLastTurn = value;
-//	    }
-	    
-//	    public int NumFriendlyMinionsThatAttackedThisTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.NumFriendlyMinionsThatAttackedThisTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.NumFriendlyMinionsThatAttackedThisTurn = value;
-//	    }
-	    
-//	    public int HeroPowerActivationsThisTurn
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.HeroPowerActivationsThisTurn;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.HeroPowerActivationsThisTurn = value;
-//	    }
-	    
-//	    public int TotalManaSpentThisGame
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.TotalManaSpentThisGame;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.TotalManaSpentThisGame = value;
-//	    }
-
-//	    public int NumTimesHeroPowerUsedThisGame
-//	    {
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        get => _attrs.NumTimesHeroPowerUsedThisGame;
-//	        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//	        set => _attrs.NumTimesHeroPowerUsedThisGame = value;
-//	    }
-
-//	    public int NumSecretsPlayedThisGame
-//	    {
-//		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//		    get => _attrs.NumSecretPlayedThisGame;
-//		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//		    set => _attrs.NumSecretPlayedThisGame = value;
-//	    }
-    
-//	    public int NumSpellsPlayedThisGame
-//	    {
-//		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//		    get => _attrs.NumSpellsPlayedThisGame;
-//		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//		    set => _attrs.NumSpellsPlayedThisGame = value;
-//	    }
-    
-//	    public int NumWeaponsPlayedThisGame
-//	    {
-//		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//		    get => _attrs.NumWeaponsPlayedThisGame;
-//		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//		    set => _attrs.NumWeaponsPlayedThisGame = value;
-//	    }
-    
-//	    public int NumMurlocsPlayedThisGame
-//	    {
-//		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//		    get => _attrs.NumMurlocsPlayedThisGame;
-//		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//		    set => _attrs.NumMurlocsPlayedThisGame = value;
-//	    }
-
-//	    public int NumTotemSummonedThisGame
-//	    {
-//		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//		    get => _attrs.NumTotemSummonedThisGame;
-//		    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-//		    set => _attrs.NumTotemSummonedThisGame = value;
-//	    }
-    
-//#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-
-
-//		/// <summary>
-//		/// Amount of turns left for this player.
-//		/// 
-//		/// This is a special tag used for the spell Time Warp, which grants 
-//		/// the caster an additional turn.
-//		/// </summary>
-//		public int NumTurnsLeft
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.NumTurnsLeft;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.NumTurnsLeft = value;
-//		}
-
-//		/// <summary>
-//		/// Amount of mana crystals which will be locked during the next turn.
-//		/// </summary>
-//		public int OverloadOwed
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.OverloadOwed;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.OverloadOwed = value;
-//		}
-
-//		/// <summary>
-//		/// Amount of mana crystals locked this turn.
-//		/// 
-//		/// The subtraction of BASE_MANA and this value gives the available
-//		/// resources during this turn.
-//		/// </summary>
-//		public int OverloadLocked
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.OverloadLocked;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.OverloadLocked = value;
-//		}
-
-//		/// <summary>
-//		/// Sum of locked mana crystals during the entire game.
-//		/// </summary>
-//		public int OverloadThisGame
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.OverloadThisGame;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.OverloadThisGame = value;
-//		}
-
-//#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
-//		public int LastCardPlayed
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.LastCardPlayed;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.LastCardPlayed = value;
-//		}
-
-//		public int LastCardDrawn
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.LastCardDrawn;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.LastCardDrawn = value;
-//		}
-
-//		public int LastCardDiscarded
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.LastCardDiscarded;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.LastCardDiscarded = value;
-//		}
-
-//		public bool SeenCthun
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.SeenCthun > 0;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.SeenCthun = value ? 1 : 0;
-//		}
-
-//		public int NumDiscardedThisGame => DiscardedEntities.Count;
-
-//#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-
-//		/// <summary>
-//		/// The entity which is a copy of the real C'Thun entity in deck.
-//		/// This proxy is used to display and store all buffs from rituals.
-//		/// The real C'Thun will mirror the proxy C'Thun.
-//		/// </summary>
-//		public int ProxyCthun
-//		{
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			get => _attrs.ProxyCthun;
-//			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-//			set => _attrs.ProxyCthun = value;
-//		}
-
-//		/// <summary>
-//		/// Returns true if for this player all cards and powers that restore Health deal damage instead.
-//		/// (e.g. True when Auchenai Soulpriest is in play.)
-//		/// </summary>
-//		public bool RestoreToDamage
-//		{
-//			get => ControllerAuraEffects[GameTag.HEALING_DOES_DAMAGE] > 0;
-//			set => ControllerAuraEffects[GameTag.HEALING_DOES_DAMAGE] = value ? 1 : 0;
-//		}
-
-//		/// <summary>
-//		/// Returns true if for this player all battlecries should be executed another time.
-//		/// This is applicable when Brann BronzeBeard is in play.
-//		/// </summary>
-//		public bool ExtraBattlecry
-//		{
-//			get => ControllerAuraEffects[GameTag.EXTRA_BATTLECRIES_BASE] > 0 ||
-//			       ControllerAuraEffects[GameTag.EXTRA_MINION_BATTLECRIES_BASE] == 1;
-//			set => ControllerAuraEffects[GameTag.EXTRA_BATTLECRIES_BASE] = value ? 1 : 0;
-//		}
-
-//		/// <summary>
-//		/// Returns true if for this player all end turn effects should be executed another time.
-//		/// This is applicable when Drakkari Enchanter is in play.
-//		/// </summary>
-//		public bool ExtraEndTurnEffect
-//		{
-//			get => ControllerAuraEffects[GameTag.EXTRA_END_TURN_EFFECT] > 0;
-//			set => ControllerAuraEffects[GameTag.EXTRA_END_TURN_EFFECT] = value ? 1 : 0;
-//		}
-
-//		/// <summary>
-//		/// Returns true if for this player hero power is disabled.
-//		/// </summary>
-//		public bool HeroPowerDisabled
-//		{
-//			get => ControllerAuraEffects[GameTag.HERO_POWER_DISABLED] == 1;
-//			set => ControllerAuraEffects[GameTag.HERO_POWER_DISABLED] = value ? 1 : 0;
-//		}
-
-//		/// <summary>
-//		/// Returns true if this player automatically gets both options instead of having to
-//		/// choose one.
-//		/// This is applicable when Fandral Staghelm is in play.
-//		/// </summary>
-//		public bool ChooseBoth
-//		{
-//			get => ControllerAuraEffects[GameTag.CHOOSE_BOTH] == 1;
-//			set => ControllerAuraEffects[GameTag.CHOOSE_BOTH] = value ? 1 : 0;
-//		}
-
-//		/// <summary>
-//		/// Amount of current Spell Damage bonus for this Controller.
-//		/// </summary>
-//		public int CurrentSpellPower
-//		{
-//			get => BoardZone.Sum(m => m.SpellPower)
-//				+ (Hero.NativeTags.ContainsKey(GameTag.SPELLPOWER) ? Hero.NativeTags[GameTag.SPELLPOWER] : 0)
-//				+ (NativeTags.ContainsKey(GameTag.SPELLPOWER) ? NativeTags [GameTag.SPELLPOWER] : 0)
-//				+ ControllerAuraEffects[GameTag.SPELLPOWER];
-//		}
-
-//		public int AmountHealedThisGame
-//		{
-//			get => this[GameTag.AMOUNT_HEALED_THIS_GAME];
-//			set => this[GameTag.AMOUNT_HEALED_THIS_GAME] = value;
-//		}
-
-//		public int NumHeroPowerDamageThisGame
-//		{
-//			get => this[GameTag.NUM_HERO_POWER_DAMAGE_THIS_GAME];
-//			set => this[GameTag.NUM_HERO_POWER_DAMAGE_THIS_GAME] = value;
-//		}
 	}
 }
