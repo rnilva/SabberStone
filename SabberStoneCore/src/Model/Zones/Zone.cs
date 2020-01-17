@@ -16,6 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Exceptions;
@@ -213,11 +214,13 @@ namespace SabberStoneCore.Model.Zones
 		/// Gets a <see cref="ReadOnlySpan{T}"/> of this Zone.
 		/// </summary>
 		/// <returns></returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public ReadOnlySpan<T> GetSpan()
 		{
 			return new ReadOnlySpan<T>(_entities, 0, _count);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public ReadOnlySpan<TReturn> GetSpan<TReturn>() where TReturn: Playable
 		{
 			return new ReadOnlySpan<TReturn>((TReturn[]) (Playable[]) _entities);
@@ -243,6 +246,8 @@ namespace SabberStoneCore.Model.Zones
 			for (int i = 0; i < _count; ++i)
 				action(entities[i], arg2, arg3);
 		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal virtual void CopyTo(Array destination, int index)
 		{
 			Array.Copy(_entities, 0, destination, index, _count);

@@ -246,7 +246,7 @@ namespace SabberStoneCore.Model.Entities
 			}
 
 			// check if player has enough mana to play card
-			bool bool1 = (this is Spell && Controller.SpellsCostHelath);
+			bool bool1 = (this is Spell && Controller.SpellsCostHealth);
 			bool bool2 = CardCostsHealth;
 			if ((!bool1 && !bool2) && Controller.RemainingMana < Cost)
 			{

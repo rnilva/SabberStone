@@ -2411,12 +2411,12 @@ namespace SabberStoneCoreTest.CardSets
 			Playable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Twisting Nether"));
 
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
-			Assert.True(game.CurrentPlayer.SpellsCostHelath);
+			Assert.True(game.CurrentPlayer.SpellsCostHealth);
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, spell));
 
 			Assert.Equal(0, game.CurrentPlayer.BoardZone.Count);
 			Assert.Equal(8, game.CurrentPlayer.Hero.Damage);
-			Assert.False(game.CurrentPlayer.SpellsCostHelath);
+			Assert.False(game.CurrentPlayer.SpellsCostHealth);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));

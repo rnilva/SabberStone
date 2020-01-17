@@ -27,6 +27,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Auras;
+using SabberStoneCore.Tasks.PlayerTasks.Lite;
 using SabberStoneCore.Triggers;
 
 // TODO check if event should be removed
@@ -539,52 +540,75 @@ namespace SabberStoneCore.Model
 				}
 			}
 
+			return result;
+		}
 
-			// add power and buff tag changes
-			//if (false)
-			//{
-			//	OldEnchants.ForEach(p =>
-			//		p.Effects.Keys.ToList().ForEach(t =>
-			//			IdEntityDic.Values.ToList().ForEach(o =>
-			//				PowerHistory.Add(PowerHistoryBuilder.TagChange(o.Id, t, o[t])))));
+		public bool Process(in PlayerTaskLite playerTaskLite)
+		{
+			if (Logging)
+				Log(LogLevel.INFO, Enums.BlockType.PLAY, "Game", playerTaskLite.ToString());
 
-			//	foreach (Controller controller in _players)
-			//	{
-			//		controller.Hero.OldEnchants.ForEach(p =>
-			//			p.Effects.Keys.ToList().ForEach(t =>
-			//				PowerHistory.Add(PowerHistoryBuilder.TagChange(Game.CurrentPlayer.Hero.Id, t, Game.CurrentPlayer.Hero[t]))));
+			PowerHistory?.Last.Clear();
 
-			//		//CurrentPlayer.Hero.Weapon?.Enchants.ForEach(p => p.IsEnabled());
-			//		//CurrentPlayer.Hero.Weapon?.Triggers.ForEach(p => p.IsEnabled());
-			//		//CurrentOpponent.Hero.Weapon?.Enchants.ForEach(p => p.IsEnabled());
-			//		//CurrentOpponent.Hero.Weapon?.Triggers.ForEach(p => p.IsEnabled());
+			bool result = true;
 
-			//		controller.ControlledZones.Where(z => z != null).ToList().ForEach(z =>
-			//			z.Enchants.ForEach(p =>
-			//				p.Effects.Keys.ToList().ForEach(t =>
-			//					z.GetAll.ForEach(o =>
-			//						PowerHistory.Add(PowerHistoryBuilder.TagChange(o.Id, t, o[t]))))));
+			Controller c = CurrentPlayer;
+			switch (playerTaskLite.Type)
+			{
+				//case PlayerTaskType.CHOOSE:
+				//	break;
+				case PlayerTaskType.CONCEDE:
+					c.PlayState = PlayState.CONCEDED;
+					NextStep = Step.FINAL_WRAPUP;
+					FinalWrapUp();
+					break;
+				case PlayerTaskType.END_TURN:
+					Step = Step.MAIN_END;
+					MainEnd();
+					break;
+				case PlayerTaskType.HERO_ATTACK:
+					result = Generic.AttackBlock(c, c.Hero, playerTaskLite.GetTarget(c), playerTaskLite.SkipPrePhase, false);
+					break;
+				case PlayerTaskType.HERO_POWER:
+					result = Generic.HeroPower(c, playerTaskLite.GetTarget(c), playerTaskLite.ChooseOne,
+						playerTaskLite.SkipPrePhase);
+					break;
+				case PlayerTaskType.MINION_ATTACK:
+					result = Generic.AttackBlock(c, playerTaskLite.GetAttackSource(c), playerTaskLite.GetTarget(c),
+						playerTaskLite.SkipPrePhase, false);
+					break;
+				case PlayerTaskType.PLAY_CARD:
+					result = Generic.PlayCard(this, c, playerTaskLite.GetPlaySource(c), playerTaskLite.GetTarget(c),
+						playerTaskLite.ZonePosition, playerTaskLite.ChooseOne, playerTaskLite.SkipPrePhase);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 
-			//	}
+			// check dead heroes here again (TODO)
+			if (State != State.COMPLETE)
+			{
+				if (Player1.Hero.ToBeDestroyed)
+				{
+					if (Player2.Hero.ToBeDestroyed)
+					{
+						Player1.PlayState = PlayState.TIED;
+						Player2.PlayState = PlayState.TIED;
+					}
+					else
+						Player1.PlayState = PlayState.LOSING;
 
-			//	Characters.ForEach(c =>
-			//		c.OldEnchants.ForEach(p =>
-			//			p.Effects.Keys.ToList().ForEach(t =>
-			//				PowerHistory.Add(PowerHistoryBuilder.TagChange(c.Id, t, c[t])))));
-			//}
+					NextStep = Step.FINAL_WRAPUP;
+					FinalWrapUp();
+				}
+				else if (Player2.Hero.ToBeDestroyed)
+				{
+					Player2.PlayState = PlayState.LOSING;
 
-			//if (Splitting)
-			//{
-			//	List<SplitNode> finalSplits = SplitNode.GetSolutions(this, 10, 10000);
-			//	Dump("Split", $"found {finalSplits.Count} final splits of {finalSplits.Sum(p => p.SameState)}!");
-			//	finalSplits.GroupBy(p => p.SameState)
-			//		.Select(i => new { Word = i.Key, Count = i.Count() })
-			//		.ToList().ForEach(p => Dump("Split", $" {p.Count},  with {p.Word} same states"));
-			//	Dump("Split", $"Finalsplits ordered by probability:");
-			//	finalSplits.OrderByDescending(p => p.Probability).ToList()
-			//		.ForEach(p => Dump("Split", $"{finalSplits.IndexOf(p)}. {p.Probability.ToString("0.00%")} "));
-			//	FinalSplits = finalSplits;
-			//}
+					NextStep = Step.FINAL_WRAPUP;
+					FinalWrapUp();
+				}
+			}
 
 			return result;
 		}
