@@ -2581,7 +2581,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(1, game.CurrentPlayer.NumCardsDrawnThisTurn);
 
-			Generic.PlayCardBlock(game, game.CurrentPlayer, minion1, null, -1, 0, false);
+			Generic.PlayCard(game, game.CurrentPlayer, minion1, null, -1, 0, false);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -2589,7 +2589,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(1, game.CurrentPlayer.NumCardsDrawnThisTurn);
 
-			Generic.PlayCardBlock(game, game.CurrentPlayer, minion2, null, -1, 0, false);
+			Generic.PlayCard(game, game.CurrentPlayer, minion2, null, -1, 0, false);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -2731,7 +2731,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(1, game.CurrentPlayer.NumCardsDrawnThisTurn);
 
-			Generic.PlayCardBlock(game, game.CurrentPlayer, minion1, null, -1, 0, false);
+			Generic.PlayCard(game, game.CurrentPlayer, minion1, null, -1, 0, false);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -2739,7 +2739,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(1, game.CurrentPlayer.NumCardsDrawnThisTurn);
 
-			Generic.PlayCardBlock(game, game.CurrentPlayer, minion2, null, -1, 0, false);
+			Generic.PlayCard(game, game.CurrentPlayer, minion2, null, -1, 0, false);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
@@ -3793,7 +3793,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Playable minion = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Northshire Cleric"));
 
-			Generic.PlayCardBlock(game, game.Player1, minion, null, -1, 0, false);
+			Generic.PlayCard(game, game.Player1, minion, null, -1, 0, false);
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 

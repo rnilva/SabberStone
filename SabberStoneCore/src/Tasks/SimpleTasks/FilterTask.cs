@@ -43,6 +43,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				indices[k++] = i;
 			}
 
+			if (k == entities.Count)
+				return TaskState.COMPLETE;
+
 			var filtered = new Playable[k];
 			for (int i = 0; i < k; ++i)
 				filtered[i] = entities[indices[i]];

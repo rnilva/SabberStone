@@ -14,6 +14,7 @@
 //#define LOGEVENT
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Exceptions;
 using SabberStoneCore.Kettle;
@@ -26,7 +27,7 @@ namespace SabberStoneCore.Model
 {
 	public class TaskQueue
 	{
-		private class TaskInstance
+		private readonly struct TaskInstance
 		{
 			public readonly SimpleTask Task;
 			public readonly Controller Controller;
@@ -71,10 +72,7 @@ namespace SabberStoneCore.Model
 		//}
 
 		private readonly Game _game;
-		private readonly Stack<Queue<TaskInstance>> _eventStack;
-		//private readonly Stack<Event> _eventStack;
-		private readonly Queue<TaskInstance> _baseQueue;
-		private readonly Queue<TaskInstance> _pendingTasks;
+
 #if LOGEVENT
 		private int _stackHeight;
 #endif
@@ -82,31 +80,35 @@ namespace SabberStoneCore.Model
 		public TaskQueue(Game game)
 		{
 			_game = game;
-			_eventStack = new Stack<Queue<TaskInstance>>();
-			//_eventStack = new Stack<Event>();
-			_baseQueue = new Queue<TaskInstance>();
-			CurrentQueue = _baseQueue;
-			_pendingTasks = new Queue<TaskInstance>();
+			_arr = new TaskInstance[INIT_SIZE];
+			_headStack = new int[INIT_SIZE];
 		}
 
-		//private Queue<TaskInstance> CurrentQueue => _eventStack.Count == 0 ? _baseQueue : _eventStack.Peek();
-		private Queue<TaskInstance> CurrentQueue { get; set; }
+		public TaskQueue(Game game, TaskQueue taskQueue)
+		{
+			_game = game;
+			_arr = new TaskInstance[taskQueue._arr.Length];
+			_headStack = new int[taskQueue._headStack.Length];
+		}
 
-		// nothing left in current event
-		//public bool IsEmpty => _eventFlag || CurrentQueue.Count == 0;
-		public bool IsEmpty => CurrentQueue == null || CurrentQueue.Count == 0;
+		private const int INIT_SIZE = 8;
+		private TaskInstance[] _arr;
+		private int _current;
+		private int _currentHead;
+		private int[] _headStack;
+		private int _headStackPointer;
 
-		public SimpleTask CurrentTask { get; private set; }
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool IsEmpty() => _current == _currentHead;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void StartEvent()
 		{
-			//_eventFlag = true;
-			//_numEventsStarted++;
-			//_eventStack.Push(null);
+			if (_headStack.Length == _headStackPointer)
+				ResizeHeadStack();
 
-			_eventStack.Push(CurrentQueue);
-			CurrentQueue = null;
-
+			_headStack[_headStackPointer++] = _currentHead;
+			_currentHead = _current;
 #if LOGEVENT
 			if (_game.Logging)
 			{
@@ -122,6 +124,7 @@ namespace SabberStoneCore.Model
 #endif
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void EndEvent()
 		{
 #if LOGEVENT
@@ -138,66 +141,20 @@ namespace SabberStoneCore.Model
 				);
 			}
 #endif
-
-
-
-			//if (!_eventFlag)
-			//{
-			//	if (_eventStack.Count > 0)
-			//		_eventStack.Pop();
-			//}
-			//else
-			//{
-			//	_eventFlag = false;
-			//	_numEventsStarted--;
-			//}
-
-			//if (_numEventsStarted > 0)
-			//	_eventFlag = true;
-
-			CurrentQueue = _eventStack.Pop();
+			_currentHead = _headStack[--_headStackPointer];
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Enqueue(in SimpleTask task, in Controller controller, in Entity source, in Entity target)
 		{
-			//if (_eventFlag)	// flag = true means Event starts and no tasks queue yet
-			//{
-			//	if (CurrentQueue.Count != 0) // Check if an ongoing event exists
-			//		_eventStack.Push(new Queue<TaskInstance>());
+			if (_arr.Length == _current)
+				ResizeTaskArray();
 
-			//	_eventFlag = false;
-			//	_numEventsStarted--;
-			//}
-
-			//Stack<Queue<TaskInstance>> stack = _eventStack;
-			Queue<TaskInstance> queue = CurrentQueue;
-			if (queue == null)
-			{
-				queue = new Queue<TaskInstance>();
-				CurrentQueue = queue;
-			}
-
-			queue.Enqueue(new TaskInstance(task, controller, source, target));
-
+			_arr[_current++] = new TaskInstance(task, controller, source, target);
 #if LOGEVENT
 			_game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "TaskQueue",
 				!_game.Logging ? "" : $"{task.GetType().Name} is Enqueued in {_eventStack.Count}th stack");
 #endif
-		}
-
-		public void EnqueueBase(in SimpleTask task, in Controller controller, in Entity source, in Entity target)
-		{
-			//_baseQueue.Enqueue((task, controller, source, target));
-			//if (!_eventFlag && _eventStack.Count == 0)
-			//{
-			//	_eventStack.Push(new Queue<TaskInstance>(_baseQueue));
-			//	_baseQueue.Clear();
-			//}
-
-			_baseQueue.Enqueue(new TaskInstance(in task, in controller, in source, in target));
-
-			_game.Log(LogLevel.DEBUG, BlockType.TRIGGER, "TaskQueue",
-				!_game.Logging ? "" : $"{task.GetType().Name} is Enqueued in 0th stack");
 		}
 
 		/// <summary>
@@ -206,60 +163,43 @@ namespace SabberStoneCore.Model
 		/// <param name="task"></param>
 		public void EnqueuePendingTask(in SimpleTask task, in Controller controller, in Entity source, in Entity target)
 		{
-			_pendingTasks.Enqueue(new TaskInstance(in task, in controller, in source, in target));
-			_hasPendingTask = true;
+			Enqueue(in task, in controller, in source, in target);
 		}
 
-		private bool _hasPendingTask;
-
-		public void ResumePendingTasks()
+		public void ProcessCurrentEventTasks()
 		{
-			if (!_hasPendingTask) return;
-			_hasPendingTask = false;
+			bool logging = _game.Logging;
+			bool history = _game.History;
 
-			do CurrentQueue.Enqueue(_pendingTasks.Dequeue());
-			while (_pendingTasks.Count != 0);
-		}
-
-		public TaskState Process()
-		{
-			(SimpleTask task, Controller controller, Entity source, Entity target) = CurrentQueue.Peek();
-			SimpleTask temp = CurrentTask;
-			CurrentTask = task;
-
-			//if (currentTask is StateTaskList tasks)
-			//	tasks.Stack = new TaskStack(_game);
-
-			_game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TaskQueue", !_game.Logging ? "" : $"LazyTask[{source}]: '{CurrentTask.GetType().Name}' is processed!" +
-			                                                                                $"'{source.Card.Text?.Replace("\n", " ")}'");
-			if (_game.History)
-				_game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(task.IsTrigger ? BlockType.TRIGGER : BlockType.POWER, source.Id, "", -1, target?.Id ?? 0));
-
-			TaskState success;
-#if !DEBUG
-			try
+			for (int i = _currentHead; i < _current; ++i)
 			{
-#endif
-				success = task.Process(in _game, in controller, in source, in target);
+				ref readonly TaskInstance task = ref _arr[i];
+
+				if (logging)
+					_game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TaskQueue", !_game.Logging ? ""
+						: $"LazyTask[{task.Source}]: '{task.Task.GetType().Name}' is processed!" + $"'{task.Source.Card.Text?.Replace("\n", " ")}'");
+				if (history)
+					_game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(task.Task.IsTrigger ? BlockType.TRIGGER : BlockType.POWER, task.Source.Id, "", -1, task.Target?.Id ?? 0));
+
+				TaskState success;
 #if !DEBUG
-			}
-			catch (Exception e)
-			{
-				throw new TaskException(
-					$"Exception occurs during processing a task.\nTask:{task}, Source:{source}, Target:{target}", e);
-			}
+				try
+				{
 #endif
+					success = task.Task.Process(in _game, in task.Controller, in task.Source, in task.Target);
+#if !DEBUG
+				}
+				catch (Exception e)
+				{
+					throw new TaskException(
+						$"Exception occurs during processing a task.\nTask:{task.Task}, Source:{task.Source}, Target:{task.Target}", e);
+				}
+#endif
+				if (history)
+					_game.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
+			}
 
-			if (_game.History)
-				_game.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
-
-			// reset between task execution
-			//_game.TaskStack.Reset();
-
-			CurrentQueue.Dequeue();
-			CurrentTask = temp;
-
-			return success;
+			_current = _currentHead;
 		}
 
 		public void Execute(in SimpleTask task, in Controller controller, in Playable source, in Entity target, int number = 0)
@@ -280,14 +220,18 @@ namespace SabberStoneCore.Model
 			//_game.TaskStack.Reset();
 		}
 
-		public void ClearCurrentEvent()
+		private void ResizeHeadStack()
 		{
-			CurrentQueue.Clear();
+			var newArray = new int[_headStack.Length << 1];
+			Buffer.BlockCopy(_headStack, 0, newArray, 0, sizeof(int) * _headStack.Length);
+			_headStack = newArray;
 		}
 
-		public void Clone()
+		private void ResizeTaskArray()
 		{
-			//return new TaskQueue();
+			var newArray = new TaskInstance[_arr.Length << 1];
+			Array.Copy(_arr, 0, newArray, 0, _arr.Length);
+			_arr = newArray;
 		}
 	}
 
