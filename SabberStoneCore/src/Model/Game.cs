@@ -409,7 +409,7 @@ namespace SabberStoneCore.Model
 				AllOptionsMap = new Dictionary<int, PowerAllOptions>();
 			}
 
-			TaskQueue = new TaskQueue(this);
+			TaskQueue = new TaskQueue(this, game.TaskQueue);
 			TriggerManager = new TriggerManager(this);
 			Auras = new List<IAura>(game.Auras.Capacity);
 			Triggers = new List<Trigger>(game.Triggers.Capacity);
@@ -1214,35 +1214,6 @@ namespace SabberStoneCore.Model
 				DeadMinions.Clear();
 			}
 
-			//if (Player1.Hero.ToBeDestroyed)
-			//{
-			//	// TODO: Temporary approach. Should change the whole structure.
-			//	if (State == State.COMPLETE)
-			//		return;
-
-			//	if (Player2.Hero.ToBeDestroyed)
-			//	{
-			//		Player1.PlayState = PlayState.TIED;
-			//		Player2.PlayState = PlayState.TIED;
-			//	}
-			//	else
-			//		Player1.PlayState = PlayState.LOSING;
-
-			//	NextStep = Step.FINAL_WRAPUP;
-			//}
-			//else if (Player2.Hero.ToBeDestroyed)
-			//{
-			//	// TODO: Temporary approach. Should change the whole structure.
-			//	if (State == State.COMPLETE)
-			//		return;
-
-			//	Player2.PlayState = PlayState.LOSING;
-
-			//	if (State == State.COMPLETE)
-			//		return;
-			//	NextStep = Step.FINAL_WRAPUP;
-			//}
-
 			if (ResolveDeadHeroes != null)
 			{
 				ResolveDeadHeroes.Invoke();
@@ -1270,15 +1241,9 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		internal void ProcessTasks()
 		{
-			TaskQueue queue = TaskQueue;
-			queue.ResumePendingTasks();
-			while (!queue.IsEmpty)
-			{
-				if (queue.Process() != TaskState.COMPLETE)
-				{
-					Log(LogLevel.INFO, BlockType.PLAY, "Game", !Logging ? "" : "Something really bad happend during proccessing, please analyze!");
-				}
-			}
+			if (TaskQueue.IsEmpty()) return;
+
+			TaskQueue.ProcessCurrentEventTasks();
 		}
 
 		/// <summary>
