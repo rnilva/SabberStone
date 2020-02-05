@@ -31,10 +31,6 @@ namespace SabberStoneCore.Model.Entities
 	/// </summary>
 	public abstract class Character : Playable
 	{
-		//public event TriggerManager.TriggerHandler PreDamageTrigger;
-		//public event TriggerManager.TriggerHandler TakeDamageTrigger;
-		//public event TriggerManager.TriggerHandler AfterAttackTrigger;
-
 		protected bool _toBeDestroyed;
 
 		/// <summary>
@@ -150,7 +146,7 @@ namespace SabberStoneCore.Model.Entities
 			// got target but isn't contained in valid targets
 			if (!GetValidAttackTargets().Contains(target))
 			{
-				Game.Log(LogLevel.WARNING, BlockType.ACTION, "Character", !Game.Logging? "":$"{this} has an invalid target {target}.");
+				Game.Log(LogLevel.WARNING, BlockType.ACTION, "Character", !Game.Logging ? "" : $"{this} has an invalid target {target}.");
 				return false;
 			}
 
@@ -226,134 +222,7 @@ namespace SabberStoneCore.Model.Entities
 		/// <param name="source"></param>
 		/// <param name="damage"></param>
 		/// <returns></returns>
-		public int TakeDamage(Playable source, int damage)
-		{
-			Game game = Game;
-			var hero = this as HeroInPlay;
-			var minion = this as MinionInPlay;
-
-			if (minion != null && minion.Zone.Type != Enums.Zone.PLAY)
-				return 0;
-
-			bool fatigue = hero != null && this == source;
-
-			if (fatigue)
-				hero.Fatigue = damage;
-
-			if (minion != null && minion.HasDivineShield)
-			{
-				game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !game.Logging? "":$"{this} divine shield absorbed incoming damage.");
-				minion.HasDivineShield = false;
-				return 0;
-			}
-
-			int armor = hero?.Armor ?? 0;
-
-			int amount = hero == null ? damage : armor < damage ? damage - armor : 0;
-
-			// Damage event is created
-			// Collect all the tasks and sort them by order of play
-			// Death phase and aura update are not emerge here
-
-			// place event related data
-			//game.TaskQueue.StartEvent();
-			EventMetaData temp = game.CurrentEventData;
-			game.CurrentEventData = new EventMetaData(source, this, amount);
-
-			//// added pre damage
-			//if (_history)
-			//	PreDamage = amount;
-
-			// Predamage triggers (e.g. Ice Block)
-			if (!(game.TriggerManager.PredamageTrigger?.IsEmpty ?? true))
-			{
-				game.TaskQueue.StartEvent();
-				game.TriggerManager.PredamageTrigger.Invoke(this);
-				game.ProcessTasks();
-				game.TaskQueue.EndEvent();
-				amount = game.CurrentEventData.EventNumber;
-				if (amount == 0 && armor == 0)
-				{
-					//if (_history)
-					//	PreDamage = 0;
-					game.TaskQueue.EndEvent();
-					game.CurrentEventData = temp;
-					return 0;
-				}
-			}
-			if (IsImmune)
-			{
-				//game.TaskQueue.EndEvent();
-				game.CurrentEventData = temp;
-
-				game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !game.Logging ? "" : $"{this} is immune.");
-                //if (_history)
-                //    PreDamage = 0;
-                return 0;
-			}
-
-			//// reset predamage
-			//if (_history)
-			//	PreDamage = 0;
-
-			// remove armor first from hero ....
-			if (armor > 0)
-				hero.Armor = armor < damage ? 0 : armor - damage;
-
-			// final damage is beeing accumulated
-			Damage += amount;
-
-			game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !game.Logging? "":$"{this} took damage for {amount}({damage}). {(fatigue ? "(fatigue)" : "")}");
-
-			//LastAffectedBy = source.Id;	TODO
-
-			// on-damage triggers
-			game.TaskQueue.StartEvent();
-			game.TriggerManager.TakeDamageTrigger?.Invoke(this);
-			game.TriggerManager.OnDamageTrigger(this);
-			game.TriggerManager.OnDealDamageTrigger(source);
-
-			// Check if the source is Overkill
-			if (source.HasOverkill && source.Controller == game.CurrentPlayer && Health < 0)
-			{
-				game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TakeDamage", !_logging ? "" : $"{source}' Overkill is triggered.");
-
-                SimpleTask task = source is HeroInPlay h ? h.Weapon.Card.Power.OverkillTask : source.Card.Power.OverkillTask;
-                game.TaskQueue.Enqueue(task, source.Controller, source, null);
-            }
-
-			game.ProcessTasks();
-			game.TaskQueue.EndEvent();
-			game.CurrentEventData = temp;
-
-			// Check if the source is lifesteal
-			if (source.HasLifesteal && !_lifestealChecker)
-			{
-				if (game.History)
-					game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, source.Id, source.Card.Id, -1, 0)); // TriggerKeyword=LIFESTEAL
-				if (game.Logging)
-					game.Log(LogLevel.VERBOSE, BlockType.ATTACK, "TakeDamage", !_logging ? "" : $"lifesteal source {source} has damaged target for {amount}.");
-
-				source.Controller.Hero.TakeHeal(source, amount);
-
-				if (game.History)
-					game.PowerHistory.Add(new PowerHistoryBlockEnd());
-
-				if (source.Controller.Hero.ToBeDestroyed && source.Controller.Hero.Health > 0)
-				{
-					source.Controller.Hero._toBeDestroyed = false;
-					Game.ResolveDeadHeroes -= source.Controller.Hero.DisposeHero;
-				}
-			}
-
-			if (hero != null)
-				hero.DamageTakenThisTurn += amount;
-
-			if (source.Card.Type == CardType.HERO_POWER)
-				source.Controller.NumHeroPowerDamageThisGame += amount;
-
-			return amount;
-		}
+		public abstract int TakeDamage(Playable source, int damage);
 
 		/// <summary>
 		/// Heal up all taken damage.
@@ -373,11 +242,11 @@ namespace SabberStoneCore.Model.Entities
 		{
 			if ((source is Spell || source is HeroPower) && source.Controller.SpellHealingDouble > 0)
 			{
-				heal *= (int) Math.Pow(2, source.Controller.SpellHealingDouble);
+				heal *= (int)Math.Pow(2, source.Controller.SpellHealingDouble);
 			}
 
 			if (source.Controller.AllHealingDouble > 0)
-				heal *= (int) Math.Pow(2, source.Controller.AllHealingDouble);
+				heal *= (int)Math.Pow(2, source.Controller.AllHealingDouble);
 
 			if (source.Controller.RestoreToDamage)
 			{
@@ -433,7 +302,7 @@ namespace SabberStoneCore.Model.Entities
 			return sb.ToString();
 		}
 
-		private bool _lifestealChecker;
+		protected bool _lifestealChecker;
 
 #pragma warning disable CS1591 // Fehledes XML-Kommentar für öffentlich sichtbaren Typ oder Element
 
@@ -451,7 +320,7 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get => default;
 			// ReSharper disable once ValueParameterNotUsed
-			set{ }
+			set { }
 		}
 
 		public int Health
@@ -523,7 +392,11 @@ namespace SabberStoneCore.Model.Entities
 			get => Card[GameTag.AUTOATTACK] == 1;
 			set => throw new NotImplementedException();
 		}
-		public bool ToBeDestroyed => _toBeDestroyed;
+		public bool ToBeDestroyed
+		{
+			get => _toBeDestroyed;
+			set => _toBeDestroyed = value;
+		}
 
 		public bool IsAttacking
 		{
@@ -537,7 +410,7 @@ namespace SabberStoneCore.Model.Entities
 			set { this[GameTag.DEFENDING] = value ? 1 : 0; }
 		}
 
-//		public abstract ref bool this[BoolAttributes attr] { get; }
+		//		public abstract ref bool this[BoolAttributes attr] { get; }
 
 		internal override void ApplyEffect(AbstractEffect effect)
 		{

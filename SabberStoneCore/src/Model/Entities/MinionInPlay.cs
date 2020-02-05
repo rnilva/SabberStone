@@ -2,6 +2,8 @@
 using System.Runtime.CompilerServices;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Kettle;
+using SabberStoneCore.Tasks;
 using SabberStoneCore.Tasks.SimpleTasks;
 
 namespace SabberStoneCore.Model.Entities
@@ -47,6 +49,80 @@ namespace SabberStoneCore.Model.Entities
 			minion.Game.IdEntityDic[minion.Id] = inPlay;
 			minion = inPlay;
 			return inPlay;
+		}
+
+		public override int TakeDamage(Playable source, int damage)
+		{
+			Game game = Game;
+			bool logging = game.Logging;
+
+			// Check immunity
+			if (IsImmune)
+			{
+				if (logging)
+					game.Log(LogLevel.INFO, BlockType.ACTION, "Character", $"{this} is immune.");
+				return 0;
+			}
+
+			// Check divine shield
+			if (HasDivineShield)
+			{
+				if (logging)
+					game.Log(LogLevel.INFO, BlockType.ACTION, "MinionInPlay",
+						$"{this} divine shield absorbed incoming damage.");
+				HasDivineShield = false;
+				return 0;
+			}
+
+			// Create Damage event meta data
+			EventMetaData temp = game.CurrentEventData;
+			game.CurrentEventData = new EventMetaData(source, this, damage);
+
+			// Check predamage triggers
+			if (game.TriggerManager.OnPredamageTrigger(this))
+			{
+				damage = game.CurrentEventData.EventNumber;
+				if (damage == 0)
+				{
+					game.CurrentEventData = temp;
+					return 0;
+				}
+			}
+
+			Damage += damage;
+			if (logging)
+				game.Log(LogLevel.INFO, BlockType.ACTION, "Character",
+					$"{this} took damage for {damage}.");
+
+			// Check damage triggers (DealDamage / TakeDamage / Overkill)
+			game.TriggerManager.OnDamageTriggers(source, this);
+
+			// Check lifesteal
+			if (source.HasLifesteal && !_lifestealChecker)
+			{
+				if (game.History)
+					game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, source.Id, source.Card.Id, -1, 0)); // TriggerKeyword=LIFESTEAL
+				if (game.Logging)
+					game.Log(LogLevel.VERBOSE, BlockType.ATTACK, "TakeDamage", !_logging ? "" : $"lifesteal source {source} has damaged target for {damage}.");
+
+				source.Controller.Hero.TakeHeal(source, damage);
+
+				if (game.History)
+					game.PowerHistory.Add(new PowerHistoryBlockEnd());
+
+				if (source.Controller.Hero.ToBeDestroyed && source.Controller.Hero.Health > 0)
+				{
+					source.Controller.Hero.ToBeDestroyed = false;
+					game.ResolveDeadHeroes -= source.Controller.Hero.DisposeHero;
+				}
+			}
+
+			if (source.Card.Type == CardType.HERO_POWER)
+				source.Controller.NumHeroPowerDamageThisGame += damage;
+
+			game.CurrentEventData = temp;
+
+			return damage;
 		}
 
 		public override int this[GameTag t]
@@ -153,10 +229,10 @@ namespace SabberStoneCore.Model.Entities
 						return false;
 
 					return _v1 > 0 &&
-					       !attrs[1] &&
-					       !attrs[12] &&
-					       !Untouchable &&
-					       (!checkTargets || HasAnyValidAttackTargets());
+						   !attrs[1] &&
+						   !attrs[12] &&
+						   !Untouchable &&
+						   (!checkTargets || HasAnyValidAttackTargets());
 
 				}
 			}
@@ -176,16 +252,16 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override int BaseHealth
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _v2.Value;
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _v2.Value;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _v2 = value;
 		}
 		public unsafe int SpellPower
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.intAttrs[0];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.intAttrs[0];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[0] = value;
 		}
 		public override unsafe int Damage
@@ -204,30 +280,30 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override unsafe int NumAttacksThisTurn
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.intAttrs[2];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.intAttrs[2];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[2] = value;
 		}
 		public unsafe int OrderOfPlay
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.intAttrs[3];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.intAttrs[3];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.intAttrs[3] = value;
 		}
 		public override unsafe bool IsImmune
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.boolAttrs[0];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[0];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[0] = value;
 		}
 		public override unsafe bool IsFrozen
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.boolAttrs[1];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[1];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set
 			{
 				if (value)
@@ -238,9 +314,9 @@ namespace SabberStoneCore.Model.Entities
 
 		public override unsafe bool HasStealth
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.boolAttrs[2];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[2];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[2] = value;
 		}
 		public override unsafe bool CantBeTargetedBySpells
@@ -252,16 +328,16 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override unsafe bool CantAttackHeroes
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.boolAttrs[4];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[4];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[4] = value;
 		}
 		public override unsafe bool HasTaunt
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.boolAttrs[5];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[5];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[5] = value;
 		}
 		public override unsafe bool HasDivineShield
@@ -278,9 +354,9 @@ namespace SabberStoneCore.Model.Entities
 		}
 		public override unsafe bool HasWindfury
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.boolAttrs[7];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[7];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[7] = value;
 		}
 		public override unsafe bool HasCharge
@@ -296,30 +372,30 @@ namespace SabberStoneCore.Model.Entities
 				}
 				else
 				{
-//					if (HasCharge && !IsExhausted && )
+					//					if (HasCharge && !IsExhausted && )
 				}
 				_attrs.boolAttrs[8] = value;
 			}
 		}
 		public override unsafe bool Poisonous
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.boolAttrs[9];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[9];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[9] = value;
 		}
 		public override unsafe bool HasLifesteal
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.boolAttrs[10];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[10];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[10] = value;
 		}
 		public override unsafe bool IsRush
 		{
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _attrs.boolAttrs[11];
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _attrs.boolAttrs[11];
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set => _attrs.boolAttrs[11] = value;
 		}
 		public override unsafe bool CantAttack
@@ -417,7 +493,7 @@ namespace SabberStoneCore.Model.Entities
 
 			IsSilenced = true;
 
-			Game.Log(LogLevel.INFO, BlockType.PLAY, "Minion", !Game.Logging? "":$"{this} got silenced!");
+			Game.Log(LogLevel.INFO, BlockType.PLAY, "Minion", !Game.Logging ? "" : $"{this} got silenced!");
 
 			// Send aura update instruction
 			Controller.BoardZone.Auras.ForEach(a =>
@@ -595,9 +671,9 @@ namespace SabberStoneCore.Model.Entities
 		internal static unsafe ApplyingEffect GetFunction(Effect effect)
 		{
 			if (effect.Tag == GameTag.SPELLPOWER)
-				return p => ((MinionInPlay) p)._attrs.intAttrs[2] += effect.Value;
+				return p => ((MinionInPlay)p)._attrs.intAttrs[2] += effect.Value;
 
-			return p => ((MinionInPlay) p)._attrs.boolAttrs[TagToIndex(effect.Tag)] = true;
+			return p => ((MinionInPlay)p)._attrs.boolAttrs[TagToIndex(effect.Tag)] = true;
 		}
 		#endregion
 
@@ -605,14 +681,14 @@ namespace SabberStoneCore.Model.Entities
 		{
 			unsafe
 			{
-				return _attrs.boolAttrs[(int) attr];
+				return _attrs.boolAttrs[(int)attr];
 			}
 		}
 		internal override void SetAttribute(BoolAttributes attr, bool value)
 		{
 			unsafe
 			{
-				_attrs.boolAttrs[(int) attr] = value;
+				_attrs.boolAttrs[(int)attr] = value;
 			}
 		}
 
@@ -637,13 +713,13 @@ namespace SabberStoneCore.Model.Entities
 			Span<float> slice = destination.Slice(Attributes.NUM_INT_ATTRS);
 			fixed (bool* src = _attrs.boolAttrs)
 			{
-				byte* ptr = (byte*) src;
+				byte* ptr = (byte*)src;
 				for (int i = 0; i < Attributes.NUM_BOOL_ATTRS; i++)
 					slice[i] = ptr[i];
 			}
 		}
 
-		public unsafe ref int this[IntAttributes attr] => ref _attrs.intAttrs[(int) attr];
-		public unsafe ref bool this[BoolAttributes attr] => ref _attrs.boolAttrs[(int) attr];
+		public unsafe ref int this[IntAttributes attr] => ref _attrs.intAttrs[(int)attr];
+		public unsafe ref bool this[BoolAttributes attr] => ref _attrs.boolAttrs[(int)attr];
 	}
 }

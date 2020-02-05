@@ -44,6 +44,11 @@ namespace SabberStoneCore.Model.Entities
 		///// <param name="minion">The source <see cref="Minion"/>.</param>
 		protected internal Minion(in Controller controller, Minion minion) : base(in controller, minion) { }
 
+		public override int TakeDamage(Playable source, int damage)
+		{
+			throw new NotImplementedException();
+		}
+
 		internal override bool GetAttribute(BoolAttributes attr)
 		{
 			throw new NotImplementedException();

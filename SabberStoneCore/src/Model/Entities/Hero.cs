@@ -60,6 +60,11 @@ namespace SabberStoneCore.Model.Entities
 
 		#region Overrides of Character
 
+		public override int TakeDamage(Playable source, int damage)
+		{
+			throw new NotImplementedException();
+		}
+
 		internal override bool GetAttribute(BoolAttributes attr)
 		{
 			throw new NotImplementedException();
