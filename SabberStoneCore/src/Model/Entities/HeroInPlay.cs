@@ -5,6 +5,7 @@ using System.Text;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Kettle;
 
 namespace SabberStoneCore.Model.Entities
 {
@@ -42,6 +43,95 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>Gets or sets the weapon entity equipped on the Hero.</summary>
 		/// <value><see cref="Entities.Weapon"/></value>
 		public Weapon Weapon { get; set; }
+
+		public override int TakeDamage(Playable source, int damage)
+		{
+			Game game = Game;
+			bool logging = game.Logging;
+
+			//// Set fatigue
+			//if (this == source)
+			//	Fatigue = damage;
+
+			// Create Damage event meta data
+			EventMetaData temp = game.CurrentEventData;
+			game.CurrentEventData = new EventMetaData(source, this, damage);
+
+			// Check predamage triggers
+			if (game.TriggerManager.OnPredamageTrigger(this))
+			{
+				damage = game.CurrentEventData.EventNumber;
+				if (damage == 0)
+				{
+					game.CurrentEventData = temp;
+					return 0;
+				}
+			}
+
+			// Check immunity
+			if (IsImmune)
+			{
+				if (logging)
+					game.Log(LogLevel.INFO, BlockType.ACTION, "Character", $"{this} is immune.");
+				game.CurrentEventData = temp;
+				return 0;
+			}
+
+			// Calculate remaining armor
+			if (Armor > 0)
+			{
+				int overflow = damage - Armor;
+				if (overflow > 0)
+				{
+					Armor = 0;
+					Damage += overflow;
+				}
+				else
+				{
+					Armor = -overflow;
+				}
+			}
+			else
+			{
+				Damage += damage;
+			}
+
+			if (logging)
+				game.Log(LogLevel.INFO, BlockType.ACTION, "Character",
+					$"{this} took damage for {damage}.");
+
+			// Check damage triggers (DealDamage / TakeDamage / Overkill)
+			game.TriggerManager.OnDamageTriggers(source, this);
+
+			// Check lifesteal
+			if (source.HasLifesteal && !_lifestealChecker)
+			{
+				if (game.History)
+					game.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.TRIGGER, source.Id, source.Card.Id, -1, 0)); // TriggerKeyword=LIFESTEAL
+				if (game.Logging)
+					game.Log(LogLevel.VERBOSE, BlockType.ATTACK, "TakeDamage", !_logging ? "" : $"lifesteal source {source} has damaged target for {damage}.");
+
+				source.Controller.Hero.TakeHeal(source, damage);
+
+				if (game.History)
+					game.PowerHistory.Add(new PowerHistoryBlockEnd());
+
+				if (source.Controller.Hero.ToBeDestroyed && source.Controller.Hero.Health > 0)
+				{
+					source.Controller.Hero.ToBeDestroyed = false;
+					game.ResolveDeadHeroes -= source.Controller.Hero.DisposeHero;
+				}
+			}
+
+			DamageTakenThisTurn += damage;
+
+			if (source.Card.Type == CardType.HERO_POWER)
+				source.Controller.NumHeroPowerDamageThisGame += damage;
+
+			game.CurrentEventData = temp;
+
+			return damage;
+		}
 
 		internal override bool GetAttribute(Entities.BoolAttributes attr)
 		{

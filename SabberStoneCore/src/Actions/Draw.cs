@@ -110,7 +110,8 @@ namespace SabberStoneCore.Actions
 		{
 			if (c.DeckZone.IsEmpty)
 			{
-				int fatigueDamage = c.Hero.Fatigue == 0 ? 1 : c.Hero.Fatigue + 1;
+				int fatigueDamage = c.Hero.Fatigue + 1;
+				c.Hero.Fatigue = fatigueDamage;
 				DamageCharFunc(c.Hero, c.Hero, fatigueDamage, false);
 				return false;
 			}

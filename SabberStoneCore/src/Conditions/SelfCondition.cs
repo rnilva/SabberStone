@@ -26,7 +26,7 @@ namespace SabberStoneCore.Conditions
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	{
 		public static readonly SelfCondition IsDead = new SelfCondition(me => me is Minion m && m.ToBeDestroyed);
-        public static readonly SelfCondition IsNotImmune = new SelfCondition(me => (me as Character)?.IsImmune == false);
+		public static readonly SelfCondition IsNotImmune = new SelfCondition(me => (me as Character)?.IsImmune == false);
 		public static readonly SelfCondition IsSilenced = new SelfCondition(me => me is MinionInPlay m && m.IsSilenced);
 		public static readonly SelfCondition IsBoardFull = new SelfCondition(me => me.Controller.BoardZone.IsFull);
 		public static readonly SelfCondition IsHandEmpty = new SelfCondition(me => me.Controller.HandZone.IsEmpty);
@@ -42,7 +42,7 @@ namespace SabberStoneCore.Conditions
 		public static readonly SelfCondition IsNotCurrentPlayer = new SelfCondition(me => me.Game.CurrentPlayer != me.Controller);
 
 		public static readonly SelfCondition IsComboActive = new SelfCondition(me => me.Controller.IsComboActive);
-        public static readonly SelfCondition IsAnyWeaponEquiped = new SelfCondition(me => (me as HeroInPlay)?.Weapon != null);
+		public static readonly SelfCondition IsAnyWeaponEquiped = new SelfCondition(me => (me as HeroInPlay)?.Weapon != null);
 		public static readonly SelfCondition IsThisWeaponEquiped = new SelfCondition(me => me.Controller.Hero.Weapon == me);
 
 		public static readonly SelfCondition IsDamaged = new SelfCondition(me => (me as Character)?.Damage > 0);
@@ -207,8 +207,8 @@ namespace SabberStoneCore.Conditions
 			=> new SelfCondition(me =>
 			{
 				return relaSign == RelaSign.EQ && me.Controller.BoardZone.Any(p => GetTagValue(p, tag) == amount)
-				       || relaSign == RelaSign.GEQ && me.Controller.BoardZone.Any(p => GetTagValue(p, tag) >= amount)
-				       || relaSign == RelaSign.LEQ && me.Controller.BoardZone.Any(p => GetTagValue(p, tag) <= amount);
+					   || relaSign == RelaSign.GEQ && me.Controller.BoardZone.Any(p => GetTagValue(p, tag) >= amount)
+					   || relaSign == RelaSign.LEQ && me.Controller.BoardZone.Any(p => GetTagValue(p, tag) <= amount);
 			});
 
 		public static SelfCondition HasBoardMinion(IntAttributes attr, int amount, RelaSign relaSign = RelaSign.EQ)
@@ -216,12 +216,12 @@ namespace SabberStoneCore.Conditions
 			return new SelfCondition(me =>
 			{
 				return relaSign == RelaSign.EQ && me.Controller.BoardZone.Any(p => p[attr] == amount) ||
-				       relaSign == RelaSign.GEQ && me.Controller.BoardZone.Any(p => p[attr] >= amount) ||
-				       relaSign == RelaSign.LEQ && me.Controller.BoardZone.Any(p => p[attr] <= amount);
+					   relaSign == RelaSign.GEQ && me.Controller.BoardZone.Any(p => p[attr] >= amount) ||
+					   relaSign == RelaSign.LEQ && me.Controller.BoardZone.Any(p => p[attr] <= amount);
 			});
 		}
 
-		
+
 		public static SelfCondition HasBoardMinion(BoolAttributes attr, bool value)
 		{
 			return new SelfCondition(me => { return me.Controller.BoardZone.Any(p => p[attr] == value); });
@@ -232,21 +232,21 @@ namespace SabberStoneCore.Conditions
 			{
 
 				return relaSign == RelaSign.EQ && me.Controller.Opponent.BoardZone.Any(p => GetTagValue(p, tag) == amount)
-				       || relaSign == RelaSign.GEQ && me.Controller.Opponent.BoardZone.Any(p => GetTagValue(p, tag) >= amount)
-				       || relaSign == RelaSign.LEQ && me.Controller.Opponent.BoardZone.Any(p => GetTagValue(p, tag) <= amount);
+					   || relaSign == RelaSign.GEQ && me.Controller.Opponent.BoardZone.Any(p => GetTagValue(p, tag) >= amount)
+					   || relaSign == RelaSign.LEQ && me.Controller.Opponent.BoardZone.Any(p => GetTagValue(p, tag) <= amount);
 			});
 
 		public static SelfCondition HasOp(GameTag tag, int amount, RelaSign relaSign = RelaSign.EQ)
 			=> new SelfCondition(me =>
 				   relaSign == RelaSign.EQ &&
 				   (me.Controller.Opponent.BoardZone.Any(p => p[tag] == amount)
-				    || me.Controller.Opponent.Hero[tag] == amount)
+					|| me.Controller.Opponent.Hero[tag] == amount)
 				|| relaSign == RelaSign.GEQ &&
 				   me.Controller.Opponent.BoardZone.Any(p => p[tag] >= amount
 					|| me.Controller.Opponent.Hero[tag] >= amount)
 				|| relaSign == RelaSign.LEQ &&
 				   me.Controller.Opponent.BoardZone.Any(p => p[tag] <= amount
-				    || me.Controller.Opponent.Hero[tag] <= amount));
+					|| me.Controller.Opponent.Hero[tag] <= amount));
 
 		public static SelfCondition IsTagValue(GameTag tag, int value, RelaSign relaSign = RelaSign.EQ)
 		{
@@ -255,8 +255,8 @@ namespace SabberStoneCore.Conditions
 				int val = GetTagValue(me, tag);
 
 				return relaSign == RelaSign.EQ && val == value
-				       || relaSign == RelaSign.GEQ && val >= value
-				       || relaSign == RelaSign.LEQ && val <= value;
+					   || relaSign == RelaSign.GEQ && val >= value
+					   || relaSign == RelaSign.LEQ && val <= value;
 			});
 		}
 
@@ -303,8 +303,8 @@ namespace SabberStoneCore.Conditions
 				int val = GetTagValue(proxyCthun, tag);
 
 				return relaSign == RelaSign.EQ && val == value
-				       || relaSign == RelaSign.GEQ && val >= value
-				       || relaSign == RelaSign.LEQ && val <= value;
+					   || relaSign == RelaSign.GEQ && val >= value
+					   || relaSign == RelaSign.LEQ && val <= value;
 			});
 
 		public static SelfCondition IsHealth(int value, RelaSign relaSign)
@@ -329,7 +329,8 @@ namespace SabberStoneCore.Conditions
 			new SelfCondition(me => !me.Card.MustHaveTargetToPlay || me.HasAnyValidPlayTargets);
 
 		public static readonly SelfCondition IsHeroLethalPreDamaged
-			= new SelfCondition(me => me is Hero hero && hero.Game.CurrentEventData.EventNumber >= hero.Health);
+			= new SelfCondition(me => me is HeroInPlay hero &&
+									  hero.Game.CurrentEventData.EventNumber >= hero.Health + hero.Armor);
 
 		public static SelfCondition IsCurrentEventNumber(int value, RelaSign relaSign)
 		{
@@ -352,7 +353,7 @@ namespace SabberStoneCore.Conditions
 		{
 			return new SelfCondition(me =>
 			{
-//				int currentValue = me.Controller[(GameTag) me.Card[GameTag.PLAYER_TAG_THRESHOLD_TAG_ID]];
+				//				int currentValue = me.Controller[(GameTag) me.Card[GameTag.PLAYER_TAG_THRESHOLD_TAG_ID]];
 				int currentValue = me.Controller[me.Card.ThresholdAttribute];
 				int threshold = me.Card[GameTag.PLAYER_TAG_THRESHOLD_VALUE];
 

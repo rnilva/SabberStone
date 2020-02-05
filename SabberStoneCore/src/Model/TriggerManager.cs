@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Tasks;
 using SabberStoneCore.Triggers;
 
 // ReSharper disable PossibleNullReferenceException
@@ -235,9 +236,52 @@ namespace SabberStoneCore.Model
 
 		#region Event Raisers
 
-		internal void OnDamageTriggers(Playable source, Character target)
+		internal bool OnPredamageTrigger(Entity sender)
 		{
-			
+			if (PredamageTrigger?.IsEmpty ?? true) return false;
+			StartEvent();
+			PredamageTrigger.Invoke(sender);
+			ProcessTasks();
+			EndEvent();
+			return true;
+		}
+
+		internal bool OnDamageTriggers(Playable source, Character target)
+		{
+			bool takeDamageTrigger, dealDamageTrigger;
+			takeDamageTrigger = !TakeDamageTrigger?.IsEmpty ?? false;
+			dealDamageTrigger = !DealDamageTrigger?.IsEmpty ?? false;
+			if (!takeDamageTrigger && !dealDamageTrigger)
+			{
+				if (source.HasOverkill && source.Controller == source.Game.CurrentPlayer && target.Health < 0)
+				{
+					if (source.Game.Logging)
+						source.Game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TakeDamage", $"{source}' Overkill is triggered.");
+
+					SimpleTask task = source is HeroInPlay h ? h.Weapon.Card.Power.OverkillTask : source.Card.Power.OverkillTask;
+					source.Game.TaskQueue.Execute(task, source.Controller, source, null);
+					return true;
+				}
+				return false;
+			}
+			StartEvent();
+			if (takeDamageTrigger)
+				TakeDamageTrigger.Invoke(target);
+			if (dealDamageTrigger)
+				DealDamageTrigger.Invoke(source);
+
+			if (source.HasOverkill && source.Controller == source.Game.CurrentPlayer && target.Health < 0)
+			{
+				if (source.Game.Logging)
+					source.Game.Log(LogLevel.VERBOSE, BlockType.TRIGGER, "TakeDamage", $"{source}' Overkill is triggered.");
+
+				SimpleTask task = source is HeroInPlay h ? h.Weapon.Card.Power.OverkillTask : source.Card.Power.OverkillTask;
+				source.Game.TaskQueue.Enqueue(task, source.Controller, source, null);
+			}
+
+			ProcessTasks();
+			EndEvent();
+			return true;
 		}
 
 		internal bool OnDealDamageTrigger(Entity sender)
@@ -247,13 +291,7 @@ namespace SabberStoneCore.Model
 	        DealDamageTrigger.Invoke(sender);
 	        return true;
 	    }
-	    internal bool OnDamageTrigger(Entity sender)
-	    {
-	        if (DamageTrigger?.IsEmpty ?? true) return false;
-	        //StartEvent();
-	        DamageTrigger.Invoke(sender);
-	        return true;
-	    }
+
 	    internal void OnHealTrigger(Entity sender)
 	    {
 	        if (HealTrigger?.IsEmpty ?? true) return;

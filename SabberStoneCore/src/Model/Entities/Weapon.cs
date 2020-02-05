@@ -59,6 +59,11 @@ namespace SabberStoneCore.Model.Entities
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+		public override int TakeDamage(Playable source, int damage)
+		{
+			throw new NotImplementedException();
+		}
+
 		public override int AttackDamage
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
