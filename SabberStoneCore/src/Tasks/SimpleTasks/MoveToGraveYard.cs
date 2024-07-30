@@ -11,6 +11,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
+
+using System.Collections.Generic;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
@@ -19,9 +21,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class MoveToGraveYard : SimpleTask
 	{
+		private readonly EntityGetter _entityGetter;
+
 		public MoveToGraveYard(EntityType type)
 		{
 			Type = type;
+			_entityGetter = IncludeTask.GetterDict[type];
 		}
 
 		public EntityType Type { get; set; }
@@ -31,12 +36,17 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		{
 			//List<Playable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 			//entities.ForEach(p =>
-			foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
-			{
-				p.Controller.GraveyardZone.Add(p.Zone?.Remove(p) ?? p);
-				//if (p.Card.IsSecret && p.IsRevealed)
-				//	game.TriggerManager.OnSecretRevealedTrigger(p);
-			}
+			//foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
+			//{
+			//	p.Controller.GraveyardZone.Add(p.Zone?.Remove(p) ?? p);
+			//	//if (p.Card.IsSecret && p.IsRevealed)
+			//	//	game.TriggerManager.OnSecretRevealedTrigger(p);
+			//}
+
+			IList<Playable> entities = _entityGetter(controller, source, target, stack?.Playables);
+			for (int i = 0; i < entities.Count; ++i)
+				entities[i].Controller.GraveyardZone.Add(entities[i].Zone?.Remove(entities[i]) ?? entities[i]);
+
 			return TaskState.COMPLETE;
 		}
 	}
