@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Model.Zones;
@@ -200,6 +201,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		DISCARDED
 	}
 
+	public delegate IList<Playable> EntityGetter(Controller c, Entity s, Entity t, IList<Playable> stack);
+
 	public class IncludeTask : SimpleTask
 	{
 		private const int SingleTypesRange = 9;
@@ -272,53 +275,53 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				case EntityType.MINIONS_NOSOURCE:
 					return c.BoardZone.GetAll(p => p != source);
 				case EntityType.ALLMINIONS_NOSOURCE:
-				{
-					if (source.Controller == c)
 					{
-						Minion[] board = c.BoardZone. GetAll(p => p != source);
-						var array = new Minion[board.Length + c.Opponent.BoardZone.CountExceptUntouchables];
-						board.CopyTo(array, 0);
-						c.Opponent.BoardZone.CopyTo(array, board.Length);
-						return array;
+						if (source.Controller == c)
+						{
+							Minion[] board = c.BoardZone.GetAll(p => p != source);
+							var array = new Minion[board.Length + c.Opponent.BoardZone.CountExceptUntouchables];
+							board.CopyTo(array, 0);
+							c.Opponent.BoardZone.CopyTo(array, board.Length);
+							return array;
+						}
+						else
+						{
+							Minion[] board = c.Opponent.BoardZone.GetAll(p => p != source);
+							var array = new Minion[board.Length + c.BoardZone.CountExceptUntouchables];
+							board.CopyTo(array, 0);
+							c.BoardZone.CopyTo(array, board.Length);
+							return array;
+						}
 					}
-					else
-					{
-						Minion[] board = c.Opponent.BoardZone.GetAll(p => p != source);
-						var array = new Minion[board.Length + c.BoardZone.CountExceptUntouchables];
-						board.CopyTo(array, 0);
-						c.BoardZone.CopyTo(array, board.Length);
-						return array;
-					}
-				}
 
 				case EntityType.ENEMIES:
-				{
-					var arr = new Character[c.Opponent.BoardZone.CountExceptUntouchables + 1];
-					arr[0] = c.Opponent.Hero;
-					c.Opponent.BoardZone.CopyTo(arr, 1);
-					return arr;
-				}
+					{
+						var arr = new Character[c.Opponent.BoardZone.CountExceptUntouchables + 1];
+						arr[0] = c.Opponent.Hero;
+						c.Opponent.BoardZone.CopyTo(arr, 1);
+						return arr;
+					}
 
 				case EntityType.TARGET:
-					return target == null ? new Playable[0] : new[] {(Playable) target};
+					return target == null ? new Playable[0] : new[] { (Playable)target };
 				case EntityType.SOURCE:
-					return new[] {(Playable) source};
+					return new[] { (Playable)source };
 				case EntityType.HERO:
-					return new[] {c.Hero};
+					return new[] { c.Hero };
 				case EntityType.HERO_POWER:
-					return new[] {c.Hero.HeroPower};
+					return new[] { c.Hero.HeroPower };
 				case EntityType.OP_HERO_POWER:
-					return new[] {c.Opponent.Hero.HeroPower};
+					return new[] { c.Opponent.Hero.HeroPower };
 				case EntityType.FRIENDS:
-				{
-					var arr = new Character[c.BoardZone.CountExceptUntouchables + 1];
-					arr[0] = c.Hero;
-					c.BoardZone.CopyTo(arr, 1);
-					return arr;
-				}
+					{
+						var arr = new Character[c.BoardZone.CountExceptUntouchables + 1];
+						arr[0] = c.Hero;
+						c.BoardZone.CopyTo(arr, 1);
+						return arr;
+					}
 
 				case EntityType.OP_HERO:
-					return new[] {c.Opponent.Hero};
+					return new[] { c.Opponent.Hero };
 				case EntityType.ENEMIES_NOTARGET:
 					if (target is Hero)
 					{
@@ -341,37 +344,216 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					}
 
 				case EntityType.ALL:
+					{
+						var arr = new Playable[c.BoardZone.CountExceptUntouchables +
+												c.Opponent.BoardZone.CountExceptUntouchables + 2];
+						c.BoardZone.CopyTo(arr, 0);
+						c.Opponent.BoardZone.CopyTo(arr, c.BoardZone.CountExceptUntouchables);
+						arr[arr.Length - 2] = c.Hero;
+						arr[arr.Length - 1] = c.Opponent.Hero;
+						return arr;
+					}
+
+				case EntityType.ALL_NOSOURCE:
+					{
+						if (source.Zone == null) throw new NotImplementedException();
+
+						var arr = new Playable[c.BoardZone.CountExceptUntouchables +
+												c.Opponent.BoardZone.CountExceptUntouchables + 1];
+
+						if (source is Enchantment e)
+						{
+							source = e.Target;
+						}
+
+						if (source.Zone == c.BoardZone)
+						{
+							c.BoardZone.GetAll(p => p != source).CopyTo(arr, 0);
+							c.Opponent.BoardZone.CopyTo(arr, c.BoardZone.CountExceptUntouchables - 1);
+							arr[arr.Length - 2] = c.Hero;
+							arr[arr.Length - 1] = c.Opponent.Hero;
+						}
+						else if (source.Zone == c.Opponent.BoardZone)
+						{
+							c.BoardZone.CopyTo(arr, 0);
+							c.Opponent.BoardZone.GetAll(p => p != source).CopyTo(arr, c.BoardZone.CountExceptUntouchables);
+							arr[arr.Length - 2] = c.Hero;
+							arr[arr.Length - 1] = c.Opponent.Hero;
+						}
+						else
+						{
+							c.BoardZone.CopyTo(arr, 0);
+							c.Opponent.BoardZone.CopyTo(arr, c.BoardZone.CountExceptUntouchables);
+							arr[arr.Length - 2] = c.Hero;
+							arr[arr.Length - 1] = c.Opponent.Hero;
+						}
+
+						return arr;
+					}
+
+				case EntityType.WEAPON:
+					return c.Hero.Weapon == null ? new Playable[0] : new[] { c.Hero.Weapon };
+				case EntityType.OP_WEAPON:
+					return c.Opponent.Hero.Weapon == null ? new Playable[0] : new[] { c.Opponent.Hero.Weapon };
+				case EntityType.ALLMINIONS:
+					{
+						var arr = new Minion[c.BoardZone.CountExceptUntouchables +
+											 c.Opponent.BoardZone.CountExceptUntouchables];
+						c.BoardZone.CopyTo(arr, 0);
+						c.Opponent.BoardZone.CopyTo(arr, c.BoardZone.CountExceptUntouchables);
+						return arr;
+					}
+
+				case EntityType.HEROES:
+					return new[] { c.Hero, c.Opponent.Hero };
+				case EntityType.TOPCARDFROMDECK:
+					return c.DeckZone.Count > 0 ? new[] { c.DeckZone.TopCard } : new Playable[0];
+				case EntityType.OP_TOPDECK:
+					return c.Opponent.DeckZone.Count > 0 ? new[] { c.Opponent.DeckZone.TopCard } : new Playable[0];
+				case EntityType.DISCARDED:
+					{
+						EntityList dict = c.Game.IdEntityDic;
+						return c.DiscardedEntities.Select(id => dict[id]).ToArray();
+					}
+				case EntityType.EVENT_SOURCE:
+					return c.Game.CurrentEventData != null
+						? new[] { c.Game.CurrentEventData.EventSource }
+						: new Playable[0];
+				case EntityType.EVENT_TARGET:
+					return c.Game.CurrentEventData != null
+						? new[] { c.Game.CurrentEventData.EventTarget }
+						: new Playable[0];
+				default:
+					throw new NotImplementedException();
+			}
+		}
+
+		//public static EntityIterator GetEntities(EntityType type, Controller c, Entity s, Entity t)
+		//{
+		//	switch (type)
+		//	{
+		//		case EntityType.SOURCE:
+		//			return (Playable)s;
+		//		case EntityType.TARGET:
+		//			return (Playable)t;
+		//		case EntityType.MINIONS:
+		//			return c.BoardZone.GetSpan<Playable>();
+		//		case EntityType.ALLMINIONS:
+		//			return new EntityIterator(c.BoardZone.GetSpan<Playable>(), c.Opponent.BoardZone.GetSpan<Playable>());
+		//		case EntityType.ALLMINIONS_NOSOURCE:
+		//			{
+		//				if (s.Controller == c)
+		//				{
+		//					ReadOnlySpan<Playable> span = c.BoardZone.GetSpan<Playable>();
+		//					int exclude = -1;
+		//					for (int i = 0; i < span.Length; ++i)
+		//					{
+		//						if (span[i] == s)
+		//						{
+		//							exclude = i;
+		//							break;
+		//						}
+		//					}
+
+		//					return new EntityIterator(span, c.Opponent.BoardZone.GetSpan<Playable>(), exclude);
+		//				}
+		//				else
+		//				{
+		//					ReadOnlySpan<Playable> span = c.Opponent.BoardZone.GetSpan<Playable>();
+		//					int exclude = -1;
+		//					for (int i = 0; i < span.Length; ++i)
+		//					{
+		//						if (span[i] == s)
+		//						{
+		//							exclude = i;
+		//							break;
+		//						}
+		//					}
+
+		//					return new EntityIterator(c.BoardZone.GetSpan<Playable>(), span, exclude);
+		//				}
+		//			}
+		//		case EntityType.
+
+
+
+		//	}
+		//}
+
+		static IncludeTask()
+		{
+			GetterDict = new Dictionary<EntityType, EntityGetter>
+			{
+				{EntityType.STACK, (c,s,t,stack) => stack },
+				{EntityType.HAND, (c,s,t,stack) => c.HandZone.GetAll() },
+				{EntityType.DECK, (c,s,t,stack) => c.DeckZone.GetAll() },
+				{EntityType.MINIONS, (c,s,t,stack) => c.BoardZone.GetAll() },
+				{EntityType.GRAVEYARD, (c,s,t,stack) => c.GraveyardZone.GetAll() },
+				{EntityType.OP_HAND, (c,s,t,stack) => c.Opponent.HandZone.GetAll() },
+				{EntityType.OP_DECK, (c,s,t,stack) => c.Opponent.DeckZone.GetAll() },
+				{EntityType.OP_MINIONS, (c,s,t,stack) => c.Opponent.BoardZone.GetAll() },
+				{EntityType.OP_SECRETS, (c,s,t,stack) => c.Opponent.SecretZone.GetAll() },
+				{EntityType.SOURCE, (c,s,t,stack) => new []{(Playable) s} },
+				{EntityType.TARGET, (c,s,t,stack) => new []{(Playable) t} },
+				{EntityType.HERO, (c,s,t,stack) => new[]{c.Hero}},
+				{EntityType.OP_HERO, (c,s,t,stack) => new[]{c.Opponent.Hero}},
+				{EntityType.HERO_POWER, (c,s,t,stack) => new[]{c.Hero.HeroPower}},
+				{EntityType.OP_HERO_POWER, (c,s,t,stack) => new[]{c.Opponent.Hero.HeroPower}},
+				{EntityType.WEAPON, (c, s, t, stack) => new[]{c.Hero.Weapon}},
+				{EntityType.OP_WEAPON, (c, s, t, stack) => new[]{c.Opponent.Hero.Weapon}},
+				{EntityType.MINIONS_NOSOURCE, (c, s, t, stack) => new[] { c.Hero, c.Opponent.Hero }},
+				{EntityType.ALLMINIONS_NOSOURCE, (c, s, t, stack) =>
+				{
+					if (s.Controller == c)
+					{
+						Minion[] board = c.BoardZone.GetAll(p => p != s);
+						var array = new Minion[board.Length + c.Opponent.BoardZone.CountExceptUntouchables];
+						board.CopyTo(array, 0);
+						c.Opponent.BoardZone.CopyTo(array, board.Length);
+						return array;
+					}
+					else
+					{
+						Minion[] board = c.Opponent.BoardZone.GetAll(p => p != s);
+						var array = new Minion[board.Length + c.BoardZone.CountExceptUntouchables];
+						board.CopyTo(array, 0);
+						c.BoardZone.CopyTo(array, board.Length);
+						return array;
+					}
+				}},
+				{EntityType.ALL, (c, s, t, stack) =>
 				{
 					var arr = new Playable[c.BoardZone.CountExceptUntouchables +
-					                        c.Opponent.BoardZone.CountExceptUntouchables + 2];
+					                       c.Opponent.BoardZone.CountExceptUntouchables + 2];
 					c.BoardZone.CopyTo(arr, 0);
 					c.Opponent.BoardZone.CopyTo(arr, c.BoardZone.CountExceptUntouchables);
 					arr[arr.Length - 2] = c.Hero;
 					arr[arr.Length - 1] = c.Opponent.Hero;
 					return arr;
-				}
-
-				case EntityType.ALL_NOSOURCE:
+				}},
+				{EntityType.ALL_NOSOURCE, (c, s, t, stack) =>
 				{
-					if (source.Zone == null) throw new NotImplementedException();
+					if (s.Zone == null) throw new NotImplementedException();
 
 					var arr = new Playable[c.BoardZone.CountExceptUntouchables +
-					                        c.Opponent.BoardZone.CountExceptUntouchables + 1];
-					if (source is Enchantment e)
+					                       c.Opponent.BoardZone.CountExceptUntouchables + 1];
+
+					if (s is Enchantment e)
 					{
-						source = e.Target;
+						s = e.Target;
 					}
-					if (source.Zone == c.BoardZone)
+
+					if (s.Zone == c.BoardZone)
 					{
-						c.BoardZone.GetAll(p => p != source).CopyTo(arr, 0);
+						c.BoardZone.GetAll(p => p != s).CopyTo(arr, 0);
 						c.Opponent.BoardZone.CopyTo(arr, c.BoardZone.CountExceptUntouchables - 1);
 						arr[arr.Length - 2] = c.Hero;
 						arr[arr.Length - 1] = c.Opponent.Hero;
 					}
-					else if (source.Zone == c.Opponent.BoardZone)
+					else if (s.Zone == c.Opponent.BoardZone)
 					{
 						c.BoardZone.CopyTo(arr, 0);
-						c.Opponent.BoardZone.GetAll(p => p != source).CopyTo(arr, c.BoardZone.CountExceptUntouchables);
+						c.Opponent.BoardZone.GetAll(p => p != s).CopyTo(arr, c.BoardZone.CountExceptUntouchables);
 						arr[arr.Length - 2] = c.Hero;
 						arr[arr.Length - 1] = c.Opponent.Hero;
 					}
@@ -384,44 +566,79 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					}
 
 					return arr;
-				}
-
-				case EntityType.WEAPON:
-					return c.Hero.Weapon == null ? new Playable[0] : new[] {c.Hero.Weapon};
-				case EntityType.OP_WEAPON:
-					return c.Opponent.Hero.Weapon == null ? new Playable[0] : new[] {c.Opponent.Hero.Weapon};
-				case EntityType.ALLMINIONS:
+				}},
+				{EntityType.ALLMINIONS, (c, s, t, stack) =>
 				{
 					var arr = new Minion[c.BoardZone.CountExceptUntouchables +
 					                     c.Opponent.BoardZone.CountExceptUntouchables];
 					c.BoardZone.CopyTo(arr, 0);
 					c.Opponent.BoardZone.CopyTo(arr, c.BoardZone.CountExceptUntouchables);
 					return arr;
-				}
+				}},
+				{EntityType.FRIENDS, (c, s, t, stack) =>
+				{
+					var arr = new Character[c.BoardZone.CountExceptUntouchables + 1];
+					arr[0] = c.Hero;
+					c.BoardZone.CopyTo(arr, 1);
+					return arr;
+				}},
+				{EntityType.ENEMIES, (c, s, t, stack) =>
+				{
+					var arr = new Character[c.Opponent.BoardZone.CountExceptUntouchables + 1];
+					arr[0] = c.Opponent.Hero;
+					c.Opponent.BoardZone.CopyTo(arr, 1);
+					return arr;
+				}},
+				{EntityType.ENEMIES_NOTARGET, (c, s, t, stack) =>
+				{
+					if (t is Hero)
+					{
+						return c.Opponent.BoardZone.GetAll();
+					}
+					else if (t.Zone?.Type != Enums.Zone.PLAY)
+					{
+						{
+							var arr = new Character[c.Opponent.BoardZone.CountExceptUntouchables + 1];
+							arr[0] = c.Opponent.Hero;
+							c.Opponent.BoardZone.CopyTo(arr, 1);
+							return arr;
+						}
+					}
+					else
+					{
+						if (c.Opponent.BoardZone.CountExceptUntouchables > 1)
+						{
+							var arr = new Character[c.Opponent.BoardZone.CountExceptUntouchables];
+							arr[0] = c.Opponent.Hero;
+							Minion[] temp = c.Opponent.BoardZone.GetAll(p => p != t);
+							Array.Copy(temp, 0, arr, 1, temp.Length);
+							return arr;
+						}
 
-				case EntityType.HEROES:
-					return new[] {c.Hero, c.Opponent.Hero};
-				case EntityType.TOPCARDFROMDECK:
-					return c.DeckZone.Count > 0 ? new[] {c.DeckZone.TopCard} : new Playable[0];
-				case EntityType.OP_TOPDECK:
-					return c.Opponent.DeckZone.Count > 0 ? new[] {c.Opponent.DeckZone.TopCard} : new Playable[0];
-				case EntityType.EVENT_SOURCE:
-					return c.Game.CurrentEventData != null
-						? new[] {c.Game.CurrentEventData.EventSource}
-						: new Playable[0];
-				case EntityType.EVENT_TARGET:
-					return c.Game.CurrentEventData != null
-						? new[] {c.Game.CurrentEventData.EventTarget}
-						: new Playable[0];
-				default:
-					throw new NotImplementedException();
-			}
+						return new[] { c.Opponent.Hero };
+					}
+				}},
+				{EntityType.HEROES, (c,s,t,stack) => new[] { c.Hero, c.Opponent.Hero }},
+				{EntityType.TOPCARDFROMDECK, (c, s, t, stack) => c.DeckZone.Count > 0 ? new[] { c.DeckZone.TopCard } : new Playable[0]},
+				{EntityType.OP_TOPDECK, (c, s, t, stack) => c.Opponent.DeckZone.Count > 0 ? new[] { c.Opponent.DeckZone.TopCard } : new Playable[0]},
+				{EntityType.DISCARDED, (c, s, t, stack) =>
+				{
+				
+					EntityList dict = c.Game.IdEntityDic;
+					return c.DiscardedEntities.Select(id => dict[id]).ToArray();
+				}},
+				{EntityType.EVENT_SOURCE, (c, s, t, stack) => c.Game.CurrentEventData != null
+					? new[] { c.Game.CurrentEventData.EventSource }
+					: new Playable[0]},
+				{EntityType.EVENT_TARGET, (c, s, t, stack) => c.Game.CurrentEventData != null
+					? new[] { c.Game.CurrentEventData.EventTarget }
+					: new Playable[0]},
+				{EntityType.CONTROLLER, (c, s, t, stack) => null },
+				{EntityType.OP_CONTROLLER, (c, s, t, stack) => null }
+			};
 		}
 
-		//public static Playable GetEntity(in EntityType type, in TaskStack stack)
-		//{
-		//	switch (type) { }
-		//}
+		public static readonly Dictionary<EntityType, EntityGetter> GetterDict;
 	}
 
 	public class IncludeAdjacentTask : SimpleTask
@@ -521,4 +738,52 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			return TaskState.COMPLETE;
 		}
 	}
+
+	//public readonly ref struct EntityIterator
+	//{
+	//	private readonly Playable _p;
+	//	private readonly int _excludeIndex;
+	//	private readonly bool _single;
+	//	private readonly ReadOnlySpan<Playable> _span1;
+	//	private readonly ReadOnlySpan<Playable> _span2;
+
+	//	public EntityIterator(in ReadOnlySpan<Playable> span1, in ReadOnlySpan<Playable> span2)
+	//	{
+	//		_p = null;
+	//		_excludeIndex = -1;
+	//		_single = false;
+	//		_span1 = span1;
+	//		_span2 = span2;
+	//	}
+
+	//	public EntityIterator(in ReadOnlySpan<Playable> span1, in ReadOnlySpan<Playable> span2, int exclude)
+	//	{
+	//		_p = null;
+	//		_excludeIndex = exclude;
+	//		_single = false;
+	//		_span1 = span1;
+	//		_span2 = span2;
+	//	}
+
+	//	public EntityIterator(in ReadOnlySpan<Playable> span)
+	//	{
+	//		_p = null;
+	//		_excludeIndex = -1;
+	//		_single = false;
+	//		_span1 = span;
+	//		_span2 = default;
+	//	}
+
+	//	public EntityIterator(Playable playable)
+	//	{
+	//		_p = playable;
+	//		_excludeIndex = -1;
+	//		_single = true;
+	//		_span1 = default;
+	//		_span2 = default;
+	//	}
+
+	//	public static implicit operator EntityIterator(Playable p) => new EntityIterator(p);
+	//	public static implicit operator EntityIterator(in ReadOnlySpan<Playable> span) => new EntityIterator(in span);
+	//}
 }

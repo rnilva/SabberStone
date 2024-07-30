@@ -692,7 +692,7 @@ namespace SabberStoneCore.Model.Entities
 			return indices.Slice(0, n);
 		}
 
-		public static ReadOnlySpan<MinionInPlay> GetTargetableEnemyMinions(in Controller opponent)
+		public static ReadOnlySpan<MinionInPlay> GetTargetableEnemyMinions(Controller opponent)
 		{
 			ReadOnlySpan<MinionInPlay> board = opponent.BoardZone.GetSpan();
 
@@ -715,7 +715,7 @@ namespace SabberStoneCore.Model.Entities
 			return array.AsSpan().Slice(0, n);
 		}
 
-		public static Span<int> GetTargetableEnemyMinionIndices(in Controller opponent, Span<int> indices)
+		public static Span<int> GetTargetableEnemyMinionIndices(Controller opponent, Span<int> indices)
 		{
 			ReadOnlySpan<MinionInPlay> board = opponent.BoardZone.GetSpan();
 			int n = 0;
@@ -1076,7 +1076,7 @@ namespace SabberStoneCore.Model.Entities
 				}
 
 				[MethodImpl(MethodImplOptions.AggressiveInlining)]
-				public Enumerator(in Targets targets)
+				public Enumerator(Targets targets)
 				{
 					_targets = targets;
 					_outerIndex = -1;

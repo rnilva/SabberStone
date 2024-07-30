@@ -19,10 +19,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class SplitTask : SimpleTask
 	{
+		private readonly EntityGetter _entityGetter;
+
 		public SplitTask(int amount, EntityType type)
 		{
 			Amount = amount;
 			Type = type;
+			_entityGetter = IncludeTask.GetterDict[type];
 		}
 
 		public int Amount { get; set; }
@@ -38,7 +41,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//	return TaskState.STOP;
 
 			IList<Playable> entities =
-				IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
+				//IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
+				_entityGetter(controller, source, target, stack?.Playables);
 
 			//if (game.Splitting && game.Splits.Count == 0)
 			//{
@@ -86,11 +90,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 	{
 		private readonly int _amount;
 		private readonly EntityType _type;
+		private readonly EntityGetter _entityGetter;
 
 		public RandomTask(int amount, EntityType type)
 		{
 			_amount = amount;
 			_type = type;
+			_entityGetter = IncludeTask.GetterDict[type];
 		}
 
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
@@ -100,7 +106,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//	IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
 			//List<Playable> entities = temp is List<Playable> list ? list : temp.ToList();
 
-			IList<Playable> entities = IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables);
+			IList<Playable> entities =
+				//IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables);
+				_entityGetter(controller, source, target, stack?.Playables);
 
 			if (entities.Count == 0)
 				return TaskState.STOP;

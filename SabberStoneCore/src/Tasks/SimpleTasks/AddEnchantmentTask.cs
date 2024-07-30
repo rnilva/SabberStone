@@ -25,6 +25,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private readonly EntityType _entityType;
 		private readonly bool _useScriptTag;
 		private readonly bool _useEntityId;
+		private readonly EntityGetter _entityGetter;
 
 		public AddEnchantmentTask(string enchantmentId, EntityType entityType, bool useScriptTag = false, bool useEntityId = false)
 		{
@@ -32,6 +33,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			_entityType = entityType;
 			_useScriptTag = useScriptTag;
 			_useEntityId = useEntityId;
+			_entityGetter = IncludeTask.GetterDict[entityType];
 		}
 
 		public override TaskState Process(in Game game, in Controller controller, in Entity source,
@@ -93,7 +95,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//	stack?.Playables))
 			//	Generic.AddEnchantmentBlock.Invoke(controller, _enchantmentCard, (Playable) source, p, n1, n2, _useEntityId);
 
-			IList<Playable> entities = IncludeTask.GetEntities(in _entityType, in controller, source, target, stack?.Playables);
+			IList<Playable> entities =
+				//IncludeTask.GetEntities(in _entityType, in controller, source, target, stack?.Playables);
+				_entityGetter(controller, source, target, stack?.Playables);
 
 			for (int i = 0; i < entities.Count; i++)
 				Generic.AddEnchantmentBlock(game, _enchantmentCard, p, entities[i], n1, n2, entityId);
