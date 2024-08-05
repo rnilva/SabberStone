@@ -23,15 +23,15 @@ namespace SabberStoneCoreTest
 	/// <summary>
 	/// Helper methods for unit tests
 	/// </summary>
-    internal static class TestUtils
-    {
+	internal static class TestUtils
+	{
 		/// <summary>
 		/// Plays a card that matches the provided name. Returns the created <see cref="Playable"/> object from the card.
 		/// If you play a minion, the minion's position will be the rightmost position on the board.
 		/// </summary>
 		/// <returns>The created entity object from the card.</returns>
 		public static Playable ProcessCard(this Game game, string cardName, Playable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1)
-	    {
+		{
 			var character = target as Character;
 
 			if (target != null && character == null)
@@ -47,27 +47,27 @@ namespace SabberStoneCoreTest
 				throw new Exception($"There is no card named \"{cardName}\". Please Check Again!");
 			}
 
-		    if (asZeroCost)
-			    entity.Cost = 0;
-		    game.DeathProcessingAndAuraUpdate();
-		    var option = PlayCardTask.Any(game.CurrentPlayer, entity, character, zonePosition, chooseOne);
-		    if (!game.Process(option))
-			    throw new Exception($"{option} is not a valid task.");
+			if (asZeroCost)
+				entity.Cost = 0;
+			game.DeathProcessingAndAuraUpdate();
+			var option = PlayCardTask.Any(game.CurrentPlayer, entity, character, zonePosition, chooseOne);
+			if (!game.Process(option))
+				throw new Exception($"{option} is not a valid task.");
 
 			return entity;
-	    }
+		}
 
 		/// <summary>
 		/// Plays the provided entity as current player of the game.
 		/// If you play a minion, the minion's position will be the rightmost position on the board.
 		/// </summary>
 		public static Playable ProcessCard(this Game game, Playable entity, Playable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1)
-	    {
+		{
 			if (target != null && !(target is Character))
 				throw new ArgumentException($"Can't target non-charater entity {target}");
 
 			if (asZeroCost)
-			    entity.Cost = 0;
+				entity.Cost = 0;
 			game.DeathProcessingAndAuraUpdate();
 			var option = PlayCardTask.Any(game.CurrentPlayer, entity, (Character) target, zonePosition, chooseOne);
 			if (!game.Process(option))
@@ -92,49 +92,49 @@ namespace SabberStoneCoreTest
 				throw new Exception($"There is no card named \"{cardName}\". Please Check Again!");
 			}
 			if (!(entity is T t))
-			    throw new ArgumentException($"The given card is not {typeof(T)}");
+				throw new ArgumentException($"The given card is not {typeof(T)}");
 			if (target != null && !(target is Character))
 				throw new ArgumentException($"Can't target non-charater entity {target}");
-		    if (asZeroCost)
-			    entity.Cost = 0;
+			if (asZeroCost)
+				entity.Cost = 0;
 			game.DeathProcessingAndAuraUpdate();
-			PlayCardTask option = PlayCardTask.Any(game.CurrentPlayer, t, (ICharacter) target, zonePosition, chooseOne);
+			PlayCardTask option = PlayCardTask.Any(game.CurrentPlayer, t, (Character) target, zonePosition, chooseOne);
 
-		    if (!game.Process(option))
-			    throw new Exception($"{option} is not a valid task.");
+			if (!game.Process(option))
+				throw new Exception($"{option} is not a valid task.");
 
-		    return (T) game.IdEntityDic[t.Id];
+			return (T) game.IdEntityDic[t.Id];
 		}
 
-	    public static T ProcessCard<T>(this Game game, T entity, Playable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1) where T : Playable
-	    {
+		public static T ProcessCard<T>(this Game game, T entity, Playable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1) where T : Playable
+		{
 			if (target != null && !(target is Character))
 				throw new ArgumentException($"Can't target non-charater entity {target}");
 
 			if (asZeroCost)
-			    entity.Cost = 0;
-		    game.DeathProcessingAndAuraUpdate();
-		    var option = PlayCardTask.Any(game.CurrentPlayer, entity, (Character) target, zonePosition, chooseOne);
+				entity.Cost = 0;
+			game.DeathProcessingAndAuraUpdate();
+			var option = PlayCardTask.Any(game.CurrentPlayer, entity, (Character) target, zonePosition, chooseOne);
 
 			if (!game.Process(option))
 				throw new Exception($"{option} is not a valid task.");
 
 			return (T) game.IdEntityDic[entity.Id];
-	    }
+		}
 
 		/// <summary>
 		/// Ends the current player's turn.
 		/// </summary>
 		public static void EndTurn(this Game game)
-	    {
-		    game.Process(EndTurnTask.Any(game.CurrentPlayer));
-	    }
+		{
+			game.Process(EndTurnTask.Any(game.CurrentPlayer));
+		}
 
 		/// <summary>
 		/// Plays current player's Hero Power.
 		/// </summary>
-	    public static void PlayHeroPower(this Game game, Playable target = null, int chooseOne = 0, bool asZeroCost = false, bool autoRefresh = false)
-	    {
+		public static void PlayHeroPower(this Game game, Playable target = null, int chooseOne = 0, bool asZeroCost = false, bool autoRefresh = false)
+		{
 			if (target != null && !(target is Character))
 				throw new ArgumentException($"Can't target non-charater entity {target}");
 			var option = HeroPowerTask.Any(game.CurrentPlayer, (Character) target, chooseOne, asZeroCost);
@@ -149,29 +149,25 @@ namespace SabberStoneCoreTest
 			if (!game.Process(option))
 				throw new Exception($"{option} is not a valid task.");
 			if (autoRefresh)
-			    game.CurrentPlayer.Hero.HeroPower.IsExhausted = false;
-	    }
+				game.CurrentPlayer.Hero.HeroPower.IsExhausted = false;
+		}
 
 		/// <summary>
 		/// Choose Nth item from choices (the leftest one is 1).
 		/// </summary>
 		/// <returns>The chosen entity.</returns>
-		public static IPlayable ChooseNthChoice(this Game game, int n)
-	    {
-		    if (n > game.CurrentPlayer.Choice.Choices.Count)
-			    throw new ArgumentOutOfRangeException();
-		    var option = ChooseTask.Pick(game.CurrentPlayer, game.CurrentPlayer.Choice.Choices[n - 1]);
-		    if (!game.Process(option))
-			    throw new Exception($"{option} is not a valid task.");
+		public static Playable ChooseNthChoice(this Game game, int n)
+		{
+			if (n > game.CurrentPlayer.Choice.Choices.Count)
+				throw new ArgumentOutOfRangeException();
+
+			int pick = game.CurrentPlayer.Choice.Choices[n - 1];
+			ChooseTask option = ChooseTask.Pick(game.CurrentPlayer, pick);
+			if (!game.Process(option))
+				throw new Exception($"{option} is not a valid task.");
+
+			return game.IdEntityDic[pick];
 		}
-
-		    int pick = game.CurrentPlayer.Choice.Choices[n - 1];
-		    ChooseTask option = ChooseTask.Pick(game.CurrentPlayer, pick);
-		    if (!game.Process(option))
-			    throw new Exception($"{option} is not a valid task.");
-
-		    return game.IdEntityDic[pick];
-	    }
 
 		/// <summary>
 		/// Gets the cards of current choice session.
@@ -193,33 +189,33 @@ namespace SabberStoneCoreTest
 		/// Kill this Minion.
 		/// </summary>
 		/// <param name="m"></param>
-	    public static void Kill(this Minion m)
-	    {
-		    if (m.Zone.Type != SabberStoneCore.Enums.Zone.PLAY)
-			    throw new ArgumentException($"{m} is not in the board.");
+		public static void Kill(this Minion m)
+		{
+			if (m.Zone.Type != SabberStoneCore.Enums.Zone.PLAY)
+				throw new ArgumentException($"{m} is not in the board.");
 
-		    m.Destroy();
-		    m.Game.DeathProcessingAndAuraUpdate();
-	    }
+			m.Destroy();
+			m.Game.DeathProcessingAndAuraUpdate();
+		}
 
 		/// <summary>
 		/// Cast to <see cref="Character"/>
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns></returns>
-	    public static Character AsCharacter(this Playable p)
-	    {
-		    var c = p as Character;
-		    if (c == null)
-			    throw new InvalidCastException($"{p} is not a Character");
+		public static Character AsCharacter(this Playable p)
+		{
+			var c = p as Character;
+			if (c == null)
+				throw new InvalidCastException($"{p} is not a Character");
 
 			return c;
-	    }
+		}
 
 		/// <summary>
 		/// Performs an attack with this character to the given defender.
 		/// </summary>
-		public static void Attack(this ICharacter attacker, ICharacter defender)
+		public static void Attack(this Character attacker, Character defender)
 		{
 			if (defender == null)
 				throw new ArgumentNullException(nameof(defender));
@@ -259,5 +255,5 @@ namespace SabberStoneCoreTest
 			if (!attacker.Game.Process(task))
 				throw new Exception($"{task} is not a valid task.");
 		}
-    }
+	}
 }

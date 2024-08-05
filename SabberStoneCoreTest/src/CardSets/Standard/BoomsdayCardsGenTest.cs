@@ -461,9 +461,6 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			goto start;
 		}
 
-			Assert.False(game.CurrentPlayer.HandZone.Any(p => p.Card.Type == CardType.MINION));
-		}
-
 		// ----------------------------------------- MINION - DRUID
 		// [BOT_434] Flobbidinous Floop - COST:4 [ATK:3/HP:4] 
 		// - Set: boomsday, Rarity: legendary
