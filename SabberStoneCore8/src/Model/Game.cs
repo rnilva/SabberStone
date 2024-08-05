@@ -47,6 +47,11 @@ namespace SabberStoneCore.Model
 	/// <seealso cref="Entity" />
 	public partial class Game : Entity
 	{
+		private readonly GameConfig _gameConfig;
+
+		private GameAttributes _attrs;
+		private Controller _currentPlayer;
+
 		/// <summary>
 		/// The entityID of the game itself is always 1.
 		/// </summary>
@@ -56,10 +61,6 @@ namespace SabberStoneCore.Model
 		/// The maximum minions that are allowed on the board.
 		/// </summary>
 		public const int MAX_MINIONS_ON_BOARD = 7;
-
-		private readonly GameConfig _gameConfig;
-
-		private Controller _currentPlayer;
 
 		/// <summary>
 		/// List of activated auras.
@@ -266,10 +267,6 @@ namespace SabberStoneCore.Model
 			_gameConfig = gameConfig;
             _attrs = new GameAttributes();
 			Game = this;
-			Auras = new List<IAura>();
-			Triggers = new List<Trigger>();
-			//GamesEventManager = new GameEventManager(this);
-			//_characters = new Character[CHARACTERS_LENGTH];
 
 			bool history = gameConfig.History;
 			// add power history create game
@@ -332,7 +329,7 @@ namespace SabberStoneCore.Model
 			Player2.Opponent = Player1;
 
 			// add power history create game
-			if (history) PowerHistory.Add(PowerHistoryBuilder.CreateGame(this, _players));
+			if (history) PowerHistory.Add(PowerHistoryBuilder.CreateGame(this, [Player1, Player2]));
 
 			if (setupHeroes)
 			{
@@ -353,7 +350,7 @@ namespace SabberStoneCore.Model
 
 			if (history)
 			{
-				PowerHistory.Add(PowerHistoryBuilder.CreateGame(this, new []{Player1, Player2}));
+				PowerHistory.Add(PowerHistoryBuilder.CreateGame(this, [Player1, Player2]));
 			}
 
 			if (!gameConfig.Shuffle && !gameConfig.DrawWithRandom)
@@ -657,6 +654,9 @@ namespace SabberStoneCore.Model
 
 			// triggers Start of Game triggers (but does not process tasks here)
 			TriggerManager.OnGameStartTrigger(this);
+
+			if (stopBeforeShuffling)
+				return;
 
 			// set next step
 			NextStep = Step.BEGIN_FIRST;
@@ -1219,6 +1219,8 @@ namespace SabberStoneCore.Model
 				ResolveDeadHeroes.Invoke();
 				ResolveDeadHeroes = null;
 
+				if (State == State.COMPLETE)
+					return;
 				NextStep = Step.FINAL_WRAPUP;
 				FinalWrapUp();
 			}
@@ -1413,7 +1415,7 @@ namespace SabberStoneCore.Model
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _currentPlayer;
-			set
+			private set
 			{
 				_currentPlayer = value;
 				if (!History) return;

@@ -37,10 +37,6 @@ namespace SabberStoneCore.Model.Zones
 
 		public override bool IsFull => _count == Game.MAX_MINIONS_ON_BOARD;
 
-		public override bool IsFull => _count == Game.MAX_MINIONS_ON_BOARD;
-
-		public override int MaxSize => Game.MAX_MINIONS_ON_BOARD;
-
 		public override void Add(MinionInPlay entity, int zonePosition = -1)
 		{
 			base.Add(entity, zonePosition);

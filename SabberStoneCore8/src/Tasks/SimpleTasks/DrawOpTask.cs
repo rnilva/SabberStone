@@ -21,8 +21,11 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 	{
 		public DrawOpTask(Card card = null, bool toStack = false)
 		{
+			Card = card;
 			ToStack = toStack;
 		}
+
+		public Card Card { get; set; }
 
 		public bool ToStack { get; set; }
 

@@ -259,23 +259,23 @@ namespace SabberStoneCore.Model.Entities
 			// add power history full entity 
 			if (game.History)
 			{
+				var tags = new Dictionary<GameTag, int>();
+
 				if (zone != null)
 					tags[GameTag.ZONE] = (int)zone.Type;
 
 				if (zone is DeckZone)
 				{
+					tags[GameTag.CONTROLLER] = controller.PlayerId;
+					tags[GameTag.ENTITY_ID] = id;
+
 					controller.Game.PowerHistory.Add(new PowerHistoryFullEntity
 					{
 						Entity = new PowerHistoryEntity
 						{
 							Id = result.Id,
 							Name = "",
-							Tags = new Dictionary<GameTag, int>()
-							{
-								{GameTag.ZONE, (int)Enums.Zone.DECK},
-								{GameTag.CONTROLLER, controller.PlayerId},
-								{GameTag.ENTITY_ID, id},
-							}
+							Tags = tags
 						}
 					});
 				}

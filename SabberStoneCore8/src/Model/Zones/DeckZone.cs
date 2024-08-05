@@ -47,17 +47,6 @@ namespace SabberStoneCore.Model.Zones
 			DrawWithRandom = zone.DrawWithRandom;
 		}
 
-		public IPlayable Draw(IPlayable cardToDraw = null)
-		{
-			if (cardToDraw != null)
-				return Remove(cardToDraw);
-
-			if (DrawWithRandom)
-				return Remove(Game.Random.Next(Count));
-
-			return Remove(Count - 1);
-		}
-
 		/// <summary>
 		/// Remove an entity from this deck and return the entity.
 		/// Note that the returned entity have not belong to any zone yet.

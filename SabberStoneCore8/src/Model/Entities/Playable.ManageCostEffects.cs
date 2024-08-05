@@ -15,30 +15,6 @@ namespace SabberStoneCore.Model.Entities
 			private int _cachedValue;
 			private bool _toBeUpdated;
 			private AdaptiveCostEffect _adaptiveCostEffect;
-			private int _cache;
-
-			public CostManager()
-			{
-				_toBeUpdated = true;
-			}
-
-			public CostManager(AdaptiveCostEffect adaptiveEffect)
-			{
-				_adaptiveCostEffect = adaptiveEffect;
-			}
-
-			private CostManager(CostManager original)
-			{
-				_cachedValue = original._cachedValue;
-				_toBeUpdated = original._toBeUpdated;
-				_costEffects.AddRange(original._costEffects);
-			}
-
-			public int CachedValue
-			{
-				get => _cachedValue;
-				set => _cachedValue = value;
-			}
 
 			public bool CardCostsHealth;
 
@@ -84,7 +60,7 @@ namespace SabberStoneCore.Model.Entities
 			/// </summary>
 			public void UpdateAdaptiveEffect(int setValue = -1)
 			{
-				if (setValue > 0)
+				if (setValue >= 0)
 					_cachedValue = setValue;
 				else
 					_toBeUpdated = true;
@@ -205,12 +181,10 @@ namespace SabberStoneCore.Model.Entities
 
 		internal void ResetCost()
 		{
-			if (_costManager != null)
-			{
-				_costManager.DeactivateAdaptiveEffect();
-				_costManager = null;
-			}
+			_costManager = null;
 			_modifiedCost = null;
+			if (OngoingEffect is AdaptiveCostEffect ace)
+				ace.Remove();
 
 			if (_history)
 				Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.COST, Card.Cost));

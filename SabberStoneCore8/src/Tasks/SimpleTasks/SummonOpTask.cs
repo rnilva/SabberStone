@@ -50,9 +50,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				if (controller.Opponent.BoardZone.IsFull)
 					return TaskState.STOP;
 
-			Minion summonEntity = Card != null
-				? Entity.FromCard(controller.Opponent, Card) as Minion
-				: stack?.Playables[0] as Minion;
+				Minion summonEntity;
 
 				if (_card == null)
 				{

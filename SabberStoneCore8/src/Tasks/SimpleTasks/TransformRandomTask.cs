@@ -36,7 +36,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
 				if (Cards.CostMinionCards(game.FormatType)
 					.TryGetValue(p.Card.Cost + CostChange, out List<Card> minions))
-					Generic.TransformBlock.Invoke(p.Controller, Util.RandomElement(minions), p as MinionInPlay);
+					Generic.ChangeEntityBlock(controller, p, minions.RandomElement(game.Random), true);
 
 			game.OnRandomHappened(true);
 

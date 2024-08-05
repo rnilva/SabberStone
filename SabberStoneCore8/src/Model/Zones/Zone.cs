@@ -398,13 +398,6 @@ namespace SabberStoneCore.Model.Zones
 		public override bool IsFull => false;
 		public override int FreeSpace => int.MaxValue;
 
-		public override Playable this[int zonePosition]
-		{
-			get => _entities[zonePosition];
-		}
-
-		public override Playable Random => Count == 0 ? default : _entities[Util.Random.Next(Count)];
-
 		public override void Add(Playable entity, int zonePosition = -1)
 		{
 			if (entity.Controller != null && entity.Controller != Controller)

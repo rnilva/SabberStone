@@ -14,6 +14,7 @@
 using System;
 using System.Text;
 using SabberStoneCore.Conditions;
+using SabberStoneCore.Enchants;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;

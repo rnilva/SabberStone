@@ -72,14 +72,12 @@ namespace SabberStoneCore.Auras
 			// The effect of Summoning Portal is always applied before any other effects.
 			Playable p = playable;
 
-			// The effect of Summoning Portal is always applied before any other effects.
-
-			int cardValue = m.Card.Cost;
+			int cardValue = p.Card.Cost;
 			int cost = cardValue > 2 ? cardValue - 2 : 1;
 
-			int? eValue = m._modifiedCost;
+			int? eValue = p._modifiedCost;
 
-			m.Cost = eValue.HasValue ? cost - cardValue + eValue.Value : cost;
+			p.Cost = eValue.HasValue ? cost - cardValue + eValue.Value : cost;
 
 			p.GetCostManager()?.QueueUpdate();
 		}

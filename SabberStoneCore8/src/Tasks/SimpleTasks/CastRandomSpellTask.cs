@@ -74,10 +74,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				return TaskState.COMPLETE;
 			}
 
-			Character randTarget = null;
-			if (randCard.TargetingType != TargetingType.None)
-			{
-				var targets = (List<Character>) spellToCast.ValidPlayTargets;
+			Character randTarget = spellToCast.GetRandomValidTarget();
 
 			int randChooseOne = rnd.Next(1, 3);
 

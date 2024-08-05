@@ -418,7 +418,8 @@ namespace SabberStoneCore.Model.Entities
 			#region HeroAttackTaskts
 			HeroInPlay hero = Hero;
 
-			if (!hero.IsExhausted && hero.AttackDamage > 0 && !hero.IsFrozen)
+			if ((!hero.IsExhausted || (hero.ExtraAttacksThisTurn > 0 && hero.ExtraAttacksThisTurn >= hero.NumAttacksThisTurn))
+			    && hero.AttackDamage > 0 && !hero.IsFrozen)
 			{
 				GenerateAttackTargets();
 
@@ -524,7 +525,7 @@ namespace SabberStoneCore.Model.Entities
 			Character[] GetTargets(Card card)
 			{
 				// Check it needs additional validation
-				if (!card.TargetingAvailabilityPredicate?.Invoke(this) ?? false)
+				if (!card.TargetingAvailabilityPredicate?.Invoke(this, card) ?? false)
 					return null;
 
 				Character[] targets;

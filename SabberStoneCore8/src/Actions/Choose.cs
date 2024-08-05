@@ -242,22 +242,7 @@ namespace SabberStoneCore.Actions
 				//playable[GameTag.DISPLAYED_CREATOR] = c.LastCardPlayed;
 
 				//	Start next Choice if any choice is queueing up
-				//if (c.Choice.ChoiceQueue.Any())
-				//{
-				//	Choice nextChoice = c.Choice.ChoiceQueue.Dequeue();
-				//	nextChoice.ChoiceQueue = c.Choice.ChoiceQueue;
-				//	c.Choice = nextChoice;
-				//	c.Choice.LastChoice = choice;
-				//}
-				if (c.Choice.TryPopNextChoice(choice, out Choice nextChoice))
-				{
-					c.Choice = nextChoice;
-				}
-				else
-				{
-					// reset choice it's done
-					c.Choice = null;
-				}
+				c.Choice = c.Choice.TryPopNextChoice(choice, out Choice nextChoice) ? nextChoice : null;
 
 				return true;
 			};

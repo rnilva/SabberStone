@@ -531,25 +531,13 @@ namespace SabberStoneCore.Model.Entities
 			hash.Append("[Tags:");
 			foreach (KeyValuePair<GameTag, int> kvp in this.OrderBy(p => p.Key))
 			{
-				int* srcEndPtr = srcPtr + len;
-				long* s = (long*)srcPtr;
-				long* d = (long*)dstPtr;
-
-				do
+				if (!ignore.Contains(kvp.Key))
 				{
-					*d = *s;
-					d++;
-					s++;
-					*d = *s;
-					d++;
-					s++;
-				} while (s + 2 <= srcEndPtr);
-
-				*d ^= *s;
+					hash.Append($"{{{kvp.Key},{kvp.Value}}}");
+				}
 			}
-
-			_size = len >> 1;
-			_count = entityData._count;
+			hash.Append("]");
+			return hash.ToString();
 		}
 
 		public override string ToString()

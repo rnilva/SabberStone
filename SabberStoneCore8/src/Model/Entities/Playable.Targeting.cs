@@ -183,9 +183,9 @@ namespace SabberStoneCore.Model.Entities
 			}
 		}
 
-		public ICharacter GetRandomValidTarget()
+		public Character GetRandomValidTarget()
 		{
-			List<ICharacter> validTargets = GetValidPlayTargets();
+			List<Character> validTargets = GetValidPlayTargets();
 			if (validTargets.Count == 0)
 				return null;
 
@@ -199,7 +199,7 @@ namespace SabberStoneCore.Model.Entities
 			return randTarget;
 		}
 
-		public virtual bool TargetingRequirements(ICharacter target)
+		public virtual bool TargetingRequirements(Character target)
 		{
 			return Card.TargetingRequirements(Controller, target);
 		}

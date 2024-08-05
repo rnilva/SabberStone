@@ -54,12 +54,12 @@ namespace SabberStoneCore.Conditions
 			new SelfCondition(me => me.Controller.BoardZone.Any(p => p.IsFrozen));
 		public static readonly SelfCondition IsControllingSecret = new SelfCondition(me => me.Controller.SecretZone.Count > 0);
 
-		public static readonly SelfCondition IsDragonInHand = new SelfCondition(me => me.Controller.HandZone.Any(p => p is Minion m && m.Race == Race.DRAGON));
+		public static readonly SelfCondition IsDragonInHand = new SelfCondition(me => me.Controller.HandZone.Any(p => p is Minion m && m.IsRace(Race.DRAGON)));
 		public static readonly SelfCondition Is5PlusAtkInHand = new SelfCondition(me => me.Controller.HandZone.Any(p => p is Character c && c.AttackDamage >= 5));
 		public static readonly SelfCondition Has5PlusCostSpellInHand = new SelfCondition(me =>
 			me.Controller.HandZone.Any(p => p.Card.Type == CardType.SPELL && p.Cost >= 5));
-		public static SelfCondition IsRace(Race race) => new SelfCondition(me => me.Card.Race == race);
-		public static SelfCondition IsNotRace(params Race[] races) => new SelfCondition(me => me is Minion m && !races.Any(r => m.IsRace(r)))
+		public static SelfCondition IsRace(Race race) => new SelfCondition(me => me is Character c && c.IsRace(race));
+		public static SelfCondition IsNotRace(Race race) => new SelfCondition(me => me is Character c && !c.IsRace(race));
 
 
 		public static readonly SelfCondition IsMinion = new SelfCondition(me => me.Card.Type == CardType.MINION);
@@ -86,7 +86,7 @@ namespace SabberStoneCore.Conditions
 
 		public static readonly SelfCondition IsSpellDmgOnHero = new SelfCondition(me => me.Controller.CurrentSpellPower > 0);
 		public static readonly SelfCondition IsntSpellDmgOnHero = new SelfCondition(me => me.Controller.CurrentSpellPower == 0);
-		public static SelfCondition IsNotAttackingThisTurn(int number) => new SelfCondition(me => (me as Character)?.NumAttacksThisTurn == number);
+		public static SelfCondition IsNotAttackingThisTurn(int number) => new SelfCondition(me => me is Character c && c.NumAttacksThisTurn == number);
 		public static SelfCondition IsCardId(string cardId) => new SelfCondition(me => me.Card.Id == cardId);
 		public static SelfCondition IsNotCardClass(CardClass cardClass) => new SelfCondition(me => me.Card.Class != cardClass);
 		public static SelfCondition IsNotStartInDeck => new SelfCondition(me => me.Id > (me.Controller.DeckCards.Count + me.Controller.Opponent.DeckCards.Count + 7));

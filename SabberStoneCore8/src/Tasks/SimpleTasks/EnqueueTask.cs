@@ -71,7 +71,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			IList<IPlayable> targets = IncludeTask.GetEntities(in _targetType, in controller, source, target, stack?.Playables);
+			IList<Playable> targets = IncludeTask.GetEntities(in _targetType, in controller, source, target, stack?.Playables);
 
 			if (_task == null)
 			{

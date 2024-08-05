@@ -390,7 +390,7 @@ namespace SabberStoneCore.Actions
 					{
 						EntityData differTags = new EntityData();
 						Dictionary<GameTag, int> newTags = newCard.Tags;
-						foreach (KeyValuePair<GameTag, int> item in p.Card.Tags)
+						foreach (KeyValuePair<GameTag, int> item in source.Card.Tags)
 							differTags.Add(item.Key,
 								newTags.TryGetValue(item.Key, out int value)
 									? value
@@ -404,14 +404,13 @@ namespace SabberStoneCore.Actions
 							CardId = newCard.Id,
 							Entity = new PowerHistoryEntity()
 							{
-								Id = p.Id,
+								Id = source.Id,
 								Name = "",
 								Tags = differTags
 							}
 						});
 					}
-
-
+					
 					source.Card = newCard;
 					//Playable pp = (Playable)p;
 					//if (pp._costManager != null)
@@ -463,7 +462,7 @@ namespace SabberStoneCore.Actions
 							CardId = newCard.Id,
 							Entity = new PowerHistoryEntity()
 							{
-								Id = p.Id,
+								Id = source.Id,
 								Name = "",
 								Tags = differTags
 							}
@@ -577,14 +576,7 @@ namespace SabberStoneCore.Actions
 				{
 					source.Power?.Trigger?.Activate(source.Game, source, TriggerActivation.DECK);
 				}
-
-				// Reapply auras
-				if (hand != null)
-					hand.Auras.ForEach(a => a.EntityAdded(p));
-				else if
-					(board != null)
-					board.Auras.ForEach(a => a.EntityAdded(p));
-
+				
 				// Not sure C'Thun from Shifter Zerus will have Proxy's buffs
 
 				return source;

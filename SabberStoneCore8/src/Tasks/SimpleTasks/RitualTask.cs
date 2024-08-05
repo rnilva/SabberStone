@@ -85,8 +85,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					{
 						foreach (Playable p in entities)
 						{
-							Generic.AddEnchantmentBlock.Invoke(controller, BuffEnchantmentCard, (Playable) source, p,
-								0, 0, false);
+							Generic.AddEnchantmentBlock(game, BuffEnchantmentCard, (Playable) source, p,
+								0, 0, 0);
 
 							((OngoingEnchant) p.OngoingEffect).Count += _amount - 1;
 						}

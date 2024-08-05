@@ -56,28 +56,38 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			switch (_playType)
 			{
 				case PlayType.SPELL:
-					for (int i = 0; i < (stack?.Playables).Count; i++)
+					foreach (Playable p in stack?.Playables)
 					{
-						Playable p = (stack?.Playables)[i];
+						if (!(p is Spell spell)) throw new Exception();
+						Controller c = spell.Controller;
+
 						Character cardTarget = null;
-						if (_randTarget && p.Card.MustHaveTargetToPlay)
+						if (_randTarget)
 						{
-							var targets = (List<Character>) p.ValidPlayTargets;
+							game.OnRandomHappened(true);
+							if (spell.Card.MustHaveTargetToPlay)
+							{
+								cardTarget = spell.GetRandomValidTarget();
+								if (cardTarget == null)
+								{
+									//throw new Exception($"{source} cannot play {p}; there is no valid target.");
+									if (spell.Zone != null)
+										Generic.RemoveFromZone(c, p);
 
-							cardTarget = targets.Count > 0
-								? Util.RandomElement(targets)
-								: throw new InvalidOperationException();
-
-							p.CardTarget = cardTarget?.Id ?? -1;
-
-							game.Log(LogLevel.INFO, BlockType.POWER, "PlayTask",
-								!game.Logging ? "" : $"{p}'s target is randomly selected to {cardTarget}");
+									return TaskState.STOP;
+								}
+							}
 						}
 						else if
 							(_targetType != EntityType.INVALID)
 						{
-							cardTarget = (Character) IncludeTask.GetEntities(_targetType, in controller, source,
-								target, stack?.Playables)[0];
+							IList<Playable> targets = IncludeTask.GetEntities(_targetType, in controller, source, target,
+								stack?.Playables);
+
+							if (targets.Count == 0)
+								return TaskState.STOP;
+
+							cardTarget = (Character)targets[0];
 						}
 
 						if (spell.Zone == null || Generic.RemoveFromZone(c, p))

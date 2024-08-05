@@ -58,19 +58,18 @@ namespace SabberStoneCore.Model
 		public int ATK { get; private set; }
 		public int Health { get; private set; }
 		public int SpellPower { get; private set; }
-
 		public bool Taunt { get; private set; }
-		public bool DivineShield { get; private set; }
-		public bool Stealth { get; private set; }
-		public bool CantBeTargetedBySpells { get; private set; }
-		public bool Windfury { get; private set; }
 		public bool Charge { get; private set; }
+		public bool Stealth { get; internal set; }
 		public bool Poisonous { get; private set; }
+		public bool DivineShield { get; private set; }
+		public bool Windfury { get; private set; }
 		public bool LifeSteal { get; private set; }
-		public bool Rush { get; private set; }
-		public bool CantAttack { get; private set; }
-
 		public bool Echo { get; private set; }
+		public bool Rush { get; private set; }
+		public bool CantBeTargetedBySpells { get; private set; }
+		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
+		public bool CantAttack { get; private set; }
 		public bool Modular { get; private set; }
 		public bool ChooseOne { get; private set; }
 		public bool Combo { get; private set; }
@@ -82,8 +81,6 @@ namespace SabberStoneCore.Model
 		public bool HideStat { get; private set; }
 		public bool ReceivesDoubleSpelldamageBonus { get; private set; }
 		public bool Freeze { get; }
-		public bool CantBeTargetedByHeroPowers => CantBeTargetedBySpells;
-
 		public bool Overkill { get; }
 		public bool TwinSpell { get; }
 
@@ -162,6 +159,12 @@ namespace SabberStoneCore.Model
 							break;
 						case GameTag.RUSH:
 							Rush = true;
+							break;
+						case GameTag.OVERKILL:
+							Overkill = true;
+							break;
+						case GameTag.TWINSPELL:
+							TwinSpell = true;
 							break;
 						case GameTag.CANT_BE_TARGETED_BY_SPELLS:
 							CantBeTargetedBySpells = true;
@@ -332,6 +335,10 @@ namespace SabberStoneCore.Model
 						// TODO
 						TargetingType = TargetingType.AllMinions;
 						break;
+					case PlayReq.REQ_TARGET_IF_AVAILABLE_AND_HERO_HAS_ATTACK:
+						needsTarget = true;
+						TargetingAvailabilityPredicate += TargetingPredicates.ReqHeroHasAttack;
+						break;
 					case PlayReq.REQ_NUM_MINION_SLOTS:
 						PlayAvailabilityPredicate += TargetingPredicates.ReqNumMinionSlots;
 						break;
@@ -353,8 +360,12 @@ namespace SabberStoneCore.Model
 					case PlayReq.REQ_FRIENDLY_MINION_DIED_THIS_GAME:
 						PlayAvailabilityPredicate += TargetingPredicates.ReqFriendlyMinionDiedThisGame;
 						break;
+					case PlayReq.REQ_FRIENDLY_MINION_OF_RACE_DIED_THIS_TURN:
+						PlayAvailabilityPredicate +=
+							TargetingPredicates.ReqFriendlyMinionOfRaceDiedThisTurn((Race)requirement.Value);
+						break;
 					case PlayReq.REQ_MUST_PLAY_OTHER_CARD_FIRST:
-						PlayAvailabilityPredicate += c => false;
+						PlayAvailabilityPredicate += (c, card) => false;
 						break;
 					//	REQ_STEADY_SHOT
 					//	REQ_MINION_OR_ENEMY_HERO	//	Steady Shot

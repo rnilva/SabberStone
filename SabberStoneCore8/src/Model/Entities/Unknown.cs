@@ -26,19 +26,24 @@ namespace SabberStoneCore.Model.Entities
 				new Tag(GameTag.CARD_ID, -1)
 			}, new Dictionary<PlayReq, int>(), null, new Tag[0]);
 
-		public Unknown(in Controller controller, in IDictionary<GameTag, int> tags, in int id) : base(in controller, in UnknownCard, in tags, in id)
+		public Unknown(in Controller controller, in int id) : base(in controller, in UnknownCard, in id)
 		{
 		}
 
-		private Unknown(in Controller controller, in Playable playable) : base(in controller, in playable)
+		private Unknown(in Controller controller, in Unknown playable) : base(in controller, playable)
 		{
 		}
 
 		#region Overrides of Playable
 
-		public override IPlayable Clone(in Controller controller)
+		public override Playable Clone(in Controller controller)
 		{
 			return new Unknown(in controller, this);
+		}
+
+		public override void Destroy()
+		{
+			throw new System.NotImplementedException();
 		}
 
 		#endregion

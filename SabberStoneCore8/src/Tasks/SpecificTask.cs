@@ -184,24 +184,23 @@ namespace SabberStoneCore.Tasks
 			{
 				int opBoardCount = t.Controller.Opponent.BoardZone.CountExceptUntouchables;
 
-				if (t is ICharacter ch && ch.IsAttacking)
+				if (t is Character ch && ch.IsAttacking)
 				{
-					Playable p = list[0];
-					//int boardCount = p.Controller.BoardZone.CountExceptUntouchables;
-					int opBoardCount = p.Controller.Opponent.BoardZone.CountExceptUntouchables;
+					int index = g.Random.Next(opBoardCount + 1);
+					g.CurrentEventData.EventTarget =
+						index == opBoardCount
+							? (Playable)ch.Controller.Opponent.Hero
+							: ch.Controller.Opponent.BoardZone.HasUntouchables
+								? ch.Controller.Opponent.BoardZone.GetAll(null)[index]
+								: ch.Controller.Opponent.BoardZone[index];
 
-					if (p is Character c && c.IsAttacking)
-					{
-						int index = Util.Random.Next(opBoardCount + 1);
-						c.Game.CurrentEventData.EventTarget =
-							index == opBoardCount
-								? (Playable)c.Controller.Opponent.Hero
-								: c.Controller.Opponent.BoardZone.HasUntouchables
-									? c.Controller.Opponent.BoardZone.GetAll(null)[index]
-									: c.Controller.Opponent.BoardZone[index];
+					g.ProposedDefender = g.CurrentEventData.EventTarget.Id;
+					g.OnRandomHappened(true);
+					return;
+				}
 
 				//t.CardTarget = ((Playable)t).GetValidPlayTargets().RandomElement(g.Random).Id;
-				g.CurrentEventData.EventTarget = ((Playable) t).GetValidPlayTargets().RandomElement(g.Random);
+				g.CurrentEventData.EventTarget = ((Playable)t).GetValidPlayTargets().RandomElement(g.Random);
 				g.OnRandomHappened(true);
 			});
 
@@ -212,10 +211,7 @@ namespace SabberStoneCore.Tasks
 				Controller op = c.Opponent;
 				if (_glimmerrootMemory1 == null)
 				{
-					Entity source = p[0];
-					Controller controller = p[0].Controller;
-					Controller opponent = p[0].Controller.Opponent;
-					if (_glimmerrootMemory1 == null)
+					lock (locker)
 					{
 						var opClassCards = new List<Card>();
 						_glimmerrootMemory2 = new HashSet<int>();
@@ -289,15 +285,7 @@ namespace SabberStoneCore.Tasks
 
 				if (_ungoroPackMemory == null)
 				{
-					Controller controller = p[0].Controller;
-					int space = Controller.MaxHandSize - controller.HandZone.Count;
-					if (space >= 5)
-						space = 5;
-					else if (space == 0)
-						return null;
-					//var pack = new List<Playable>(space);
-
-					if (_ungoroPackMemory == null)
+					lock (locker)
 					{
 						var dic = new Dictionary<Rarity, Card[]>(4);
 						Card[] ungCards = Cards.All.Where(card => card.Set == CardSet.UNGORO && card.Collectible && !card.IsQuest).ToArray();
@@ -522,7 +510,8 @@ namespace SabberStoneCore.Tasks
 				spellCards.Shuffle(g.Random);
 				for (int i = 0; i < spellCards.Count; i++)
 				{
-					Generic.CastSpell(c, (Spell)Entity.FromCard(c, spellCards[i].SourceCard), (Character)p, spellCards[i].SubOption, true);
+					Playable spell = Entity.FromCard(c, spellCards[i].SourceCard);
+					Generic.CastSpell(c, g, (Spell)spell, (Character)p, spellCards[i].SubOption);
 					while (c.Choice != null)
 						Generic.ChoicePick(c, g, c.Choice.Choices.Choose(g.Random));
 					if (p.Zone?.Type != Zone.PLAY || p.Card.AssetId != original)
@@ -575,7 +564,7 @@ namespace SabberStoneCore.Tasks
 				{
 					Playable entity = Entity.FromCard(c, card);
 
-					ICharacter randTarget = entity.GetRandomValidTarget();
+					Character randTarget = entity.GetRandomValidTarget();
 
 					if (card.MustHaveTargetToPlay && randTarget == null)
 						continue;
@@ -587,7 +576,7 @@ namespace SabberStoneCore.Tasks
 					{
 						case CardType.MINION:
 							if (c.BoardZone.IsFull) break;
-							Generic.SummonBlock(c.Game, entity as Minion, -1);
+							Generic.SummonBlock(c.Game, entity as Minion, -1, p);
 							c.Game.DeathProcessingAndAuraUpdate();
 							break;
 						case CardType.WEAPON:
@@ -660,7 +649,7 @@ namespace SabberStoneCore.Tasks
 
 					if (++count == 30) break;
 
-					if (p is MinionInPlay m && m.ToBeDestroyed || p.Zone.Type != Zone.PLAY)
+					if (p is MinionInPlay m && m.ToBeDestroyed || p.Zone.Type != Zone.PLAY || p.Card.AssetId != original)
 						break;
 				}
 
@@ -747,7 +736,6 @@ namespace SabberStoneCore.Tasks
 		public static SimpleTask GetRandomDrBoomHeroPower =>
 			new FuncNumberTask(source =>
 			{
-				string[] drBoomHeroPowerIds = DrBoomHeroPowerCard.Entourage;
 				string nextId;
 				Controller c = source.Controller;
 				Util.DeepCloneableRandom rnd = source.Game.Random;
@@ -756,12 +744,12 @@ namespace SabberStoneCore.Tasks
 				{
 					do
 					{
-						nextId = drBoomHeroPowerIds.Choose(rnd);
+						nextId = DrBoomHeroPowerIds.Choose(rnd);
 					} while (nextId == currentPower.Card.Id);
 				}
 				else
 				{
-					nextId = drBoomHeroPowerIds.Choose(rnd);
+					nextId = DrBoomHeroPowerIds.Choose(rnd);
 					currentPower = c.Hero.HeroPower;
 				}
 				c.SetasideZone.Add(currentPower);
@@ -771,7 +759,7 @@ namespace SabberStoneCore.Tasks
 
 				return 0;
 			});
-		private static readonly Card DrBoomHeroPowerCard = Cards.FromId("BOT_238p");
+		private static readonly IReadOnlyList<string> DrBoomHeroPowerIds = Cards.FromId("BOT_238p").Entourage;
 
 		public static readonly SimpleTask Zuljin = new FuncNumberTask(ZuljinInternal);
 		private static int ZuljinInternal(Playable source)
@@ -805,15 +793,12 @@ namespace SabberStoneCore.Tasks
 				List<int> spells = new List<int>();
 				for (int i = 0; i < deck.Length; i++)
 				{
-					switch (deck[i].Card.Type)
-					{
-						case CardType.MINION:
-							minions.Add(i);
-							break;
-						case CardType.SPELL:
-							spells.Add(i);
-							break;
-					}
+					if (deck[i] is Minion)
+						minions.Add(i);
+					else if
+						(deck[i] is Spell)
+						spells.Add(i);
+
 				}
 
 				Util.DeepCloneableRandom rnd = c.Game.Random;
@@ -956,9 +941,9 @@ namespace SabberStoneCore.Tasks
 					return;
 				}
 
-				ICharacter randTarget;
+				Character randTarget;
 				{
-					List<ICharacter> validTargets = randSpellCard.GetValidPlayTargets(in c);
+					List<Character> validTargets = randSpellCard.GetValidPlayTargets(in c);
 					randTarget = validTargets.Count == 0 ? null : validTargets[rnd.Next(validTargets.Count)];
 				}
 				if (randSpellCard.MustHaveTargetToPlay && randTarget == null)
@@ -1106,6 +1091,8 @@ namespace SabberStoneCore.Tasks
 
 					//Enchantment.GetInstance(Controller, (Playable) Source, newEntity, EnchantmentCard);
 
+					controller.DeckZone.Remove(entity);
+					controller.SetasideZone.Add(entity);
 
 					newEntity.Cost = newEntity.Card.Cost - 1;
 				}
@@ -1151,8 +1138,8 @@ namespace SabberStoneCore.Tasks
 						// In Hearthstone, cards from K & C is not included in the card pool for Build-A-Beast
 						// I am not sure whether Sabber should follow the rule or not ...
 						IEnumerable<Card> all = controller.Game.FormatType == FormatType.FT_STANDARD ?
-							Cards.Standard[CardClass.HUNTER].Where(c => c.Race == Race.BEAST && c.Cost <= 5) :
-							Cards.Wild[CardClass.HUNTER].Where(c => c.Race == Race.BEAST && c.Cost <= 5);
+							Cards.Standard[CardClass.HUNTER].Where(c => c.IsRace(Race.BEAST) && c.Cost <= 5) :
+							Cards.Wild[CardClass.HUNTER].Where(c => c.IsRace(Race.BEAST) && c.Cost <= 5);
 						var firstBeasts = new List<Card>();
 						var secondBeasts = new List<Card>();
 						foreach (Card card in all)
@@ -1171,7 +1158,7 @@ namespace SabberStoneCore.Tasks
 					}
 				}
 
-				Card[] first = FirstBeastsMemory.ChooseNElements(3);
+				Card[] first = FirstBeastsMemory.ChooseNElements(3, game.Random);
 
 				Generic.CreateChoiceCards.Invoke(controller, source, null, ChoiceType.GENERAL,
 					ChoiceAction.BUILDABEAST, first, null);

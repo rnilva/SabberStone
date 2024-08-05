@@ -90,103 +90,64 @@ namespace SabberStoneCore.Enchants
 
 			if (Operator == EffectOperator.SET)
 			{
-				case EffectOperator.ADD:
-					entity.NativeTags[Tag] += Value;
-					break;
-				case EffectOperator.SUB:
-					entity.NativeTags[Tag] -= Value;
-					break;
-				case EffectOperator.MUL:
-					entity.NativeTags[Tag] *= Value;
-					break;
-				case EffectOperator.SET:
-					// experimental implmentation for simulating tricky situations
-					switch (Tag)
+				// experimental implmentation for simulating tricky situations
+				switch (Tag)
+				{
+					case GameTag.CHARGE:
 					{
-						case GameTag.CHARGE:
-						{
-							var m = (MinionInPlay)entity;
-							if (m.IsExhausted && m.NumAttacksThisTurn == 0)
-								m.IsExhausted = false;
-							if (m.AttackableByRush)
-								m.AttackableByRush = false;
+						var m = (MinionInPlay)entity;
+						if (m.IsExhausted && m.NumAttacksThisTurn == 0)
+							m.IsExhausted = false;
+						if (m.AttackableByRush)
+							m.AttackableByRush = false;
+						break;
+					}
+					case GameTag.WINDFURY:
+					{
+						var m = (MinionInPlay)entity;
+						if (m.NumAttacksThisTurn == 1 && m.IsExhausted)
+							m.IsExhausted = false;
+						break;
+					}
+					case GameTag.TAUNT:
+						((Character) entity).HasTaunt = Value > 0;
+						return;
+					case GameTag.IMMUNE:
+						if (entity is Character c)
+							c.IsImmune = Value > 0;
+						else
 							break;
-						}
-						case GameTag.WINDFURY:
+						return;
+					case GameTag.RUSH:
+					{
+						var m = (MinionInPlay)entity;
+						if (m.IsExhausted)
 						{
-							var m = (MinionInPlay)entity;
-							if (m.NumAttacksThisTurn == 1 && m.IsExhausted)
-								m.IsExhausted = false;
-							break;
+							if (m.HasWindfury)
+							{
+								if (m.NumAttacksThisTurn < 2)
+								{
+									m.IsExhausted = false;
+									m.AttackableByRush = true;
+								}
+							}
 						}
-						case GameTag.TAUNT:
-							((Character) entity).HasTaunt = Value > 0;
-							return;
-						case GameTag.IMMUNE:
-							if (entity is Character c)
-								c.IsImmune = Value > 0;
-							else
-								break;
-							return;
-						case GameTag.RUSH:
+						else
 						{
-							var m = (MinionInPlay)entity;
-							if (m.IsExhausted && m.NumAttacksThisTurn == 0)
+							if (m.NumAttacksThisTurn == 0)
 							{
 								m.IsExhausted = false;
 								m.AttackableByRush = true;
-								m.Game.RushMinions.Add(m.Id);
 							}
-							return;
 						}
+						return;
+					}
 				}
 
 				//if (oneTurnEffect && tags.TryGetValue(Tag, out int value) && value == Value)
 				//	entity.Game.OneTurnEffects.Remove((entity.Id, this));
 
 				tags[Tag] = Value;
-			}
-
-
-			if (!tags.ContainsKey(Tag))
-			{
-				switch (Operator)
-				{
-					case EffectOperator.ADD:
-						tags.Add(Tag, entity.Card[Tag] + Value);
-						if (Tag == GameTag.SPELLPOWER)
-						{
-							((MinionInPlay) entity).SpellPower += Value;	
-							entity.Controller.CurrentSpellPower += Value;
-						}
-						break;
-					case EffectOperator.SUB:
-						tags.Add(Tag, entity.Card[Tag] - Value);
-						break;
-					case EffectOperator.MUL:
-						tags.Add(Tag, entity.Card[Tag] * Value);
-						break;
-				}
-			}
-			else
-			{
-				switch (Operator)
-				{
-					case EffectOperator.ADD:
-						tags[Tag] += Value;
-						if (Tag == GameTag.SPELLPOWER)
-						{
-							((MinionInPlay) entity).SpellPower += Value;
-							entity.Controller.CurrentSpellPower += Value;
-						}
-						break;
-					case EffectOperator.SUB:
-						tags[Tag] -= Value;
-						break;
-					case EffectOperator.MUL:
-						tags[Tag] *= Value;
-						break;
-				}
 			}
 		}
 
@@ -260,17 +221,17 @@ namespace SabberStoneCore.Enchants
 			{
 				case EffectOperator.ADD:
 					entity[Tag] -= Value;
-					if (Tag == GameTag.SPELLPOWER)
-					{
-						((MinionInPlay) entity).SpellPower -= Value;
-						entity.Controller.CurrentSpellPower -= Value;
-					}
+					//if (Tag == GameTag.SPELLPOWER)
+					//{
+					//	((MinionInPlay) entity).SpellPower -= Value;
+					//	entity.Controller.CurrentSpellPower -= Value;
+					//}
 					return;
 				case EffectOperator.SUB:
 					entity[Tag] = entity.NativeTags[Tag] + Value;
 					return;
 				case EffectOperator.SET:
-					entity[Tag] = 0;
+					//entity[Tag] = 0;
 					entity.NativeTags.Remove(Tag);		// unstable
 					if (entity.Game.History)
 						entity.Game.PowerHistory.Add(

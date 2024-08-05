@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using SabberStoneCore.CardSets;
 using SabberStoneCore.CardSets.Adventure;
 using SabberStoneCore.CardSets.Standard;
+using SabberStoneCore.Enchants;
 
 //using SabberStoneCore.CardSets.TavernBrawl;
 //using SabberStoneCore.CardSets.Adventure;
@@ -35,48 +36,50 @@ namespace SabberStoneCore.src.Loader
 	//	void Remove();
 	//}
 
-	internal class CardDefs
+	internal class Powers
 	{
-		private static CardDefs _instance;
+		private static Powers _instance;
 
 		/// <summary>
 		/// Contains all defined powers.
 		/// The index is the CARDID of the card which powers are defined.
 		/// </summary>
-		private readonly Dictionary<string, CardDef> _cardDefsDic;
+		private readonly Dictionary<string, Power> _powerDic;
 
 		/// <summary>
 		/// Private constructor as per Singleton pattern.
 		/// </summary>
-		private CardDefs()
+		private Powers()
 		{
-			_cardDefsDic = new Dictionary<string, CardDef>();
+			_powerDic =
+			new Dictionary<string, Power>();
 
 			// Standard
-			CoreCardsGen.AddAll(_cardDefsDic);
-			Expert1CardsGen.AddAll(_cardDefsDic);
+			CoreCardsGen.AddAll(_powerDic);
+			Expert1CardsGen.AddAll(_powerDic);
 
-			GilneasCardsGen.AddAll(_cardDefsDic);
-			BoomsdayCardsGen.AddAll(_cardDefsDic);
-			TrollCardsGen.AddAll(_cardDefsDic);
-			DalaranCardsGen.AddAll(_cardDefsDic);
-			UldumCardsGen.AddAll(_cardDefsDic);
-			DragonsCardsGen.AddAll(_cardDefsDic);
+			UngoroCardsGen.AddAll(_powerDic);
+			IcecrownCardsGen.AddAll(_powerDic);
+			LootapaloozaCardsGen.AddAll(_powerDic);
+			GilneasCardsGen.AddAll(_powerDic);
+			BoomsdayCardsGen.AddAll(_powerDic);
+			TrollCardsGen.AddAll(_powerDic);
+			DalaranCardsGen.AddAll(_powerDic);
+
+			// UldumCardsGen.AddAll(_powerDic);
+			// DragonsCardsGen.AddAll(_powerDic);
 
 			// Rest
-			NaxxCardsGen.AddAll(_cardDefsDic);
-			GvgCardsGen.AddAll(_cardDefsDic);
-			BrmCardsGen.AddAll(_cardDefsDic);
-			TgtCardsGen.AddAll(_cardDefsDic);
-			LoeCardsGen.AddAll(_cardDefsDic);
-			GangsCardsGen.AddAll(_cardDefsDic);
-			KaraCardsGen.AddAll(_cardDefsDic);
-			OgCardsGen.AddAll(_cardDefsDic);
-			UngoroCardsGen.AddAll(_cardDefsDic);
-			IcecrownCardsGen.AddAll(_cardDefsDic);
-			LootapaloozaCardsGen.AddAll(_cardDefsDic);
+			NaxxCardsGen.AddAll(_powerDic);
+			GvgCardsGen.AddAll(_powerDic);
+			BrmCardsGen.AddAll(_powerDic);
+			TgtCardsGen.AddAll(_powerDic);
+			LoeCardsGen.AddAll(_powerDic);
+			GangsCardsGen.AddAll(_powerDic);
+			KaraCardsGen.AddAll(_powerDic);
+			OgCardsGen.AddAll(_powerDic);
 
-			HofCardsGen.AddAll(_cardDefsDic);
+			HofCardsGen.AddAll(_powerDic);
 
 			// Tavern Brawl
 			//TbCardsGen.AddAll(_powerDic);
@@ -92,18 +95,18 @@ namespace SabberStoneCore.src.Loader
 			//LoeCardsGenAdv.AddAll(_powerDic);
 			//KaraCardsGenAdv.AddAll(_powerDic);
 			//IcecrownCardsGenAdv.AddAll(_powerDic);
-			//LootapaloozaCardsGenAdv.AddAll(_cardDefsDic);
+			//LootapaloozaCardsGenAdv.AddAll(_powerDic);
 		}
 
 		/// <summary>
 		/// Use the Singleton pattern to provide the same powers to each requester.
 		/// </summary>
-		public static CardDefs Instance => _instance ?? (_instance = new CardDefs());
+		public static Powers Instance => _instance ?? (_instance = new Powers());
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public IReadOnlyDictionary<string, CardDef> Get => _cardDefsDic;
+		public IReadOnlyDictionary<string, Power> Get => _powerDic;
 	}
 }
