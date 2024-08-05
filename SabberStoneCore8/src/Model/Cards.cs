@@ -112,6 +112,9 @@ namespace SabberStoneCore.Model
 			//File.WriteAllText(CardLoader.Path + @"SabberStone\HSProtoSim\Loader\Data\cardDataJson.txt", JsonConvert.SerializeObject(cards, Formatting.Indented));
 			// Set as card definitions
 
+
+			cards = cards.GroupBy(c => c.Id).Select(g => g.First()).ToArray();  // TODO: Ad hoc fix for duplicates.
+
 			Data = new CardContainer();
 			Data.Load(cards);
 
