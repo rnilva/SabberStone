@@ -1415,7 +1415,7 @@ namespace SabberStoneCore.Model
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => _currentPlayer;
-			private set
+			set
 			{
 				_currentPlayer = value;
 				if (!History) return;

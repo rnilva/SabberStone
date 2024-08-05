@@ -208,45 +208,6 @@ namespace SabberStoneCoreConsole
 		    }
 		}
 
-	    public static void TestRun()
-	    {
-		    Console.WriteLine("Test started");
-
-		    Stack<PlayerTask> history = new Stack<PlayerTask>();
-		    for (int i = 0; i < TESTCOUNT; i++)
-		    {
-			    var config = new GameConfig
-			    {
-				    Player1HeroClass = (CardClass)rnd.Next(2, 11),
-				    Player2HeroClass = (CardClass)rnd.Next(2, 11),
-				    FillDecks = true,
-				    FillDecksPredictably = true,
-				    Shuffle = false,
-				    SkipMulligan = true,
-				    History = false,
-				    Logging = true,
-			    };
-			    var clone = new Game(config);
-			    clone.StartGame();
-			    do
-			    {
-				    //Game clone = game.Clone(true);
-				    List<PlayerTask> options = clone.CurrentPlayer.Options();
-
-				    PlayerTask option = options[rnd.Next(options.Count)];
-				    history.Push(option);
-				    clone.Process(option);
-
-					//game = clone;
-			    } while (clone.State != State.COMPLETE);
-
-			    history.Clear();
-
-			    if (i % (TESTCOUNT / 10) == 0)
-				    Console.WriteLine($"{((double)i / TESTCOUNT) * 100}% done");
-		    }
-		}
-
 	    private static void ShowLog(Queue<LogEntry> logs, LogLevel level)
 	    {
 		    var str = new StringBuilder();

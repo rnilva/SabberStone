@@ -141,5 +141,7 @@ namespace SabberStoneCore.Triggers
 		{
 			return $"[{_trigger.Type}][{_owner}]{(_removed ? "[Removed]" : "")}";
 		}
+
+		public TriggerType TriggerType => _trigger.Type;
 	}
 }

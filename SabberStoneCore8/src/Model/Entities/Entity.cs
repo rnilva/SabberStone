@@ -193,7 +193,8 @@ namespace SabberStoneCore.Model.Entities
 		/// <returns></returns>
 		/// <exception cref="EntityException"></exception>
 		public static Playable FromCard(in Controller controller, in Card card,
-			IZone zone = null, int id = -1, int zonePos = -1, Entity creator = null)
+			IZone zone = null, int id = -1, int zonePos = -1, Entity creator = null,
+			IDictionary<GameTag, int>? tags = null)
 		{
 			Game game = controller.Game;
 
@@ -259,7 +260,7 @@ namespace SabberStoneCore.Model.Entities
 			// add power history full entity 
 			if (game.History)
 			{
-				var tags = new Dictionary<GameTag, int>();
+				tags = tags ?? new Dictionary<GameTag, int>();
 
 				if (zone != null)
 					tags[GameTag.ZONE] = (int)zone.Type;

@@ -85,7 +85,7 @@ namespace SabberStoneCoreConsole
 
 		private static void TagChange(Game game, PowerHistoryTagChange history)
 		{
-			IPlayable entity;
+			Playable entity;
 			switch (history.EntityId)
 			{
 				case 1:
@@ -112,15 +112,15 @@ namespace SabberStoneCoreConsole
 					var zone = (Zone) history.Value;
 					if (zone == Zone.PLAY)
 					{
-						if (entity is Minion m)
+						if (entity is MinionInPlay m)
 						{
-							entity.Controller.BoardZone.MoveTo(m);
+							entity.Controller.BoardZone.Add(m);
 							entity.ZonePosition = entity.Controller.BoardZone.Count - 1;
 						}
 					}
 					else
 					{
-						entity.Controller.ControlledZones[zone].MoveTo(entity, -1);
+						entity.Controller.ControlledZones[zone].Add(entity);
 						if (zone == Zone.HAND)
 							entity.ZonePosition = entity.Controller.HandZone.Count - 1;
 					}
@@ -134,7 +134,7 @@ namespace SabberStoneCoreConsole
 							handZone.Swap(entity, handZone[newPos]);
 							break;
 						case BoardZone boardZone:
-							boardZone.Swap((Minion) entity, boardZone[newPos]);
+							boardZone.Swap((MinionInPlay) entity, boardZone[newPos]);
 							break;
 					}
 					break;
@@ -149,25 +149,15 @@ namespace SabberStoneCoreConsole
 				return;
 			}
 
-			// ControllerAuraEffects.
-			// TODO: Remove this switch table.
-			switch (t)
+			ControllerBoolAttributes boolAttr;
+			ControllerIntAttributes intAttr;
+			if ((boolAttr = AttributeHelpers.GameTagToControllerBoolAttribute(t)) != ControllerBoolAttributes.Invalid)
 			{
-				case GameTag.TIMEOUT:
-				case GameTag.SPELLPOWER_DOUBLE:
-				case GameTag.SPELL_HEALING_DOUBLE:
-				case GameTag.HERO_POWER_DOUBLE:
-				case GameTag.HEALING_DOES_DAMAGE:
-				case GameTag.CHOOSE_BOTH:
-				case GameTag.SPELLS_COST_HEALTH:
-				case GameTag.EXTRA_BATTLECRIES_BASE:
-				case GameTag.EXTRA_END_TURN_EFFECT:
-				case GameTag.HERO_POWER_DISABLED:
-				case GameTag.ALL_HEALING_DOUBLE:
-				case GameTag.EXTRA_MINION_BATTLECRIES_BASE:
-				case GameTag.SPELLPOWER:
-					c.ControllerAuraEffects[t] = value;
-					return;
+				c[boolAttr] = true;
+			}
+			else if ((intAttr = AttributeHelpers.GameTagToControllerIntAttribute(t)) != ControllerIntAttributes.Invalid)
+			{
+				c[intAttr] = value;
 			}
 
 			c[t] = value;
@@ -180,7 +170,8 @@ namespace SabberStoneCoreConsole
 			Controller c = tags[GameTag.CONTROLLER] == 1 ? game.Player1 : game.Player2;
 			if (phEntity.Name == "")
 			{
-				var unknown = new Unknown(in c, in tags, phEntity.Id);
+				var unknown = new Unknown(in c, phEntity.Id);
+				unknown.SetTags(tags);
 				game.IdEntityDic[phEntity.Id] = unknown;
 				c.DeckZone.Add(unknown);
 				return;
@@ -198,8 +189,7 @@ namespace SabberStoneCoreConsole
 			}
 
 			Entity.FromCard(
-				in c, Cards.FromId(phEntity.Name),
-				tags, zone, id: phEntity.Id);
+				in c, Cards.FromName(phEntity.Name), zone, id: phEntity.Id, tags: tags);
 		}
 
 		private static void ChangeEntity(Game game, PowerHistoryChangeEntity history)
@@ -218,25 +208,27 @@ namespace SabberStoneCoreConsole
 				switch (newCard.Type)
 				{
 					case CardType.MINION:
-						entity = new Minion(oldEntity.Controller, newCard, oldEntity.NativeTags, oldEntity.Id);
+						entity = new Minion(oldEntity.Controller, newCard, oldEntity.Id);
 						break;
 					case CardType.SPELL:
-						entity = new Spell(oldEntity.Controller, newCard, oldEntity.NativeTags, oldEntity.Id);
+						entity = new Spell(oldEntity.Controller, newCard, oldEntity.Id);
 						break;
 					case CardType.HERO:
-						entity = new Hero(oldEntity.Controller, newCard, oldEntity.NativeTags, oldEntity.Id);
+						entity = new Hero(oldEntity.Controller, newCard, oldEntity.Id);
 						break;
 					case CardType.WEAPON:
-						entity = new Weapon(oldEntity.Controller, newCard, oldEntity.NativeTags, oldEntity.Id);
+						entity = new Weapon(oldEntity.Controller, newCard, oldEntity.Id);
 						break;
 					default:
 						throw new ArgumentNullException();
 				}
 
+				entity.SetTags(oldEntity.NativeTags);
+
 				switch (oldEntity.Zone.Type)
 				{
 					case Zone.PLAY:
-						oldEntity.Controller.BoardZone.ChangeEntity((Minion)oldEntity, (Minion)entity);
+						oldEntity.Controller.BoardZone.ChangeEntity((MinionInPlay) oldEntity, (MinionInPlay) entity);
 						break;
 					case Zone.DECK:
 						oldEntity.Controller.DeckZone.ChangeEntity(oldEntity, entity);
@@ -280,11 +272,9 @@ namespace SabberStoneCoreConsole
 		{
 			var flag = InequalityFlags.None;
 
-			//if (!Equals(a.NativeTags, b.NativeTags)) return InequalityFlags.Tags;
-
-			if (a.ControllerAuraEffects != b.ControllerAuraEffects)
-				return InequalityFlags.AuraEffects;
-
+			if (!Equals(a.GetAttributeDictionary(), b.GetAttributeDictionary()))
+				return InequalityFlags.Attributes;
+			
 			flag |= Equals(a.Hero, b.Hero);
 			if (CheckFlag(flag)) return flag;
 
@@ -300,7 +290,7 @@ namespace SabberStoneCoreConsole
 			return InequalityFlags.None;
 		}
 
-		private static InequalityFlags Equals<T>(Zone<T> a, Zone<T> b) where T : IPlayable
+		private static InequalityFlags Equals<T>(Zone<T> a, Zone<T> b) where T : Playable
 		{
 			if (a.Count != b.Count) return InequalityFlags.Attributes;
 
@@ -327,19 +317,6 @@ namespace SabberStoneCoreConsole
 			// Cost, ATK, HEALTH
 		}
 
-		private static InequalityFlags Equals(IPlayable a, IPlayable b)
-		{
-			switch (a)
-			{
-				case Minion m:
-					return Equals(m, (Minion)b);
-				case Playable p:
-					return Equals(p, (Playable) p);
-				default:
-					throw new NotImplementedException();
-			}
-		}
-
 		private static bool Equals(Enchantment a, Enchantment b)
 		{
 			return a.CapturedCard == b.CapturedCard &&
@@ -351,10 +328,19 @@ namespace SabberStoneCoreConsole
 			       !CheckFlag(Equals(a.ActivatedTrigger, b.ActivatedTrigger));
 		}
 
-		private static InequalityFlags Equals(Trigger a, Trigger b)
+		private static InequalityFlags Equals(Trigger? a, Trigger? b)
 		{
-			if (a?.Type != b?.Type) return InequalityFlags.Trigger;
-			return InequalityFlags.None;
+			return a?.Type != b?.Type ? InequalityFlags.Trigger : InequalityFlags.None;
+		}
+
+		private static InequalityFlags Equals(TriggerStub? a, TriggerStub? b)
+		{
+			if (a is BasicTriggerStub aBasic && b is BasicTriggerStub bBasic)
+			{
+				return aBasic.TriggerType != bBasic.TriggerType ? InequalityFlags.Trigger : InequalityFlags.None;
+			}
+
+			return a?.GetType() != b?.GetType() ? InequalityFlags.Trigger : InequalityFlags.None;  // TODO: Equalities for TriggerStubs
 		}
 
 		private static bool Equals(Aura a, Aura b)
@@ -363,7 +349,7 @@ namespace SabberStoneCoreConsole
 			return true;
 		}
 
-		private static InequalityFlags Equals(Hero a, Hero b)
+		private static InequalityFlags Equals(HeroInPlay a, HeroInPlay b)
 		{
 			var flag = InequalityFlags.Hero;
 
@@ -419,6 +405,8 @@ namespace SabberStoneCoreConsole
 
 		private static InequalityFlags Equals(Playable a, Playable b)
 		{
+			if (a is Minion m) return Equals(m, (Minion)b);
+
 			var flag = InequalityFlags.Playable;
 
 			flag |= Equals(a.ActivatedTrigger, b.ActivatedTrigger);
@@ -464,9 +452,9 @@ namespace SabberStoneCoreConsole
 
 			if (!Equals(a.NativeTags, b.NativeTags)) return flag | InequalityFlags.Tags;
 
-			if (a.AuraEffects != b.AuraEffects) return flag | InequalityFlags.AuraEffects;
+			//if (a.AuraEffects != b.AuraEffects) return flag | InequalityFlags.AuraEffects;
 
-			if (a.OrderOfPlay != b.OrderOfPlay) return flag | InequalityFlags.Attributes;
+			//if (a.OrderOfPlay != b.OrderOfPlay) return flag | InequalityFlags.Attributes;
 
 			return InequalityFlags.None;
 		}
@@ -475,6 +463,7 @@ namespace SabberStoneCoreConsole
 		{
 			return InequalityFlags.None;
 		}
+
 		private static InequalityFlags Equals(Playable a, Unknown b)
 		{
 			return InequalityFlags.None;
@@ -577,7 +566,7 @@ namespace SabberStoneCoreConsole
 				};
 			}
 
-			private static void ReadHero(Hero h)
+			private static void ReadHero(HeroInPlay h)
 			{
 				var data = new List<int>
 				{
@@ -606,7 +595,7 @@ namespace SabberStoneCoreConsole
 					w.Durability,
 					w.Poisonous.ToInt(),
 					w.IsImmune.ToInt(),
-					w.HasLifeSteal.ToInt()
+					w.HasLifesteal.ToInt()
 				};
 			}
 		}

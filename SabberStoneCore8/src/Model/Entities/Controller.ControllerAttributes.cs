@@ -3,6 +3,7 @@
 // AUTOMATICALLY GENERATED SOURCE
 using System;
 using System.Runtime.CompilerServices;
+using SabberStoneCore.Conditions;
 using SabberStoneCore.Enums;
 
 namespace SabberStoneCore.Model.Entities
@@ -80,6 +81,17 @@ namespace SabberStoneCore.Model.Entities
 		{
 			get => _attrs.sbyteAttrs[(int) attr] > 0;
 			set => _attrs.sbyteAttrs[(int) attr] += value ? (sbyte) 1 : (sbyte) -1;
+		}
+
+		public Dictionary<string, int> GetAttributeDictionary()
+		{
+			var dict = new Dictionary<string, int>();
+			foreach (var intAttr in Enum.GetValues<ControllerIntAttributes>())
+				dict[Enum.GetName(intAttr)!] = this[intAttr];
+			foreach (var boolAttr in Enum.GetValues<ControllerBoolAttributes>())
+				dict[Enum.GetName(boolAttr)!] = Convert.ToInt32(this[boolAttr]);
+
+			return dict;
 		}
 
 		private unsafe struct Attributes
