@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SabberStoneCore8\SabberStoneCore8.csproj" />
+    <ProjectReference Include="..\SabberStoneCore8\SabberStoneCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
