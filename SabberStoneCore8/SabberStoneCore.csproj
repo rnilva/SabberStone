@@ -11,6 +11,9 @@
   	<EmbeddedResource Include="resources\Data\CardDefs.xml">
 	    <LogicalName>SabberStoneCore.Resources.CardDefs.xml</LogicalName>
   	</EmbeddedResource>
+    <EmbeddedResource Include="resources\Data\CardDefs-36393.xml">
+	    <LogicalName>SabberStoneCore.Resources.CardDefs-36393.xml</LogicalName>
+    </EmbeddedResource>
   	<EmbeddedResource Include="resources\Data\PlayErrors.xml">
   		<LogicalName>SabberStoneCore.Resources.PlayErrors.xml</LogicalName>
   	</EmbeddedResource>
