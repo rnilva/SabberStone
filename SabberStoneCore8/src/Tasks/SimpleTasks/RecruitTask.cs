@@ -54,7 +54,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			for (int i = 0; i < deck.Length; i++)
 			{
-				if (!(deck[i] is Minion)) continue;
+				if (deck[i] is not Minion) continue;
 
 				bool flag = true;
 				for (int j = 0; j < conditions?.Length; j++)
@@ -68,16 +68,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			int[] results = indices.ChooseNElements(amount, game.Random);
 
-			Playable[] entities = new Playable[results.Length];
+			var entities = new Playable[results.Length];
 			for (int i = 0; i < entities.Length; i++)
 				entities[i] = deck[results[i]];
 
 			if (indices.Count > amount)
 				game.OnRandomHappened(true);
-
-			List<Playable> playables = null;
-			if (_addToStack)
-				playables = new List<Playable>(entities.Length);
 
 			for (int i = 0; i < entities.Length; i++)
 			{
@@ -89,7 +85,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			}
 
 			if (_addToStack)
-				stack.Playables = playables;
+				stack.Playables = entities;
 
 			return TaskState.COMPLETE;
 		}
