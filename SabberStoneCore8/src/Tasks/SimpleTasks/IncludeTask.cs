@@ -501,7 +501,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				{EntityType.OP_HERO_POWER, (c,s,t,stack) => new[]{c.Opponent.Hero.HeroPower}},
 				{EntityType.WEAPON, (c, s, t, stack) => new[]{c.Hero.Weapon}},
 				{EntityType.OP_WEAPON, (c, s, t, stack) => new[]{c.Opponent.Hero.Weapon}},
-				{EntityType.MINIONS_NOSOURCE, (c, s, t, stack) => new[] { c.Hero, c.Opponent.Hero }},
+				{EntityType.MINIONS_NOSOURCE, (c, s, t, stack) => c.BoardZone.GetAll(p => p != s)},
 				{EntityType.ALLMINIONS_NOSOURCE, (c, s, t, stack) =>
 				{
 					if (s.Controller == c)
