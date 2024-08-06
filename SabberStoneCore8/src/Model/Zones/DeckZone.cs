@@ -90,7 +90,7 @@ namespace SabberStoneCore.Model.Zones
 			newEntity.Zone = this;
 		}
 
-		public Playable TopCard => _entities[_count - 1];
+		public Playable TopCard => _entities[_count - 1];  // TODO: make nullable when count == 0
 
 		public void Fill(IReadOnlyCollection<string> excludeIds = null)
 		{

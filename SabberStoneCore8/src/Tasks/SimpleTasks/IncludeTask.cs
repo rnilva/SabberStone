@@ -482,6 +482,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		static IncludeTask()
 		{
+			Func<Playable?, Playable[]> notNullOrEmpty = p => p != null ? [p] : [];
+
+
 			GetterDict = new Dictionary<EntityType, EntityGetter>
 			{
 				{EntityType.STACK, (c,s,t,stack) => stack },
@@ -493,14 +496,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				{EntityType.OP_DECK, (c,s,t,stack) => c.Opponent.DeckZone.GetAll() },
 				{EntityType.OP_MINIONS, (c,s,t,stack) => c.Opponent.BoardZone.GetAll() },
 				{EntityType.OP_SECRETS, (c,s,t,stack) => c.Opponent.SecretZone.GetAll() },
-				{EntityType.SOURCE, (c,s,t,stack) => new []{(Playable) s} },
-				{EntityType.TARGET, (c,s,t,stack) => new []{(Playable) t} },
+				{EntityType.SOURCE, (c,s,t,stack) => notNullOrEmpty((Playable) s) },
+				{EntityType.TARGET, (c,s,t,stack) => notNullOrEmpty((Playable) t) },
 				{EntityType.HERO, (c,s,t,stack) => new[]{c.Hero}},
 				{EntityType.OP_HERO, (c,s,t,stack) => new[]{c.Opponent.Hero}},
 				{EntityType.HERO_POWER, (c,s,t,stack) => new[]{c.Hero.HeroPower}},
 				{EntityType.OP_HERO_POWER, (c,s,t,stack) => new[]{c.Opponent.Hero.HeroPower}},
-				{EntityType.WEAPON, (c, s, t, stack) => new[]{c.Hero.Weapon}},
-				{EntityType.OP_WEAPON, (c, s, t, stack) => new[]{c.Opponent.Hero.Weapon}},
+				{EntityType.WEAPON, (c, s, t, stack) => notNullOrEmpty(c.Hero.Weapon) },
+				{EntityType.OP_WEAPON, (c, s, t, stack) => notNullOrEmpty(c.Opponent.Hero.Weapon)},
 				{EntityType.MINIONS_NOSOURCE, (c, s, t, stack) => c.BoardZone.GetAll(p => p != s)},
 				{EntityType.ALLMINIONS_NOSOURCE, (c, s, t, stack) =>
 				{
@@ -627,12 +630,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					EntityList dict = c.Game.IdEntityDic;
 					return c.DiscardedEntities.Select(id => dict[id]).ToArray();
 				}},
-				{EntityType.EVENT_SOURCE, (c, s, t, stack) => c.Game.CurrentEventData != null
-					? new[] { c.Game.CurrentEventData.EventSource }
-					: new Playable[0]},
-				{EntityType.EVENT_TARGET, (c, s, t, stack) => c.Game.CurrentEventData != null
-					? new[] { c.Game.CurrentEventData.EventTarget }
-					: new Playable[0]},
+				{EntityType.EVENT_SOURCE, (c, s, t, stack) => notNullOrEmpty(c.Game.CurrentEventData?.EventSource)},
+				{EntityType.EVENT_TARGET, (c, s, t, stack) => notNullOrEmpty(c.Game.CurrentEventData?.EventTarget)},
 				{EntityType.CONTROLLER, (c, s, t, stack) => null },
 				{EntityType.OP_CONTROLLER, (c, s, t, stack) => null }
 			};

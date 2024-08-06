@@ -42,7 +42,7 @@ namespace SabberStoneCore.Model.Entities
 
 		/// <summary>Gets or sets the weapon entity equipped on the Hero.</summary>
 		/// <value><see cref="Entities.Weapon"/></value>
-		public Weapon Weapon { get; set; }
+		public Weapon? Weapon { get; set; }
 
 		public override int TakeDamage(Playable source, int damage)
 		{
