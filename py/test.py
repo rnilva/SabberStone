@@ -1,16 +1,12 @@
+import pythonnet; pythonnet.load("coreclr")
+import clr; clr.AddReference("SabberStoneCore")
 
-from copy import deepcopy
-
-from pythonnet import load
-load("coreclr")
-import clr
-clr.AddReference("SabberStoneCore")
-
-from System import String
+from System import String, Random
 from System.Collections.Generic import List
 from SabberStoneCore.Model import Game, Card, Cards
 from SabberStoneCore.Config import GameConfig
-from SabberStoneCore.Enums import CardClass
+from SabberStoneCore.Enums import CardClass, State as GameState
+from SabberStoneCore.Tasks.PlayerTasks.Lite import PlayerTaskLiteContainer as Options
 
 
 mage_expert_deck = [
@@ -65,5 +61,14 @@ config.History = False
 
 g = Game(config)
 
-for c in g.Player1.DeckZone:
-    print(c)
+options = Options()
+
+rnd = Random()
+
+game = g.Clone()
+game.StartGame()
+while game.State != GameState.COMPLETE:
+    game.CurrentPlayer.Options(options)
+    option = options.GetRandom(rnd)
+    print(option)
+    game.Process(option)
