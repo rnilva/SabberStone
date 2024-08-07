@@ -193,49 +193,24 @@ namespace SabberStoneCore.Model.Entities
 
 		public override bool CanAttack(bool checkTargets = true)
 		{
-			//if (HasCharge || IsRush)
-			//{
-			//	if (HasWindfury)
-			//	{
-			//		if (NumAttacksThisTurn == 2)
-			//			return false;
-			//	}
-			//	else if (NumAttacksThisTurn != 0)
-			//		return false;
-			//}
-			//else if (IsExhausted)
-			//	return false;
-
-			//return AttackDamage > 0 &&
-			//       !IsFrozen &&
-			//       !CantAttack &&
-			//       !Untouchable &&
-			//       (!checkTargets || HasAnyValidAttackTargets());
-			unsafe
+			if (HasCharge || IsRush)
 			{
-				fixed (bool* attrs = _attrs.boolAttrs)
+				if (HasWindfury)
 				{
-					if (attrs[8] || attrs[11])
-					{
-						if (attrs[7])
-						{
-							if (NumAttacksThisTurn == 2)
-								return false;
-						}
-						else if (NumAttacksThisTurn != 0)
-							return false;
-					}
-					else if (_exhausted)
+					if (NumAttacksThisTurn == 2)
 						return false;
-
-					return _v1 > 0 &&
-						   !attrs[1] &&
-						   !attrs[12] &&
-						   !Untouchable &&
-						   (!checkTargets || HasAnyValidAttackTargets());
-
 				}
+				else if (NumAttacksThisTurn != 0)
+					return false;
 			}
+			else if (_exhausted)
+				return false;
+
+			return _v1 > 0 &&
+			       !IsFrozen &&
+			       !CantAttack &&
+			       !Untouchable &&
+			       (!checkTargets || HasAnyValidAttackTargets());
 		}
 
 		#region Attribute Properties
