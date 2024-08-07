@@ -2716,7 +2716,16 @@ namespace SabberStoneCore.CardSets.Standard
 				// TODO: Extra_Attacks_This_Turn
 				Trigger = TriggerBuilder.Type(TriggerType.AFTER_ATTACK)
 					//.SetTask(new SetGameTagTask(GameTag.EXHAUSTED, 0, EntityType.SOURCE))
-					.SetTask(new ApplyEffectTask<SetUnexhaustedEffect, Playable>(EntityType.SOURCE))
+					//.SetTask(new ApplyEffectTask<SetUnexhaustedEffect, Playable>(EntityType.SOURCE))
+					.SetTask(ComplexTask.Create(
+						new IncludeTask(EntityType.SOURCE),
+						new FuncPlayablesTask(pList =>
+						{
+							var m = ((MinionInPlay)pList[0]);
+							m.NumAttacksThisTurn -= 1;
+							m.IsExhausted = false;
+							return pList;
+						})))
 					.SetCondition(SelfCondition.IsDefenderDead)
 					.SetSource(TriggerSource.SELF)
 			});
