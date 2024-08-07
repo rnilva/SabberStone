@@ -89,6 +89,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						if (e.ScriptTag2 > 0)
 							instance.ScriptTag2 = e.ScriptTag2;
 					}
+					instance.CapturedCard = e.CapturedCard;
 					if (e.IsOneTurnActive)
 						game.OneTurnEffectEnchantments.Add(instance);
 				}
