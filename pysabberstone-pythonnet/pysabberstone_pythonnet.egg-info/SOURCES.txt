@@ -1,0 +1,11 @@
+MANIFEST.in
+setup.py
+pysabberstone/__init__.py
+pysabberstone/card.py
+pysabberstone/game.py
+pysabberstone/sabberstonecore.py
+pysabberstone_pythonnet.egg-info/PKG-INFO
+pysabberstone_pythonnet.egg-info/SOURCES.txt
+pysabberstone_pythonnet.egg-info/dependency_links.txt
+pysabberstone_pythonnet.egg-info/requires.txt
+pysabberstone_pythonnet.egg-info/top_level.txt
