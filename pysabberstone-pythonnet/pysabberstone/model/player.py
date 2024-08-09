@@ -1,5 +1,5 @@
 import pysabberstone.core
-from pysabberstone.model.enums import CardClass
+from pysabberstone.model.enums import CardClass, PlayState
 from pysabberstone.model.entity import Entity
 from pysabberstone.model.zone import Zone
 
@@ -43,3 +43,7 @@ class Player:
     @property
     def overload_locked_mana(self) -> int:
         return self._controller.OverloadLocked
+
+    @property
+    def play_state(self) -> PlayState:
+        return PlayState(int(self._controller.PlayState))

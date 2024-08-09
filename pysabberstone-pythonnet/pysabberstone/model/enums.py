@@ -1,5 +1,6 @@
 from enum import IntEnum
 
+
 class CardClass(IntEnum):
     # Custom enums for easy syntax.
     ANOTHER_CLASS = -2
@@ -22,7 +23,7 @@ class CardClass(IntEnum):
 
 
 class CardType(IntEnum):
-    INVALID = 0,
+    INVALID = 0
     GAME = 1
     PLAYER = 2
     HERO = 3
@@ -36,3 +37,15 @@ class CardType(IntEnum):
     BLANK = 11
     GAME_MODE_BUTTON = 12
     MOVE_MINION_HOVER_TARGET = 22
+
+
+class PlayState(IntEnum):
+    INVALID = 0
+    PLAYING = 1
+    WINNING = 2
+    LOSING = 3
+    WON = 4
+    LOST = 5
+    TIED = 6
+    DISCONNECTED = 7
+    CONCEDED = 8
