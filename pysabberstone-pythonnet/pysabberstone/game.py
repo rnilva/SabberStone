@@ -1,5 +1,6 @@
 ﻿from dataclasses import dataclass
 from enum import IntEnum
+from re import A
 from typing import Literal
 
 import pysabberstone.core
@@ -8,7 +9,11 @@ from pysabberstone.player_task import PlayerTask
 from pysabberstone.py_types import Deck, CardClass
 
 from SabberStoneCore.Config import GameConfig as _GameConfig
+from SabberStoneCore.Enums import State as _State
 from SabberStoneCore.Model import Game as _Game
+from SabberStoneCore.Tasks.PlayerTasks.Lite import (
+    PlayerTaskLiteContainer as _OptionBuffer,
+)
 
 
 @dataclass
@@ -28,15 +33,27 @@ class Game:
         _c.Player1HeroClass, _c.Player1Deck = utils.convert_deck(p1_deck)
         _c.Player2HeroClass, _c.Player2Deck = utils.convert_deck(p2_deck)
         self._game = _Game(_c)
+        self._game.StartGame()
+        self._option_buffer = _OptionBuffer()
 
-    def get_options(self): ...
+    def get_options(self):
+        self._game.CurrentPlayer.Options(self._option_buffer)
+        options = []
+        for _core_task in self._option_buffer:
+            options.append(PlayerTask.from_core_task(_core_task))
+        return options
 
     def process(self, player_task: PlayerTask):
         _player_task = player_task._to_core_type()
         self._game.Process(_player_task)
 
+    def done(self):
+        return self._game.State == _State.COMPLETE
+
 
 if __name__ == "__main__":
+    import random
+
     mage_expert_deck = [
         "Arcane Missiles",
         "Arcane Missiles",
@@ -74,3 +91,7 @@ if __name__ == "__main__":
     game = Game(
         (CardClass.MAGE, mage_expert_deck), (CardClass.MAGE, mage_expert_deck), config
     )
+    while not game.done():
+        options = game.get_options()
+        option = random.choice(options)
+        game.process(option)

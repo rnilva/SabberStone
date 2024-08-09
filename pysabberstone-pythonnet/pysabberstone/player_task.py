@@ -2,8 +2,8 @@
 from enum import IntEnum
 
 import pysabberstone.core
-from SabberStoneCore.Tasks.PlayerTasks import _PlayerTaskType
-from SabberStoneCore.Tasks.PlayerTasks.Lite import _PlayerTaskLite
+from SabberStoneCore.Tasks.PlayerTasks import PlayerTaskType as _PlayerTaskType
+from SabberStoneCore.Tasks.PlayerTasks.Lite import PlayerTaskLite as _PlayerTaskLite
 
 
 class PlayerTaskType(IntEnum):
@@ -32,4 +32,14 @@ class PlayerTask:
             self.zone_position,
             self.choose_one,
             False,
+        )
+
+    @classmethod
+    def from_core_task(cls, core_task: _PlayerTaskLite):
+        return cls(
+            type=PlayerTaskType(core_task.Type),
+            source_position=core_task.SourcePosition,
+            target_position=core_task.TargetPosition,
+            zone_position=core_task.ZonePosition,
+            choose_one=core_task.ChooseOne,
         )
