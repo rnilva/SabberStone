@@ -8,6 +8,9 @@ class Zone:
     def __init__(self, _zone: _Zone) -> None:
         self._zone = _zone
 
+    def __len__(self) -> int:
+        return self._zone.Count
+
     def __iter__(self):
         yield from map(Entity, self._zone)
 

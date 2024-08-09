@@ -109,5 +109,9 @@ class Entity:
     def deathrattle(self) -> bool | None:
         return self._playable.HasDeathrattle if self.is_minion() else None
 
+    @property
+    def num_attacks_this_turn(self) -> int | None:
+        return self._playable.NumAttacksThisTurn if self.is_character() else None
+
     def __repr__(self) -> str:
         return str(self._playable)

@@ -46,7 +46,7 @@ class Game:
     def current_opponent(self) -> Player:
         return self.players[2 - self._game.CurrentPlayer.PlayerId]
 
-    def get_options(self):
+    def get_options(self) -> list[PlayerTask]:
         self._game.CurrentPlayer.Options(self._option_buffer)
         options = []
         for _core_task in self._option_buffer:
