@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	  <PyPath>$(ProjectDir)../pysabberstone-pythonnet/pysabberstone/lib</PyPath>
+	  <AssemblyVersion>8.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,5 +20,9 @@
   		<LogicalName>SabberStoneCore.Resources.PlayErrors.xml</LogicalName>
   	</EmbeddedResource>
   </ItemGroup>
+
+	<Target Name="CopyDLLToPy" AfterTargets="Build">
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PyPath)" />
+	</Target>
 
 </Project>
