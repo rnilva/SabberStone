@@ -5,7 +5,7 @@ from typing import Literal
 
 import pysabberstone.core
 import pysabberstone.utils as utils
-from pysabberstone.player_task import PlayerTask
+from pysabberstone.model.player_task import PlayerTask
 from pysabberstone.py_types import Deck, CardClass
 
 from SabberStoneCore.Config import GameConfig as _GameConfig

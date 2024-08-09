@@ -1,6 +1,10 @@
-﻿import pythonnet
+﻿from pathlib import Path
+
+import pythonnet
 
 pythonnet.load("coreclr")
 import clr
 
-clr.AddReference("lib/SabberStoneCore")
+lib_path = Path(__file__).parent / "lib" / "SabberStoneCore"
+
+clr.AddReference(str(lib_path.resolve()))
