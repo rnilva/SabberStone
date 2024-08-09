@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Buffers;
+using System.Collections;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -10,14 +11,9 @@ namespace SabberStoneCore.Tasks.PlayerTasks.Lite
 {
 	[DebuggerDisplay("{DebuggerDisplay,nq}")]
 	[DebuggerTypeProxy(typeof(DebuggerView))]
-	public class PlayerTaskLiteContainer
+	public class PlayerTaskLiteContainer : IEnumerable<PlayerTaskLite>
 	{
 		public int Count { get; private set; }
-
-		public PlayerTaskLiteContainer()
-		{
-			_array = new PlayerTaskLite[MIN_SIZE];
-		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Add(in PlayerTaskLite task)
@@ -50,7 +46,7 @@ namespace SabberStoneCore.Tasks.PlayerTasks.Lite
 
 		private const int MIN_SIZE = 64;
 
-		private unsafe void Resize()
+		private void Resize()
 		{
 			//ArrayPool<PlayerTaskLite> pool = ArrayPool<PlayerTaskLite>.Shared;
 			//PlayerTaskLite[] newArr = pool.Rent(_array.Length << 1);
@@ -67,7 +63,7 @@ namespace SabberStoneCore.Tasks.PlayerTasks.Lite
 			_array = pool.Rent(MIN_SIZE);
 		}
 
-		private PlayerTaskLite[] _array;
+		private PlayerTaskLite[] _array = new PlayerTaskLite[MIN_SIZE];
 
 		private class DebuggerView
 		{
@@ -83,5 +79,48 @@ namespace SabberStoneCore.Tasks.PlayerTasks.Lite
 		}
 
 		private string DebuggerDisplay => $"Count = {Count}";
+
+		private struct Enumerator : IEnumerator<PlayerTaskLite>
+		{
+			private readonly PlayerTaskLite[] _data;
+			private readonly int _count;
+			private int _pos = -1;
+
+			public Enumerator(PlayerTaskLite[] data, int count)
+			{
+				_data = data;
+				_count = count;
+			}
+
+			public bool MoveNext()
+			{
+				++_pos;
+				return _pos < _count;
+			}
+
+			public void Reset()
+			{
+				_pos = -1;
+			}
+
+			public PlayerTaskLite Current => _data[_pos];
+
+			object IEnumerator.Current => Current;
+
+			public void Dispose()
+			{
+			}
+		}
+
+
+		public IEnumerator<PlayerTaskLite> GetEnumerator()
+		{
+			return new Enumerator(_array, Count);
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 	}
 }
