@@ -5,6 +5,7 @@ from typing import Literal
 
 import pysabberstone.core
 import pysabberstone.utils as utils
+from pysabberstone.model.player import Player
 from pysabberstone.model.player_task import PlayerTask
 from pysabberstone.py_types import Deck, CardClass
 
@@ -35,6 +36,15 @@ class Game:
         self._game = _Game(_c)
         self._game.StartGame()
         self._option_buffer = _OptionBuffer()
+        self.players = [Player(self._game.Player1), Player(self._game.Player2)]
+
+    @property
+    def current_player(self):
+        return self.players[self._game.CurrentPlayer.PlayerId - 1]
+
+    @property
+    def current_opponent(self):
+        return self.players[2 - self._game.CurrentPlayer.PlayerId]
 
     def get_options(self):
         self._game.CurrentPlayer.Options(self._option_buffer)

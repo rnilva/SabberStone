@@ -9,6 +9,7 @@ from SabberStoneCore.Model.Entities import Controller as _Controller
 class Player:
     def __init__(self, _controller: _Controller) -> None:
         self._controller = _controller
+        self.id: int = _controller.PlayerId
         self.name: str = _controller.Name
         self.base_class = CardClass(int(_controller.BaseClass))
         self.hero = Entity(_controller.Hero)
