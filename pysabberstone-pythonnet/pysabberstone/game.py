@@ -94,4 +94,5 @@ if __name__ == "__main__":
     while not game.done():
         options = game.get_options()
         option = random.choice(options)
+        print(option)
         game.process(option)

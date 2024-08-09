@@ -26,7 +26,7 @@ class PlayerTask:
 
     def _to_core_type(self):
         return _PlayerTaskLite(
-            _PlayerTaskType(self.type),
+            _PlayerTaskType(self.type.value),
             self.source_position,
             self.target_position,
             self.zone_position,
@@ -37,7 +37,7 @@ class PlayerTask:
     @classmethod
     def from_core_task(cls, core_task: _PlayerTaskLite):
         return cls(
-            type=PlayerTaskType(core_task.Type),
+            type=PlayerTaskType(int(core_task.Type)),
             source_position=core_task.SourcePosition,
             target_position=core_task.TargetPosition,
             zone_position=core_task.ZonePosition,
