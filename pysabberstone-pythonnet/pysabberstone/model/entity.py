@@ -50,10 +50,24 @@ class Entity:
             return self._playable.Durability
         elif self.card_type in (CardType.MINION, CardType.HERO):
             return self._playable.Health
+        else:
+            return None
+
+    @property
+    def base_health(self) -> int | None:
+        return self._playable.BaseHealth if self.is_character() else None
+
+    @property
+    def damage(self) -> int | None:
+        return self._playable.Damage if self.is_character() else None
 
     @property
     def exhausted(self) -> bool:
         return self._playable.IsExhausted
+
+    @property
+    def spell_power(self) -> int | None:
+        return self._playable.SpellPower if self.is_character() else None
 
     @property
     def taunt(self) -> bool | None:
