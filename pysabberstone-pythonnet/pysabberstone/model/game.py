@@ -39,11 +39,11 @@ class Game:
         self.players = [Player(self._game.Player1), Player(self._game.Player2)]
 
     @property
-    def current_player(self):
+    def current_player(self) -> Player:
         return self.players[self._game.CurrentPlayer.PlayerId - 1]
 
     @property
-    def current_opponent(self):
+    def current_opponent(self) -> Player:
         return self.players[2 - self._game.CurrentPlayer.PlayerId]
 
     def get_options(self):
