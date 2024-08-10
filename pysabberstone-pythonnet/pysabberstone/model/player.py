@@ -1,13 +1,13 @@
-import pysabberstone.core
+# import pysabberstone.core
 from pysabberstone.model.enums import CardClass, PlayState
 from pysabberstone.model.entity import Entity
 from pysabberstone.model.zone import Zone
 
-from SabberStoneCore.Model.Entities import Controller as _Controller
+# from SabberStoneCore.Model.Entities import Controller as _Controller
 
 
 class Player:
-    def __init__(self, _controller: _Controller) -> None:
+    def __init__(self, _controller) -> None:
         self._controller = _controller
         self.id: int = _controller.PlayerId
         self.name: str = _controller.Name

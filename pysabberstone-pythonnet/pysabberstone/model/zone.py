@@ -1,11 +1,8 @@
-import pysabberstone.core
 from pysabberstone.model.entity import Entity
-
-from SabberStoneCore.Model.Zones import Zone as _Zone
 
 
 class Zone:
-    def __init__(self, _zone: _Zone) -> None:
+    def __init__(self, _zone) -> None:
         self._zone = _zone
 
     def __len__(self) -> int:

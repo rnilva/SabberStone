@@ -2,11 +2,10 @@ import pysabberstone.core
 from pysabberstone.model.enums import CardClass, CardType
 
 from SabberStoneCore.Enums import CardType as _CardType
-from SabberStoneCore.Model.Entities import Playable as _Playable
 
 
 class Entity:
-    def __init__(self, _playable: _Playable) -> None:
+    def __init__(self, _playable) -> None:
         self._playable = _playable
 
     @property

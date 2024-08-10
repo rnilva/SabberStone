@@ -50,7 +50,7 @@ class Game:
         self._game.CurrentPlayer.Options(self._option_buffer)
         options = []
         for _core_task in self._option_buffer:
-            options.append(PlayerTask.from_core_task(_core_task))
+            options.append(PlayerTask.from_core_type(_core_task))
         return options
 
     def process(self, player_task: PlayerTask):

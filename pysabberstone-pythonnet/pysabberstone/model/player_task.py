@@ -35,7 +35,7 @@ class PlayerTask:
         )
 
     @classmethod
-    def from_core_task(cls, core_task: _PlayerTaskLite):
+    def from_core_type(cls, core_task: _PlayerTaskLite):
         return cls(
             type=PlayerTaskType(int(core_task.Type)),
             source_position=core_task.SourcePosition,
