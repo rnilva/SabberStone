@@ -2252,7 +2252,7 @@ namespace SabberStoneCore.CardSets
 				//		new DestroyTask(EntityType.STACK))
 				//}
 				Trigger = new Trigger(TriggerType.DEAL_DAMAGE, TriggerSource.HERO,
-					new SelfCondition(p => p.Game.CurrentEventData.EventTarget[GameTag.FROZEN] > 0))
+					new SelfCondition(p => p.Game.EventTarget()![GameTag.FROZEN] > 0))
 				{
 					SingleTask = new DestroyTask(EntityType.EVENT_TARGET)
 				}
@@ -2595,7 +2595,7 @@ namespace SabberStoneCore.CardSets
 						new FuncNumberTask(p =>
 						{
 							//Minion target = (Minion) p.Game.IdEntityDic[p.Game.ProposedDefender];
-							Minion target = (Minion)p.Game.CurrentEventData.EventTarget;
+							Minion target = (Minion)p.Game.EventTarget()!;
 							foreach (Minion adjacent in target.GetAdjacentMinions())
 								adjacent.TakeDamage(p, p.Controller.Hero.AttackDamage);
 							return 0;

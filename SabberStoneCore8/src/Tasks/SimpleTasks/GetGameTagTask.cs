@@ -111,22 +111,24 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
+			int number = game.TryGetEventNumber() ?? 0;
+
 			switch (_numberIndex)
 			{
 				case 0:
-					stack.Number = game.CurrentEventData?.EventNumber ?? 0;
+					stack.Number = number;
 					break;
 				case 1:
-					stack.Number1 = game.CurrentEventData?.EventNumber ?? 0;
+					stack.Number1 = number;
 					break;
 				case 2:
-					stack.Number2 = game.CurrentEventData?.EventNumber ?? 0;
+					stack.Number2 = number;
 					break;
 				case 3:
-					stack.Number3 = game.CurrentEventData?.EventNumber ?? 0;
+					stack.Number3 = number;
 					break;
 				case 4:
-					stack.Number4 = game.CurrentEventData?.EventNumber ?? 0;
+					stack.Number4 = number;
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
@@ -153,7 +155,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			in Entity target,
 			in TaskStack stack = null)
 		{
-			game.CurrentEventData.EventNumber = _num > 0 ? _num : stack.Number;
+			game.CurrentEventMetaData().EventNumber = _num > 0 ? _num : stack.Number;
 
 			return TaskState.COMPLETE;
 		}

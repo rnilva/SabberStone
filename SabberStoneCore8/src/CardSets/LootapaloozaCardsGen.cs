@@ -307,7 +307,7 @@ namespace SabberStoneCore.CardSets
 						new FuncNumberTask(p =>
 						{
 							//Minion target = (Minion)p.Game.IdEntityDic[p.Game.ProposedDefender];
-							Minion target = (Minion)p.Game.CurrentEventData.EventTarget;
+							Minion target = (Minion)p.Game.EventTarget()!;
 							foreach (Minion adjacent in target.GetAdjacentMinions())
 								adjacent.TakeDamage(p, ((Minion)p).AttackDamage);
 							return 0;
@@ -2250,7 +2250,7 @@ namespace SabberStoneCore.CardSets
 			{
 				PowerTask = new DamageTask(3, EntityType.TARGET, true),
 				Trigger = new Trigger(TriggerType.DEAL_DAMAGE, TriggerSource.FRIENDLY,
-					new SelfCondition(p => !(p is HeroPower) && p.Game.CurrentEventData.EventTarget == p.Controller.Hero))
+					new SelfCondition(p => p is not HeroPower && p.Game.EventTarget() == p.Controller.Hero))
 				{
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = new ChangeEntityTask("LOOT_043t2")
@@ -2364,7 +2364,7 @@ namespace SabberStoneCore.CardSets
 			{
 				PowerTask = new DamageTask(5, EntityType.TARGET, true),
 				Trigger = new Trigger(TriggerType.DEAL_DAMAGE, TriggerSource.FRIENDLY,
-					new SelfCondition(p => !(p is HeroPower) && p.Game.CurrentEventData.EventTarget == p.Controller.Hero))
+					new SelfCondition(p => p is not HeroPower && p.Game.EventTarget() == p.Controller.Hero))
 				{
 					TriggerActivation = TriggerActivation.HAND,
 					SingleTask = new ChangeEntityTask("LOOT_043t3")

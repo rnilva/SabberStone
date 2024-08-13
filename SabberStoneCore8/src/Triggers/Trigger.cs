@@ -1,4 +1,4 @@
-#region copyright
+﻿#region copyright
 // SabberStone, Hearthstone Simulator in C# .NET Core
 // Copyright (C) 2017-2019 SabberStone Team, darkfriend77 & rnilva
 //
@@ -237,19 +237,19 @@ namespace SabberStoneCore.Triggers
 					//if (!(source is Spell) || source.Controller != _owner.Controller || Game.CurrentEventData?.EventTarget != _owner) return;
 					sourceValidator = (s, o) =>
 						s.Controller == o.Controller &&
-						s.Game.CurrentEventData?.EventTarget == o &&
+						s.Game.TryGetEventTarget() == o &&
 						s.Card.Type == CardType.SPELL;
 					break;
 				case TriggerSource.FRIENDLY_SPELL_CASTED_ON_OWN_MINIONS:
 					//if (!(source is Spell) || source.Controller != _owner.Controller || Game.CurrentEventData?.EventTarget?.Controller != _owner.Controller) return;
 					sourceValidator = (s, o) =>
 						s.Controller == o.Controller &&
-						s.Game.CurrentEventData?.EventTarget?.Controller == o.Controller &&
+						s.Game.TryGetEventTarget()?.Controller == o.Controller &&
 						s.Card.Type == CardType.SPELL;
 					break;
 				case TriggerSource.FRIENDLY_EVENT_SOURCE:
 					//if (Game.CurrentEventData?.EventSource.Controller != _owner.Controller) return;
-					sourceValidator = (s, o) => s.Game.CurrentEventData?.EventSource.Controller == o.Controller;
+					sourceValidator = (s, o) => s.Game.TryGetEventSource()?.Controller == o.Controller;
 					break;
 			}
 
@@ -288,7 +288,7 @@ namespace SabberStoneCore.Triggers
 						typeValidator = (s, o) => s.Game.CurrentPlayer == o.Controller;
 					break;
 				case TriggerType.SHUFFLE_INTO_DECK:
-					typeValidator = (s, o) => s.Game.CurrentEventData?.EventSource.Card.AssetId != 49269;
+					typeValidator = (s, o) => s.Game.TryGetEventSource()?.Card.AssetId != 49269;
 					break;
 				case TriggerType.TURN_END:
 				case TriggerType.WORGEN_TRANSFORM:

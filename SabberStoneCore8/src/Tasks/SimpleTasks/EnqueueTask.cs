@@ -78,7 +78,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				SimpleTask task;
 				if (target.Card.ChooseOne)
 				{
-					int chooseOne = game.CurrentEventData.EventNumber;
+					int chooseOne = game.EventNumber();
 
 					string id = target.Card.Id;
 					if (controller.ChooseBoth

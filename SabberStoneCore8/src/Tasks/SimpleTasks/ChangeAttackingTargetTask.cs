@@ -52,7 +52,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					!game.Logging ? "" : $"{attacker} target {game.ProposedDefender} changed to {newDefender.Id}.");
 
 			game.ProposedDefender = newDefender.Id;
-			game.CurrentEventData.EventTarget = newDefender;
+			game.CurrentEventMetaData().EventTarget = newDefender;
 			return TaskState.COMPLETE;
 		}
 	}

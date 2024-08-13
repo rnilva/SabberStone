@@ -187,20 +187,20 @@ namespace SabberStoneCore.Tasks
 				if (t is Character ch && ch.IsAttacking)
 				{
 					int index = g.Random.Next(opBoardCount + 1);
-					g.CurrentEventData.EventTarget =
+					g.CurrentEventMetaData().EventTarget =
 						index == opBoardCount
 							? (Playable)ch.Controller.Opponent.Hero
 							: ch.Controller.Opponent.BoardZone.HasUntouchables
 								? ch.Controller.Opponent.BoardZone.GetAll(null)[index]
 								: ch.Controller.Opponent.BoardZone[index];
 
-					g.ProposedDefender = g.CurrentEventData.EventTarget.Id;
+					g.ProposedDefender = g.EventTarget()!.Id;
 					g.OnRandomHappened(true);
 					return;
 				}
 
 				//t.CardTarget = ((Playable)t).GetValidPlayTargets().RandomElement(g.Random).Id;
-				g.CurrentEventData.EventTarget = ((Playable)t).GetValidPlayTargets().RandomElement(g.Random);
+				g.CurrentEventMetaData().EventTarget = ((Playable)t).GetValidPlayTargets().RandomElement(g.Random);
 				g.OnRandomHappened(true);
 			});
 

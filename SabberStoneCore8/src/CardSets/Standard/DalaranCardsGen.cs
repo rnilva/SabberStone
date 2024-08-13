@@ -637,7 +637,7 @@ namespace SabberStoneCore.CardSets.Standard
 							c.BoardZone, zonePos: target.ZonePosition + 1, creator: s);
 						//summoned[GameTag.COPIED_BY_KHADGAR] = 1;
 					}))
-					.SetCondition(new SelfCondition(p => p.Game.CurrentEventData.EventSource != p
+					.SetCondition(new SelfCondition(p => p.Game.EventSource() != p
 														 //&& p[GameTag.COPIED_BY_KHADGAR] != 1))
 														 && (p.CreatorId == 0 || p.Game.IdEntityDic[p.CreatorId].Card.AssetId != 52502)))
 					.SetSource(TriggerSource.FRIENDLY_EVENT_SOURCE)

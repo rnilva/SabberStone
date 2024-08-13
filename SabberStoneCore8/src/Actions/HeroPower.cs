@@ -38,11 +38,12 @@ namespace SabberStoneCore.Actions
 					if (!heroPower.IsPlayable() || !heroPower.IsValidPlayTarget(target))
 						return false;
 
+				using EventBlock eventBlock = game.EventBlock(heroPower, target);
+
 				PayPhase(game, c, heroPower);
 
 				if (target != null)
 				{
-					game.StartEvent(heroPower, target);
 					game.TriggerManager.ValidateTriggers(heroPower, SequenceType.Target);
 					game.TriggerManager.OnTargetTrigger(heroPower);
 				}
@@ -68,7 +69,6 @@ namespace SabberStoneCore.Actions
 
 				game.TriggerManager.OnInspireTrigger(heroPower);
 
-				game.CurrentEventData = null;
 				return true;
 			};
 	}

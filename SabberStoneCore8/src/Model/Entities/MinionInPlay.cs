@@ -80,12 +80,9 @@ namespace SabberStoneCore.Model.Entities
 			// Check predamage triggers
 			if (game.TriggerManager.OnPredamageTrigger(this))
 			{
-				damage = game.CurrentEventData.EventNumber;
+				damage = game.EventNumber();
 				if (damage == 0)
-				{
-					game.CurrentEventData = temp;
 					return 0;
-				}
 			}
 
 			Damage += damage;

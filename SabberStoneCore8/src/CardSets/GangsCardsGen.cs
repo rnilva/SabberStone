@@ -1710,7 +1710,7 @@ namespace SabberStoneCore.CardSets
 			{
 				Trigger = new Trigger(TriggerType.AFTER_ATTACK, TriggerSource.SELF, new SelfCondition(
 					p => !((Character)p).ToBeDestroyed
-						 && p.Game.CurrentEventData.EventTarget is Minion))
+						 && p.Game.EventTarget() is Minion))
 				{
 					SingleTask = new DrawTask()
 				}

@@ -36,7 +36,7 @@ namespace SabberStoneCore.Actions
 			if (history)
 				g.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.PLAY, source.Id, "", 0, target?.Id ?? 0));
 
-			g.StartEvent(source, target);
+			using EventBlock eventBlock = g.EventBlock(source, target);
 
 			// Pay Phase
 			if (!PayPhase(g, c, source))
@@ -114,8 +114,6 @@ namespace SabberStoneCore.Actions
 				g.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
 			}
 
-			g.CurrentEventData = null;
-
 			return true;
 		}
 
@@ -147,8 +145,8 @@ namespace SabberStoneCore.Actions
 			{
 				//source[GameTag.TAG_LAST_KNOWN_COST_IN_HAND] = cost;
 
-				if (g.CurrentEventData != null)
-					g.CurrentEventData.EventNumber = cost;
+				EventMetaData? data = g.TryGetEventMetaData();
+				if (data != null) data.EventNumber = cost;
 
 				if (source is Spell && c.SpellsCostHealth)
 				{
@@ -243,7 +241,7 @@ namespace SabberStoneCore.Actions
 			c.NumMinionsPlayedThisTurn++;
 
 			c.BoardZone.Add(ref minion, zonePosition);
-			g.CurrentEventData.EventSource = minion;
+			g.CurrentEventMetaData().EventSource = minion;
 
 			// - PreSummon Phase --> PreSummon Phase Trigger (Tidecaller)
 			//   (death processing, aura updates)
@@ -258,8 +256,7 @@ namespace SabberStoneCore.Actions
 
 			// Noggenfogger here
 			if (target != null && g.TriggerManager.OnTargetTrigger(minion))
-				//target = (Character) g.IdEntityDic[minion.CardTarget];
-				target = (Character) g.CurrentEventData.EventTarget;
+				target = (Character)g.EventTarget()!;
 
 			// - BattleCry Phase --> Battle Cry Resolves
 			//   (death processing, aura updates)
@@ -284,7 +281,7 @@ namespace SabberStoneCore.Actions
 			g.TaskQueue.EndEvent();
 			g.DeathProcessingAndAuraUpdate();
 
-			minion = (Minion)g.CurrentEventData.EventSource;
+			minion = (Minion)g.EventSource();
 
 			// - After Play Phase --> After play Trigger / Secrets (Mirror Entity)
 			//   (death processing, aura updates)
@@ -336,7 +333,7 @@ namespace SabberStoneCore.Actions
 				if (target != null && triggerManager.OnTargetTrigger(spell))
 				{
 					//target = (Character)g.IdEntityDic[spell.CardTarget];
-					target = (Character) g.CurrentEventData.EventTarget;
+					target = (Character)g.EventTarget()!;
 					g.Log(LogLevel.DEBUG, BlockType.ACTION, "PlaySpell", !g.Logging ? "" : $"trigger Spellbender Phase. Target of {spell} is changed to {target}.");
 				}
 
@@ -376,7 +373,7 @@ namespace SabberStoneCore.Actions
 			{
 				//if (target.Id != weapon.CardTarget)
 				//	target = (Character) g.IdEntityDic[weapon.CardTarget];
-				target = (Character) g.CurrentEventData.EventTarget;
+				target = (Character)g.EventTarget()!;
 			}
 
 			OverloadBlock(c, weapon, g.History);

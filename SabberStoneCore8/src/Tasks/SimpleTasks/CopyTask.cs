@@ -77,7 +77,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			}
 			else
 			{
-				Playable toBeCopied;
+				Playable? toBeCopied;
 				int zonePosition = -1;
 				switch (_entityType)
 				{
@@ -95,7 +95,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 							zonePosition = -1;
 						break;
 					case EntityType.EVENT_SOURCE:
-						toBeCopied = game.CurrentEventData?.EventSource;
+						toBeCopied = game.TryGetEventSource();
 						break;
 					case EntityType.OP_HERO_POWER:
 						toBeCopied = Entity.FromCard(c,

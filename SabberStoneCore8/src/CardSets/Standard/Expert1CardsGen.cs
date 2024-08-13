@@ -1394,7 +1394,7 @@ namespace SabberStoneCore.CardSets.Standard
 							new CustomTask((g, c, s, t, stack) =>
 							{
 								// stack[0] : Summoned one
-								g.CurrentEventData.EventTarget = stack.Playables[0];
+								g.CurrentEventMetaData().EventTarget = stack.Playables[0];
 							})
 							)))
 				}
@@ -3537,8 +3537,9 @@ namespace SabberStoneCore.CardSets.Standard
 						new FuncPlayablesTask(p =>
 						{
 							var m = (Minion)p[0];
-							if (m.Game.CurrentEventData.EventNumber >= m.Health)
-								m.Game.CurrentEventData.EventNumber = m.Health - 1;
+							EventMetaData eventMeta = m.Game.CurrentEventMetaData();
+							if (eventMeta.EventNumber >= m.Health)
+								eventMeta.EventNumber = m.Health - 1;
 							return p;
 						}))
 				}

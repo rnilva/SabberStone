@@ -72,7 +72,7 @@ namespace SabberStoneCore.Conditions
 
 		public static readonly SelfCondition IsHeroPowerTargetingMinion = new SelfCondition(me =>
 			me.Card.Type == CardType.HERO_POWER &&
-			me.Game.CurrentEventData.EventTarget.Card.Type == CardType.MINION);
+			me.Game.EventTarget()?.Card.Type == CardType.MINION);
 		public static SelfCondition HasArmorLessThan(int amount) => new SelfCondition(me => me.Controller.Hero.Armor < amount);
 		//public static readonly SelfCondition IsAttacking = new SelfCondition(me => me is Character && ((Character)me).IsAttacking);
 		public static readonly SelfCondition IsCthun = new SelfCondition(me => me.Card.Id.Equals("OG_280"));
@@ -170,7 +170,7 @@ namespace SabberStoneCore.Conditions
 		public static readonly SelfCondition IsQuestDone = new SelfCondition(me => me[GameTag.QUEST_PROGRESS] == me[GameTag.QUEST_PROGRESS_TOTAL]);
 
 		public static readonly SelfCondition IsSpellTargetingMinion = new SelfCondition(me =>
-			me.Card.Type == CardType.SPELL && me.Game.CurrentEventData.EventTarget.Card.Type == CardType.MINION);
+			me.Card.Type == CardType.SPELL && me.Game.EventTarget()?.Card.Type == CardType.MINION);
 
 		public static readonly SelfCondition HoldingAnotherClassCard =
 			new SelfCondition(me => me.Controller.HandZone.Any(p => p.Card.Class != me.Controller.HeroClass));
@@ -187,7 +187,7 @@ namespace SabberStoneCore.Conditions
 			new SelfCondition(me => me.Controller.BoardZone.CountExceptUntouchables < me.Controller.Opponent.BoardZone.CountExceptUntouchables);
 
 		public static readonly SelfCondition HasTarget =
-			new SelfCondition(p => p.Game.CurrentEventData.EventTarget != null);
+			new SelfCondition(p => p.Game.EventTarget() != null);
 
 		public static SelfCondition AnyNonClassCardInHand(CardClass cardClass)
 			=> new SelfCondition(me => me.Controller.HandZone.Any(p => p.Card.Class != cardClass));
@@ -331,23 +331,23 @@ namespace SabberStoneCore.Conditions
 
 		public static readonly SelfCondition IsHeroLethalPreDamaged
 			= new SelfCondition(me => me is HeroInPlay hero &&
-									  hero.Game.CurrentEventData.EventNumber >= hero.Health + hero.Armor);
+									  hero.Game.EventNumber() >= hero.Health + hero.Armor);
 
 		public static SelfCondition IsCurrentEventNumber(int value, RelaSign relaSign)
 		{
-			return new SelfCondition(p => relaSign == RelaSign.EQ ? p.Game.CurrentEventData.EventNumber == value :
-				relaSign == RelaSign.GEQ ? p.Game.CurrentEventData.EventNumber >= value :
-				p.Game.CurrentEventData.EventNumber <= value);
+			return new SelfCondition(p => relaSign == RelaSign.EQ ? p.Game.EventNumber() == value :
+				relaSign == RelaSign.GEQ ? p.Game.EventNumber() >= value :
+				p.Game.EventNumber() <= value);
 		}
 		public static SelfCondition IsEventTargetIs(CardType type)
 		{
-			return new SelfCondition(p => p.Game.CurrentEventData?.EventTarget.Card.Type == type);
+			return new SelfCondition(p => p.Game.TryGetEventTarget()?.Card.Type == type);
 		}
 		public static SelfCondition IsEventTargetTagValue(GameTag tag, int value, RelaSign relaSign = RelaSign.EQ)
 		{
-			return new SelfCondition(p => relaSign == RelaSign.EQ ? p.Game.CurrentEventData.EventTarget?[tag] == value :
-				relaSign == RelaSign.GEQ ? p.Game.CurrentEventData.EventTarget?[tag] >= value :
-				p.Game.CurrentEventData.EventTarget?[tag] <= value);
+			return new SelfCondition(p => relaSign == RelaSign.EQ ? p.Game.EventTarget()?[tag] == value :
+				relaSign == RelaSign.GEQ ? p.Game.EventTarget()?[tag] >= value :
+				p.Game.EventTarget()?[tag] <= value);
 		}
 
 		public static SelfCondition CheckThreshold(RelaSign relaSign)
@@ -364,13 +364,13 @@ namespace SabberStoneCore.Conditions
 			});
 		}
 
-		public static readonly SelfCondition IsEventSourceFriendly = new SelfCondition(p => p.Game.CurrentEventData.EventSource.Controller == p.Controller);
+		public static readonly SelfCondition IsEventSourceFriendly = new SelfCondition(p => p.Game.EventSource().Controller == p.Controller);
 
 		public static readonly SelfCondition IsDefenderDead =
-			new SelfCondition(p => (p.Game.CurrentEventData?.EventTarget as Minion)?.ToBeDestroyed ?? false);
+			new SelfCondition(p => (p.Game.TryGetEventTarget() as Minion)?.ToBeDestroyed ?? false);
 
 		public static readonly SelfCondition IsDefenderNotDead =
-			new SelfCondition(p => (p.Game.CurrentEventData?.EventTarget as Minion)?.ToBeDestroyed ?? false);
+			new SelfCondition(p => (p.Game.TryGetEventTarget() as Minion)?.ToBeDestroyed ?? false);
 
 		public static SelfCondition IsStep(Step step)
 		{

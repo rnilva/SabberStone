@@ -416,13 +416,15 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						return c.DiscardedEntities.Select(id => dict[id]).ToArray();
 					}
 				case EntityType.EVENT_SOURCE:
-					return c.Game.CurrentEventData != null
-						? new[] { c.Game.CurrentEventData.EventSource }
-						: new Playable[0];
+					{
+						Playable? s = c.Game.TryGetEventSource();
+						return s != null ? [s] : [];
+					}
 				case EntityType.EVENT_TARGET:
-					return c.Game.CurrentEventData != null
-						? new[] { c.Game.CurrentEventData.EventTarget }
-						: new Playable[0];
+					{
+						Playable? s = c.Game.TryGetEventTarget();
+						return s != null ? [s] : [];
+					}
 				default:
 					throw new NotImplementedException();
 			}
@@ -630,8 +632,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					EntityList dict = c.Game.IdEntityDic;
 					return c.DiscardedEntities.Select(id => dict[id]).ToArray();
 				}},
-				{EntityType.EVENT_SOURCE, (c, s, t, stack) => notNullOrEmpty(c.Game.CurrentEventData?.EventSource)},
-				{EntityType.EVENT_TARGET, (c, s, t, stack) => notNullOrEmpty(c.Game.CurrentEventData?.EventTarget)},
+				{EntityType.EVENT_SOURCE, (c, s, t, stack) => notNullOrEmpty(c.Game.TryGetEventSource())},
+				{EntityType.EVENT_TARGET, (c, s, t, stack) => notNullOrEmpty(c.Game.TryGetEventTarget())},
 				{EntityType.CONTROLLER, (c, s, t, stack) => null },
 				{EntityType.OP_CONTROLLER, (c, s, t, stack) => null }
 			};
@@ -660,7 +662,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			in Entity target,
 			in TaskStack stack = null)
 		{
-			Minion left = null, right = null, centre;
+			Minion? left = null, right = null, centre;
 			Minion[] minions;
 
 			switch (_type)
@@ -672,10 +674,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					centre = target as Minion;
 					break;
 				case EntityType.EVENT_SOURCE:
-					centre = game.CurrentEventData?.EventSource as Minion;
+					centre = game.TryGetEventSource() as Minion;
 					break;
 				case EntityType.EVENT_TARGET:
-					centre = game.CurrentEventData?.EventTarget as Minion;
+					centre = game.TryGetEventTarget() as Minion;
 					break;
 				default:
 					throw new NotImplementedException();

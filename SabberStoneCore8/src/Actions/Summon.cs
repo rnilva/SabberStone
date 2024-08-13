@@ -26,8 +26,8 @@ namespace SabberStoneCore.Actions
 		{
 			SummonPhase(g, ref minion, zonePosition);
 
-			if (summoner != null)
-				g.StartEvent(summoner, minion);
+			using EventBlock? eventBlock = summoner != null ? g.EventBlock(summoner, minion) : null;
+
 			g.TriggerManager.OnAfterSummonTrigger(minion);
 
             if (minion.IsRace(Race.TOTEM))
@@ -40,8 +40,8 @@ namespace SabberStoneCore.Actions
 		{
 			SummonPhase(g, minion, zonePosition);
 
-			if (summoner != null)
-				g.StartEvent(summoner, minion);
+			using EventBlock? eventBlock = summoner != null ? g.EventBlock(summoner, minion) : null;
+
 			g.TriggerManager.OnAfterSummonTrigger(minion);
 
 			if (minion.IsRace(Race.TOTEM))

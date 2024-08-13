@@ -202,10 +202,6 @@ namespace SabberStoneCore.Model
 
 		public readonly TriggerManager TriggerManager;
 
-		internal EventStack EventStack;
-
-		internal EventMetaData CurrentEventData { get; set; }
-
 		private int _idIndex = 4;
 		/// <summary>Gets the next entity identifier.</summary>
 		/// <value>The next entity id.</value>
@@ -452,6 +448,9 @@ namespace SabberStoneCore.Model
 			}
 
 			SetIndexer(game._idIndex, game._oopIndex);
+
+			if (game._eventStack.Count != 0)
+				throw new Exception("Need to clone the event stack too!");
 		}
 
 		///// <summary>Method which is called when an entity wants to notify that one of it's tags changed value.</summary>
@@ -1357,22 +1356,27 @@ namespace SabberStoneCore.Model
 			str.AppendLine(Player2.HandZone.FullPrint());
 			return str.ToString();
 		}
-		
+
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
+		private readonly EventStack _eventStack = new();
+
 		internal void StartEvent(Playable source, Playable? target, int number = 0) =>
-			EventStack.Push(source, target, number);
+			_eventStack.Push(source, target, number);
 
-		internal void EndEvent() => EventStack.Pop();
+		internal void EndEvent() => _eventStack.Pop();
 
-		internal EventMetaData CurrentEventMetaData() => EventStack.Peek();
-
-		internal Playable? TryGetEventTarget() => EventStack.TryPeek(out EventMetaData eventMeta) ? eventMeta.EventTarget : null;
-
-		internal Playable EventTarget() => EventStack.Peek().EventTarget;
+		internal EventMetaData CurrentEventMetaData() => _eventStack.Peek();
+		internal EventMetaData? TryGetEventMetaData() => _eventStack.TryPeek(out EventMetaData eventMeta) ? eventMeta : null;
+		internal Playable? TryGetEventSource() => _eventStack.TryPeek(out EventMetaData eventMeta) ? eventMeta.EventSource : null;
+		internal Playable EventSource() => CurrentEventMetaData().EventSource;
+		internal Playable? TryGetEventTarget() => _eventStack.TryPeek(out EventMetaData eventMeta) ? eventMeta.EventTarget : null;
+		internal Playable? EventTarget() => CurrentEventMetaData().EventTarget;
+		internal int? TryGetEventNumber() => _eventStack.TryPeek(out EventMetaData eventMeta) ? eventMeta.EventNumber : null;
+		internal int EventNumber() => CurrentEventMetaData().EventNumber;
 
 		internal EventBlock EventBlock(Playable source, Playable? target, int number = 0) =>
-			new(EventStack, source, target, number);
+			new(_eventStack, source, target, number);
 	}
 
 	public partial class Game

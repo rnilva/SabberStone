@@ -844,7 +844,7 @@ namespace SabberStoneCore.CardSets.Standard
 
 						return -p.Controller.TotalManaSpentOnSpells;
 					},
-					triggerValueFunction: p => -p.Game.CurrentEventData.EventNumber,
+					triggerValueFunction: p => -p.Game.EventNumber(),
 					trigger: TriggerType.CAST_SPELL,
 					triggerSource: TriggerSource.FRIENDLY)
 			});
@@ -902,7 +902,7 @@ namespace SabberStoneCore.CardSets.Standard
 					.SetTask(new CustomTask((g, c, s, t, stack) =>
 					{
 						if (c.BoardZone.IsFull) return;
-						Card instance = Card.GetTigerCard(g.CurrentEventData.EventNumber, g.History);
+						Card instance = Card.GetTigerCard(g.EventNumber(), g.History);
 						Entity.FromCard(in c, in instance, zone: c.BoardZone, creator: s);
 					}))
 					.SetSource(TriggerSource.FRIENDLY)
@@ -1265,7 +1265,7 @@ namespace SabberStoneCore.CardSets.Standard
 						c.NumOptionsPlayedThisTurn--;
 					}
 					g.DeathProcessingAndAuraUpdate();
-					g.CurrentEventData = temp;
+					//g.CurrentEventData = temp;
 				})
 			});
 
@@ -1582,7 +1582,7 @@ namespace SabberStoneCore.CardSets.Standard
 				Trigger = TriggerLibrary.SpiritTrigger(TriggerBuilder.Type(TriggerType.CAST_SPELL)
 					.SetTask(new CustomTask((g, c, s, t, stack) =>
 					{
-						int cost = g.CurrentEventData.EventNumber + 1;
+						int cost = g.EventNumber() + 1;
 						ReadOnlySpan<Playable> deck = c.DeckZone.GetSpan();
 						List<int> indices = new List<int>();
 						for (int i = 0; i < deck.Length; i++)

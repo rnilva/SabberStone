@@ -1477,7 +1477,7 @@ namespace SabberStoneCore.CardSets
 				{
 					SingleTask = new FuncNumberTask(p =>
 					{
-						Card justPlayed = p.Game.CurrentEventData.EventSource.Card;
+						Card justPlayed = p.Game.EventSource().Card;
 						List<PlayHistoryEntry> history = p.Controller.PlayHistory;
 						int count = 0;
 						for (int i = history.FindIndex(x => x.SourceCard.AssetId == 41222) + 1; i < history.Count; i++)

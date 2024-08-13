@@ -255,6 +255,8 @@ namespace SabberStoneCore.Model
 	{
 		private readonly Stack<EventMetaData> _stack = new();
 
+		public int Count => _stack.Count;
+
 		public void Push(EventMetaData eventMeta) => _stack.Push(eventMeta);
 
 		public void Push(Playable source, Playable? target, int number = 0) => Push(new EventMetaData(source, target, number));
