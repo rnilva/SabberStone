@@ -239,14 +239,48 @@ namespace SabberStoneCore.Model
 	internal class EventMetaData
 	{
 		public Playable EventSource { get; set; }
-		public Playable EventTarget { get; set; }
+		public Playable? EventTarget { get; set; }
 		public int EventNumber { get; set; }
 
-		public EventMetaData(Playable source, Playable target, int number = 0)
+		public EventMetaData(Playable source, Playable? target, int number = 0)
 		{
 			EventSource = source;
 			EventTarget = target;
 			EventNumber = number;
 		}
 	}
+
+
+	internal class EventStack
+	{
+		private readonly Stack<EventMetaData> _stack = new();
+
+		public void Push(EventMetaData eventMeta) => _stack.Push(eventMeta);
+
+		public void Push(Playable source, Playable? target, int number = 0) => Push(new EventMetaData(source, target, number));
+
+		public void Pop() => _stack.Pop();
+
+		public EventMetaData Peek() => _stack.Peek();
+
+		public bool TryPeek(out EventMetaData eventMeta) => _stack.TryPeek(out eventMeta);
+	}
+
+
+	internal readonly struct EventBlock : IDisposable
+	{
+		private readonly EventStack _stack;
+
+		public EventBlock(EventStack stack, Playable source, Playable? target, int number = 0)
+		{
+			_stack = stack;
+			_stack.Push(source, target, number);
+		}
+
+		public void Dispose()
+		{
+			_stack.Pop();
+		}
+	}
+
 }

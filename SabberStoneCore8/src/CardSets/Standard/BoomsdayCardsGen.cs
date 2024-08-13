@@ -615,7 +615,7 @@ namespace SabberStoneCore.CardSets.Standard
 					new FuncPlayablesTask(list =>
 					{
 						Controller c = list[0].Controller;
-						EventMetaData temp = c.Game.CurrentEventData;
+						//EventMetaData temp = c.Game.CurrentEventData;
 						for (int i = 0; i < list.Count; i++)
 						{
 							Minion defender = c.Opponent.BoardZone.Random;
@@ -626,7 +626,7 @@ namespace SabberStoneCore.CardSets.Standard
 						}
 
 						c.Game.DeathProcessingAndAuraUpdate();
-						c.Game.CurrentEventData = temp;
+						//c.Game.CurrentEventData = temp;
 
 						return null;
 					}))

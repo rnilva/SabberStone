@@ -36,7 +36,7 @@ namespace SabberStoneCore.Actions
 			if (history)
 				g.PowerHistory.Add(PowerHistoryBuilder.BlockStart(BlockType.PLAY, source.Id, "", 0, target?.Id ?? 0));
 
-			g.CurrentEventData = new EventMetaData(source, target);
+			g.StartEvent(source, target);
 
 			// Pay Phase
 			if (!PayPhase(g, c, source))

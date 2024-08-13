@@ -54,8 +54,7 @@ namespace SabberStoneCore.Model.Entities
 			//	Fatigue = damage;
 
 			// Create Damage event meta data
-			EventMetaData temp = game.CurrentEventData;
-			game.CurrentEventData = new EventMetaData(source, this, damage);
+			using EventBlock eventBlock = game.EventBlock(source, this, damage);
 
 			// Check predamage triggers
 			if (game.TriggerManager.OnPredamageTrigger(this))
@@ -63,7 +62,7 @@ namespace SabberStoneCore.Model.Entities
 				damage = game.CurrentEventData.EventNumber;
 				if (damage == 0)
 				{
-					game.CurrentEventData = temp;
+					//game.CurrentEventData = temp;
 					return 0;
 				}
 			}
@@ -73,7 +72,7 @@ namespace SabberStoneCore.Model.Entities
 			{
 				if (logging)
 					game.Log(LogLevel.INFO, BlockType.ACTION, "Character", $"{this} is immune.");
-				game.CurrentEventData = temp;
+				//game.CurrentEventData = temp;
 				return 0;
 			}
 
@@ -128,7 +127,7 @@ namespace SabberStoneCore.Model.Entities
 			if (source.Card.Type == CardType.HERO_POWER)
 				source.Controller.NumHeroPowerDamageThisGame += damage;
 
-			game.CurrentEventData = temp;
+			//game.CurrentEventData = temp;
 
 			return damage;
 		}
@@ -240,11 +239,8 @@ namespace SabberStoneCore.Model.Entities
 		{
 			Game.Log(LogLevel.INFO, BlockType.ACTION, "Character", !Game.Logging? "":$"{this} gaining armor for {armor}.");
 			Armor += armor;
-			EventMetaData temp = Game.CurrentEventData;
-			Game.CurrentEventData = new EventMetaData(source, this, armor);
-			Game.TriggerManager.OnArmorTrigger(this);
-			//Game.ProcessTasks();
-			Game.CurrentEventData = temp;
+			using (Game.EventBlock(source, this, armor))
+				Game.TriggerManager.OnArmorTrigger(this);
 		}
 
 		public void AddWeapon(Weapon weapon)

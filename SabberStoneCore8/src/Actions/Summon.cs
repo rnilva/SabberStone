@@ -26,11 +26,9 @@ namespace SabberStoneCore.Actions
 		{
 			SummonPhase(g, ref minion, zonePosition);
 
-			EventMetaData temp = g.CurrentEventData;
 			if (summoner != null)
-				g.CurrentEventData = new EventMetaData(summoner, minion);
+				g.StartEvent(summoner, minion);
 			g.TriggerManager.OnAfterSummonTrigger(minion);
-			g.CurrentEventData = temp;
 
             if (minion.IsRace(Race.TOTEM))
                 minion.Controller.NumTotemSummonedThisGame++;
@@ -42,11 +40,9 @@ namespace SabberStoneCore.Actions
 		{
 			SummonPhase(g, minion, zonePosition);
 
-			EventMetaData temp = g.CurrentEventData;
 			if (summoner != null)
-				g.CurrentEventData = new EventMetaData(summoner, minion);
+				g.StartEvent(summoner, minion);
 			g.TriggerManager.OnAfterSummonTrigger(minion);
-			g.CurrentEventData = temp;
 
 			if (minion.IsRace(Race.TOTEM))
 				minion.Controller.NumTotemSummonedThisGame++;

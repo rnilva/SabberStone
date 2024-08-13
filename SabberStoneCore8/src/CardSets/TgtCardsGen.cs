@@ -2777,7 +2777,7 @@ namespace SabberStoneCore.CardSets
 					.Type(TriggerType.PREDAMAGE)
 					.SetTask(new FuncNumberTask(p =>
 					{
-						EventMetaData data = p.Game.CurrentEventData;
+						EventMetaData data = p.Game.CurrentEventMetaData();
 
 						((Character)p).TakeDamage(data.EventSource, data.EventNumber);
 

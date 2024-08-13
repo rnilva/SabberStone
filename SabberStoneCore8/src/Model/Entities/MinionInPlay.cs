@@ -75,8 +75,7 @@ namespace SabberStoneCore.Model.Entities
 			}
 
 			// Create Damage event meta data
-			EventMetaData temp = game.CurrentEventData;
-			game.CurrentEventData = new EventMetaData(source, this, damage);
+			using EventBlock eventBlock = game.EventBlock(source, this, damage);
 
 			// Check predamage triggers
 			if (game.TriggerManager.OnPredamageTrigger(this))
@@ -119,8 +118,6 @@ namespace SabberStoneCore.Model.Entities
 
 			if (source.Card.Type == CardType.HERO_POWER)
 				source.Controller.NumHeroPowerDamageThisGame += damage;
-
-			game.CurrentEventData = temp;
 
 			return damage;
 		}

@@ -27,6 +27,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using SabberStoneCore.Auras;
+using SabberStoneCore.Conditions;
 using SabberStoneCore.Tasks.PlayerTasks.Lite;
 using SabberStoneCore.Triggers;
 
@@ -200,6 +201,8 @@ namespace SabberStoneCore.Model
 		public readonly TaskQueue TaskQueue;
 
 		public readonly TriggerManager TriggerManager;
+
+		internal EventStack EventStack;
 
 		internal EventMetaData CurrentEventData { get; set; }
 
@@ -1356,6 +1359,20 @@ namespace SabberStoneCore.Model
 		}
 		
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+
+		internal void StartEvent(Playable source, Playable? target, int number = 0) =>
+			EventStack.Push(source, target, number);
+
+		internal void EndEvent() => EventStack.Pop();
+
+		internal EventMetaData CurrentEventMetaData() => EventStack.Peek();
+
+		internal Playable? TryGetEventTarget() => EventStack.TryPeek(out EventMetaData eventMeta) ? eventMeta.EventTarget : null;
+
+		internal Playable EventTarget() => EventStack.Peek().EventTarget;
+
+		internal EventBlock EventBlock(Playable source, Playable? target, int number = 0) =>
+			new(EventStack, source, target, number);
 	}
 
 	public partial class Game

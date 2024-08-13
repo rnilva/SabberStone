@@ -1214,7 +1214,7 @@ namespace SabberStoneCore.CardSets.Standard
 					if (allMinions.Length < 2)
 						return;
 
-					EventMetaData temp = g.CurrentEventData;
+					//EventMetaData temp = g.CurrentEventData;
 
 					if (allMinions.Length == 2)
 					{
@@ -1222,7 +1222,7 @@ namespace SabberStoneCore.CardSets.Standard
 						if (!allMinions[1].IsDead && !allMinions[0].IsDead)
 							Generic.AttackBlock(c, allMinions[1], allMinions[0], true, true);
 						g.DeathProcessingAndAuraUpdate();
-						g.CurrentEventData = temp;
+						//g.CurrentEventData = temp;
 						return;
 					}
 
@@ -2955,7 +2955,7 @@ namespace SabberStoneCore.CardSets.Standard
 					.SetSource(TriggerSource.HERO)
 					.SetCondition(new SelfCondition(p =>
 					{
-						EventMetaData eventData = p.Game.CurrentEventData;
+						EventMetaData eventData = p.Game.CurrentEventMetaData();
 						return eventData.EventNumber >= 3 &&
 							   eventData.EventSource.Controller == p.Controller;
 					}))

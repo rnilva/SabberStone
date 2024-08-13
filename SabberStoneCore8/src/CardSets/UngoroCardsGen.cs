@@ -469,9 +469,9 @@ namespace SabberStoneCore.CardSets
 							var target = (Character)plist[1];
 							if (target.Card.Untouchable)
 								return null;
-							EventMetaData temp = source.Game.CurrentEventData;
+							//EventMetaData temp = source.Game.CurrentEventData;
 							Generic.AttackBlock.Invoke(source.Controller, source, target, true, false);
-							source.Game.CurrentEventData = temp;
+							//source.Game.CurrentEventData = temp;
 							source.Controller.NumOptionsPlayedThisTurn--;
 							return null;
 						}))

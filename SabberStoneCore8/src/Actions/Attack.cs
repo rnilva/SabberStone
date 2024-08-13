@@ -12,6 +12,7 @@
 // GNU Affero General Public License for more details.
 #endregion
 using System;
+using System.Data.Common;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Kettle;
 using SabberStoneCore.Model;
@@ -37,7 +38,7 @@ namespace SabberStoneCore.Actions
 						g.ProposedAttacker = source.Id;
 						g.ProposedDefender = target.Id;
 					}
-					g.CurrentEventData = new EventMetaData(source, target);
+					g.StartEvent(source, target);
 				}
 				else if (!PreAttackPhase.Invoke(c, source, target))
 					return false;
@@ -49,7 +50,7 @@ namespace SabberStoneCore.Actions
 						g.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
 					if (!skipDeathPhase)
 						g.DeathProcessingAndAuraUpdate();
-					g.CurrentEventData = null;
+					g.EndEvent();
 					return false;
 				}
 				//Trigger.ValidateTriggers(g, source, SequenceType.Target);
@@ -61,7 +62,7 @@ namespace SabberStoneCore.Actions
 						g.PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
 					if (!skipDeathPhase)
 						g.DeathProcessingAndAuraUpdate();
-					g.CurrentEventData = null;
+					g.EndEvent();
 					return false;
 				}
 				// end block
@@ -75,7 +76,7 @@ namespace SabberStoneCore.Actions
 
 				if (!skipDeathPhase)
 					g.DeathProcessingAndAuraUpdate();
-				g.CurrentEventData = null;
+				g.EndEvent();
 				g.NextStep = Step.MAIN_ACTION;
 
 				return true;
@@ -119,7 +120,7 @@ namespace SabberStoneCore.Actions
 					c.Game.ProposedDefender = target.Id;
 				}
 
-				c.Game.CurrentEventData = new EventMetaData(source, target);
+				c.Game.StartEvent(source, target);
 
 				// TODO: need to be manipulated for 50% chance to attack  someone else 
 
@@ -155,7 +156,7 @@ namespace SabberStoneCore.Actions
 				var minion = source as MinionInPlay;
 
 				game.TriggerManager.OnTargetTrigger(source);
-				target = (Character) game.CurrentEventData.EventTarget;
+				target = (Character) game.EventTarget();
 
 				// Force the game into MAIN_COMBAT step!
 				game.Step = Step.MAIN_COMBAT;

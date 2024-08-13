@@ -249,15 +249,8 @@ namespace SabberStoneCore.Actions
 				c.DeckZone.AddAtRandomPosition(playable);
 
 				if (sender is Playable p && c.Game.TriggerManager.HasShuffleIntoDeckTrigger)
-				{
-					EventMetaData temp = c.Game.CurrentEventData;
-
-					c.Game.CurrentEventData = new EventMetaData(p, playable);
-
-					c.Game.TriggerManager.OnShuffleIntoDeckTrigger(playable);
-
-					c.Game.CurrentEventData = temp;
-				}
+					using (c.Game.EventBlock(p, playable))
+						c.Game.TriggerManager.OnShuffleIntoDeckTrigger(playable);
 
 				// add hide entity 
 				if (c.Game.History)

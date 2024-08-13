@@ -528,11 +528,11 @@ namespace SabberStoneCore.Model
 			if (OverloadTrigger?.IsEmpty ?? true)
 				return;
 
-			EventMetaData temp = sender.Game.CurrentEventData;
-			sender.Game.CurrentEventData = new EventMetaData(sender, null, amount);
-			OverloadTrigger.Invoke(sender);
-			ProcessTasks();
-			sender.Game.CurrentEventData = temp;
+			using (sender.Game.EventBlock(sender, null, amount))
+			{
+				OverloadTrigger.Invoke(sender);
+				ProcessTasks();
+			}
 	    }
 
 		#endregion

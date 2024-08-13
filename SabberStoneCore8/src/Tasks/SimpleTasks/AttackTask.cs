@@ -38,10 +38,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			if (defender.Card.Untouchable) return TaskState.STOP;
 
-			EventMetaData temp = game.CurrentEventData;
+			//EventMetaData temp = game.CurrentEventData;
 			Generic.AttackBlock.Invoke(attacker.Controller, attacker, defender, true, false);
 			attacker.Controller.NumOptionsPlayedThisTurn--;
-			game.CurrentEventData = temp;
+			//game.CurrentEventData = temp;
 
 			return TaskState.COMPLETE;
 		}

@@ -271,10 +271,8 @@ namespace SabberStoneCore.Model.Entities
 
 			// Heal event created
 			// Process gathered tasks
-			EventMetaData temp = Game.CurrentEventData;
-			Game.CurrentEventData = new EventMetaData(source, this, amount);
-			Game.TriggerManager.OnHealTrigger(this);
-			Game.CurrentEventData = temp;
+			using (Game.EventBlock(source, this, amount))
+				Game.TriggerManager.OnHealTrigger(this);
 
 			if (this is Hero)
 				Controller.AmountHeroHealedThisTurn += amount;
