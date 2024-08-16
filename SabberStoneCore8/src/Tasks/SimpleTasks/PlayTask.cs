@@ -61,7 +61,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						if (!(p is Spell spell)) throw new Exception();
 						Controller c = spell.Controller;
 
-						Character cardTarget = null;
+						Character? cardTarget = null;
 						if (_randTarget)
 						{
 							game.OnRandomHappened(true);
@@ -85,9 +85,9 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 								stack?.Playables);
 
 							if (targets.Count == 0)
-								return TaskState.STOP;
-
-							cardTarget = (Character)targets[0];
+								cardTarget = null;
+							else
+								cardTarget = (Character)targets[0];
 						}
 
 						if (spell.Zone == null || Generic.RemoveFromZone(c, p))
