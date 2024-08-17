@@ -286,6 +286,7 @@ namespace SabberStoneCore.Model
 			{
 				Logging = true;
 				Logs = new Queue<LogEntry>();
+				_eventStack.Logging = true;
 			}
 
 			EntityData p1Dict = history
@@ -395,6 +396,7 @@ namespace SabberStoneCore.Model
 			{
 				_logging = true;
 				Logs = new Queue<LogEntry>();	// Logs are not cloned.
+				_eventStack.Logging = true;
 			}
 
 			if (history)

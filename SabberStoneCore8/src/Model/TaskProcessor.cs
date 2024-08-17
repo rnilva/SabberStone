@@ -255,13 +255,38 @@ namespace SabberStoneCore.Model
 	{
 		private readonly Stack<EventMetaData> _stack = new();
 
+		public bool Logging { get; set; }
+
 		public int Count => _stack.Count;
 
-		public void Push(EventMetaData eventMeta) => _stack.Push(eventMeta);
+		public void Push(EventMetaData eventMeta)
+		{
+			_stack.Push(eventMeta);
+
+			if (Logging)
+			{
+				string txt = $"Event Start: {eventMeta.EventSource}";
+				if (eventMeta.EventTarget != null)
+					txt += $" => {eventMeta.EventTarget}";
+				txt += $" ({eventMeta.EventNumber})";
+				eventMeta.EventSource.Game.Log(LogLevel.INFO, BlockType.ACTION, "EventStack", txt);
+			}
+		}
 
 		public void Push(Playable source, Playable? target, int number = 0) => Push(new EventMetaData(source, target, number));
 
-		public void Pop() => _stack.Pop();
+		public void Pop()
+		{
+			EventMetaData eventMeta = _stack.Pop();
+			if (Logging)
+			{
+				string txt = $"Event End: {eventMeta.EventSource}";
+				if (eventMeta.EventTarget != null)
+					txt += $" => {eventMeta.EventTarget}";
+				txt += $" ({eventMeta.EventNumber})";
+				eventMeta.EventSource.Game.Log(LogLevel.INFO, BlockType.ACTION, "EventStack", txt);
+			}
+		}
 
 		public EventMetaData Peek() => _stack.Peek();
 
