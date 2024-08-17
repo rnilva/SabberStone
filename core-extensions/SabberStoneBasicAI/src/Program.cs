@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using SabberStoneBasicAI.Agents;
 using SabberStoneCore.Config;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -35,13 +36,26 @@ namespace SabberStoneBasicAI
 
 			// TEST BASIC AI
 
-			OneTurn();
+			RandomMageExperts();
+
+			//OneTurn();
 			//FullGame();
 			//RandomGames();
 			//TestFullGames();
 
 			Console.WriteLine("Test end!");
 			Console.ReadLine();
+		}
+
+		public static void RandomMageExperts()
+		{
+			Deck deck = DeckSerializer.Deserialize("AAEBAf0EAA8MTXHDAZ4CuwKLA5UDvwOABLQE5gSgBewFuQYA");
+
+			RandomAgent agent1 = new(10), agent2 = new(20);
+
+			int[] result = Match.RunGames(agent1, agent2, deck, deck, 100);
+
+			Console.WriteLine($"P1 vs. P2 : {String.Join(" : ", result)}");
 		}
 
 		public static void RandomGames()

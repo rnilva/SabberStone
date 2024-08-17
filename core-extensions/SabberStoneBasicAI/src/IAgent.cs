@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using SabberStoneCore.Conditions;
 using SabberStoneCore.Model;
+using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks.PlayerTasks;
 using SabberStoneCore.Tasks.PlayerTasks.Lite;
 
-namespace SabberStoneBasicAI.Interface
+namespace SabberStoneBasicAI
 {
 	public interface IAgent
 	{
@@ -16,13 +17,13 @@ namespace SabberStoneBasicAI.Interface
 		/// The name of this agent.
 		/// </summary>
 		string Name { get; }
-		
+
 		/// <summary>
 		/// Calculate and return the best move with regard to the given game state.
 		/// </summary>
 		/// <param name="game">The game context.</param>
 		/// <returns>The action.</returns>
-		PlayerTaskLite GetAction(Game game);
+		PlayerTaskLite GetAction(Game game, Controller controller);
 
 		/// <summary>
 		/// This method will be called when a match is started.
