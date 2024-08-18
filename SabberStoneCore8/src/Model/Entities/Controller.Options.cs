@@ -227,6 +227,15 @@ namespace SabberStoneCore.Model.Entities
 
 			if (this != Game.CurrentPlayer || Game.Step != Step.MAIN_ACTION) return;
 
+			if (Choice != null)
+			{
+				if (Choice.ChoiceType != ChoiceType.GENERAL) return;
+
+				for (int i = 0; i < Choice.Choices.Count; ++i)
+					buffer.Add(PlayerTaskLite.Choose(i));
+				return;
+			}
+
 			// EndTurnTask
 			ref readonly PlayerTaskLite endTurnTask = ref PlayerTaskLite.EndTurnTask();
 			buffer.Add(in endTurnTask);

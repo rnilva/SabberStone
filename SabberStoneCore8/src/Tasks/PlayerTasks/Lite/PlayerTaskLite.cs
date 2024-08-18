@@ -84,6 +84,7 @@ namespace SabberStoneCore.Tasks.PlayerTasks.Lite
 			switch (Type)
 			{
 				case PlayerTaskType.CHOOSE:
+					sb.Append($"{Choice}");
 					break;
 				case PlayerTaskType.HERO_POWER:
 					if (TargetPosition >= 0)
@@ -124,6 +125,9 @@ namespace SabberStoneCore.Tasks.PlayerTasks.Lite
 
 		public static PlayerTaskLite HeroAttackTask(int targerPos, bool skipPrePhase = false)
 			=> new PlayerTaskLite(PlayerTaskType.HERO_ATTACK, 0, targerPos, -1, -1, skipPrePhase);
+
+		public static PlayerTaskLite Choose(int choiceIndex)
+			=> new(PlayerTaskType.CHOOSE, choiceIndex, 0, 0, 0, false);
 
 		public int Choice => SourcePosition;
 
