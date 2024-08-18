@@ -31,7 +31,7 @@ namespace SabberStoneBasicAI
 			bool SkipMulligan,
 			int? Seed,
 			string LogDir
-		) { }
+		);
 
 		public static int[] RunGames(IAgent agent1, IAgent agent2, Deck deck1, Deck deck2,
 			int count, Config config)
@@ -43,7 +43,7 @@ namespace SabberStoneBasicAI
 			(gameConfig.Player1HeroClass, gameConfig.Player1Deck) = deck1.ToCards();
 			(gameConfig.Player2HeroClass, gameConfig.Player2Deck) = deck2.ToCards();
 			gameConfig.SkipMulligan = config.SkipMulligan;
-			if (config.LogDir != null)
+			if (!String.IsNullOrEmpty(config.LogDir))
 			{
 				gameConfig.Logging = true;
 				if (!Directory.Exists(config.LogDir))
@@ -88,7 +88,7 @@ namespace SabberStoneBasicAI
 				if (winner >= 0)
 					++numWins[winner];
 
-				if (config.LogDir != null)
+				if (!String.IsNullOrEmpty(config.LogDir))
 				{
 					string filePath = Path.Join(config.LogDir, $"{i + 1}.txt");
 					using StreamWriter writer = File.CreateText(filePath);
