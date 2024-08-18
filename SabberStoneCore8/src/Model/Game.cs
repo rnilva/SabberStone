@@ -473,15 +473,47 @@ namespace SabberStoneCore.Model
 		}
 
 		/// <summary>
-		/// Gets the controller for the provided entityID.
+		/// Retrieves the controller associated with a given entity ID.
 		/// </summary>
-		/// <param name="entityID">The entityID.</param>
-		/// <returns></returns>
-		public Controller ControllerByEntityId(int entityID)
-		{
-			//return _players.First(p => p.Id == entityID);
-			return entityID == 2 ? Player1 : Player2;
-		}
+		/// <param name="entityId">
+		/// The ID of the entity for which to retrieve the controller. 
+		/// Valid entity IDs are 2 for Player1 and 3 for Player2.
+		/// </param>
+		/// <returns>
+		/// The <see cref="Controller"/> associated with the specified entity ID.
+		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// Thrown when <paramref name="entityId"/> is not 2 or 3.
+		/// </exception>
+		public Controller ControllerByEntityId(int entityId) =>
+			entityId switch
+			{
+				2 => Player1,
+				3 => Player2,
+				_ => throw new ArgumentOutOfRangeException(nameof(entityId),
+					"Entity Id of a controller must be 2 or 3.")
+			};
+
+		/// <summary>
+		/// Retrieves the controller associated with a given player ID.
+		/// </summary>
+		/// <param name="playerId">
+		/// The ID of the player for which to retrieve the controller. 
+		/// Valid player IDs are 1 for Player1 and 2 for Player2.
+		/// </param>
+		/// <returns>
+		/// The <see cref="Controller"/> associated with the specified player ID.
+		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// Thrown when <paramref name="playerId"/> is not 1 or 2.
+		/// </exception>
+		public Controller ControllerByPlayerId(int playerId) =>
+			playerId switch
+			{
+				1 => Player1,
+				2 => Player2,
+				_ => throw new ArgumentOutOfRangeException(nameof(playerId), "Player Id must be 1 or 2.")
+			};
 
 		/// <summary>Process the specified task.
 		/// The game will execute the desired task and all effects coupled either
