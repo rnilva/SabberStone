@@ -66,7 +66,13 @@ namespace SabberStoneBasicAI
 				Game game = new(gameConfig);
 				game.StartGame();
 
-				// TODO: Mullligan
+				if (!config.SkipMulligan)
+				{
+					for (int pid = 1; pid <= 2; pid++)
+						game.Process(agents[pid - 1].Mulligan(game, game.ControllerByPlayerId(pid)));
+
+					game.MainBegin(proceed: true);
+				}
 
 				// TODO: Timer
 

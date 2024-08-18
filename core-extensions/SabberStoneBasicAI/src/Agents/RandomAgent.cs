@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Tasks.PlayerTasks;
 using SabberStoneCore.Tasks.PlayerTasks.Lite;
 
 namespace SabberStoneBasicAI.Agents
@@ -20,6 +21,14 @@ namespace SabberStoneBasicAI.Agents
 		{
 			controller.Options(_optionBuffer);
 			return _optionBuffer.GetRandom(Rnd);
+		}
+
+		public ChooseTask Mulligan(Game game, Controller controller)
+		{
+			return Util.GetPowerSet(controller.Choice.Choices)
+				.Select(p => ChooseTask.Mulligan(controller, p.ToList()))
+				.ToArray()
+				.Choose(Rnd);
 		}
 
 		public void OnMatchStarted() { }

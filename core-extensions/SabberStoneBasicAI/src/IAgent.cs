@@ -22,8 +22,17 @@ namespace SabberStoneBasicAI
 		/// Calculate and return the best move with regard to the given game state.
 		/// </summary>
 		/// <param name="game">The game context.</param>
+		/// <param name="controller">The current player entity.</param>
 		/// <returns>The action.</returns>
 		PlayerTaskLite GetAction(Game game, Controller controller);
+
+		/// <summary>
+		/// The mulligan strategy of this agent.
+		/// </summary>
+		/// <param name="game"></param>
+		/// <param name="controller"></param>
+		/// <returns></returns>
+		ChooseTask Mulligan(Game game, Controller controller);
 
 		/// <summary>
 		/// This method will be called when a match is started.

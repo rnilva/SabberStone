@@ -55,9 +55,9 @@ namespace SabberStoneBasicAI
 
 			Match.Config matchConfig = new()
 			{
-				SkipMulligan = true,
+				SkipMulligan = false,
 				Seed = 27,
-				LogDir = null,
+				LogDir = "test_logs",
 			};
 
 			int[] result = Match.RunGames(agent1, agent2, deck, deck, 100, matchConfig);
