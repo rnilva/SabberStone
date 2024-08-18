@@ -53,7 +53,14 @@ namespace SabberStoneBasicAI
 
 			RandomAgent agent1 = new(10), agent2 = new(20);
 
-			int[] result = Match.RunGames(agent1, agent2, deck, deck, 100);
+			Match.Config matchConfig = new()
+			{
+				SkipMulligan = true,
+				Seed = 27,
+				LogDir = null,
+			};
+
+			int[] result = Match.RunGames(agent1, agent2, deck, deck, 100, matchConfig);
 
 			Console.WriteLine($"P1 vs. P2 : {String.Join(" : ", result)}");
 		}

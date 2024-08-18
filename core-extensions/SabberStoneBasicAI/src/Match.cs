@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks.PlayerTasks.Lite;
+using static SabberStoneBasicAI.Match;
 
 namespace SabberStoneBasicAI
 {
@@ -25,43 +27,44 @@ namespace SabberStoneBasicAI
 			return (heroClass, cards);
 		}
 
+		public readonly record struct Config(
+			bool SkipMulligan,
+			int? Seed,
+			string LogDir
+		) { }
 
 		public static int[] RunGames(IAgent agent1, IAgent agent2, Deck deck1, Deck deck2,
-			int count, bool skipMulligan = true, long? seed = null)
+			int count, Config config)
 		{
-			int[] numWins = [0, 0];
+			Random seedGenerator = new(config.Seed ?? Guid.NewGuid().GetHashCode());
 
-			(CardClass, List<Card>) config1 = deck1.ToCards();
-			(CardClass, List<Card>) config2 = deck2.ToCards();
+			// Set up the game configuration.
+			GameConfig gameConfig = new();
+			(gameConfig.Player1HeroClass, gameConfig.Player1Deck) = deck1.ToCards();
+			(gameConfig.Player2HeroClass, gameConfig.Player2Deck) = deck2.ToCards();
+			gameConfig.SkipMulligan = config.SkipMulligan;
+			if (config.LogDir != null)
+			{
+				gameConfig.Logging = true;
+				if (!Directory.Exists(config.LogDir))
+					Directory.CreateDirectory(config.LogDir);
+			}
 
+			// Initialise agents.
 			IAgent[] agents = [agent1, agent2];
 			foreach (IAgent agent in agents)
 				agent.OnMatchStarted();
 
+			int[] numWins = [0, 0];
 			for (int i = 0; i < count; i++)
 			{
+				gameConfig.RandomSeed = seedGenerator.Next();
+
 				foreach (IAgent agent in agents)
 					agent.OnGameStarted();
 
-				GameConfig config = new()
-				{
-					StartPlayer = -1,
-					Player1HeroClass = config1.Item1,
-					Player1Deck = config1.Item2,
-					Player2HeroClass = config2.Item1,
-					Player2Deck = config2.Item2,
-
-					Logging = false,
-					History = false,
-					FillDecks = false,
-					Shuffle = true,
-					SkipMulligan = skipMulligan,
-					RandomSeed = seed ?? Guid.NewGuid().GetHashCode()
-				};
-
-				Game game = new(config);
+				Game game = new(gameConfig);
 				game.StartGame();
-
 
 				// TODO: Mullligan
 
@@ -84,6 +87,14 @@ namespace SabberStoneBasicAI
 					game.Player2.PlayState == PlayState.WON ? 1 : -1;
 				if (winner >= 0)
 					++numWins[winner];
+
+				if (config.LogDir != null)
+				{
+					string filePath = Path.Join(config.LogDir, $"{i + 1}.txt");
+					using StreamWriter writer = File.CreateText(filePath);
+					foreach (LogEntry item in game.Logs.Where(l => l.Level <= LogLevel.INFO))
+						writer.WriteLine(item.ToString());
+				}
 			}
 
 			return numWins;
