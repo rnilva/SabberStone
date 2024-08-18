@@ -477,7 +477,7 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		/// <param name="entityID">The entityID.</param>
 		/// <returns></returns>
-		public Controller ControllerById(int entityID)
+		public Controller ControllerByEntityId(int entityID)
 		{
 			//return _players.First(p => p.Id == entityID);
 			return entityID == 2 ? Player1 : Player2;
@@ -508,7 +508,7 @@ namespace SabberStoneCore.Model
 			if (gameTask.Game != this)
 			{
 				gameTask.Game = this;
-				gameTask.Controller = ControllerById(gameTask.Controller.Id);
+				gameTask.Controller = ControllerByEntityId(gameTask.Controller.Id);
 				if (gameTask.HasSource)
 					gameTask.Source = IdEntityDic[gameTask.Source.Id];
 				if (gameTask.HasTarget)

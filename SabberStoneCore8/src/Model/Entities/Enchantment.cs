@@ -46,7 +46,7 @@ namespace SabberStoneCore.Model.Entities
 			//Target = e.Target is Playable ? (Entity) Game.IdEntityDic[e.Target.Id] : c;
 			Target = e.Target is Playable
 				? (Entity) Game.IdEntityDic[e.Target.Id]
-				: Game.ControllerById(e.Target.Id);
+				: Game.ControllerByEntityId(e.Target.Id);
 			Target.AppliedEnchantments?.Add(this);
 			//_controllerId = e._controllerId;
 			_isOneTurnActive = e._isOneTurnActive;
@@ -255,7 +255,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public Enchantment Clone(Game game)
 		{
-			return new Enchantment(game.ControllerById(Controller.Id), this);
+			return new Enchantment(game.ControllerByEntityId(Controller.Id), this);
 		}
 
 		public override int this[GameTag t]

@@ -62,14 +62,14 @@ namespace SabberStoneBasicAI.Nodes
 		public void Switch()
 		{
 			_isOpponentTurn = !_isOpponentTurn;
-			_playerId = _game.ControllerById(_playerId).Opponent.Id;
+			_playerId = _game.ControllerByEntityId(_playerId).Opponent.Id;
 		}
 
 		public void Execute()
 		{
 			_game.Process(PlayerTask);
 
-			Controller controller = _game.ControllerById(_playerId);
+			Controller controller = _game.ControllerByEntityId(_playerId);
 
 			_gameState = _game.State == State.RUNNING ? 0 : 1;
 
@@ -94,7 +94,7 @@ namespace SabberStoneBasicAI.Nodes
 
 		public void Options(ref Dictionary<string, OptionNode> optionNodes)
 		{
-			List<PlayerTask> options = _game.ControllerById(_playerId).Options(/*!_isOpponentTurn*/);
+			List<PlayerTask> options = _game.ControllerByEntityId(_playerId).Options(/*!_isOpponentTurn*/);
 
 			foreach (PlayerTask option in options)
 			{
