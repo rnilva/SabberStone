@@ -760,6 +760,15 @@ namespace SabberStoneCore.Model
 			//FirstPlayer.NumCardsToDraw = 3;
 			//FirstPlayer.Opponent.NumCardsToDraw = 4;
 
+			Draw(Player1);
+			Draw(Player2);
+
+			Player1.TimeOut = 75;
+			Player2.TimeOut = 75;
+
+			NextStep = _gameConfig.SkipMulligan ? Step.MAIN_BEGIN : Step.BEGIN_MULLIGAN;
+			return;
+
 			void Draw(Controller p)
 			{
 				// quest draw if there is
@@ -774,37 +783,14 @@ namespace SabberStoneCore.Model
 					k++;
 				}
 
-
 				if (p != FirstPlayer)
 				{
 					// 4th card for second player
 					Generic.Draw(p);
-
-					Playable coin = FromCard(FirstPlayer.Opponent, Cards.FromId("GAME_005")
-						//,new EntityData
-						//{
-						//	[GameTag.ZONE] = (int)Enums.Zone.HAND,
-						//	[GameTag.CARDTYPE] = (int)CardType.SPELL,
-						//	[GameTag.CREATOR] = FirstPlayer.Opponent.PlayerId
-						//}
-					);
-					Generic.AddHandPhase(FirstPlayer.Opponent, coin);
 				}
 
 				p.NumTurnsLeft = 1;
 			}
-
-			Draw(Player1);
-			Draw(Player2);
-
-			Player1.TimeOut = 75;
-			Player2.TimeOut = 75;
-
-			// ending mulligan draw block
-			if (History)
-				PowerHistory.Add(PowerHistoryBuilder.BlockEnd());
-
-			NextStep = _gameConfig.SkipMulligan ? Step.MAIN_BEGIN : Step.BEGIN_MULLIGAN;
 		}
 
 		/// <summary>
@@ -839,7 +825,15 @@ namespace SabberStoneCore.Model
 			Log(LogLevel.VERBOSE, BlockType.PLAY, "Game", !Logging ? "" : $"Main Begin.");
 
 			// and a coin
-			//Generic.DrawCard(FirstPlayer.Opponent, Cards.FromId("GAME_005"));
+			Playable coin = FromCard(FirstPlayer.Opponent, Cards.FromId("GAME_005")
+				//,new EntityData
+				//{
+				//	[GameTag.ZONE] = (int)Enums.Zone.HAND,
+				//	[GameTag.CARDTYPE] = (int)CardType.SPELL,
+				//	[GameTag.CREATOR] = FirstPlayer.Opponent.PlayerId
+				//}
+			);
+			Generic.AddHandPhase(FirstPlayer.Opponent, coin);
 
 			ProcessTasks();
 
