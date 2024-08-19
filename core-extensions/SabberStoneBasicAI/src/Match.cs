@@ -5,14 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-//using HearthDb.Deckstrings;
 
 using SabberStoneCore.Config;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks.PlayerTasks.Lite;
-using static SabberStoneBasicAI.Match;
 
 namespace SabberStoneBasicAI
 {
