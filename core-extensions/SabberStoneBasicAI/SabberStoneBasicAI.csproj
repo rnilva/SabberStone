@@ -2,8 +2,14 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Exe</OutputType>
+    <PyPath>$(ProjectDir)../../pysabberstone-pythonnet/pysabberstone/lib</PyPath>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SabberStoneCore8\SabberStoneCore.csproj" />
   </ItemGroup>
+
+  <Target Name="CopyDLLToPy" AfterTargets="Build" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PyPath)" />
+	</Target>
+
 </Project>

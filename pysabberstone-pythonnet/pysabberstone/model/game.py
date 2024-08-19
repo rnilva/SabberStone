@@ -1,17 +1,18 @@
 ﻿from dataclasses import dataclass
-from enum import IntEnum
-from re import A
-from typing import Literal
+from typing import Literal, Generator
 
-import pysabberstone.core
 import pysabberstone.utils as utils
+from pysabberstone.model.enums import LogLevel
 from pysabberstone.model.player import Player
 from pysabberstone.model.player_task import PlayerTask
 from pysabberstone.py_types import Deck, CardClass
 
+import pysabberstone.core
+from System.Collections.Generic import List as _List
 from SabberStoneCore.Config import GameConfig as _GameConfig
 from SabberStoneCore.Enums import State as _State
 from SabberStoneCore.Model import Game as _Game
+from SabberStoneCore.Tasks.PlayerTasks import ChooseTask as _ChooseTask
 from SabberStoneCore.Tasks.PlayerTasks.Lite import (
     PlayerTaskLiteContainer as _OptionBuffer,
 )
@@ -21,10 +22,16 @@ from SabberStoneCore.Tasks.PlayerTasks.Lite import (
 class GameConfig:
     start_player: Literal[-1, 1, 2] = -1
     """The index of the starting player. This value is 1-based and -1 means random."""
+    skip_mulligan: bool = False
+    """Skip the Mulligan phase."""
+    logging: bool = False
+    """Generate logs."""
 
     def _to_core_config(self):
         c = _GameConfig()
         c.StartPlayer = self.start_player
+        c.SkipMulligan = self.skip_mulligan
+        c.Logging = self.logging
         return c
 
 
@@ -57,8 +64,23 @@ class Game:
         _player_task = player_task._to_core_type()
         self._game.Process(_player_task)
 
+    def send_mulligan(self, player_id: int, choices: list[int]):
+        _choices = _List[int]()
+        for i in choices:
+            _choices.Add(i)
+        _task = _ChooseTask.Mulligan(self._game.ControllerByPlayerId(player_id))
+        self._game.Process(_task)
+
     def done(self):
         return self._game.State == _State.COMPLETE
+
+    def get_log_entries(
+        self, loglevel: LogLevel = LogLevel.INFO
+    ) -> Generator[str, None, None]:
+        _log_entries = self._game.Logs
+        for _item in _log_entries:
+            if int(_item.Level) <= loglevel.value:
+                yield _item.ToString()
 
 
 if __name__ == "__main__":

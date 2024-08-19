@@ -49,3 +49,12 @@ class PlayState(IntEnum):
     TIED = 6
     DISCONNECTED = 7
     CONCEDED = 8
+
+
+class LogLevel(IntEnum):
+    DUMP = 0
+    ERROR = 1
+    WARNING = 2
+    INFO = 3
+    VERBOSE = 4
+    DEBUG = 5
