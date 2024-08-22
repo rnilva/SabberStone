@@ -32,7 +32,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_NEW1_008", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_NEW1_008] Ancient of Lore && Test: Ancient of Lore_VAN_NEW1_008
 				// PowerTask = null,
@@ -107,16 +107,13 @@ namespace SabberStoneCore.CardSets.Classic
 			// - CHOOSE_ONE = 1
 			// - 858 = 601
 			// --------------------------------------------------------
-			// PlayReq:
-			// - REQ_TARGET_IF_AVAILABLE = 0
-			// --------------------------------------------------------
 			// RefTag:
 			// - SILENCE = 1
 			// --------------------------------------------------------
 			cards.Add("VAN_EX1_166", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_166] Keeper of the Grove && Test: Keeper of the Grove_VAN_EX1_166
 				// PowerTask = null,
@@ -159,7 +156,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_154] Wrath && Test: Wrath_VAN_EX1_154
 				// PowerTask = null,
@@ -177,7 +174,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_007", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_007] Healing Touch && Test: Healing Touch_VAN_CS2_007
 				// PowerTask = null,
@@ -195,7 +192,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_008", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_008] Moonfire && Test: Moonfire_VAN_CS2_008
 				// PowerTask = null,
@@ -234,7 +231,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_571", new(
 			playReq: new(){
 				{PlayReq.REQ_NUM_MINION_SLOTS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_571] Force of Nature && Test: Force of Nature_VAN_EX1_571
 				// PowerTask = null,
@@ -338,7 +335,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_173", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_173] Starfire && Test: Starfire_VAN_EX1_173
 				// PowerTask = null,
@@ -361,7 +358,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_009] Mark of the Wild && Test: Mark of the Wild_VAN_CS2_009
 				// PowerTask = null,
@@ -384,7 +381,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_155] Mark of Nature && Test: Mark of Nature_VAN_EX1_155
 				// PowerTask = null,
@@ -403,7 +400,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_ENEMY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_012] Swipe && Test: Swipe_VAN_CS2_012
 				// PowerTask = null,
@@ -441,7 +438,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_NEW1_007] Starfall && Test: Starfall_VAN_NEW1_007
 				// PowerTask = null,
@@ -461,7 +458,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_578] Savagery && Test: Savagery_VAN_EX1_578
 				// PowerTask = null,
@@ -497,7 +494,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_161] Naturalize && Test: Naturalize_VAN_EX1_161
 				// PowerTask = null,
@@ -558,7 +555,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
 				{PlayReq.REQ_TARGET_WITH_RACE, 20},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_DS1_070] Houndmaster && Test: Houndmaster_VAN_DS1_070
 				// PowerTask = null,
@@ -650,7 +647,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_539", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_539] Kill Command && Test: Kill Command_VAN_EX1_539
 				// PowerTask = null,
@@ -669,7 +666,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_084] Hunter's Mark && Test: Hunter's Mark_VAN_CS2_084
 				// PowerTask = null,
@@ -721,7 +718,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_537] Explosive Shot && Test: Explosive Shot_VAN_EX1_537
 				// PowerTask = null,
@@ -739,7 +736,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_DS1_185", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_DS1_185] Arcane Shot && Test: Arcane Shot_VAN_DS1_185
 				// PowerTask = null,
@@ -817,7 +814,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_TARGET_WITH_RACE, 20},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_549] Bestial Wrath && Test: Bestial Wrath_VAN_EX1_549
 				// PowerTask = null,
@@ -857,7 +854,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_MINIMUM_ENEMY_MINIONS, 1},
 				{PlayReq.REQ_NUM_MINION_SLOTS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_538] Unleash the Hounds && Test: Unleash the Hounds_VAN_EX1_538
 				// PowerTask = null,
@@ -869,14 +866,16 @@ namespace SabberStoneCore.CardSets.Classic
 			// --------------------------------------------------------
 			// Text: Summon a random Beast Companion.
 			// --------------------------------------------------------
+			// Entourage: NEW1_032, NEW1_033, NEW1_034
+			// --------------------------------------------------------
 			// GameTag:
 			// - 858 = 437
 			// --------------------------------------------------------
 			cards.Add("VAN_NEW1_031", new(
-			entourage: ["NEW1_032","NEW1_033","NEW1_034",],
+			entourage: ["NEW1_032","NEW1_033","NEW1_034",], 
 			playReq: new(){
 				{PlayReq.REQ_NUM_MINION_SLOTS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_NEW1_031] Animal Companion && Test: Animal Companion_VAN_NEW1_031
 				// PowerTask = null,
@@ -911,7 +910,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_617", new(
 			playReq: new(){
 				{PlayReq.REQ_MINIMUM_ENEMY_MINIONS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_617] Deadly Shot && Test: Deadly Shot_VAN_EX1_617
 				// PowerTask = null,
@@ -929,7 +928,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_DS1_183", new(
 			playReq: new(){
 				{PlayReq.REQ_MINIMUM_ENEMY_MINIONS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_DS1_183] Multi-Shot && Test: Multi-Shot_VAN_DS1_183
 				// PowerTask = null,
@@ -1133,7 +1132,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_024", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_024] Frostbolt && Test: Frostbolt_VAN_CS2_024
 				// PowerTask = null,
@@ -1225,7 +1224,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_027", new(
 			playReq: new(){
 				{PlayReq.REQ_NUM_MINION_SLOTS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_027] Mirror Image && Test: Mirror Image_VAN_CS2_027
 				// PowerTask = null,
@@ -1244,7 +1243,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_031", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_031] Ice Lance && Test: Ice Lance_VAN_CS2_031
 				// PowerTask = null,
@@ -1265,7 +1264,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_022] Polymorph && Test: Polymorph_VAN_CS2_022
 				// PowerTask = null,
@@ -1319,7 +1318,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_279", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_279] Pyroblast && Test: Pyroblast_VAN_EX1_279
 				// PowerTask = null,
@@ -1339,7 +1338,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_275] Cone of Cold && Test: Cone of Cold_VAN_EX1_275
 				// PowerTask = null,
@@ -1391,7 +1390,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_029", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_029] Fireball && Test: Fireball_VAN_CS2_029
 				// PowerTask = null,
@@ -1456,7 +1455,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_ENEMY_TARGET, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_382] Aldor Peacekeeper && Test: Aldor Peacekeeper_VAN_EX1_382
 				// PowerTask = null,
@@ -1481,7 +1480,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
 				{PlayReq.REQ_NONSELF_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_362] Argent Protector && Test: Argent Protector_VAN_EX1_362
 				// PowerTask = null,
@@ -1538,7 +1537,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_360] Humility && Test: Humility_VAN_EX1_360
 				// PowerTask = null,
@@ -1557,7 +1556,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_092] Blessing of Kings && Test: Blessing of Kings_VAN_CS2_092
 				// PowerTask = null,
@@ -1579,7 +1578,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_371] Hand of Protection && Test: Hand of Protection_VAN_EX1_371
 				// PowerTask = null,
@@ -1598,7 +1597,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_365", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_365] Holy Wrath && Test: Holy Wrath_VAN_EX1_365
 				// PowerTask = null,
@@ -1616,7 +1615,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_354", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_354] Lay on Hands && Test: Lay on Hands_VAN_EX1_354
 				// PowerTask = null,
@@ -1670,7 +1669,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_355] Blessed Champion && Test: Blessed Champion_VAN_EX1_355
 				// PowerTask = null,
@@ -1689,7 +1688,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_094", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_094] Hammer of Wrath && Test: Hammer of Wrath_VAN_CS2_094
 				// PowerTask = null,
@@ -1806,7 +1805,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_089", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_089] Holy Light && Test: Holy Light_VAN_CS2_089
 				// PowerTask = null,
@@ -1825,7 +1824,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_363] Blessing of Wisdom && Test: Blessing of Wisdom_VAN_EX1_363
 				// PowerTask = null,
@@ -1844,7 +1843,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_087] Blessing of Might && Test: Blessing of Might_VAN_CS2_087
 				// PowerTask = null,
@@ -1967,7 +1966,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_623] Temple Enforcer && Test: Temple Enforcer_VAN_EX1_623
 				// PowerTask = null,
@@ -2005,7 +2004,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_MAX_ATTACK, 2},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_ENEMY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_091] Cabal Shadow Priest && Test: Cabal Shadow Priest_VAN_EX1_091
 				// PowerTask = null,
@@ -2055,7 +2054,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS1_130", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS1_130] Holy Smite && Test: Holy Smite_VAN_CS1_130
 				// PowerTask = null,
@@ -2073,7 +2072,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_624", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_624] Holy Fire && Test: Holy Fire_VAN_EX1_624
 				// PowerTask = null,
@@ -2093,7 +2092,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_TARGET_MIN_ATTACK, 5},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_622] Shadow Word: Death && Test: Shadow Word: Death_VAN_EX1_622
 				// PowerTask = null,
@@ -2115,7 +2114,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_ENEMY_TARGET, 0},
 				{PlayReq.REQ_NUM_MINION_SLOTS, 1},
 				{PlayReq.REQ_TARGET_MAX_ATTACK, 3},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_334] Shadow Madness && Test: Shadow Madness_VAN_EX1_334
 				// PowerTask = null,
@@ -2199,7 +2198,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_236] Divine Spirit && Test: Divine Spirit_VAN_CS2_236
 				// PowerTask = null,
@@ -2220,7 +2219,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_ENEMY_TARGET, 0},
 				{PlayReq.REQ_NUM_MINION_SLOTS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS1_113] Mind Control && Test: Mind Control_VAN_CS1_113
 				// PowerTask = null,
@@ -2239,7 +2238,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS1_129] Inner Fire && Test: Inner Fire_VAN_CS1_129
 				// PowerTask = null,
@@ -2259,7 +2258,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_345", new(
 			playReq: new(){
 				{PlayReq.REQ_NUM_MINION_SLOTS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_345] Mindgames && Test: Mindgames_VAN_EX1_345
 				// PowerTask = null,
@@ -2279,7 +2278,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_332] Silence && Test: Silence_VAN_EX1_332
 				// PowerTask = null,
@@ -2299,7 +2298,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_TARGET_MAX_ATTACK, 3},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_234] Shadow Word: Pain && Test: Shadow Word: Pain_VAN_CS2_234
 				// PowerTask = null,
@@ -2319,7 +2318,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_004] Power Word: Shield && Test: Power Word: Shield_VAN_CS2_004
 				// PowerTask = null,
@@ -2399,7 +2398,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_NONSELF_TARGET, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_NEW1_014] Master of Disguise && Test: Master of Disguise_VAN_NEW1_014
 				// PowerTask = null,
@@ -2455,7 +2454,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_FOR_COMBO, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_NEW1_005] Kidnapper && Test: Kidnapper_VAN_NEW1_005
 				// PowerTask = null,
@@ -2474,7 +2473,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_134", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_FOR_COMBO, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_134] SI:7 Agent && Test: SI:7 Agent_VAN_EX1_134
 				// PowerTask = null,
@@ -2509,7 +2508,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_278", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_278] Shiv && Test: Shiv_VAN_EX1_278
 				// PowerTask = null,
@@ -2545,7 +2544,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_144] Shadowstep && Test: Shadowstep_VAN_EX1_144
 				// PowerTask = null,
@@ -2565,7 +2564,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_ENEMY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_581] Sap && Test: Sap_VAN_EX1_581
 				// PowerTask = null,
@@ -2601,7 +2600,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_124", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_124] Eviscerate && Test: Eviscerate_VAN_EX1_124
 				// PowerTask = null,
@@ -2619,7 +2618,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_074", new(
 			playReq: new(){
 				{PlayReq.REQ_WEAPON_EQUIPPED, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_074] Deadly Poison && Test: Deadly Poison_VAN_CS2_074
 				// PowerTask = null,
@@ -2639,7 +2638,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_ENEMY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_126] Betrayal && Test: Betrayal_VAN_EX1_126
 				// PowerTask = null,
@@ -2675,7 +2674,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_UNDAMAGED_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_072] Backstab && Test: Backstab_VAN_CS2_072
 				// PowerTask = null,
@@ -2694,7 +2693,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_233", new(
 			playReq: new(){
 				{PlayReq.REQ_WEAPON_EQUIPPED, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_233] Blade Flurry && Test: Blade Flurry_VAN_CS2_233
 				// PowerTask = null,
@@ -2714,7 +2713,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_073] Cold Blood && Test: Cold Blood_VAN_CS2_073
 				// PowerTask = null,
@@ -2750,7 +2749,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_ENEMY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_076] Assassinate && Test: Assassinate_VAN_CS2_076
 				// PowerTask = null,
@@ -2821,7 +2820,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_133", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_133] Perdition's Blade && Test: Perdition's Blade_VAN_EX1_133
 				// PowerTask = null,
@@ -2860,7 +2859,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_042", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_042] Fire Elemental && Test: Fire Elemental_VAN_CS2_042
 				// PowerTask = null,
@@ -2941,7 +2940,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_587] Windspeaker && Test: Windspeaker_VAN_EX1_587
 				// PowerTask = null,
@@ -3014,7 +3013,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_245] Earth Shock && Test: Earth Shock_VAN_EX1_245
 				// PowerTask = null,
@@ -3050,7 +3049,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_ENEMY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_037] Frost Shock && Test: Frost Shock_VAN_CS2_037
 				// PowerTask = null,
@@ -3069,7 +3068,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_241", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_241] Lava Burst && Test: Lava Burst_VAN_EX1_241
 				// PowerTask = null,
@@ -3088,7 +3087,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_238", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_238] Lightning Bolt && Test: Lightning Bolt_VAN_EX1_238
 				// PowerTask = null,
@@ -3110,7 +3109,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_038] Ancestral Spirit && Test: Ancestral Spirit_VAN_CS2_038
 				// PowerTask = null,
@@ -3133,7 +3132,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_246] Hex && Test: Hex_VAN_EX1_246
 				// PowerTask = null,
@@ -3155,7 +3154,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_039] Windfury && Test: Windfury_VAN_CS2_039
 				// PowerTask = null,
@@ -3178,7 +3177,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_248", new(
 			playReq: new(){
 				{PlayReq.REQ_NUM_MINION_SLOTS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_248] Feral Spirit && Test: Feral Spirit_VAN_EX1_248
 				// PowerTask = null,
@@ -3202,7 +3201,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_041] Ancestral Healing && Test: Ancestral Healing_VAN_CS2_041
 				// PowerTask = null,
@@ -3221,7 +3220,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_251", new(
 			playReq: new(){
 				{PlayReq.REQ_MINIMUM_ENEMY_MINIONS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_251] Forked Lightning && Test: Forked Lightning_VAN_EX1_251
 				// PowerTask = null,
@@ -3240,7 +3239,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_045] Rockbiter Weapon && Test: Rockbiter Weapon_VAN_CS2_045
 				// PowerTask = null,
@@ -3551,7 +3550,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_302] Mortal Coil && Test: Mortal Coil_VAN_EX1_302
 				// PowerTask = null,
@@ -3571,7 +3570,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_057] Shadow Bolt && Test: Shadow Bolt_VAN_CS2_057
 				// PowerTask = null,
@@ -3591,7 +3590,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_316] Power Overwhelming && Test: Power Overwhelming_VAN_EX1_316
 				// PowerTask = null,
@@ -3610,7 +3609,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_TARGET_WITH_RACE, 15},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_NEW1_003] Sacrificial Pact && Test: Sacrificial Pact_VAN_NEW1_003
 				// PowerTask = null,
@@ -3645,7 +3644,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_596] Demonfire && Test: Demonfire_VAN_EX1_596
 				// PowerTask = null,
@@ -3663,7 +3662,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_061", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_061] Drain Life && Test: Drain Life_VAN_CS2_061
 				// PowerTask = null,
@@ -3683,7 +3682,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_ENEMY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_063] Corruption && Test: Corruption_VAN_CS2_063
 				// PowerTask = null,
@@ -3720,7 +3719,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_303] Shadowflame && Test: Shadowflame_VAN_EX1_303
 				// PowerTask = null,
@@ -3740,7 +3739,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_308", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_308] Soulfire && Test: Soulfire_VAN_EX1_308
 				// PowerTask = null,
@@ -3758,7 +3757,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_320", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_320] Bane of Doom && Test: Bane of Doom_VAN_EX1_320
 				// PowerTask = null,
@@ -3777,7 +3776,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_309] Siphon Soul && Test: Siphon Soul_VAN_EX1_309
 				// PowerTask = null,
@@ -3802,7 +3801,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_NONSELF_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_603] Cruel Taskmaster && Test: Cruel Taskmaster_VAN_EX1_603
 				// PowerTask = null,
@@ -3929,7 +3928,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_407", new(
 			playReq: new(){
 				{PlayReq.REQ_MINIMUM_TOTAL_MINIONS, 2},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_407] Brawl && Test: Brawl_VAN_EX1_407
 				// PowerTask = null,
@@ -3948,7 +3947,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_391] Slam && Test: Slam_VAN_EX1_391
 				// PowerTask = null,
@@ -3984,7 +3983,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_607] Inner Rage && Test: Inner Rage_VAN_EX1_607
 				// PowerTask = null,
@@ -4004,7 +4003,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_114", new(
 			playReq: new(){
 				{PlayReq.REQ_MINIMUM_ENEMY_MINIONS, 1},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_114] Cleave && Test: Cleave_VAN_CS2_114
 				// PowerTask = null,
@@ -4022,7 +4021,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_408", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_408] Mortal Strike && Test: Mortal Strike_VAN_EX1_408
 				// PowerTask = null,
@@ -4061,7 +4060,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_103] Charge && Test: Charge_VAN_CS2_103
 				// PowerTask = null,
@@ -4079,7 +4078,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_392", new(
 			playReq: new(){
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_392] Battle Rage && Test: Battle Rage_VAN_EX1_392
 				// PowerTask = null,
@@ -4099,7 +4098,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_410] Shield Slam && Test: Shield Slam_VAN_EX1_410
 				// PowerTask = null,
@@ -4119,7 +4118,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_DAMAGED_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_104] Rampage && Test: Rampage_VAN_CS2_104
 				// PowerTask = null,
@@ -4156,7 +4155,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_ENEMY_TARGET, 0},
 				{PlayReq.REQ_DAMAGED_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_108] Execute && Test: Execute_VAN_CS2_108
 				// PowerTask = null,
@@ -4260,7 +4259,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_046] Dark Iron Dwarf && Test: Dark Iron Dwarf_VAN_EX1_046
 				// PowerTask = null,
@@ -4303,7 +4302,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_MUST_TARGET_TAUNTER, 0},
 				{PlayReq.REQ_ENEMY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_002] The Black Knight && Test: The Black Knight_VAN_EX1_002
 				// PowerTask = null,
@@ -4390,7 +4389,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_TARGET_WITH_RACE, 14},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_NEW1_017] Hungry Crab && Test: Hungry Crab_VAN_NEW1_017
 				// PowerTask = null,
@@ -4534,12 +4533,14 @@ namespace SabberStoneCore.CardSets.Classic
 			// --------------------------------------------------------
 			// Text: At the end of your turn, add_a Dream Card to_your hand.
 			// --------------------------------------------------------
+			// Entourage: DREAM_01, DREAM_02, DREAM_03, DREAM_04, DREAM_05
+			// --------------------------------------------------------
 			// GameTag:
 			// - ELITE = 1
 			// - 858 = 1186
 			// --------------------------------------------------------
 			cards.Add("VAN_EX1_572", new(
-			entourage: ["DREAM_01","DREAM_02","DREAM_03","DREAM_04","DREAM_05",],new Power
+			entourage: ["DREAM_01","DREAM_02","DREAM_03","DREAM_04","DREAM_05",], new Power
 			{
 				// TODO: [VAN_EX1_572] Ysera && Test: Ysera_VAN_EX1_572
 				// PowerTask = null,
@@ -4578,7 +4579,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_188] Abusive Sergeant && Test: Abusive Sergeant_VAN_CS2_188
 				// PowerTask = null,
@@ -4647,7 +4648,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_117", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_117] Earthen Ring Farseer && Test: Earthen Ring Farseer_VAN_CS2_117
 				// PowerTask = null,
@@ -4796,7 +4797,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_059] Crazed Alchemist && Test: Crazed Alchemist_VAN_EX1_059
 				// PowerTask = null,
@@ -4933,7 +4934,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_NONSELF_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_150] Stormpike Commando && Test: Stormpike Commando_VAN_CS2_150
 				// PowerTask = null,
@@ -4971,7 +4972,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_HERO_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_561] Alexstrasza && Test: Alexstrasza_VAN_EX1_561
 				// PowerTask = null,
@@ -5092,7 +5093,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_011", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_011] Voodoo Doctor && Test: Voodoo Doctor_VAN_EX1_011
 				// PowerTask = null,
@@ -5212,7 +5213,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_NONSELF_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_048] Spellbreaker && Test: Spellbreaker_VAN_EX1_048
 				// PowerTask = null,
@@ -5317,7 +5318,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_NONSELF_TARGET, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_049] Youthful Brewmaster && Test: Youthful Brewmaster_VAN_EX1_049
 				// PowerTask = null,
@@ -5414,7 +5415,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_NONSELF_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_564] Faceless Manipulator && Test: Faceless Manipulator_VAN_EX1_564
 				// PowerTask = null,
@@ -5493,7 +5494,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_203] Ironbeak Owl && Test: Ironbeak Owl_VAN_CS2_203
 				// PowerTask = null,
@@ -5515,7 +5516,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
 				{PlayReq.REQ_NONSELF_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_057] Ancient Brewmaster && Test: Ancient Brewmaster_VAN_EX1_057
 				// PowerTask = null,
@@ -5890,7 +5891,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_019] Shattered Sun Cleric && Test: Shattered Sun Cleric_VAN_EX1_019
 				// PowerTask = null,
@@ -6001,7 +6002,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_MINION_TARGET, 0},
 				{PlayReq.REQ_TARGET_MIN_ATTACK, 7},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_005] Big Game Hunter && Test: Big Game Hunter_VAN_EX1_005
 				// PowerTask = null,
@@ -6029,13 +6030,15 @@ namespace SabberStoneCore.CardSets.Classic
 			// --------------------------------------------------------
 			// Text: <b>Battlecry:</b> Give both players the power to ROCK! (with a Power Chord card)
 			// --------------------------------------------------------
+			// Entourage: PRO_001a, PRO_001b, PRO_001c
+			// --------------------------------------------------------
 			// GameTag:
 			// - ELITE = 1
 			// - BATTLECRY = 1
 			// - 858 = 1754
 			// --------------------------------------------------------
 			cards.Add("VAN_PRO_001", new(
-			entourage: ["PRO_001a","PRO_001b","PRO_001c",],new Power
+			entourage: ["PRO_001a","PRO_001b","PRO_001c",], new Power
 			{
 				// TODO: [VAN_PRO_001] Elite Tauren Chieftain && Test: Elite Tauren Chieftain_VAN_PRO_001
 				// PowerTask = null,
@@ -6157,7 +6160,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_283", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_EX1_283] Frost Elemental && Test: Frost Elemental_VAN_EX1_283
 				// PowerTask = null,
@@ -6369,7 +6372,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_NONSELF_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_189] Elven Archer && Test: Elven Archer_VAN_CS2_189
 				// PowerTask = null,
@@ -6685,13 +6688,15 @@ namespace SabberStoneCore.CardSets.Classic
 			// --------------------------------------------------------
 			// Text: <b>Battlecry:</b> Summon an AWESOME invention.
 			// --------------------------------------------------------
+			// Entourage: Mekka1, Mekka2, Mekka3, Mekka4
+			// --------------------------------------------------------
 			// GameTag:
 			// - ELITE = 1
 			// - BATTLECRY = 1
 			// - 858 = 858
 			// --------------------------------------------------------
 			cards.Add("VAN_EX1_112", new(
-			entourage: ["Mekka1","Mekka2","Mekka3","Mekka4",],new Power
+			entourage: ["Mekka1","Mekka2","Mekka3","Mekka4",], new Power
 			{
 				// TODO: [VAN_EX1_112] Gelbin Mekkatorque && Test: Gelbin Mekkatorque_VAN_EX1_112
 				// PowerTask = null,
@@ -7009,7 +7014,7 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
 				{PlayReq.REQ_NONSELF_TARGET, 0},
-			},new Power
+			}, new Power
 			{
 				// TODO: [VAN_CS2_141] Ironforge Rifleman && Test: Ironforge Rifleman_VAN_CS2_141
 				// PowerTask = null,
