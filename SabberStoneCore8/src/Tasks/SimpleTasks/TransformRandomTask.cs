@@ -35,8 +35,8 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//System.Collections.Generic.IEnumerable<Card> cards = game.FormatType == FormatType.FT_STANDARD ? Cards.AllStandard : Cards.AllWild;
 			foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
 				if (Cards.CostMinionCards(game.FormatType)
-					.TryGetValue(p.Card.Cost + CostChange, out List<Card> minions))
-					Generic.ChangeEntityBlock(controller, p, minions.RandomElement(game.Random), true);
+					.TryGetValue(p.Card.Cost + CostChange, out var minions))
+					Generic.ChangeEntityBlock(controller, p, minions.Choose(game.Random), true);
 
 			game.OnRandomHappened(true);
 

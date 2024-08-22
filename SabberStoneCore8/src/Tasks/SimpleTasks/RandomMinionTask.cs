@@ -13,7 +13,9 @@
 #endregion
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -23,8 +25,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class RandomMinionTask : SimpleTask
 	{
-		private static readonly ConcurrentDictionary<int, List<Card>> CachedCards =
-			new ConcurrentDictionary<int, List<Card>>();
+		private static readonly ConcurrentDictionary<int, FrozenSet<Card>> CachedCards = [];
 
 		private readonly bool _opponent;
 
@@ -64,7 +65,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			List<Card> cardsList = null;
+			FrozenSet<Card>? cardsList = null;
 			if (Type != EntityType.INVALID)
 			{
 				if (Type == EntityType.TARGET && Tag == GameTag.COST)
@@ -92,14 +93,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 				if (Tag == GameTag.CARDRACE && RelaSign == RelaSign.EQ)
 				{
 					cardsList = cards.Where(p => p.Type == CardType.MINION
-							 && p.IsRace((Race)Value)).ToList();
+							 && p.IsRace((Race)Value)).ToFrozenSet();
 				}
 				else
 				{
 					cardsList = cards.Where(p => p.Type == CardType.MINION
 												 && (RelaSign == RelaSign.EQ && p[Tag] == Value
 													 || RelaSign == RelaSign.GEQ && p[Tag] >= Value
-													 || RelaSign == RelaSign.LEQ && p[Tag] <= Value)).ToList();
+													 || RelaSign == RelaSign.LEQ && p[Tag] <= Value)).ToFrozenSet();
 				}
 
 				CachedCards.TryAdd(source.Card.AssetId, cardsList);

@@ -173,8 +173,9 @@ namespace SabberStoneCore.Model
 			classicByClass.Remove(CardClass.NEUTRAL);
 			Classic = classicByClass.ToFrozenDictionary(p => p.Key, p => p.Value.ToFrozenSet());
 
-			StandardCostMinionCards = AllStandard.Where(c => c.Type == CardType.MINION).GroupBy(c => c.Cost).ToDictionary(g => g.Key, g => g.ToList());
-			WildCostMinionCards = AllWild.Where(c => c.Type == CardType.MINION).GroupBy(c => c.Cost).ToDictionary(g => g.Key, g => g.ToList());
+			StandardCostMinionCards = AllStandard.Where(c => c.Type == CardType.MINION).GroupBy(c => c.Cost).ToFrozenDictionary(g => g.Key, g => g.ToFrozenSet());
+			WildCostMinionCards = AllWild.Where(c => c.Type == CardType.MINION).GroupBy(c => c.Cost).ToFrozenDictionary(g => g.Key, g => g.ToFrozenSet());
+			WildCostMinionCards = AllClassic.Where(c => c.Type == CardType.MINION).GroupBy(c => c.Cost).ToFrozenDictionary(g => g.Key, g => g.ToFrozenSet());
 
 			// Temporary fix for Lotus Assassin
 			Data.Cards["CFM_634"].Stealth = true;
@@ -355,11 +356,17 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		/// <param name="formatType"></param>
 		/// <returns></returns>
-		public static Dictionary<int, List<Card>> CostMinionCards(FormatType formatType) => formatType == FormatType.FT_STANDARD ? StandardCostMinionCards : WildCostMinionCards;
+		public static FrozenDictionary<int, FrozenSet<Card>> CostMinionCards(FormatType formatType) => formatType switch
+		{
+			FormatType.FT_STANDARD => StandardCostMinionCards,
+			FormatType.FT_WILD => WildCostMinionCards,
+			FormatType.FT_CLASSIC => ClassicCostMinionCards,
+			_ => throw new NotImplementedException($"FormatType {formatType} is not implemented.")
+		};
 
-		private static readonly Dictionary<int, List<Card>> StandardCostMinionCards;
-		private static readonly Dictionary<int, List<Card>> WildCostMinionCards;
-
+		private static readonly FrozenDictionary<int, FrozenSet<Card>> StandardCostMinionCards;
+		private static readonly FrozenDictionary<int, FrozenSet<Card>> WildCostMinionCards;
+		private static readonly FrozenDictionary<int, FrozenSet<Card>> ClassicCostMinionCards;
 
 		/// <summary>
 		/// Return a specific card from the given ID.

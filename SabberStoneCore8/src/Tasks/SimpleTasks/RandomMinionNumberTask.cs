@@ -11,7 +11,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
+
+using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -31,18 +34,19 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
-			List<Card> cardsList;
+			ImmutableArray<Card> cardsList;
 			if (Tag == GameTag.COST)
 			{
-				Cards.CostMinionCards(game.FormatType).TryGetValue(stack.Number, out cardsList);
-				if (cardsList == null)
+				if (!Cards.CostMinionCards(game.FormatType).TryGetValue(stack.Number, out FrozenSet<Card>? set))
 					return TaskState.STOP;
+
+				cardsList = set.Items;
 			}
 			else
 			{
-				IEnumerable<Card> cards = game.FormatType == FormatType.FT_STANDARD ? Cards.AllStandard : Cards.AllWild;
+				var cards = Cards.FormatTypeCards(game.FormatType);
 				int num = stack.Number;
-				cardsList = cards.Where(p => p.Type == CardType.MINION && p[Tag] == num).ToList();
+				cardsList = [..cards.Where(p => p.Type == CardType.MINION && p[Tag] == num)];
 				if (!cardsList.Any())
 					return TaskState.STOP;
 			}
