@@ -199,7 +199,8 @@ namespace SabberStoneCore.Enums
 		ULDUM = 1158,
 		DRAGONS = 1347,
 		WILD_EVENT = 1439,
-		BATTLEGROUNDS = 1453
+		BATTLEGROUNDS = 1453,
+		VANILLA = 1646,
 	}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
@@ -316,7 +317,8 @@ namespace SabberStoneCore.Enums
 	{
 		FT_UNKNOWN = 0,
 		FT_WILD = 1,
-		FT_STANDARD = 2
+		FT_STANDARD = 2,
+		FT_CLASSIC = 3
 	}
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 

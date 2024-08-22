@@ -12,6 +12,7 @@
 // GNU Affero General Public License for more details.
 #endregion
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -158,6 +159,14 @@ namespace SabberStoneCore.Model
 			//Log.Debug("AllWild:");
 			AllWild = All.Where(c => c.Collectible && c.Type != CardType.HERO).ToList().AsReadOnly();
 
+			AllClassic = All.Where(c => c.Set == CardSet.VANILLA && c.Collectible && c.Type != CardType.HERO).ToFrozenSet();
+			Dictionary<CardClass, List<Card>> classicByClass = AllClassic.GroupBy(c => c.Class).ToDictionary(g => g.Key, g => g.ToList());
+			List<Card> classicNeutrals = classicByClass[CardClass.NEUTRAL];
+			foreach (CardClass heroClass in HeroClasses)
+				classicByClass[heroClass].AddRange(classicNeutrals);
+			classicByClass.Remove(CardClass.NEUTRAL);
+			Classic = classicByClass.ToFrozenDictionary(p => p.Key, p => p.Value.ToFrozenSet());
+
 			StandardCostMinionCards = AllStandard.Where(c => c.Type == CardType.MINION).GroupBy(c => c.Cost).ToDictionary(g => g.Key, g => g.ToList());
 			WildCostMinionCards = AllWild.Where(c => c.Type == CardType.MINION).GroupBy(c => c.Cost).ToDictionary(g => g.Key, g => g.ToList());
 
@@ -197,12 +206,17 @@ namespace SabberStoneCore.Model
 		/// <summary>
 		/// Retrieves all wild cards ordered by card class.
 		/// </summary>
-		public static Dictionary<CardClass, IReadOnlyList<Card>> Wild { get; } = new Dictionary<CardClass, IReadOnlyList<Card>>();
+		public static Dictionary<CardClass, IReadOnlyList<Card>> Wild { get; } = [];
 
 		/// <summary>
 		/// Retrieves all standard cards ordered by card class.
 		/// </summary>
-		public static Dictionary<CardClass, IReadOnlyList<Card>> Standard { get; } = new Dictionary<CardClass, IReadOnlyList<Card>>();
+		public static Dictionary<CardClass, IReadOnlyList<Card>> Standard { get; } = [];
+
+		/// <summary>
+		/// Retrieves all classic cards ordered by card class.
+		/// </summary>
+		public static FrozenDictionary<CardClass, FrozenSet<Card>> Classic { get; }
 
 		/// <summary>
 		/// All cards belonging to the Standard set.
@@ -213,6 +227,11 @@ namespace SabberStoneCore.Model
 		/// All cards belonging to the Wild set.
 		/// </summary>
 		public static ReadOnlyCollection<Card> AllWild { get; }
+
+		/// <summary>
+		/// All cards belonging to the Classic set.
+		/// </summary>
+		public static FrozenSet<Card> AllClassic { get; }
 
 		/// <summary>
 		/// A list of the four basic totems.

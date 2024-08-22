@@ -43,7 +43,9 @@ namespace SabberStoneCoreConsole
 
 			Console.WriteLine("Start Test!");
 
-			PerformanceTest.MageExpertTest(20000, 10);
+			ClassicTest();
+
+			// PerformanceTest.MageExpertTest(20000, 10);
 			//StabilityTest.CloneStabilityTest();
 			return;
 
@@ -104,6 +106,22 @@ namespace SabberStoneCoreConsole
 
 			Console.WriteLine("Finished! Press key now.");
 			Console.ReadKey();
+		}
+
+		private static void ClassicTest()
+		{
+			// Game game = new(new GameConfig{
+			// 	FormatType = FormatType.FT_CLASSIC,
+			// 	FillDecks = true,
+			// 	Player1HeroClass = CardClass.MAGE,
+			// 	Player2HeroClass = CardClass.ROGUE
+			// });
+
+			var cards = Cards.AllClassic;
+			foreach (var card in cards)
+			{
+				Console.WriteLine(card.Name);
+			}
 		}
 
 		private static void AugmentedElekk()
