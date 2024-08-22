@@ -13,6 +13,7 @@
 #endregion
 using System;
 using System.Collections;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -55,6 +56,8 @@ namespace SabberStoneCore.Model
 		public static T Choose<T>(this IReadOnlyList<T> list, DeepCloneableRandom rnd) => list[rnd.Next(list.Count)];
 		public static T Choose<T>(this List<T> list, DeepCloneableRandom rnd) => list[rnd.Next(list.Count)];
 		public static T Choose<T>(this T[] list, DeepCloneableRandom rnd) => list[rnd.Next(list.Length)];
+
+		public static T Choose<T>(this FrozenSet<T> set, DeepCloneableRandom rnd) => set.Items[rnd.Next(set.Count)];
 
 		/// <summary>Gets the power set, a set of any subset of the provided set.. including the empty set and itself.</summary>
 		/// <typeparam name="T"></typeparam>

@@ -13,6 +13,7 @@
 #endregion
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -679,7 +680,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private Card[][] GetClassCard(in FormatType formatType, CardClass heroClass,
 			in Func<IEnumerable<Card>, IEnumerable<Card>> filter)
 		{
-			Dictionary<CardClass, IReadOnlyList<Card>> cardSet = Cards.FormatTypeClassCards(formatType);
+			FrozenDictionary<CardClass, FrozenSet<Card>> cardSet = Cards.FormatTypeClassCards(formatType);
 			IEnumerable<Card> classCards =
 				filter.Invoke(cardSet[heroClass].Where(p => p.Class == heroClass && !p.IsQuest));
 			return new[] {classCards.ToArray()};
@@ -687,7 +688,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 		private Card[][] GetTriClass(in FormatType formatType, CardClass class1, CardClass class2, CardClass class3)
 		{
-			Dictionary<CardClass, IReadOnlyList<Card>> cardSet = Cards.FormatTypeClassCards(formatType);
+			FrozenDictionary<CardClass, FrozenSet<Card>> cardSet = Cards.FormatTypeClassCards(formatType);
 			return new[]
 			{
 				cardSet[class1].Where(p => (p.Class == class1 || p.MultiClassGroup != 0) && !p.IsQuest).ToArray(),
@@ -699,7 +700,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		private Card[][] GetFilter(in FormatType formatType, in Controller controller,
 			in Func<IEnumerable<Card>, IEnumerable<Card>> filter)
 		{
-			Dictionary<CardClass, IReadOnlyList<Card>> cardSet = Cards.FormatTypeClassCards(formatType);
+			FrozenDictionary<CardClass, FrozenSet<Card>> cardSet = Cards.FormatTypeClassCards(formatType);
 			CardClass heroClass = controller.BaseClass != CardClass.NEUTRAL
 				? controller.BaseClass
 				: Util.Choose(Cards.HeroClasses, controller.Game.Random);
@@ -771,7 +772,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			if (criteria.CardClass == CardClass.INVALID)
 			{ // Use the player's Class
-				IReadOnlyList<Card> allCards = Cards.FormatTypeClassCards(format)[cls];
+				FrozenSet<Card> allCards = Cards.FormatTypeClassCards(format)[cls];
 				List<Card> classCards = new List<Card>();
 				List<Card> neutralCards = new List<Card>();
 				foreach (Card card in allCards)
@@ -794,7 +795,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			else if
 				(criteria.CardClass == CardClass.ANOTHER_CLASS)
 			{
-				IEnumerable<Card> allCards = Cards.FormatTypeCards(format);
+				FrozenSet<Card> allCards = Cards.FormatTypeCards(format);
 				List<Card> matching = new List<Card>();
 				foreach (Card card in allCards)
 				{
@@ -808,7 +809,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			}
 			else
 			{	// Use the given class criterion
-				IReadOnlyList<Card> allCards = Cards.FormatTypeClassCards(format)[criteria.CardClass];
+				FrozenSet<Card> allCards = Cards.FormatTypeClassCards(format)[criteria.CardClass];
 
 				List<Card> classCards = new List<Card>();
 				foreach (Card card in allCards)

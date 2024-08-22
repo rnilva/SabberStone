@@ -11,15 +11,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
-using System;
-using System.Collections.Frozen;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Loader;
 using SabberStoneCore.src.Loader;
+using System.Collections.Frozen;
+using System.Text;
 
 namespace SabberStoneCore.Model
 {
@@ -121,10 +117,11 @@ namespace SabberStoneCore.Model
 
 			//Log.Debug("Standard:");
 			//Enum.GetValues(typeof(CardClass)).Cast<CardClass>().ToList().ForEach(heroClass =>
+			Dictionary<CardClass, FrozenSet<Card>> cardDict = [];
 			for (int i = 0; i < HeroClasses.Length; i++)
 			{
 				CardClass heroClass = HeroClasses[i];
-				Standard.Add(heroClass, All.Where(c =>
+				cardDict.Add(heroClass, All.Where(c =>
 					c.Collectible &&
 					(c.Class == heroClass ||
 					 c.Class == CardClass.NEUTRAL && c.MultiClassGroup == 0 ||
@@ -134,18 +131,20 @@ namespace SabberStoneCore.Model
 					                            c.Class == CardClass.ROGUE || c.Class == CardClass.SHAMAN) ||
 					 c.MultiClassGroup == 3 && (c.Class == CardClass.NEUTRAL || c.Class == CardClass.MAGE ||
 					                            c.Class == CardClass.PRIEST || c.Class == CardClass.WARLOCK)) &&
-					c.Type != CardType.HERO && StandardSets.Contains(c.Set)).ToList().AsReadOnly());
+					c.Type != CardType.HERO && StandardSets.Contains(c.Set)).ToFrozenSet());
 				//Log.Debug($"-> [{heroClass}] - {Standard[heroClass].Count} cards.");
 				//});
 			}
+			Standard = cardDict.ToFrozenDictionary();
 
 			//Log.Debug("AllStandard:");
-			AllStandard = All.Where(c => c.Collectible && c.Type != CardType.HERO && StandardSets.Contains(c.Set)).ToList().AsReadOnly();
+			AllStandard = All.Where(c => c.Collectible && c.Type != CardType.HERO && StandardSets.Contains(c.Set)).ToFrozenSet();
 
 			//Log.Debug("Wild:");
+			cardDict.Clear();
 			Enum.GetValues(typeof(CardClass)).Cast<CardClass>().ToList().ForEach(heroClass =>
 			{
-				Wild.Add(heroClass, All.Where(c =>
+				cardDict.Add(heroClass, All.Where(c =>
 				c.Collectible &&
 				c.Set != CardSet.VANILLA &&
 					(c.Class == heroClass ||
@@ -153,12 +152,13 @@ namespace SabberStoneCore.Model
 					 c.MultiClassGroup == 1 && (c.Class == CardClass.NEUTRAL || c.Class == CardClass.HUNTER || c.Class == CardClass.PALADIN || c.Class == CardClass.WARRIOR) ||
 					 c.MultiClassGroup == 2 && (c.Class == CardClass.NEUTRAL || c.Class == CardClass.DRUID || c.Class == CardClass.ROGUE || c.Class == CardClass.SHAMAN) ||
 					 c.MultiClassGroup == 3 && (c.Class == CardClass.NEUTRAL || c.Class == CardClass.MAGE || c.Class == CardClass.PRIEST || c.Class == CardClass.WARLOCK)) &&
-					 c.Type != CardType.HERO).ToList().AsReadOnly());
+					 c.Type != CardType.HERO).ToFrozenSet());
 				//Log.Debug($"-> [{heroClass}] - {Wild[heroClass].Count} cards.");
 			});
+			Wild = cardDict.ToFrozenDictionary();
 
 			//Log.Debug("AllWild:");
-			AllWild = All.Where(c => c.Collectible && c.Set != CardSet.VANILLA && c.Type != CardType.HERO).ToList().AsReadOnly();
+			AllWild = All.Where(c => c.Collectible && c.Set != CardSet.VANILLA && c.Type != CardType.HERO).ToFrozenSet();
 
 			AllClassic = All.Where(c => c.Set == CardSet.VANILLA && c.Collectible && c.Type != CardType.HERO).ToFrozenSet();
 			Dictionary<CardClass, List<Card>> classicByClass = AllClassic.GroupBy(c => c.Class).ToDictionary(g => g.Key, g => g.ToList());
@@ -207,12 +207,12 @@ namespace SabberStoneCore.Model
 		/// <summary>
 		/// Retrieves all wild cards ordered by card class.
 		/// </summary>
-		public static Dictionary<CardClass, IReadOnlyList<Card>> Wild { get; } = [];
+		public static FrozenDictionary<CardClass, FrozenSet<Card>> Wild { get; }
 
 		/// <summary>
 		/// Retrieves all standard cards ordered by card class.
 		/// </summary>
-		public static Dictionary<CardClass, IReadOnlyList<Card>> Standard { get; } = [];
+		public static FrozenDictionary<CardClass, FrozenSet<Card>> Standard { get; }
 
 		/// <summary>
 		/// Retrieves all classic cards ordered by card class.
@@ -222,17 +222,25 @@ namespace SabberStoneCore.Model
 		/// <summary>
 		/// All cards belonging to the Standard set.
 		/// </summary>
-		public static ReadOnlyCollection<Card> AllStandard { get; }
+		public static FrozenSet<Card> AllStandard { get; }
 
 		/// <summary>
 		/// All cards belonging to the Wild set.
 		/// </summary>
-		public static ReadOnlyCollection<Card> AllWild { get; }
+		public static FrozenSet<Card> AllWild { get; }
 
 		/// <summary>
 		/// All cards belonging to the Classic set.
 		/// </summary>
 		public static FrozenSet<Card> AllClassic { get; }
+
+		//public static FrozenSet<Card> AllCards(FormatType ft) => ft switch
+		//{
+		//	FormatType.FT_STANDARD => AllStandard,
+		//	FormatType.FT_WILD => AllWild,
+		//	FormatType.FT_CLASSIC => AllClassic,
+		//	_ => throw new NotImplementedException($"FormatType {ft} is not implemented.")
+		//};
 
 		/// <summary>
 		/// A list of the four basic totems.
@@ -248,14 +256,20 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		/// <param name="formatType"></param>
 		/// <returns></returns>
-		public static Dictionary<CardClass, IReadOnlyList<Card>> FormatTypeClassCards(FormatType formatType) => formatType == FormatType.FT_STANDARD ? Standard : Wild;
+		public static FrozenDictionary<CardClass, FrozenSet<Card>> FormatTypeClassCards(FormatType formatType) => formatType == FormatType.FT_STANDARD ? Standard : Wild;
 
 		/// <summary>
 		/// Retrieves the specifified set of cards.
 		/// </summary>
 		/// <param name="formatType"></param>
 		/// <returns></returns>
-		public static IEnumerable<Card> FormatTypeCards(FormatType formatType) => formatType == FormatType.FT_STANDARD ? AllStandard : AllWild;
+		public static FrozenSet<Card> FormatTypeCards(FormatType formatType) => formatType switch
+		{
+			FormatType.FT_STANDARD => AllStandard,
+			FormatType.FT_WILD => AllWild,
+			FormatType.FT_CLASSIC => AllClassic,
+			_ => throw new NotImplementedException($"FormatType {formatType} is not implemented.")
+		};
 
 		/// <summary>
 		/// Returns the default hero class card.

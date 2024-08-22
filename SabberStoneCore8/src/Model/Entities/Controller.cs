@@ -12,6 +12,7 @@
 // GNU Affero General Public License for more details.
 #endregion
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -121,12 +122,12 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// All standard cards which can be put into a deck of this class.
 		/// </summary>
-		public IReadOnlyList<Card> Standard => Cards.Standard[HeroClass];
+		public FrozenSet<Card> Standard => Cards.Standard[HeroClass];
 
 		/// <summary>
 		/// All wild cards which can be put into a deck of this class.
 		/// </summary>
-		public IReadOnlyList<Card> Wild => Cards.Wild[HeroClass];
+		public FrozenSet<Card> Wild => Cards.Wild[HeroClass];
 
 		/// <summary>
 		/// The amount of mana available to actually use after calculating all resource factors.

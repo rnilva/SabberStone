@@ -12,10 +12,12 @@
 // GNU Affero General Public License for more details.
 #endregion
 using System;
+using System.Collections.Frozen;
 using System.Linq;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 using System.Collections.Generic;
+using Microsoft.VisualBasic.CompilerServices;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Exceptions;
 
@@ -94,7 +96,7 @@ namespace SabberStoneCore.Model.Zones
 
 		public void Fill(IReadOnlyCollection<string> excludeIds = null)
 		{
-			IReadOnlyList<Card> cards = Game.FormatType == FormatType.FT_STANDARD ? Controller.Standard : Controller.Wild;
+			FrozenSet<Card> cards = Cards.FormatTypeCards(Game.FormatType);
 			int cardsToAdd = StartingCards - _count;
 
 			Game.Log(LogLevel.INFO, BlockType.PLAY, "Deck", !Game.Logging ? "" :
