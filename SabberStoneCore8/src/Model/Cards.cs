@@ -112,8 +112,13 @@ namespace SabberStoneCore.Model
 
 			cards = cards.GroupBy(c => c.Id).Select(g => g.First()).ToArray();  // TODO: Ad hoc fix for duplicates.
 
+			// filtered out cards ... cosmetic purpose
+			string[] excludeIds = [
+				"HERO_01c"  // HERO Deathwing
+			];
+
 			Data = new CardContainer();
-			Data.Load(cards);
+			Data.Load(cards, excludeIds);
 
 			//Log.Debug("Standard:");
 			//Enum.GetValues(typeof(CardClass)).Cast<CardClass>().ToList().ForEach(heroClass =>
@@ -185,9 +190,6 @@ namespace SabberStoneCore.Model
 				FromId("CS2_051"),	// Stoneclaw Totem
 				FromId("CS2_052")	// Wraith of Air Totem
 			};
-
-			// filtered out cards ... cosmetic purpose
-			Data.Cards.Remove("HERO_01c"); // HERO Deathwing
 		}
 
 		#endregion
