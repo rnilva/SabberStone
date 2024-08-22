@@ -20,6 +20,7 @@ using System.Linq;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Model;
 using SabberStoneCore.src.Loader;
+using SabberStoneCore.CardSets.Classic;
 //using SabberStoneCore.Properties;
 
 namespace SabberStoneCore.src.Loader
@@ -40,6 +41,7 @@ namespace SabberStoneCore.src.Loader
 		internal static FrozenDictionary<string, CardDef> GetCardDefs()
 		{
 			Dictionary<string, CardDef> cards = [];
+			VanillaCardsGen.AddAll(cards);
 
 			return cards.ToFrozenDictionary();
 		}
