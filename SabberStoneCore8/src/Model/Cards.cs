@@ -147,6 +147,7 @@ namespace SabberStoneCore.Model
 			{
 				Wild.Add(heroClass, All.Where(c =>
 				c.Collectible &&
+				c.Set != CardSet.VANILLA &&
 					(c.Class == heroClass ||
 					 c.Class == CardClass.NEUTRAL && c.MultiClassGroup == 0 ||
 					 c.MultiClassGroup == 1 && (c.Class == CardClass.NEUTRAL || c.Class == CardClass.HUNTER || c.Class == CardClass.PALADIN || c.Class == CardClass.WARRIOR) ||
@@ -157,7 +158,7 @@ namespace SabberStoneCore.Model
 			});
 
 			//Log.Debug("AllWild:");
-			AllWild = All.Where(c => c.Collectible && c.Type != CardType.HERO).ToList().AsReadOnly();
+			AllWild = All.Where(c => c.Collectible && c.Set != CardSet.VANILLA && c.Type != CardType.HERO).ToList().AsReadOnly();
 
 			AllClassic = All.Where(c => c.Set == CardSet.VANILLA && c.Collectible && c.Type != CardType.HERO).ToFrozenSet();
 			Dictionary<CardClass, List<Card>> classicByClass = AllClassic.GroupBy(c => c.Class).ToDictionary(g => g.Key, g => g.ToList());
