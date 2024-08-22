@@ -9,11 +9,11 @@ namespace SabberStoneCore.src.Loader
 {
 	public class CardDef
 	{
-		public Dictionary<PlayReq, int> PlayReqs { get; private set; }
+		public Dictionary<PlayReq, int>? PlayReqs { get; private set; }
 
-		public string[] Entourage { get; private set; }
+		public string[]? Entourage { get; private set; }
 
-		public Power Power { get; private set; }
+		public Power? Power { get; private set; }
 
 		public CardDef()
 		{
@@ -23,7 +23,7 @@ namespace SabberStoneCore.src.Loader
 			PlayReqs = playReq;
 		}
 
-		public CardDef(Power power)
+		public CardDef(Power? power)
 		{
 			Power = power;
 		}
