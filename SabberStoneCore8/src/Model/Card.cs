@@ -28,7 +28,7 @@ namespace SabberStoneCore.Model
 	/// All properties exposed by these instances are defined by `resources/Data/CardDefs.xml`.
 	/// <see cref="CardLoader"/> for extraction procedures.
 	/// </summary>
-	public sealed class Card
+	public sealed class Card: IEquatable<Card>
 	{
 		/// <summary>
 		/// Constraint condition based on the state of a target <see cref="Character"/>.
@@ -439,7 +439,7 @@ namespace SabberStoneCore.Model
 		/// <summary>
 		/// Unique card ID, as defined in
 		/// </summary>
-		public string Id { get; private set; }
+		public string Id { get; private init; }
 
 		/// <summary>
 		/// Name of the card, localized in the extracted language.
@@ -1129,5 +1129,21 @@ namespace SabberStoneCore.Model
 			}
 		}
 
+		public bool Equals(Card? other)
+		{
+			if (other is null) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return Id == other.Id;
+		}
+
+		public override bool Equals(object? obj)
+		{
+			return ReferenceEquals(this, obj) || obj is Card other && Equals(other);
+		}
+
+		public override int GetHashCode()
+		{
+			return Id.GetHashCode();
+		}
 	}
 }
