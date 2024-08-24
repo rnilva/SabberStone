@@ -5180,7 +5180,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 		// RefTag:
 		// - STEALTH = 1
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void MasterOfDisguise_VAN_NEW1_014()
 		{
 			// TODO MasterOfDisguise_VAN_NEW1_014 test
@@ -5201,7 +5201,24 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//Minion testCard = game.ProcessCard<Minion>("Master of Disguise");
+			MinionInPlay target = game.ProcessCard<MinionInPlay>("Wisp");
+			Minion testCard = game.ProcessCard<Minion>("Master of Disguise", target);
+
+			Assert.True(target.HasStealth);
+			game.EndTurn();
+
+			Assert.True(target.HasStealth);
+			game.EndTurn();
+
+			Assert.True(target.HasStealth);
+			game.EndTurn();
+
+			Assert.True(target.HasStealth);
+			game.EndTurn();
+
+			Assert.True(target.HasStealth);
+			target.Attack(game.CurrentOpponent.Hero);
+			Assert.False(target.HasStealth);
 		}
 
 		// ----------------------------------------- MINION - ROGUE

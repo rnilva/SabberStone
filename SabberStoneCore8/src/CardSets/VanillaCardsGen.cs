@@ -3426,9 +3426,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_FRIENDLY_TARGET, 0},
 			}, new Power
 			{
-				// TODO: [VAN_NEW1_014] Master of Disguise && Test: Master of Disguise_VAN_NEW1_014
-				// PowerTask = null,
-				// Trigger = null,
+				PowerTask = new SetAttributeTask(BoolAttributes.Stealth, true, EntityType.TARGET)
 			}));
 			// ----------------------------------------- MINION - ROGUE
 			// [VAN_NEW1_005] Kidnapper - COST:6 [ATK:5/HP:3] 
