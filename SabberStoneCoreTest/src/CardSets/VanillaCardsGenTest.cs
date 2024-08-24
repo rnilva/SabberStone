@@ -8107,7 +8107,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 		// RefTag:
 		// - CHARGE = 1
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void Charge_VAN_CS2_103()
 		{
 			// TODO Charge_VAN_CS2_103 test
@@ -8128,7 +8128,15 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//Spell testCard = game.ProcessCard<Spell>("Charge");
+
+			MinionInPlay m = game.ProcessCard<MinionInPlay>("Wisp");
+			Spell testCard = game.ProcessCard<Spell>("Charge", m);
+
+			Assert.Equal(m.Card.ATK + 2, m.AttackDamage);
+			Assert.True(m.HasCharge);
+
+			m.Attack(game.CurrentOpponent.Hero);
+			Assert.Equal(m.AttackDamage, game.CurrentOpponent.Hero.Damage);
 		}
 
 		// ---------------------------------------- SPELL - WARRIOR

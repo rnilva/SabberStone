@@ -5269,9 +5269,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_MINION_TARGET, 0},
 			}, new Power
 			{
-				// TODO: [VAN_CS2_103] Charge && Test: Charge_VAN_CS2_103
-				// PowerTask = null,
-				// Trigger = null,
+				 PowerTask = new AddEnchantmentTask("VAN_CS2_103e2", EntityType.TARGET)
 			}));
 			// ---------------------------------------- SPELL - WARRIOR
 			// [VAN_CS2_104] Rampage - COST:2 
@@ -5482,8 +5480,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_CS2_103e2", new(
 			new Power
 			{
-				// TODO: [VAN_CS2_103e2] Charge && Test: Charge_VAN_CS2_103e2
-				// Enchant = Enchants.Enchants.GetAutoEnchantFromText("{card.Id}")
+				 Enchant = Enchants.Enchants.GetAutoEnchantFromText("VAN_CS2_103e2")
 			}));
 			// ---------------------------------------- SPELL - WARRIOR
 			// [VAN_CS2_103_Puzzle] Charge (*) - COST:1 
