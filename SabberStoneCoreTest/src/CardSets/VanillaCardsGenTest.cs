@@ -7686,7 +7686,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 		// RefTag:
 		// - CHARGE = 1
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void WarsongCommander_VAN_EX1_084()
 		{
 			// TODO WarsongCommander_VAN_EX1_084 test
@@ -7707,7 +7707,13 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//Minion testCard = game.ProcessCard<Minion>("Warsong Commander");
+			Minion testCard = game.ProcessCard<Minion>("Warsong Commander");
+
+			MinionInPlay m1 = game.ProcessCard<MinionInPlay>("Wisp");
+			Assert.True(m1.HasCharge);
+
+			MinionInPlay m2 = game.ProcessCard<MinionInPlay>("Chillwind Yeti");
+			Assert.False(m2.HasCharge);
 		}
 
 		// --------------------------------------- MINION - WARRIOR

@@ -5023,9 +5023,12 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_084", new(
 			new Power
 			{
-				// TODO: [VAN_EX1_084] Warsong Commander && Test: Warsong Commander_VAN_EX1_084
-				// PowerTask = null,
-				// Trigger = null,
+				Trigger = TriggerBuilder
+					.Type(TriggerType.SUMMON)
+					.SetTask(new ApplyEffectTask(EntityType.TARGET,
+						new SetBoolAttrEffect(BoolAttributes.Charge, true)))
+					.SetSource(TriggerSource.FRIENDLY)
+					.SetCondition(SelfCondition.IsATK(3, RelaSign.LEQ))
 			}));
 			// --------------------------------------- MINION - WARRIOR
 			// [VAN_EX1_603] Cruel Taskmaster - COST:2 [ATK:2/HP:2] 
