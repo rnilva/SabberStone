@@ -34,7 +34,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Steady Shot"),
+					Cards.FromName("Steady Shot", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -45,7 +45,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Steady Shot"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Steady Shot");
 		}
 
@@ -70,7 +69,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Dagger Mastery"),
+					Cards.FromName("Dagger Mastery", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -81,7 +80,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dagger Mastery"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Dagger Mastery");
 		}
 
@@ -106,7 +104,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Armor Up!"),
+					Cards.FromName("Armor Up!", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -117,7 +115,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Armor Up!"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Armor Up!");
 		}
 
@@ -141,7 +138,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Poisoned Daggers"),
+					Cards.FromName("Poisoned Daggers", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -152,7 +149,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Poisoned Daggers"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Poisoned Daggers");
 		}
 
@@ -178,7 +174,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shapeshift"),
+					Cards.FromName("Shapeshift", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -189,7 +185,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shapeshift"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Shapeshift");
 		}
 
@@ -214,7 +209,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Reinforce"),
+					Cards.FromName("Reinforce", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -225,7 +220,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Reinforce"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Reinforce");
 		}
 
@@ -250,7 +244,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Dire Shapeshift"),
+					Cards.FromName("Dire Shapeshift", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -261,7 +255,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dire Shapeshift"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Dire Shapeshift");
 		}
 
@@ -285,7 +278,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Totemic Slam"),
+					Cards.FromName("Totemic Slam", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -296,7 +289,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Totemic Slam"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Totemic Slam");
 		}
 
@@ -320,7 +312,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Heal"),
+					Cards.FromName("Heal", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -331,7 +323,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Heal"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Heal");
 		}
 
@@ -355,7 +346,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Soul Tap"),
+					Cards.FromName("Soul Tap", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -366,7 +357,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Soul Tap"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Soul Tap");
 		}
 
@@ -390,7 +380,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("INFERNO!"),
+					Cards.FromName("INFERNO!", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -401,7 +391,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("INFERNO!"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("INFERNO!");
 		}
 
@@ -426,7 +415,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Life Tap"),
+					Cards.FromName("Life Tap", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -437,7 +426,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Life Tap"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Life Tap");
 		}
 
@@ -461,7 +449,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Tank Up!"),
+					Cards.FromName("Tank Up!", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -472,7 +460,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tank Up!"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Tank Up!");
 		}
 
@@ -497,7 +484,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Fireblast"),
+					Cards.FromName("Fireblast", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -508,7 +495,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireblast"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Fireblast");
 		}
 
@@ -533,7 +519,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Armor Up!"),
+					Cards.FromName("Armor Up!", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -544,7 +530,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Armor Up!"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Armor Up!");
 		}
 
@@ -568,7 +553,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Fireblast Rank 2"),
+					Cards.FromName("Fireblast Rank 2", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -579,7 +564,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireblast Rank 2"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Fireblast Rank 2");
 		}
 
@@ -604,7 +588,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lesser Heal"),
+					Cards.FromName("Lesser Heal", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -615,7 +599,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lesser Heal"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Lesser Heal");
 		}
 
@@ -639,7 +622,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("The Silver Hand"),
+					Cards.FromName("The Silver Hand", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -650,7 +633,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("The Silver Hand"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("The Silver Hand");
 		}
 
@@ -675,7 +657,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ballista Shot"),
+					Cards.FromName("Ballista Shot", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -686,7 +668,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ballista Shot"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Ballista Shot");
 		}
 
@@ -711,7 +692,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Totemic Call"),
+					Cards.FromName("Totemic Call", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -722,7 +703,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Totemic Call"));
 			//Hero_power testCard = game.ProcessCard<Hero_power>("Totemic Call");
 		}
 
@@ -754,7 +734,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ancient of War"),
+					Cards.FromName("Ancient of War", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -765,7 +745,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ancient of War"));
 			//Minion testCard = game.ProcessCard<Minion>("Ancient of War");
 		}
 
@@ -793,7 +772,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Druid of the Claw"),
+					Cards.FromName("Druid of the Claw", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -804,7 +783,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Druid of the Claw"));
 			//Minion testCard = game.ProcessCard<Minion>("Druid of the Claw");
 		}
 
@@ -832,7 +810,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Cenarius"),
+					Cards.FromName("Cenarius", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -843,7 +821,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Cenarius"));
 			//Minion testCard = game.ProcessCard<Minion>("Cenarius");
 		}
 
@@ -867,7 +844,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ancient of Lore"),
+					Cards.FromName("Ancient of Lore", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -878,7 +855,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ancient of Lore"));
 			//Minion testCard = game.ProcessCard<Minion>("Ancient of Lore");
 		}
 
@@ -905,7 +881,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Keeper of the Grove"),
+					Cards.FromName("Keeper of the Grove", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -916,7 +892,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Keeper of the Grove"));
 			//Minion testCard = game.ProcessCard<Minion>("Keeper of the Grove");
 		}
 
@@ -940,7 +915,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ironbark Protector"),
+					Cards.FromName("Ironbark Protector", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -951,7 +926,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ironbark Protector"));
 			//Minion testCard = game.ProcessCard<Minion>("Ironbark Protector");
 		}
 
@@ -974,7 +948,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Claw"),
+					Cards.FromName("Claw", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -985,7 +959,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Claw"));
 			//Spell testCard = game.ProcessCard<Spell>("Claw");
 		}
 
@@ -1008,7 +981,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Moonfire"),
+					Cards.FromName("Moonfire", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1019,7 +992,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Moonfire"));
 			//Spell testCard = game.ProcessCard<Spell>("Moonfire");
 		}
 
@@ -1047,7 +1019,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Force of Nature"),
+					Cards.FromName("Force of Nature", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1058,7 +1030,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Force of Nature"));
 			//Spell testCard = game.ProcessCard<Spell>("Force of Nature");
 		}
 
@@ -1081,7 +1052,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Swipe"),
+					Cards.FromName("Swipe", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1092,7 +1063,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Swipe"));
 			//Spell testCard = game.ProcessCard<Spell>("Swipe");
 		}
 
@@ -1116,7 +1086,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Naturalize"),
+					Cards.FromName("Naturalize", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1127,7 +1097,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Naturalize"));
 			//Spell testCard = game.ProcessCard<Spell>("Naturalize");
 		}
 
@@ -1151,7 +1120,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Nourish"),
+					Cards.FromName("Nourish", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1162,7 +1131,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Nourish"));
 			//Spell testCard = game.ProcessCard<Spell>("Nourish");
 		}
 
@@ -1189,7 +1157,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mark of the Wild"),
+					Cards.FromName("Mark of the Wild", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1200,7 +1168,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mark of the Wild"));
 			//Spell testCard = game.ProcessCard<Spell>("Mark of the Wild");
 		}
 
@@ -1223,7 +1190,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Innervate"),
+					Cards.FromName("Innervate", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1234,7 +1201,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Innervate"));
 			//Spell testCard = game.ProcessCard<Spell>("Innervate");
 		}
 
@@ -1259,7 +1225,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Starfall"),
+					Cards.FromName("Starfall", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1270,7 +1236,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Starfall"));
 			//Spell testCard = game.ProcessCard<Spell>("Starfall");
 		}
 
@@ -1294,7 +1259,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Savagery"),
+					Cards.FromName("Savagery", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1305,7 +1270,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Savagery"));
 			//Spell testCard = game.ProcessCard<Spell>("Savagery");
 		}
 
@@ -1332,7 +1296,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mark of Nature"),
+					Cards.FromName("Mark of Nature", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1343,7 +1307,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mark of Nature"));
 			//Spell testCard = game.ProcessCard<Spell>("Mark of Nature");
 		}
 
@@ -1366,7 +1329,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Healing Touch"),
+					Cards.FromName("Healing Touch", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1377,7 +1340,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Healing Touch"));
 			//Spell testCard = game.ProcessCard<Spell>("Healing Touch");
 		}
 
@@ -1404,7 +1366,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Soul of the Forest"),
+					Cards.FromName("Soul of the Forest", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1415,7 +1377,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Soul of the Forest"));
 			//Spell testCard = game.ProcessCard<Spell>("Soul of the Forest");
 		}
 
@@ -1439,7 +1400,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Starfire"),
+					Cards.FromName("Starfire", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1450,7 +1411,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Starfire"));
 			//Spell testCard = game.ProcessCard<Spell>("Starfire");
 		}
 
@@ -1473,7 +1433,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Bite"),
+					Cards.FromName("Bite", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1484,7 +1444,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bite"));
 			//Spell testCard = game.ProcessCard<Spell>("Bite");
 		}
 
@@ -1507,7 +1466,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Savage Roar"),
+					Cards.FromName("Savage Roar", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1518,7 +1477,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Savage Roar"));
 			//Spell testCard = game.ProcessCard<Spell>("Savage Roar");
 		}
 
@@ -1542,7 +1500,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Power of the Wild"),
+					Cards.FromName("Power of the Wild", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1553,7 +1511,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Power of the Wild"));
 			//Spell testCard = game.ProcessCard<Spell>("Power of the Wild");
 		}
 
@@ -1579,7 +1536,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Wrath"),
+					Cards.FromName("Wrath", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1590,7 +1547,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wrath"));
 			//Spell testCard = game.ProcessCard<Spell>("Wrath");
 		}
 
@@ -1613,7 +1569,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.DRUID,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Wild Growth"),
+					Cards.FromName("Wild Growth", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.DRUID,
 				Shuffle = false,
@@ -1624,7 +1580,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wild Growth"));
 			//Spell testCard = game.ProcessCard<Spell>("Wild Growth");
 		}
 
@@ -1651,7 +1606,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Starving Buzzard"),
+					Cards.FromName("Starving Buzzard", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -1662,7 +1617,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Starving Buzzard"));
 			//Minion testCard = game.ProcessCard<Minion>("Starving Buzzard");
 		}
 
@@ -1689,7 +1643,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Houndmaster"),
+					Cards.FromName("Houndmaster", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -1700,7 +1654,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Houndmaster"));
 			//Minion testCard = game.ProcessCard<Minion>("Houndmaster");
 		}
 
@@ -1724,7 +1677,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Timber Wolf"),
+					Cards.FromName("Timber Wolf", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -1735,7 +1688,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Timber Wolf"));
 			//Minion testCard = game.ProcessCard<Minion>("Timber Wolf");
 		}
 
@@ -1760,7 +1712,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("King Krush"),
+					Cards.FromName("King Krush", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -1771,7 +1723,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("King Krush"));
 			//Minion testCard = game.ProcessCard<Minion>("King Krush");
 		}
 
@@ -1797,7 +1748,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Savannah Highmane"),
+					Cards.FromName("Savannah Highmane", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -1808,7 +1759,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Savannah Highmane"));
 			//Minion testCard = game.ProcessCard<Minion>("Savannah Highmane");
 		}
 
@@ -1831,7 +1781,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Scavenging Hyena"),
+					Cards.FromName("Scavenging Hyena", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -1842,7 +1792,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Scavenging Hyena"));
 			//Minion testCard = game.ProcessCard<Minion>("Scavenging Hyena");
 		}
 
@@ -1869,7 +1818,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Tundra Rhino"),
+					Cards.FromName("Tundra Rhino", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -1880,7 +1829,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tundra Rhino"));
 			//Minion testCard = game.ProcessCard<Minion>("Tundra Rhino");
 		}
 
@@ -1904,7 +1852,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Kill Command"),
+					Cards.FromName("Kill Command", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -1915,7 +1863,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Kill Command"));
 			//Spell testCard = game.ProcessCard<Spell>("Kill Command");
 		}
 
@@ -1939,7 +1886,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Freezing Trap"),
+					Cards.FromName("Freezing Trap", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -1950,7 +1897,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Freezing Trap"));
 			//Spell testCard = game.ProcessCard<Spell>("Freezing Trap");
 		}
 
@@ -1973,7 +1919,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Tracking"),
+					Cards.FromName("Tracking", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -1984,7 +1930,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tracking"));
 			//Spell testCard = game.ProcessCard<Spell>("Tracking");
 		}
 
@@ -2010,7 +1955,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Bestial Wrath"),
+					Cards.FromName("Bestial Wrath", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2021,7 +1966,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bestial Wrath"));
 			//Spell testCard = game.ProcessCard<Spell>("Bestial Wrath");
 		}
 
@@ -2046,7 +1990,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Animal Companion"),
+					Cards.FromName("Animal Companion", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2057,7 +2001,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Animal Companion"));
 			//Spell testCard = game.ProcessCard<Spell>("Animal Companion");
 		}
 
@@ -2080,7 +2023,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Multi-Shot"),
+					Cards.FromName("Multi-Shot", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2091,7 +2034,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Multi-Shot"));
 			//Spell testCard = game.ProcessCard<Spell>("Multi-Shot");
 		}
 
@@ -2115,7 +2057,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Misdirection"),
+					Cards.FromName("Misdirection", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2126,7 +2068,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Misdirection"));
 			//Spell testCard = game.ProcessCard<Spell>("Misdirection");
 		}
 
@@ -2153,7 +2094,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Unleash the Hounds"),
+					Cards.FromName("Unleash the Hounds", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2164,7 +2105,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Unleash the Hounds"));
 			//Spell testCard = game.ProcessCard<Spell>("Unleash the Hounds");
 		}
 
@@ -2187,7 +2127,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Arcane Shot"),
+					Cards.FromName("Arcane Shot", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2198,7 +2138,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Shot"));
 			//Spell testCard = game.ProcessCard<Spell>("Arcane Shot");
 		}
 
@@ -2223,7 +2162,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Snake Trap"),
+					Cards.FromName("Snake Trap", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2234,7 +2173,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Snake Trap"));
 			//Spell testCard = game.ProcessCard<Spell>("Snake Trap");
 		}
 
@@ -2261,7 +2199,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Flare"),
+					Cards.FromName("Flare", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2272,7 +2210,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Flare"));
 			//Spell testCard = game.ProcessCard<Spell>("Flare");
 		}
 
@@ -2296,7 +2233,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Snipe"),
+					Cards.FromName("Snipe", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2307,7 +2244,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Snipe"));
 			//Spell testCard = game.ProcessCard<Spell>("Snipe");
 		}
 
@@ -2331,7 +2267,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Explosive Trap"),
+					Cards.FromName("Explosive Trap", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2342,7 +2278,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Explosive Trap"));
 			//Spell testCard = game.ProcessCard<Spell>("Explosive Trap");
 		}
 
@@ -2365,7 +2300,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Explosive Shot"),
+					Cards.FromName("Explosive Shot", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2376,7 +2311,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Explosive Shot"));
 			//Spell testCard = game.ProcessCard<Spell>("Explosive Shot");
 		}
 
@@ -2399,7 +2333,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Deadly Shot"),
+					Cards.FromName("Deadly Shot", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2410,7 +2344,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Deadly Shot"));
 			//Spell testCard = game.ProcessCard<Spell>("Deadly Shot");
 		}
 
@@ -2433,7 +2366,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Hunter's Mark"),
+					Cards.FromName("Hunter's Mark", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2444,7 +2377,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hunter's Mark"));
 			//Spell testCard = game.ProcessCard<Spell>("Hunter's Mark");
 		}
 
@@ -2471,7 +2403,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Eaglehorn Bow"),
+					Cards.FromName("Eaglehorn Bow", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2482,7 +2414,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Eaglehorn Bow"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Eaglehorn Bow");
 		}
 
@@ -2509,7 +2440,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.HUNTER,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Gladiator's Longbow"),
+					Cards.FromName("Gladiator's Longbow", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.HUNTER,
 				Shuffle = false,
@@ -2520,7 +2451,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Gladiator's Longbow"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Gladiator's Longbow");
 		}
 
@@ -2552,7 +2482,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Kirin Tor Mage"),
+					Cards.FromName("Kirin Tor Mage", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2563,7 +2493,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Kirin Tor Mage"));
 			//Minion testCard = game.ProcessCard<Minion>("Kirin Tor Mage");
 		}
 
@@ -2588,7 +2517,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Archmage Antonidas"),
+					Cards.FromName("Archmage Antonidas", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2599,7 +2528,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Archmage Antonidas"));
 			//Minion testCard = game.ProcessCard<Minion>("Archmage Antonidas");
 		}
 
@@ -2623,7 +2551,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Water Elemental"),
+					Cards.FromName("Water Elemental", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2634,7 +2562,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Water Elemental"));
 			//Minion testCard = game.ProcessCard<Minion>("Water Elemental");
 		}
 
@@ -2657,7 +2584,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mana Wyrm"),
+					Cards.FromName("Mana Wyrm", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2668,7 +2595,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mana Wyrm"));
 			//Minion testCard = game.ProcessCard<Minion>("Mana Wyrm");
 		}
 
@@ -2692,7 +2618,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sorcerer's Apprentice"),
+					Cards.FromName("Sorcerer's Apprentice", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2703,7 +2629,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sorcerer's Apprentice"));
 			//Minion testCard = game.ProcessCard<Minion>("Sorcerer's Apprentice");
 		}
 
@@ -2729,7 +2654,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ethereal Arcanist"),
+					Cards.FromName("Ethereal Arcanist", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2740,7 +2665,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ethereal Arcanist"));
 			//Minion testCard = game.ProcessCard<Minion>("Ethereal Arcanist");
 		}
 
@@ -2766,7 +2690,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ice Barrier"),
+					Cards.FromName("Ice Barrier", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2777,7 +2701,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ice Barrier"));
 			//Spell testCard = game.ProcessCard<Spell>("Ice Barrier");
 		}
 
@@ -2800,7 +2723,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Pyroblast"),
+					Cards.FromName("Pyroblast", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2811,7 +2734,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pyroblast"));
 			//Spell testCard = game.ProcessCard<Spell>("Pyroblast");
 		}
 
@@ -2835,7 +2757,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Frostbolt"),
+					Cards.FromName("Frostbolt", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2846,7 +2768,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostbolt"));
 			//Spell testCard = game.ProcessCard<Spell>("Frostbolt");
 		}
 
@@ -2870,7 +2791,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Cone of Cold"),
+					Cards.FromName("Cone of Cold", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2881,7 +2802,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Cone of Cold"));
 			//Spell testCard = game.ProcessCard<Spell>("Cone of Cold");
 		}
 
@@ -2904,7 +2824,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Arcane Intellect"),
+					Cards.FromName("Arcane Intellect", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2915,7 +2835,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Intellect"));
 			//Spell testCard = game.ProcessCard<Spell>("Arcane Intellect");
 		}
 
@@ -2942,7 +2861,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Counterspell"),
+					Cards.FromName("Counterspell", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2953,7 +2872,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Counterspell"));
 			//Spell testCard = game.ProcessCard<Spell>("Counterspell");
 		}
 
@@ -2977,7 +2895,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Vaporize"),
+					Cards.FromName("Vaporize", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -2988,7 +2906,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Vaporize"));
 			//Spell testCard = game.ProcessCard<Spell>("Vaporize");
 		}
 
@@ -3012,7 +2929,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Frost Nova"),
+					Cards.FromName("Frost Nova", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3023,7 +2940,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frost Nova"));
 			//Spell testCard = game.ProcessCard<Spell>("Frost Nova");
 		}
 
@@ -3050,7 +2966,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mirror Entity"),
+					Cards.FromName("Mirror Entity", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3061,7 +2977,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mirror Entity"));
 			//Spell testCard = game.ProcessCard<Spell>("Mirror Entity");
 		}
 
@@ -3086,7 +3001,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Spellbender"),
+					Cards.FromName("Spellbender", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3097,7 +3012,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spellbender"));
 			//Spell testCard = game.ProcessCard<Spell>("Spellbender");
 		}
 
@@ -3120,7 +3034,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Arcane Explosion"),
+					Cards.FromName("Arcane Explosion", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3131,7 +3045,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Explosion"));
 			//Spell testCard = game.ProcessCard<Spell>("Arcane Explosion");
 		}
 
@@ -3155,7 +3068,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Blizzard"),
+					Cards.FromName("Blizzard", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3166,7 +3079,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Blizzard"));
 			//Spell testCard = game.ProcessCard<Spell>("Blizzard");
 		}
 
@@ -3190,7 +3102,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ice Lance"),
+					Cards.FromName("Ice Lance", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3201,7 +3113,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ice Lance"));
 			//Spell testCard = game.ProcessCard<Spell>("Ice Lance");
 		}
 
@@ -3224,7 +3135,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Flamestrike"),
+					Cards.FromName("Flamestrike", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3235,7 +3146,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Flamestrike"));
 			//Spell testCard = game.ProcessCard<Spell>("Flamestrike");
 		}
 
@@ -3262,7 +3172,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mirror Image"),
+					Cards.FromName("Mirror Image", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3273,7 +3183,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mirror Image"));
 			//Spell testCard = game.ProcessCard<Spell>("Mirror Image");
 		}
 
@@ -3300,7 +3209,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ice Block"),
+					Cards.FromName("Ice Block", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3311,7 +3220,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ice Block"));
 			//Spell testCard = game.ProcessCard<Spell>("Ice Block");
 		}
 
@@ -3334,7 +3242,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Fireball"),
+					Cards.FromName("Fireball", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3345,7 +3253,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fireball"));
 			//Spell testCard = game.ProcessCard<Spell>("Fireball");
 		}
 
@@ -3370,7 +3277,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Polymorph"),
+					Cards.FromName("Polymorph", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3381,7 +3288,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Polymorph"));
 			//Spell testCard = game.ProcessCard<Spell>("Polymorph");
 		}
 
@@ -3405,7 +3311,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Arcane Missiles"),
+					Cards.FromName("Arcane Missiles", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -3416,7 +3322,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Missiles"));
 			//Spell testCard = game.ProcessCard<Spell>("Arcane Missiles");
 		}
 
@@ -3447,7 +3352,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Argent Protector"),
+					Cards.FromName("Argent Protector", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3458,7 +3363,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Argent Protector"));
 			//Minion testCard = game.ProcessCard<Minion>("Argent Protector");
 		}
 
@@ -3486,7 +3390,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Tirion Fordring"),
+					Cards.FromName("Tirion Fordring", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3497,7 +3401,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tirion Fordring"));
 			//Minion testCard = game.ProcessCard<Minion>("Tirion Fordring");
 		}
 
@@ -3521,7 +3424,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Guardian of Kings"),
+					Cards.FromName("Guardian of Kings", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3532,7 +3435,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Guardian of Kings"));
 			//Minion testCard = game.ProcessCard<Minion>("Guardian of Kings");
 		}
 
@@ -3556,7 +3458,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Aldor Peacekeeper"),
+					Cards.FromName("Aldor Peacekeeper", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3567,7 +3469,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Aldor Peacekeeper"));
 			//Minion testCard = game.ProcessCard<Minion>("Aldor Peacekeeper");
 		}
 
@@ -3590,7 +3491,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Blessing of Kings"),
+					Cards.FromName("Blessing of Kings", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3601,7 +3502,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Blessing of Kings"));
 			//Spell testCard = game.ProcessCard<Spell>("Blessing of Kings");
 		}
 
@@ -3626,7 +3526,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Noble Sacrifice"),
+					Cards.FromName("Noble Sacrifice", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3637,7 +3537,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Noble Sacrifice"));
 			//Spell testCard = game.ProcessCard<Spell>("Noble Sacrifice");
 		}
 
@@ -3661,7 +3560,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Hammer of Wrath"),
+					Cards.FromName("Hammer of Wrath", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3672,7 +3571,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hammer of Wrath"));
 			//Spell testCard = game.ProcessCard<Spell>("Hammer of Wrath");
 		}
 
@@ -3698,7 +3596,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Hand of Protection"),
+					Cards.FromName("Hand of Protection", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3709,7 +3607,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hand of Protection"));
 			//Spell testCard = game.ProcessCard<Spell>("Hand of Protection");
 		}
 
@@ -3733,7 +3630,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Eye for an Eye"),
+					Cards.FromName("Eye for an Eye", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3744,7 +3641,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Eye for an Eye"));
 			//Spell testCard = game.ProcessCard<Spell>("Eye for an Eye");
 		}
 
@@ -3767,7 +3663,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Blessing of Wisdom"),
+					Cards.FromName("Blessing of Wisdom", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3778,7 +3674,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Blessing of Wisdom"));
 			//Spell testCard = game.ProcessCard<Spell>("Blessing of Wisdom");
 		}
 
@@ -3802,7 +3697,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Repentance"),
+					Cards.FromName("Repentance", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3813,7 +3708,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Repentance"));
 			//Spell testCard = game.ProcessCard<Spell>("Repentance");
 		}
 
@@ -3837,7 +3731,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Holy Wrath"),
+					Cards.FromName("Holy Wrath", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3848,7 +3742,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Holy Wrath"));
 			//Spell testCard = game.ProcessCard<Spell>("Holy Wrath");
 		}
 
@@ -3871,7 +3764,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Blessed Champion"),
+					Cards.FromName("Blessed Champion", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3882,7 +3775,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Blessed Champion"));
 			//Spell testCard = game.ProcessCard<Spell>("Blessed Champion");
 		}
 
@@ -3905,7 +3797,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Humility"),
+					Cards.FromName("Humility", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3916,7 +3808,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Humility"));
 			//Spell testCard = game.ProcessCard<Spell>("Humility");
 		}
 
@@ -3940,7 +3831,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Redemption"),
+					Cards.FromName("Redemption", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3951,7 +3842,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Redemption"));
 			//Spell testCard = game.ProcessCard<Spell>("Redemption");
 		}
 
@@ -3974,7 +3864,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Holy Light"),
+					Cards.FromName("Holy Light", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -3985,7 +3875,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Holy Light"));
 			//Spell testCard = game.ProcessCard<Spell>("Holy Light");
 		}
 
@@ -4008,7 +3897,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lay on Hands"),
+					Cards.FromName("Lay on Hands", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -4019,7 +3908,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lay on Hands"));
 			//Spell testCard = game.ProcessCard<Spell>("Lay on Hands");
 		}
 
@@ -4042,7 +3930,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Divine Favor"),
+					Cards.FromName("Divine Favor", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -4053,7 +3941,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Divine Favor"));
 			//Spell testCard = game.ProcessCard<Spell>("Divine Favor");
 		}
 
@@ -4077,7 +3964,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Avenging Wrath"),
+					Cards.FromName("Avenging Wrath", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -4088,7 +3975,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Avenging Wrath"));
 			//Spell testCard = game.ProcessCard<Spell>("Avenging Wrath");
 		}
 
@@ -4111,7 +3997,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Consecration"),
+					Cards.FromName("Consecration", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -4122,7 +4008,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Consecration"));
 			//Spell testCard = game.ProcessCard<Spell>("Consecration");
 		}
 
@@ -4145,7 +4030,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Blessing of Might"),
+					Cards.FromName("Blessing of Might", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -4156,7 +4041,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Blessing of Might"));
 			//Spell testCard = game.ProcessCard<Spell>("Blessing of Might");
 		}
 
@@ -4179,7 +4063,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Equality"),
+					Cards.FromName("Equality", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -4190,7 +4074,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Equality"));
 			//Spell testCard = game.ProcessCard<Spell>("Equality");
 		}
 
@@ -4214,7 +4097,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Truesilver Champion"),
+					Cards.FromName("Truesilver Champion", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -4225,7 +4108,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Truesilver Champion"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Truesilver Champion");
 		}
 
@@ -4247,7 +4129,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Light's Justice"),
+					Cards.FromName("Light's Justice", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -4258,7 +4140,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Light's Justice"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Light's Justice");
 		}
 
@@ -4282,7 +4163,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PALADIN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sword of Justice"),
+					Cards.FromName("Sword of Justice", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PALADIN,
 				Shuffle = false,
@@ -4293,7 +4174,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sword of Justice"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Sword of Justice");
 		}
 
@@ -4321,7 +4201,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Temple Enforcer"),
+					Cards.FromName("Temple Enforcer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4332,7 +4212,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Temple Enforcer"));
 			//Minion testCard = game.ProcessCard<Minion>("Temple Enforcer");
 		}
 
@@ -4355,7 +4234,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lightwell"),
+					Cards.FromName("Lightwell", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4366,7 +4245,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lightwell"));
 			//Minion testCard = game.ProcessCard<Minion>("Lightwell");
 		}
 
@@ -4390,7 +4268,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Cabal Shadow Priest"),
+					Cards.FromName("Cabal Shadow Priest", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4401,7 +4279,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Cabal Shadow Priest"));
 			//Minion testCard = game.ProcessCard<Minion>("Cabal Shadow Priest");
 		}
 
@@ -4424,7 +4301,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Northshire Cleric"),
+					Cards.FromName("Northshire Cleric", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4435,7 +4312,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Northshire Cleric"));
 			//Minion testCard = game.ProcessCard<Minion>("Northshire Cleric");
 		}
 
@@ -4458,7 +4334,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lightspawn"),
+					Cards.FromName("Lightspawn", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4469,7 +4345,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lightspawn"));
 			//Minion testCard = game.ProcessCard<Minion>("Lightspawn");
 		}
 
@@ -4492,7 +4367,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Auchenai Soulpriest"),
+					Cards.FromName("Auchenai Soulpriest", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4503,7 +4378,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Auchenai Soulpriest"));
 			//Minion testCard = game.ProcessCard<Minion>("Auchenai Soulpriest");
 		}
 
@@ -4527,7 +4401,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Prophet Velen"),
+					Cards.FromName("Prophet Velen", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4538,7 +4412,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Prophet Velen"));
 			//Minion testCard = game.ProcessCard<Minion>("Prophet Velen");
 		}
 
@@ -4561,7 +4434,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mind Blast"),
+					Cards.FromName("Mind Blast", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4572,7 +4445,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mind Blast"));
 			//Spell testCard = game.ProcessCard<Spell>("Mind Blast");
 		}
 
@@ -4595,7 +4467,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mind Control"),
+					Cards.FromName("Mind Control", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4606,7 +4478,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mind Control"));
 			//Spell testCard = game.ProcessCard<Spell>("Mind Control");
 		}
 
@@ -4629,7 +4500,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shadow Madness"),
+					Cards.FromName("Shadow Madness", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4640,7 +4511,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shadow Madness"));
 			//Spell testCard = game.ProcessCard<Spell>("Shadow Madness");
 		}
 
@@ -4664,7 +4534,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shadowform"),
+					Cards.FromName("Shadowform", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4675,7 +4545,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shadowform"));
 			//Spell testCard = game.ProcessCard<Spell>("Shadowform");
 		}
 
@@ -4698,7 +4567,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shadow Word: Death"),
+					Cards.FromName("Shadow Word: Death", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4709,7 +4578,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shadow Word: Death"));
 			//Spell testCard = game.ProcessCard<Spell>("Shadow Word: Death");
 		}
 
@@ -4733,7 +4601,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Silence"),
+					Cards.FromName("Silence", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4744,7 +4612,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silence"));
 			//Spell testCard = game.ProcessCard<Spell>("Silence");
 		}
 
@@ -4767,7 +4634,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mind Vision"),
+					Cards.FromName("Mind Vision", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4778,7 +4645,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mind Vision"));
 			//Spell testCard = game.ProcessCard<Spell>("Mind Vision");
 		}
 
@@ -4801,7 +4667,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Thoughtsteal"),
+					Cards.FromName("Thoughtsteal", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4812,7 +4678,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Thoughtsteal"));
 			//Spell testCard = game.ProcessCard<Spell>("Thoughtsteal");
 		}
 
@@ -4835,7 +4700,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Holy Smite"),
+					Cards.FromName("Holy Smite", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4846,7 +4711,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Holy Smite"));
 			//Spell testCard = game.ProcessCard<Spell>("Holy Smite");
 		}
 
@@ -4869,7 +4733,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shadow Word: Pain"),
+					Cards.FromName("Shadow Word: Pain", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4880,7 +4744,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shadow Word: Pain"));
 			//Spell testCard = game.ProcessCard<Spell>("Shadow Word: Pain");
 		}
 
@@ -4903,7 +4766,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Holy Fire"),
+					Cards.FromName("Holy Fire", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4914,7 +4777,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Holy Fire"));
 			//Spell testCard = game.ProcessCard<Spell>("Holy Fire");
 		}
 
@@ -4937,7 +4799,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Circle of Healing"),
+					Cards.FromName("Circle of Healing", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4948,7 +4810,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Circle of Healing"));
 			//Spell testCard = game.ProcessCard<Spell>("Circle of Healing");
 		}
 
@@ -4972,7 +4833,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Power Word: Shield"),
+					Cards.FromName("Power Word: Shield", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -4983,7 +4844,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Power Word: Shield"));
 			//Spell testCard = game.ProcessCard<Spell>("Power Word: Shield");
 		}
 
@@ -5006,7 +4866,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Divine Spirit"),
+					Cards.FromName("Divine Spirit", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -5017,7 +4877,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Divine Spirit"));
 			//Spell testCard = game.ProcessCard<Spell>("Divine Spirit");
 		}
 
@@ -5040,7 +4899,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Holy Nova"),
+					Cards.FromName("Holy Nova", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -5051,7 +4910,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Holy Nova"));
 			//Spell testCard = game.ProcessCard<Spell>("Holy Nova");
 		}
 
@@ -5074,7 +4932,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Inner Fire"),
+					Cards.FromName("Inner Fire", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -5085,7 +4943,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Inner Fire"));
 			//Spell testCard = game.ProcessCard<Spell>("Inner Fire");
 		}
 
@@ -5110,7 +4967,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mindgames"),
+					Cards.FromName("Mindgames", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -5121,7 +4978,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mindgames"));
 			//Spell testCard = game.ProcessCard<Spell>("Mindgames");
 		}
 
@@ -5145,7 +5001,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.PRIEST,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mass Dispel"),
+					Cards.FromName("Mass Dispel", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.PRIEST,
 				Shuffle = false,
@@ -5156,7 +5012,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mass Dispel"));
 			//Spell testCard = game.ProcessCard<Spell>("Mass Dispel");
 		}
 
@@ -5185,7 +5040,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Patient Assassin"),
+					Cards.FromName("Patient Assassin", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5196,7 +5051,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Patient Assassin"));
 			//Minion testCard = game.ProcessCard<Minion>("Patient Assassin");
 		}
 
@@ -5221,7 +5075,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Edwin VanCleef"),
+					Cards.FromName("Edwin VanCleef", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5232,7 +5086,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Edwin VanCleef"));
 			//Minion testCard = game.ProcessCard<Minion>("Edwin VanCleef");
 		}
 
@@ -5256,7 +5109,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("SI:7 Agent"),
+					Cards.FromName("SI:7 Agent", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5267,7 +5120,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("SI:7 Agent"));
 			//Minion testCard = game.ProcessCard<Minion>("SI:7 Agent");
 		}
 
@@ -5292,7 +5144,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Defias Ringleader"),
+					Cards.FromName("Defias Ringleader", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5303,7 +5155,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Defias Ringleader"));
 			//Minion testCard = game.ProcessCard<Minion>("Defias Ringleader");
 		}
 
@@ -5330,7 +5181,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Master of Disguise"),
+					Cards.FromName("Master of Disguise", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5341,7 +5192,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Master of Disguise"));
 			//Minion testCard = game.ProcessCard<Minion>("Master of Disguise");
 		}
 
@@ -5365,7 +5215,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Kidnapper"),
+					Cards.FromName("Kidnapper", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5376,7 +5226,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Kidnapper"));
 			//Minion testCard = game.ProcessCard<Minion>("Kidnapper");
 		}
 
@@ -5399,7 +5248,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Preparation"),
+					Cards.FromName("Preparation", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5410,7 +5259,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Preparation"));
 			//Spell testCard = game.ProcessCard<Spell>("Preparation");
 		}
 
@@ -5433,7 +5281,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sprint"),
+					Cards.FromName("Sprint", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5444,7 +5292,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sprint"));
 			//Spell testCard = game.ProcessCard<Spell>("Sprint");
 		}
 
@@ -5468,7 +5315,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Headcrack"),
+					Cards.FromName("Headcrack", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5479,7 +5326,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Headcrack"));
 			//Spell testCard = game.ProcessCard<Spell>("Headcrack");
 		}
 
@@ -5502,7 +5348,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Betrayal"),
+					Cards.FromName("Betrayal", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5513,7 +5359,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Betrayal"));
 			//Spell testCard = game.ProcessCard<Spell>("Betrayal");
 		}
 
@@ -5536,7 +5381,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Fan of Knives"),
+					Cards.FromName("Fan of Knives", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5547,7 +5392,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fan of Knives"));
 			//Spell testCard = game.ProcessCard<Spell>("Fan of Knives");
 		}
 
@@ -5570,7 +5414,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sinister Strike"),
+					Cards.FromName("Sinister Strike", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5581,7 +5425,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sinister Strike"));
 			//Spell testCard = game.ProcessCard<Spell>("Sinister Strike");
 		}
 
@@ -5605,7 +5448,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Eviscerate"),
+					Cards.FromName("Eviscerate", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5616,7 +5459,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Eviscerate"));
 			//Spell testCard = game.ProcessCard<Spell>("Eviscerate");
 		}
 
@@ -5639,7 +5481,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sap"),
+					Cards.FromName("Sap", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5650,7 +5492,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sap"));
 			//Spell testCard = game.ProcessCard<Spell>("Sap");
 		}
 
@@ -5673,7 +5514,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Assassinate"),
+					Cards.FromName("Assassinate", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5684,7 +5525,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Assassinate"));
 			//Spell testCard = game.ProcessCard<Spell>("Assassinate");
 		}
 
@@ -5708,7 +5548,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Cold Blood"),
+					Cards.FromName("Cold Blood", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5719,7 +5559,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Cold Blood"));
 			//Spell testCard = game.ProcessCard<Spell>("Cold Blood");
 		}
 
@@ -5743,7 +5582,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Blade Flurry"),
+					Cards.FromName("Blade Flurry", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5754,7 +5593,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Blade Flurry"));
 			//Spell testCard = game.ProcessCard<Spell>("Blade Flurry");
 		}
 
@@ -5777,7 +5615,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Deadly Poison"),
+					Cards.FromName("Deadly Poison", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5788,7 +5626,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Deadly Poison"));
 			//Spell testCard = game.ProcessCard<Spell>("Deadly Poison");
 		}
 
@@ -5812,7 +5649,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shiv"),
+					Cards.FromName("Shiv", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5823,7 +5660,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shiv"));
 			//Spell testCard = game.ProcessCard<Spell>("Shiv");
 		}
 
@@ -5846,7 +5682,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Backstab"),
+					Cards.FromName("Backstab", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5857,7 +5693,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Backstab"));
 			//Spell testCard = game.ProcessCard<Spell>("Backstab");
 		}
 
@@ -5880,7 +5715,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Vanish"),
+					Cards.FromName("Vanish", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5891,7 +5726,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Vanish"));
 			//Spell testCard = game.ProcessCard<Spell>("Vanish");
 		}
 
@@ -5914,7 +5748,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shadowstep"),
+					Cards.FromName("Shadowstep", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5925,7 +5759,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shadowstep"));
 			//Spell testCard = game.ProcessCard<Spell>("Shadowstep");
 		}
 
@@ -5951,7 +5784,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Conceal"),
+					Cards.FromName("Conceal", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5962,7 +5795,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Conceal"));
 			//Spell testCard = game.ProcessCard<Spell>("Conceal");
 		}
 
@@ -5988,7 +5820,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Perdition's Blade"),
+					Cards.FromName("Perdition's Blade", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -5999,7 +5831,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Perdition's Blade"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Perdition's Blade");
 		}
 
@@ -6021,7 +5852,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.ROGUE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Assassin's Blade"),
+					Cards.FromName("Assassin's Blade", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.ROGUE,
 				Shuffle = false,
@@ -6032,7 +5863,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Assassin's Blade"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Assassin's Blade");
 		}
 
@@ -6060,7 +5890,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Fire Elemental"),
+					Cards.FromName("Fire Elemental", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6071,7 +5901,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fire Elemental"));
 			//Minion testCard = game.ProcessCard<Minion>("Fire Elemental");
 		}
 
@@ -6096,7 +5925,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Earth Elemental"),
+					Cards.FromName("Earth Elemental", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6107,7 +5936,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Earth Elemental"));
 			//Minion testCard = game.ProcessCard<Minion>("Earth Elemental");
 		}
 
@@ -6133,7 +5961,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Unbound Elemental"),
+					Cards.FromName("Unbound Elemental", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6144,7 +5972,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Unbound Elemental"));
 			//Minion testCard = game.ProcessCard<Minion>("Unbound Elemental");
 		}
 
@@ -6171,7 +5998,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Windspeaker"),
+					Cards.FromName("Windspeaker", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6182,7 +6009,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Windspeaker"));
 			//Minion testCard = game.ProcessCard<Minion>("Windspeaker");
 		}
 
@@ -6207,7 +6033,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Flametongue Totem"),
+					Cards.FromName("Flametongue Totem", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6218,7 +6044,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Flametongue Totem"));
 			//Minion testCard = game.ProcessCard<Minion>("Flametongue Totem");
 		}
 
@@ -6241,7 +6066,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mana Tide Totem"),
+					Cards.FromName("Mana Tide Totem", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6252,7 +6077,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mana Tide Totem"));
 			//Minion testCard = game.ProcessCard<Minion>("Mana Tide Totem");
 		}
 
@@ -6280,7 +6104,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Al'Akir the Windlord"),
+					Cards.FromName("Al'Akir the Windlord", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6291,7 +6115,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Al'Akir the Windlord"));
 			//Minion testCard = game.ProcessCard<Minion>("Al'Akir the Windlord");
 		}
 
@@ -6316,7 +6139,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Dust Devil"),
+					Cards.FromName("Dust Devil", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6327,7 +6150,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dust Devil"));
 			//Minion testCard = game.ProcessCard<Minion>("Dust Devil");
 		}
 
@@ -6351,7 +6173,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lava Burst"),
+					Cards.FromName("Lava Burst", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6362,7 +6184,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lava Burst"));
 			//Spell testCard = game.ProcessCard<Spell>("Lava Burst");
 		}
 
@@ -6385,7 +6206,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Rockbiter Weapon"),
+					Cards.FromName("Rockbiter Weapon", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6396,7 +6217,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Rockbiter Weapon"));
 			//Spell testCard = game.ProcessCard<Spell>("Rockbiter Weapon");
 		}
 
@@ -6420,7 +6240,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Forked Lightning"),
+					Cards.FromName("Forked Lightning", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6431,7 +6251,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Forked Lightning"));
 			//Spell testCard = game.ProcessCard<Spell>("Forked Lightning");
 		}
 
@@ -6455,7 +6274,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Earth Shock"),
+					Cards.FromName("Earth Shock", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6466,7 +6285,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Earth Shock"));
 			//Spell testCard = game.ProcessCard<Spell>("Earth Shock");
 		}
 
@@ -6489,7 +6307,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Far Sight"),
+					Cards.FromName("Far Sight", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6500,7 +6318,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Far Sight"));
 			//Spell testCard = game.ProcessCard<Spell>("Far Sight");
 		}
 
@@ -6523,7 +6340,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Bloodlust"),
+					Cards.FromName("Bloodlust", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6534,7 +6351,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bloodlust"));
 			//Spell testCard = game.ProcessCard<Spell>("Bloodlust");
 		}
 
@@ -6561,7 +6377,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Hex"),
+					Cards.FromName("Hex", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6572,7 +6388,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hex"));
 			//Spell testCard = game.ProcessCard<Spell>("Hex");
 		}
 
@@ -6600,7 +6415,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ancestral Healing"),
+					Cards.FromName("Ancestral Healing", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6611,7 +6426,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ancestral Healing"));
 			//Spell testCard = game.ProcessCard<Spell>("Ancestral Healing");
 		}
 
@@ -6639,7 +6453,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Feral Spirit"),
+					Cards.FromName("Feral Spirit", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6650,7 +6464,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Feral Spirit"));
 			//Spell testCard = game.ProcessCard<Spell>("Feral Spirit");
 		}
 
@@ -6674,7 +6487,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lightning Storm"),
+					Cards.FromName("Lightning Storm", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6685,7 +6498,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lightning Storm"));
 			//Spell testCard = game.ProcessCard<Spell>("Lightning Storm");
 		}
 
@@ -6711,7 +6523,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Windfury"),
+					Cards.FromName("Windfury", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6722,7 +6534,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Windfury"));
 			//Spell testCard = game.ProcessCard<Spell>("Windfury");
 		}
 
@@ -6746,7 +6557,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lightning Bolt"),
+					Cards.FromName("Lightning Bolt", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6757,7 +6568,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lightning Bolt"));
 			//Spell testCard = game.ProcessCard<Spell>("Lightning Bolt");
 		}
 
@@ -6781,7 +6591,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Frost Shock"),
+					Cards.FromName("Frost Shock", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6792,7 +6602,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frost Shock"));
 			//Spell testCard = game.ProcessCard<Spell>("Frost Shock");
 		}
 
@@ -6818,7 +6627,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ancestral Spirit"),
+					Cards.FromName("Ancestral Spirit", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6829,7 +6638,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ancestral Spirit"));
 			//Spell testCard = game.ProcessCard<Spell>("Ancestral Spirit");
 		}
 
@@ -6852,7 +6660,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Totemic Might"),
+					Cards.FromName("Totemic Might", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6863,7 +6671,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Totemic Might"));
 			//Spell testCard = game.ProcessCard<Spell>("Totemic Might");
 		}
 
@@ -6889,7 +6696,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Doomhammer"),
+					Cards.FromName("Doomhammer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6900,7 +6707,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Doomhammer"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Doomhammer");
 		}
 
@@ -6925,7 +6731,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.SHAMAN,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Stormforged Axe"),
+					Cards.FromName("Stormforged Axe", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.SHAMAN,
 				Shuffle = false,
@@ -6936,7 +6742,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stormforged Axe"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Stormforged Axe");
 		}
 
@@ -6967,7 +6772,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Blood Imp"),
+					Cards.FromName("Blood Imp", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -6978,7 +6783,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Blood Imp"));
 			//Minion testCard = game.ProcessCard<Minion>("Blood Imp");
 		}
 
@@ -7002,7 +6806,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Pit Lord"),
+					Cards.FromName("Pit Lord", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7013,7 +6817,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pit Lord"));
 			//Minion testCard = game.ProcessCard<Minion>("Pit Lord");
 		}
 
@@ -7039,7 +6842,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lord Jaraxxus"),
+					Cards.FromName("Lord Jaraxxus", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7050,7 +6853,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lord Jaraxxus"));
 			//Minion testCard = game.ProcessCard<Minion>("Lord Jaraxxus");
 		}
 
@@ -7076,7 +6878,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Doomguard"),
+					Cards.FromName("Doomguard", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7087,7 +6889,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Doomguard"));
 			//Minion testCard = game.ProcessCard<Minion>("Doomguard");
 		}
 
@@ -7111,7 +6912,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Summoning Portal"),
+					Cards.FromName("Summoning Portal", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7122,7 +6923,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Summoning Portal"));
 			//Minion testCard = game.ProcessCard<Minion>("Summoning Portal");
 		}
 
@@ -7146,7 +6946,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Dread Infernal"),
+					Cards.FromName("Dread Infernal", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7157,7 +6957,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dread Infernal"));
 			//Minion testCard = game.ProcessCard<Minion>("Dread Infernal");
 		}
 
@@ -7182,7 +6981,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Felstalker"),
+					Cards.FromName("Felstalker", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7193,7 +6992,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Felstalker"));
 			//Minion testCard = game.ProcessCard<Minion>("Felstalker");
 		}
 
@@ -7219,7 +7017,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Felguard"),
+					Cards.FromName("Felguard", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7230,7 +7028,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Felguard"));
 			//Minion testCard = game.ProcessCard<Minion>("Felguard");
 		}
 
@@ -7254,7 +7051,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Voidwalker"),
+					Cards.FromName("Voidwalker", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7265,7 +7062,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Voidwalker"));
 			//Minion testCard = game.ProcessCard<Minion>("Voidwalker");
 		}
 
@@ -7292,7 +7088,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Void Terror"),
+					Cards.FromName("Void Terror", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7303,7 +7099,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Void Terror"));
 			//Minion testCard = game.ProcessCard<Minion>("Void Terror");
 		}
 
@@ -7328,7 +7123,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Flame Imp"),
+					Cards.FromName("Flame Imp", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7339,7 +7134,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Flame Imp"));
 			//Minion testCard = game.ProcessCard<Minion>("Flame Imp");
 		}
 
@@ -7362,7 +7156,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Drain Life"),
+					Cards.FromName("Drain Life", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7373,7 +7167,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Drain Life"));
 			//Spell testCard = game.ProcessCard<Spell>("Drain Life");
 		}
 
@@ -7397,7 +7190,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shadow Bolt"),
+					Cards.FromName("Shadow Bolt", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7408,7 +7201,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shadow Bolt"));
 			//Spell testCard = game.ProcessCard<Spell>("Shadow Bolt");
 		}
 
@@ -7432,7 +7224,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shadowflame"),
+					Cards.FromName("Shadowflame", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7443,7 +7235,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shadowflame"));
 			//Spell testCard = game.ProcessCard<Spell>("Shadowflame");
 		}
 
@@ -7468,7 +7259,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Soulfire"),
+					Cards.FromName("Soulfire", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7479,7 +7270,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Soulfire"));
 			//Spell testCard = game.ProcessCard<Spell>("Soulfire");
 		}
 
@@ -7502,7 +7292,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Demonfire"),
+					Cards.FromName("Demonfire", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7513,7 +7303,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Demonfire"));
 			//Spell testCard = game.ProcessCard<Spell>("Demonfire");
 		}
 
@@ -7536,7 +7325,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Twisting Nether"),
+					Cards.FromName("Twisting Nether", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7547,7 +7336,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Twisting Nether"));
 			//Spell testCard = game.ProcessCard<Spell>("Twisting Nether");
 		}
 
@@ -7570,7 +7358,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Corruption"),
+					Cards.FromName("Corruption", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7581,7 +7369,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Corruption"));
 			//Spell testCard = game.ProcessCard<Spell>("Corruption");
 		}
 
@@ -7604,7 +7391,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Bane of Doom"),
+					Cards.FromName("Bane of Doom", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7615,7 +7402,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bane of Doom"));
 			//Spell testCard = game.ProcessCard<Spell>("Bane of Doom");
 		}
 
@@ -7639,7 +7425,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sense Demons"),
+					Cards.FromName("Sense Demons", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7650,7 +7436,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sense Demons"));
 			//Spell testCard = game.ProcessCard<Spell>("Sense Demons");
 		}
 
@@ -7673,7 +7458,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Siphon Soul"),
+					Cards.FromName("Siphon Soul", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7684,7 +7469,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Siphon Soul"));
 			//Spell testCard = game.ProcessCard<Spell>("Siphon Soul");
 		}
 
@@ -7707,7 +7491,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Power Overwhelming"),
+					Cards.FromName("Power Overwhelming", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7718,7 +7502,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Power Overwhelming"));
 			//Spell testCard = game.ProcessCard<Spell>("Power Overwhelming");
 		}
 
@@ -7741,7 +7524,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sacrificial Pact"),
+					Cards.FromName("Sacrificial Pact", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7752,7 +7535,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sacrificial Pact"));
 			//Spell testCard = game.ProcessCard<Spell>("Sacrificial Pact");
 		}
 
@@ -7775,7 +7557,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mortal Coil"),
+					Cards.FromName("Mortal Coil", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7786,7 +7568,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mortal Coil"));
 			//Spell testCard = game.ProcessCard<Spell>("Mortal Coil");
 		}
 
@@ -7809,7 +7590,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARLOCK,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Hellfire"),
+					Cards.FromName("Hellfire", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARLOCK,
 				Shuffle = false,
@@ -7820,7 +7601,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hellfire"));
 			//Spell testCard = game.ProcessCard<Spell>("Hellfire");
 		}
 
@@ -7854,7 +7634,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Grommash Hellscream"),
+					Cards.FromName("Grommash Hellscream", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -7865,7 +7645,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Grommash Hellscream"));
 			//Minion testCard = game.ProcessCard<Minion>("Grommash Hellscream");
 		}
 
@@ -7891,7 +7670,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Warsong Commander"),
+					Cards.FromName("Warsong Commander", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -7902,7 +7681,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Warsong Commander"));
 			//Minion testCard = game.ProcessCard<Minion>("Warsong Commander");
 		}
 
@@ -7926,7 +7704,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Cruel Taskmaster"),
+					Cards.FromName("Cruel Taskmaster", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -7937,7 +7715,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Cruel Taskmaster"));
 			//Minion testCard = game.ProcessCard<Minion>("Cruel Taskmaster");
 		}
 
@@ -7961,7 +7738,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Kor'kron Elite"),
+					Cards.FromName("Kor'kron Elite", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -7972,7 +7749,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Kor'kron Elite"));
 			//Minion testCard = game.ProcessCard<Minion>("Kor'kron Elite");
 		}
 
@@ -7995,7 +7771,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Frothing Berserker"),
+					Cards.FromName("Frothing Berserker", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8006,7 +7782,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frothing Berserker"));
 			//Minion testCard = game.ProcessCard<Minion>("Frothing Berserker");
 		}
 
@@ -8029,7 +7804,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Armorsmith"),
+					Cards.FromName("Armorsmith", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8040,7 +7815,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Armorsmith"));
 			//Minion testCard = game.ProcessCard<Minion>("Armorsmith");
 		}
 
@@ -8065,7 +7839,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Arathi Weaponsmith"),
+					Cards.FromName("Arathi Weaponsmith", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8076,7 +7850,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arathi Weaponsmith"));
 			//Minion testCard = game.ProcessCard<Minion>("Arathi Weaponsmith");
 		}
 
@@ -8099,7 +7872,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Execute"),
+					Cards.FromName("Execute", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8110,7 +7883,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Execute"));
 			//Spell testCard = game.ProcessCard<Spell>("Execute");
 		}
 
@@ -8133,7 +7905,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Commanding Shout"),
+					Cards.FromName("Commanding Shout", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8144,7 +7916,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Commanding Shout"));
 			//Spell testCard = game.ProcessCard<Spell>("Commanding Shout");
 		}
 
@@ -8168,7 +7939,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shield Slam"),
+					Cards.FromName("Shield Slam", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8179,7 +7950,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shield Slam"));
 			//Spell testCard = game.ProcessCard<Spell>("Shield Slam");
 		}
 
@@ -8203,7 +7973,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shield Block"),
+					Cards.FromName("Shield Block", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8214,7 +7984,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shield Block"));
 			//Spell testCard = game.ProcessCard<Spell>("Shield Block");
 		}
 
@@ -8237,7 +8006,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Heroic Strike"),
+					Cards.FromName("Heroic Strike", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8248,7 +8017,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Heroic Strike"));
 			//Spell testCard = game.ProcessCard<Spell>("Heroic Strike");
 		}
 
@@ -8271,7 +8039,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mortal Strike"),
+					Cards.FromName("Mortal Strike", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8282,7 +8050,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mortal Strike"));
 			//Spell testCard = game.ProcessCard<Spell>("Mortal Strike");
 		}
 
@@ -8305,7 +8072,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Whirlwind"),
+					Cards.FromName("Whirlwind", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8316,7 +8083,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Whirlwind"));
 			//Spell testCard = game.ProcessCard<Spell>("Whirlwind");
 		}
 
@@ -8342,7 +8108,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Charge"),
+					Cards.FromName("Charge", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8353,7 +8119,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Charge"));
 			//Spell testCard = game.ProcessCard<Spell>("Charge");
 		}
 
@@ -8376,7 +8141,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Rampage"),
+					Cards.FromName("Rampage", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8387,7 +8152,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Rampage"));
 			//Spell testCard = game.ProcessCard<Spell>("Rampage");
 		}
 
@@ -8412,7 +8176,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Cleave"),
+					Cards.FromName("Cleave", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8423,7 +8187,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Cleave"));
 			//Spell testCard = game.ProcessCard<Spell>("Cleave");
 		}
 
@@ -8446,7 +8209,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Battle Rage"),
+					Cards.FromName("Battle Rage", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8457,7 +8220,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Battle Rage"));
 			//Spell testCard = game.ProcessCard<Spell>("Battle Rage");
 		}
 
@@ -8480,7 +8242,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Slam"),
+					Cards.FromName("Slam", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8491,7 +8253,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Slam"));
 			//Spell testCard = game.ProcessCard<Spell>("Slam");
 		}
 
@@ -8514,7 +8275,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Brawl"),
+					Cards.FromName("Brawl", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8525,7 +8286,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Brawl"));
 			//Spell testCard = game.ProcessCard<Spell>("Brawl");
 		}
 
@@ -8548,7 +8308,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Inner Rage"),
+					Cards.FromName("Inner Rage", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8559,7 +8319,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Inner Rage"));
 			//Spell testCard = game.ProcessCard<Spell>("Inner Rage");
 		}
 
@@ -8583,7 +8342,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Upgrade!"),
+					Cards.FromName("Upgrade!", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8594,7 +8353,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Upgrade!"));
 			//Spell testCard = game.ProcessCard<Spell>("Upgrade!");
 		}
 
@@ -8616,7 +8374,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Fiery War Axe"),
+					Cards.FromName("Fiery War Axe", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8627,7 +8385,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fiery War Axe"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Fiery War Axe");
 		}
 
@@ -8651,7 +8408,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Gorehowl"),
+					Cards.FromName("Gorehowl", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8662,7 +8419,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Gorehowl"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Gorehowl");
 		}
 
@@ -8684,7 +8440,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.WARRIOR,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Arcanite Reaper"),
+					Cards.FromName("Arcanite Reaper", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
@@ -8695,7 +8451,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcanite Reaper"));
 			//Weapon testCard = game.ProcessCard<Weapon>("Arcanite Reaper");
 		}
 
@@ -8723,7 +8478,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ancient Brewmaster"),
+					Cards.FromName("Ancient Brewmaster", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -8734,7 +8489,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ancient Brewmaster"));
 			//Minion testCard = game.ProcessCard<Minion>("Ancient Brewmaster");
 		}
 
@@ -8757,7 +8511,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Flesheating Ghoul"),
+					Cards.FromName("Flesheating Ghoul", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -8768,7 +8522,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Flesheating Ghoul"));
 			//Minion testCard = game.ProcessCard<Minion>("Flesheating Ghoul");
 		}
 
@@ -8792,7 +8545,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Emperor Cobra"),
+					Cards.FromName("Emperor Cobra", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -8803,7 +8556,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Emperor Cobra"));
 			//Minion testCard = game.ProcessCard<Minion>("Emperor Cobra");
 		}
 
@@ -8827,7 +8579,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Elven Archer"),
+					Cards.FromName("Elven Archer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -8838,7 +8590,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elven Archer"));
 			//Minion testCard = game.ProcessCard<Minion>("Elven Archer");
 		}
 
@@ -8862,7 +8613,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Coldlight Seer"),
+					Cards.FromName("Coldlight Seer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -8873,7 +8624,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Coldlight Seer"));
 			//Minion testCard = game.ProcessCard<Minion>("Coldlight Seer");
 		}
 
@@ -8900,7 +8650,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Bloodmage Thalnos"),
+					Cards.FromName("Bloodmage Thalnos", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -8911,7 +8661,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bloodmage Thalnos"));
 			//Minion testCard = game.ProcessCard<Minion>("Bloodmage Thalnos");
 		}
 
@@ -8935,7 +8684,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Thrallmar Farseer"),
+					Cards.FromName("Thrallmar Farseer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -8946,7 +8695,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Thrallmar Farseer"));
 			//Minion testCard = game.ProcessCard<Minion>("Thrallmar Farseer");
 		}
 
@@ -8972,7 +8720,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Imp Master"),
+					Cards.FromName("Imp Master", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -8983,7 +8731,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Imp Master"));
 			//Minion testCard = game.ProcessCard<Minion>("Imp Master");
 		}
 
@@ -9006,7 +8753,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Molten Giant"),
+					Cards.FromName("Molten Giant", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9017,7 +8764,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Molten Giant"));
 			//Minion testCard = game.ProcessCard<Minion>("Molten Giant");
 		}
 
@@ -9038,7 +8784,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Magma Rager"),
+					Cards.FromName("Magma Rager", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9049,7 +8795,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Magma Rager"));
 			//Minion testCard = game.ProcessCard<Minion>("Magma Rager");
 		}
 
@@ -9073,7 +8818,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Gruul"),
+					Cards.FromName("Gruul", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9084,7 +8829,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Gruul"));
 			//Minion testCard = game.ProcessCard<Minion>("Gruul");
 		}
 
@@ -9109,7 +8853,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Harrison Jones"),
+					Cards.FromName("Harrison Jones", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9120,7 +8864,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Harrison Jones"));
 			//Minion testCard = game.ProcessCard<Minion>("Harrison Jones");
 		}
 
@@ -9144,7 +8887,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Frostwolf Warlord"),
+					Cards.FromName("Frostwolf Warlord", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9155,7 +8898,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Warlord"));
 			//Minion testCard = game.ProcessCard<Minion>("Frostwolf Warlord");
 		}
 
@@ -9179,7 +8921,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Novice Engineer"),
+					Cards.FromName("Novice Engineer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9190,7 +8932,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Novice Engineer"));
 			//Minion testCard = game.ProcessCard<Minion>("Novice Engineer");
 		}
 
@@ -9216,7 +8957,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Azure Drake"),
+					Cards.FromName("Azure Drake", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9227,7 +8968,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Azure Drake"));
 			//Minion testCard = game.ProcessCard<Minion>("Azure Drake");
 		}
 
@@ -9252,7 +8992,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Old Murk-Eye"),
+					Cards.FromName("Old Murk-Eye", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9263,7 +9003,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Old Murk-Eye"));
 			//Minion testCard = game.ProcessCard<Minion>("Old Murk-Eye");
 		}
 
@@ -9288,7 +9027,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Illidan Stormrage"),
+					Cards.FromName("Illidan Stormrage", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9299,7 +9038,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Illidan Stormrage"));
 			//Minion testCard = game.ProcessCard<Minion>("Illidan Stormrage");
 		}
 
@@ -9323,7 +9061,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Gnomish Inventor"),
+					Cards.FromName("Gnomish Inventor", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9334,7 +9072,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Gnomish Inventor"));
 			//Minion testCard = game.ProcessCard<Minion>("Gnomish Inventor");
 		}
 
@@ -9362,7 +9099,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sunfury Protector"),
+					Cards.FromName("Sunfury Protector", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9373,7 +9110,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sunfury Protector"));
 			//Minion testCard = game.ProcessCard<Minion>("Sunfury Protector");
 		}
 
@@ -9397,7 +9133,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Archmage"),
+					Cards.FromName("Archmage", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9408,7 +9144,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Archmage"));
 			//Minion testCard = game.ProcessCard<Minion>("Archmage");
 		}
 
@@ -9433,7 +9168,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Faceless Manipulator"),
+					Cards.FromName("Faceless Manipulator", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9444,7 +9179,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Faceless Manipulator"));
 			//Minion testCard = game.ProcessCard<Minion>("Faceless Manipulator");
 		}
 
@@ -9468,7 +9202,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Nat Pagle"),
+					Cards.FromName("Nat Pagle", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9479,7 +9213,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Nat Pagle"));
 			//Minion testCard = game.ProcessCard<Minion>("Nat Pagle");
 		}
 
@@ -9503,7 +9236,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Frostwolf Grunt"),
+					Cards.FromName("Frostwolf Grunt", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9514,7 +9247,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frostwolf Grunt"));
 			//Minion testCard = game.ProcessCard<Minion>("Frostwolf Grunt");
 		}
 
@@ -9539,7 +9271,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Stranglethorn Tiger"),
+					Cards.FromName("Stranglethorn Tiger", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9550,7 +9282,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stranglethorn Tiger"));
 			//Minion testCard = game.ProcessCard<Minion>("Stranglethorn Tiger");
 		}
 
@@ -9571,7 +9302,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Bloodfen Raptor"),
+					Cards.FromName("Bloodfen Raptor", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9582,7 +9313,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bloodfen Raptor"));
 			//Minion testCard = game.ProcessCard<Minion>("Bloodfen Raptor");
 		}
 
@@ -9606,7 +9336,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Stormpike Commando"),
+					Cards.FromName("Stormpike Commando", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9617,7 +9347,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stormpike Commando"));
 			//Minion testCard = game.ProcessCard<Minion>("Stormpike Commando");
 		}
 
@@ -9644,7 +9373,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Blood Knight"),
+					Cards.FromName("Blood Knight", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9655,7 +9384,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Blood Knight"));
 			//Minion testCard = game.ProcessCard<Minion>("Blood Knight");
 		}
 
@@ -9680,7 +9408,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Alarm-o-Bot"),
+					Cards.FromName("Alarm-o-Bot", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9691,7 +9419,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Alarm-o-Bot"));
 			//Minion testCard = game.ProcessCard<Minion>("Alarm-o-Bot");
 		}
 
@@ -9715,7 +9442,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Earthen Ring Farseer"),
+					Cards.FromName("Earthen Ring Farseer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9726,7 +9453,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Earthen Ring Farseer"));
 			//Minion testCard = game.ProcessCard<Minion>("Earthen Ring Farseer");
 		}
 
@@ -9749,7 +9475,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mana Addict"),
+					Cards.FromName("Mana Addict", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9760,7 +9486,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mana Addict"));
 			//Minion testCard = game.ProcessCard<Minion>("Mana Addict");
 		}
 
@@ -9786,7 +9511,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Onyxia"),
+					Cards.FromName("Onyxia", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9797,7 +9522,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Onyxia"));
 			//Minion testCard = game.ProcessCard<Minion>("Onyxia");
 		}
 
@@ -9818,7 +9542,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("War Golem"),
+					Cards.FromName("War Golem", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9829,7 +9553,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("War Golem"));
 			//Minion testCard = game.ProcessCard<Minion>("War Golem");
 		}
 
@@ -9853,7 +9576,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ogre Magi"),
+					Cards.FromName("Ogre Magi", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9864,7 +9587,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ogre Magi"));
 			//Minion testCard = game.ProcessCard<Minion>("Ogre Magi");
 		}
 
@@ -9889,7 +9611,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Knife Juggler"),
+					Cards.FromName("Knife Juggler", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9900,7 +9622,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Knife Juggler"));
 			//Minion testCard = game.ProcessCard<Minion>("Knife Juggler");
 		}
 
@@ -9923,7 +9644,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mountain Giant"),
+					Cards.FromName("Mountain Giant", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9934,7 +9655,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mountain Giant"));
 			//Minion testCard = game.ProcessCard<Minion>("Mountain Giant");
 		}
 
@@ -9958,7 +9678,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Captain's Parrot"),
+					Cards.FromName("Captain's Parrot", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -9969,7 +9689,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Captain's Parrot"));
 			//Minion testCard = game.ProcessCard<Minion>("Captain's Parrot");
 		}
 
@@ -9996,7 +9715,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Spiteful Smith"),
+					Cards.FromName("Spiteful Smith", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10007,7 +9726,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spiteful Smith"));
 			//Minion testCard = game.ProcessCard<Minion>("Spiteful Smith");
 		}
 
@@ -10031,7 +9749,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Worgen Infiltrator"),
+					Cards.FromName("Worgen Infiltrator", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10042,7 +9760,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Worgen Infiltrator"));
 			//Minion testCard = game.ProcessCard<Minion>("Worgen Infiltrator");
 		}
 
@@ -10065,7 +9782,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Cult Master"),
+					Cards.FromName("Cult Master", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10076,7 +9793,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Cult Master"));
 			//Minion testCard = game.ProcessCard<Minion>("Cult Master");
 		}
 
@@ -10101,7 +9817,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Bloodsail Raider"),
+					Cards.FromName("Bloodsail Raider", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10112,7 +9828,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bloodsail Raider"));
 			//Minion testCard = game.ProcessCard<Minion>("Bloodsail Raider");
 		}
 
@@ -10138,7 +9853,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Argent Commander"),
+					Cards.FromName("Argent Commander", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10149,7 +9864,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Argent Commander"));
 			//Minion testCard = game.ProcessCard<Minion>("Argent Commander");
 		}
 
@@ -10176,7 +9890,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ironbeak Owl"),
+					Cards.FromName("Ironbeak Owl", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10187,7 +9901,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ironbeak Owl"));
 			//Minion testCard = game.ProcessCard<Minion>("Ironbeak Owl");
 		}
 
@@ -10213,7 +9926,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sunwalker"),
+					Cards.FromName("Sunwalker", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10224,7 +9937,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sunwalker"));
 			//Minion testCard = game.ProcessCard<Minion>("Sunwalker");
 		}
 
@@ -10248,7 +9960,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Baron Geddon"),
+					Cards.FromName("Baron Geddon", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10259,7 +9971,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Baron Geddon"));
 			//Minion testCard = game.ProcessCard<Minion>("Baron Geddon");
 		}
 
@@ -10283,7 +9994,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Young Dragonhawk"),
+					Cards.FromName("Young Dragonhawk", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10294,7 +10005,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Young Dragonhawk"));
 			//Minion testCard = game.ProcessCard<Minion>("Young Dragonhawk");
 		}
 
@@ -10320,7 +10030,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mind Control Tech"),
+					Cards.FromName("Mind Control Tech", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10331,7 +10041,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mind Control Tech"));
 			//Minion testCard = game.ProcessCard<Minion>("Mind Control Tech");
 		}
 
@@ -10355,7 +10064,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Southsea Captain"),
+					Cards.FromName("Southsea Captain", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10366,7 +10075,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Southsea Captain"));
 			//Minion testCard = game.ProcessCard<Minion>("Southsea Captain");
 		}
 
@@ -10390,7 +10098,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Murloc Warleader"),
+					Cards.FromName("Murloc Warleader", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10401,7 +10109,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Murloc Warleader"));
 			//Minion testCard = game.ProcessCard<Minion>("Murloc Warleader");
 		}
 
@@ -10425,7 +10132,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Abusive Sergeant"),
+					Cards.FromName("Abusive Sergeant", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10436,7 +10143,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Abusive Sergeant"));
 			//Minion testCard = game.ProcessCard<Minion>("Abusive Sergeant");
 		}
 
@@ -10461,7 +10167,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Millhouse Manastorm"),
+					Cards.FromName("Millhouse Manastorm", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10472,7 +10178,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Millhouse Manastorm"));
 			//Minion testCard = game.ProcessCard<Minion>("Millhouse Manastorm");
 		}
 
@@ -10496,7 +10201,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lorewalker Cho"),
+					Cards.FromName("Lorewalker Cho", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10507,7 +10212,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lorewalker Cho"));
 			//Minion testCard = game.ProcessCard<Minion>("Lorewalker Cho");
 		}
 
@@ -10531,7 +10235,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Violet Teacher"),
+					Cards.FromName("Violet Teacher", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10542,7 +10246,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Violet Teacher"));
 			//Minion testCard = game.ProcessCard<Minion>("Violet Teacher");
 		}
 
@@ -10566,7 +10269,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Reckless Rocketeer"),
+					Cards.FromName("Reckless Rocketeer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10577,7 +10280,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Reckless Rocketeer"));
 			//Minion testCard = game.ProcessCard<Minion>("Reckless Rocketeer");
 		}
 
@@ -10601,7 +10303,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Scarlet Crusader"),
+					Cards.FromName("Scarlet Crusader", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10612,7 +10314,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Scarlet Crusader"));
 			//Minion testCard = game.ProcessCard<Minion>("Scarlet Crusader");
 		}
 
@@ -10633,7 +10334,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Oasis Snapjaw"),
+					Cards.FromName("Oasis Snapjaw", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10644,7 +10345,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Oasis Snapjaw"));
 			//Minion testCard = game.ProcessCard<Minion>("Oasis Snapjaw");
 		}
 
@@ -10668,7 +10368,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Faerie Dragon"),
+					Cards.FromName("Faerie Dragon", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10679,7 +10379,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Faerie Dragon"));
 			//Minion testCard = game.ProcessCard<Minion>("Faerie Dragon");
 		}
 
@@ -10703,7 +10402,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mana Wraith"),
+					Cards.FromName("Mana Wraith", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10714,7 +10413,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mana Wraith"));
 			//Minion testCard = game.ProcessCard<Minion>("Mana Wraith");
 		}
 
@@ -10738,7 +10436,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Fen Creeper"),
+					Cards.FromName("Fen Creeper", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10749,7 +10447,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Fen Creeper"));
 			//Minion testCard = game.ProcessCard<Minion>("Fen Creeper");
 		}
 
@@ -10773,7 +10470,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mad Bomber"),
+					Cards.FromName("Mad Bomber", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10784,7 +10481,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mad Bomber"));
 			//Minion testCard = game.ProcessCard<Minion>("Mad Bomber");
 		}
 
@@ -10808,7 +10504,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Venture Co. Mercenary"),
+					Cards.FromName("Venture Co. Mercenary", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10819,7 +10515,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Venture Co. Mercenary"));
 			//Minion testCard = game.ProcessCard<Minion>("Venture Co. Mercenary");
 		}
 
@@ -10844,7 +10539,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Dragonling Mechanic"),
+					Cards.FromName("Dragonling Mechanic", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10855,7 +10550,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dragonling Mechanic"));
 			//Minion testCard = game.ProcessCard<Minion>("Dragonling Mechanic");
 		}
 
@@ -10882,7 +10576,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Gelbin Mekkatorque"),
+					Cards.FromName("Gelbin Mekkatorque", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10893,7 +10587,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Gelbin Mekkatorque"));
 			//Minion testCard = game.ProcessCard<Minion>("Gelbin Mekkatorque");
 		}
 
@@ -10917,7 +10610,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shieldbearer"),
+					Cards.FromName("Shieldbearer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10928,7 +10621,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shieldbearer"));
 			//Minion testCard = game.ProcessCard<Minion>("Shieldbearer");
 		}
 
@@ -10954,7 +10646,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Southsea Deckhand"),
+					Cards.FromName("Southsea Deckhand", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10965,7 +10657,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Southsea Deckhand"));
 			//Minion testCard = game.ProcessCard<Minion>("Southsea Deckhand");
 		}
 
@@ -10988,7 +10679,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Murloc Tidecaller"),
+					Cards.FromName("Murloc Tidecaller", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -10999,7 +10690,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Murloc Tidecaller"));
 			//Minion testCard = game.ProcessCard<Minion>("Murloc Tidecaller");
 		}
 
@@ -11023,7 +10713,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Goldshire Footman"),
+					Cards.FromName("Goldshire Footman", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11034,7 +10724,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Goldshire Footman"));
 			//Minion testCard = game.ProcessCard<Minion>("Goldshire Footman");
 		}
 
@@ -11057,7 +10746,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Questing Adventurer"),
+					Cards.FromName("Questing Adventurer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11068,7 +10757,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Questing Adventurer"));
 			//Minion testCard = game.ProcessCard<Minion>("Questing Adventurer");
 		}
 
@@ -11092,7 +10780,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ravenholdt Assassin"),
+					Cards.FromName("Ravenholdt Assassin", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11103,7 +10791,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ravenholdt Assassin"));
 			//Minion testCard = game.ProcessCard<Minion>("Ravenholdt Assassin");
 		}
 
@@ -11126,7 +10813,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Gadgetzan Auctioneer"),
+					Cards.FromName("Gadgetzan Auctioneer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11137,7 +10824,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Gadgetzan Auctioneer"));
 			//Minion testCard = game.ProcessCard<Minion>("Gadgetzan Auctioneer");
 		}
 
@@ -11162,7 +10848,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Harvest Golem"),
+					Cards.FromName("Harvest Golem", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11173,7 +10859,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Harvest Golem"));
 			//Minion testCard = game.ProcessCard<Minion>("Harvest Golem");
 		}
 
@@ -11194,7 +10879,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("River Crocolisk"),
+					Cards.FromName("River Crocolisk", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11205,7 +10890,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("River Crocolisk"));
 			//Minion testCard = game.ProcessCard<Minion>("River Crocolisk");
 		}
 
@@ -11229,7 +10913,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Argent Squire"),
+					Cards.FromName("Argent Squire", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11240,7 +10924,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Argent Squire"));
 			//Minion testCard = game.ProcessCard<Minion>("Argent Squire");
 		}
 
@@ -11264,7 +10947,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Youthful Brewmaster"),
+					Cards.FromName("Youthful Brewmaster", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11275,7 +10958,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Youthful Brewmaster"));
 			//Minion testCard = game.ProcessCard<Minion>("Youthful Brewmaster");
 		}
 
@@ -11299,7 +10981,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Stampeding Kodo"),
+					Cards.FromName("Stampeding Kodo", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11310,7 +10992,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stampeding Kodo"));
 			//Minion testCard = game.ProcessCard<Minion>("Stampeding Kodo");
 		}
 
@@ -11335,7 +11016,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Silver Hand Knight"),
+					Cards.FromName("Silver Hand Knight", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11346,7 +11027,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silver Hand Knight"));
 			//Minion testCard = game.ProcessCard<Minion>("Silver Hand Knight");
 		}
 
@@ -11371,7 +11051,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Arcane Golem"),
+					Cards.FromName("Arcane Golem", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11382,7 +11062,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Arcane Golem"));
 			//Minion testCard = game.ProcessCard<Minion>("Arcane Golem");
 		}
 
@@ -11406,7 +11085,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Nozdormu"),
+					Cards.FromName("Nozdormu", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11417,7 +11096,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Nozdormu"));
 			//Minion testCard = game.ProcessCard<Minion>("Nozdormu");
 		}
 
@@ -11441,7 +11119,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Nightblade"),
+					Cards.FromName("Nightblade", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11452,7 +11130,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Nightblade"));
 			//Minion testCard = game.ProcessCard<Minion>("Nightblade");
 		}
 
@@ -11476,7 +11153,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Big Game Hunter"),
+					Cards.FromName("Big Game Hunter", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11487,7 +11164,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Big Game Hunter"));
 			//Minion testCard = game.ProcessCard<Minion>("Big Game Hunter");
 		}
 
@@ -11511,7 +11187,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Dalaran Mage"),
+					Cards.FromName("Dalaran Mage", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11522,7 +11198,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dalaran Mage"));
 			//Minion testCard = game.ProcessCard<Minion>("Dalaran Mage");
 		}
 
@@ -11543,7 +11218,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Wisp"),
+					Cards.FromName("Wisp", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11554,7 +11229,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wisp"));
 			//Minion testCard = game.ProcessCard<Minion>("Wisp");
 		}
 
@@ -11582,7 +11256,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("The Black Knight"),
+					Cards.FromName("The Black Knight", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11593,7 +11267,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("The Black Knight"));
 			//Minion testCard = game.ProcessCard<Minion>("The Black Knight");
 		}
 
@@ -11614,7 +11287,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Boulderfist Ogre"),
+					Cards.FromName("Boulderfist Ogre", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11625,7 +11298,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Boulderfist Ogre"));
 			//Minion testCard = game.ProcessCard<Minion>("Boulderfist Ogre");
 		}
 
@@ -11649,7 +11321,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Windfury Harpy"),
+					Cards.FromName("Windfury Harpy", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11660,7 +11332,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Windfury Harpy"));
 			//Minion testCard = game.ProcessCard<Minion>("Windfury Harpy");
 		}
 
@@ -11681,7 +11352,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Murloc Raider"),
+					Cards.FromName("Murloc Raider", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11692,7 +11363,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Murloc Raider"));
 			//Minion testCard = game.ProcessCard<Minion>("Murloc Raider");
 		}
 
@@ -11716,7 +11386,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Silvermoon Guardian"),
+					Cards.FromName("Silvermoon Guardian", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11727,7 +11397,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silvermoon Guardian"));
 			//Minion testCard = game.ProcessCard<Minion>("Silvermoon Guardian");
 		}
 
@@ -11755,7 +11424,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ancient Mage"),
+					Cards.FromName("Ancient Mage", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11766,7 +11435,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ancient Mage"));
 			//Minion testCard = game.ProcessCard<Minion>("Ancient Mage");
 		}
 
@@ -11792,7 +11460,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Cairne Bloodhoof"),
+					Cards.FromName("Cairne Bloodhoof", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11803,7 +11471,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Cairne Bloodhoof"));
 			//Minion testCard = game.ProcessCard<Minion>("Cairne Bloodhoof");
 		}
 
@@ -11827,7 +11494,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Coldlight Oracle"),
+					Cards.FromName("Coldlight Oracle", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11838,7 +11505,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Coldlight Oracle"));
 			//Minion testCard = game.ProcessCard<Minion>("Coldlight Oracle");
 		}
 
@@ -11863,7 +11529,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Dire Wolf Alpha"),
+					Cards.FromName("Dire Wolf Alpha", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11874,7 +11540,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dire Wolf Alpha"));
 			//Minion testCard = game.ProcessCard<Minion>("Dire Wolf Alpha");
 		}
 
@@ -11898,7 +11563,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ironfur Grizzly"),
+					Cards.FromName("Ironfur Grizzly", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11909,7 +11574,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ironfur Grizzly"));
 			//Minion testCard = game.ProcessCard<Minion>("Ironfur Grizzly");
 		}
 
@@ -11933,7 +11597,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Dark Iron Dwarf"),
+					Cards.FromName("Dark Iron Dwarf", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11944,7 +11608,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dark Iron Dwarf"));
 			//Minion testCard = game.ProcessCard<Minion>("Dark Iron Dwarf");
 		}
 
@@ -11967,7 +11630,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Gurubashi Berserker"),
+					Cards.FromName("Gurubashi Berserker", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -11978,7 +11641,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Gurubashi Berserker"));
 			//Minion testCard = game.ProcessCard<Minion>("Gurubashi Berserker");
 		}
 
@@ -12002,7 +11664,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Darkscale Healer"),
+					Cards.FromName("Darkscale Healer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12013,7 +11675,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Darkscale Healer"));
 			//Minion testCard = game.ProcessCard<Minion>("Darkscale Healer");
 		}
 
@@ -12039,7 +11700,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Bloodsail Corsair"),
+					Cards.FromName("Bloodsail Corsair", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12050,7 +11711,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bloodsail Corsair"));
 			//Minion testCard = game.ProcessCard<Minion>("Bloodsail Corsair");
 		}
 
@@ -12078,7 +11738,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Defender of Argus"),
+					Cards.FromName("Defender of Argus", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12089,7 +11749,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Defender of Argus"));
 			//Minion testCard = game.ProcessCard<Minion>("Defender of Argus");
 		}
 
@@ -12113,7 +11772,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Raid Leader"),
+					Cards.FromName("Raid Leader", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12124,7 +11783,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Raid Leader"));
 			//Minion testCard = game.ProcessCard<Minion>("Raid Leader");
 		}
 
@@ -12149,7 +11807,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Dread Corsair"),
+					Cards.FromName("Dread Corsair", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12160,7 +11818,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Dread Corsair"));
 			//Minion testCard = game.ProcessCard<Minion>("Dread Corsair");
 		}
 
@@ -12185,7 +11842,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Captain Greenskin"),
+					Cards.FromName("Captain Greenskin", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12196,7 +11853,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Captain Greenskin"));
 			//Minion testCard = game.ProcessCard<Minion>("Captain Greenskin");
 		}
 
@@ -12221,7 +11877,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Frost Elemental"),
+					Cards.FromName("Frost Elemental", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12232,7 +11888,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Frost Elemental"));
 			//Minion testCard = game.ProcessCard<Minion>("Frost Elemental");
 		}
 
@@ -12259,7 +11914,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sylvanas Windrunner"),
+					Cards.FromName("Sylvanas Windrunner", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12270,7 +11925,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sylvanas Windrunner"));
 			//Minion testCard = game.ProcessCard<Minion>("Sylvanas Windrunner");
 		}
 
@@ -12294,7 +11948,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Doomsayer"),
+					Cards.FromName("Doomsayer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12305,7 +11959,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Doomsayer"));
 			//Minion testCard = game.ProcessCard<Minion>("Doomsayer");
 		}
 
@@ -12329,7 +11982,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Loot Hoarder"),
+					Cards.FromName("Loot Hoarder", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12340,7 +11993,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Loot Hoarder"));
 			//Minion testCard = game.ProcessCard<Minion>("Loot Hoarder");
 		}
 
@@ -12363,7 +12015,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Acolyte of Pain"),
+					Cards.FromName("Acolyte of Pain", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12374,7 +12026,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Acolyte of Pain"));
 			//Minion testCard = game.ProcessCard<Minion>("Acolyte of Pain");
 		}
 
@@ -12401,7 +12052,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Spellbreaker"),
+					Cards.FromName("Spellbreaker", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12412,7 +12063,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spellbreaker"));
 			//Minion testCard = game.ProcessCard<Minion>("Spellbreaker");
 		}
 
@@ -12436,7 +12086,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Shattered Sun Cleric"),
+					Cards.FromName("Shattered Sun Cleric", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12447,7 +12097,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Shattered Sun Cleric"));
 			//Minion testCard = game.ProcessCard<Minion>("Shattered Sun Cleric");
 		}
 
@@ -12471,7 +12120,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Pint-Sized Summoner"),
+					Cards.FromName("Pint-Sized Summoner", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12482,7 +12131,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Pint-Sized Summoner"));
 			//Minion testCard = game.ProcessCard<Minion>("Pint-Sized Summoner");
 		}
 
@@ -12506,7 +12154,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Crazed Alchemist"),
+					Cards.FromName("Crazed Alchemist", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12517,7 +12165,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Crazed Alchemist"));
 			//Minion testCard = game.ProcessCard<Minion>("Crazed Alchemist");
 		}
 
@@ -12540,7 +12187,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Young Priestess"),
+					Cards.FromName("Young Priestess", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12551,7 +12198,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Young Priestess"));
 			//Minion testCard = game.ProcessCard<Minion>("Young Priestess");
 		}
 
@@ -12575,7 +12221,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Priestess of Elune"),
+					Cards.FromName("Priestess of Elune", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12586,7 +12232,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Priestess of Elune"));
 			//Minion testCard = game.ProcessCard<Minion>("Priestess of Elune");
 		}
 
@@ -12612,7 +12257,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Deathwing"),
+					Cards.FromName("Deathwing", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12623,7 +12268,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Deathwing"));
 			//Minion testCard = game.ProcessCard<Minion>("Deathwing");
 		}
 
@@ -12649,7 +12293,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ragnaros the Firelord"),
+					Cards.FromName("Ragnaros the Firelord", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12660,7 +12304,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ragnaros the Firelord"));
 			//Minion testCard = game.ProcessCard<Minion>("Ragnaros the Firelord");
 		}
 
@@ -12684,7 +12327,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Bluegill Warrior"),
+					Cards.FromName("Bluegill Warrior", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12695,7 +12338,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Bluegill Warrior"));
 			//Minion testCard = game.ProcessCard<Minion>("Bluegill Warrior");
 		}
 
@@ -12718,7 +12360,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Master Swordsmith"),
+					Cards.FromName("Master Swordsmith", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12729,7 +12371,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Master Swordsmith"));
 			//Minion testCard = game.ProcessCard<Minion>("Master Swordsmith");
 		}
 
@@ -12754,7 +12395,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Murloc Tidehunter"),
+					Cards.FromName("Murloc Tidehunter", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12765,7 +12406,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Murloc Tidehunter"));
 			//Minion testCard = game.ProcessCard<Minion>("Murloc Tidehunter");
 		}
 
@@ -12792,7 +12432,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Elite Tauren Chieftain"),
+					Cards.FromName("Elite Tauren Chieftain", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12803,7 +12443,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Elite Tauren Chieftain"));
 			//Minion testCard = game.ProcessCard<Minion>("Elite Tauren Chieftain");
 		}
 
@@ -12826,7 +12465,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lightwarden"),
+					Cards.FromName("Lightwarden", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12837,7 +12476,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lightwarden"));
 			//Minion testCard = game.ProcessCard<Minion>("Lightwarden");
 		}
 
@@ -12860,7 +12498,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sea Giant"),
+					Cards.FromName("Sea Giant", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12871,7 +12509,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sea Giant"));
 			//Minion testCard = game.ProcessCard<Minion>("Sea Giant");
 		}
 
@@ -12898,7 +12535,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Leeroy Jenkins"),
+					Cards.FromName("Leeroy Jenkins", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12909,7 +12546,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Leeroy Jenkins"));
 			//Minion testCard = game.ProcessCard<Minion>("Leeroy Jenkins");
 		}
 
@@ -12937,7 +12573,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Hogger"),
+					Cards.FromName("Hogger", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12948,7 +12584,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hogger"));
 			//Minion testCard = game.ProcessCard<Minion>("Hogger");
 		}
 
@@ -12969,7 +12604,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Core Hound"),
+					Cards.FromName("Core Hound", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -12980,7 +12615,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Core Hound"));
 			//Minion testCard = game.ProcessCard<Minion>("Core Hound");
 		}
 
@@ -13004,7 +12638,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Twilight Drake"),
+					Cards.FromName("Twilight Drake", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13015,7 +12649,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Twilight Drake"));
 			//Minion testCard = game.ProcessCard<Minion>("Twilight Drake");
 		}
 
@@ -13039,7 +12672,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Mogu'shan Warden"),
+					Cards.FromName("Mogu'shan Warden", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13050,7 +12683,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Mogu'shan Warden"));
 			//Minion testCard = game.ProcessCard<Minion>("Mogu'shan Warden");
 		}
 
@@ -13078,7 +12710,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Tinkmaster Overspark"),
+					Cards.FromName("Tinkmaster Overspark", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13089,7 +12721,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tinkmaster Overspark"));
 			//Minion testCard = game.ProcessCard<Minion>("Tinkmaster Overspark");
 		}
 
@@ -13114,7 +12745,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Malygos"),
+					Cards.FromName("Malygos", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13125,7 +12756,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Malygos"));
 			//Minion testCard = game.ProcessCard<Minion>("Malygos");
 		}
 
@@ -13149,7 +12779,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Silverback Patriarch"),
+					Cards.FromName("Silverback Patriarch", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13160,7 +12790,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silverback Patriarch"));
 			//Minion testCard = game.ProcessCard<Minion>("Silverback Patriarch");
 		}
 
@@ -13183,7 +12812,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Demolisher"),
+					Cards.FromName("Demolisher", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13194,7 +12823,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Demolisher"));
 			//Minion testCard = game.ProcessCard<Minion>("Demolisher");
 		}
 
@@ -13218,7 +12846,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Stormwind Champion"),
+					Cards.FromName("Stormwind Champion", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13229,7 +12857,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stormwind Champion"));
 			//Minion testCard = game.ProcessCard<Minion>("Stormwind Champion");
 		}
 
@@ -13253,7 +12880,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Voodoo Doctor"),
+					Cards.FromName("Voodoo Doctor", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13264,7 +12891,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Voodoo Doctor"));
 			//Minion testCard = game.ProcessCard<Minion>("Voodoo Doctor");
 		}
 
@@ -13288,7 +12914,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Sen'jin Shieldmasta"),
+					Cards.FromName("Sen'jin Shieldmasta", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13299,7 +12925,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sen'jin Shieldmasta"));
 			//Minion testCard = game.ProcessCard<Minion>("Sen'jin Shieldmasta");
 		}
 
@@ -13325,7 +12950,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Secretkeeper"),
+					Cards.FromName("Secretkeeper", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13336,7 +12961,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Secretkeeper"));
 			//Minion testCard = game.ProcessCard<Minion>("Secretkeeper");
 		}
 
@@ -13360,7 +12984,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Acidic Swamp Ooze"),
+					Cards.FromName("Acidic Swamp Ooze", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13371,7 +12995,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Acidic Swamp Ooze"));
 			//Minion testCard = game.ProcessCard<Minion>("Acidic Swamp Ooze");
 		}
 
@@ -13395,7 +13018,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Grimscale Oracle"),
+					Cards.FromName("Grimscale Oracle", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13406,7 +13029,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Grimscale Oracle"));
 			//Minion testCard = game.ProcessCard<Minion>("Grimscale Oracle");
 		}
 
@@ -13430,7 +13052,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Wolfrider"),
+					Cards.FromName("Wolfrider", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13441,7 +13063,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wolfrider"));
 			//Minion testCard = game.ProcessCard<Minion>("Wolfrider");
 		}
 
@@ -13465,7 +13086,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ancient Watcher"),
+					Cards.FromName("Ancient Watcher", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13476,7 +13097,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ancient Watcher"));
 			//Minion testCard = game.ProcessCard<Minion>("Ancient Watcher");
 		}
 
@@ -13502,7 +13122,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("King Mukla"),
+					Cards.FromName("King Mukla", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13513,7 +13133,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("King Mukla"));
 			//Minion testCard = game.ProcessCard<Minion>("King Mukla");
 		}
 
@@ -13537,7 +13156,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Lord of the Arena"),
+					Cards.FromName("Lord of the Arena", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13548,7 +13167,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Lord of the Arena"));
 			//Minion testCard = game.ProcessCard<Minion>("Lord of the Arena");
 		}
 
@@ -13576,7 +13194,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Raging Worgen"),
+					Cards.FromName("Raging Worgen", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13587,7 +13205,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Raging Worgen"));
 			//Minion testCard = game.ProcessCard<Minion>("Raging Worgen");
 		}
 
@@ -13614,7 +13231,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Angry Chicken"),
+					Cards.FromName("Angry Chicken", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13625,7 +13242,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Angry Chicken"));
 			//Minion testCard = game.ProcessCard<Minion>("Angry Chicken");
 		}
 
@@ -13650,7 +13266,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Jungle Panther"),
+					Cards.FromName("Jungle Panther", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13661,7 +13277,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Jungle Panther"));
 			//Minion testCard = game.ProcessCard<Minion>("Jungle Panther");
 		}
 
@@ -13685,7 +13300,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ironforge Rifleman"),
+					Cards.FromName("Ironforge Rifleman", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13696,7 +13311,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ironforge Rifleman"));
 			//Minion testCard = game.ProcessCard<Minion>("Ironforge Rifleman");
 		}
 
@@ -13722,7 +13336,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Abomination"),
+					Cards.FromName("Abomination", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13733,7 +13347,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Abomination"));
 			//Minion testCard = game.ProcessCard<Minion>("Abomination");
 		}
 
@@ -13759,7 +13372,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Ysera"),
+					Cards.FromName("Ysera", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13770,7 +13383,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Ysera"));
 			//Minion testCard = game.ProcessCard<Minion>("Ysera");
 		}
 
@@ -13794,7 +13406,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Injured Blademaster"),
+					Cards.FromName("Injured Blademaster", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13805,7 +13417,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Injured Blademaster"));
 			//Minion testCard = game.ProcessCard<Minion>("Injured Blademaster");
 		}
 
@@ -13829,7 +13440,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Stormwind Knight"),
+					Cards.FromName("Stormwind Knight", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13840,7 +13451,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stormwind Knight"));
 			//Minion testCard = game.ProcessCard<Minion>("Stormwind Knight");
 		}
 
@@ -13864,7 +13474,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Leper Gnome"),
+					Cards.FromName("Leper Gnome", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13875,7 +13485,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Leper Gnome"));
 			//Minion testCard = game.ProcessCard<Minion>("Leper Gnome");
 		}
 
@@ -13902,7 +13511,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Amani Berserker"),
+					Cards.FromName("Amani Berserker", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13913,7 +13522,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Amani Berserker"));
 			//Minion testCard = game.ProcessCard<Minion>("Amani Berserker");
 		}
 
@@ -13937,7 +13545,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Stonetusk Boar"),
+					Cards.FromName("Stonetusk Boar", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13948,7 +13556,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Stonetusk Boar"));
 			//Minion testCard = game.ProcessCard<Minion>("Stonetusk Boar");
 		}
 
@@ -13972,7 +13579,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Hungry Crab"),
+					Cards.FromName("Hungry Crab", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -13983,7 +13590,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Hungry Crab"));
 			//Minion testCard = game.ProcessCard<Minion>("Hungry Crab");
 		}
 
@@ -14007,7 +13613,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Kobold Geomancer"),
+					Cards.FromName("Kobold Geomancer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -14018,7 +13624,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Kobold Geomancer"));
 			//Minion testCard = game.ProcessCard<Minion>("Kobold Geomancer");
 		}
 
@@ -14047,7 +13652,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("The Beast"),
+					Cards.FromName("The Beast", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -14058,7 +13663,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("The Beast"));
 			//Minion testCard = game.ProcessCard<Minion>("The Beast");
 		}
 
@@ -14079,7 +13683,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Chillwind Yeti"),
+					Cards.FromName("Chillwind Yeti", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -14090,7 +13694,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Chillwind Yeti"));
 			//Minion testCard = game.ProcessCard<Minion>("Chillwind Yeti");
 		}
 
@@ -14113,7 +13716,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Wild Pyromancer"),
+					Cards.FromName("Wild Pyromancer", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -14124,7 +13727,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Wild Pyromancer"));
 			//Minion testCard = game.ProcessCard<Minion>("Wild Pyromancer");
 		}
 
@@ -14152,7 +13754,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Tauren Warrior"),
+					Cards.FromName("Tauren Warrior", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -14163,7 +13765,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Tauren Warrior"));
 			//Minion testCard = game.ProcessCard<Minion>("Tauren Warrior");
 		}
 
@@ -14188,7 +13789,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Alexstrasza"),
+					Cards.FromName("Alexstrasza", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -14199,7 +13800,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Alexstrasza"));
 			//Minion testCard = game.ProcessCard<Minion>("Alexstrasza");
 		}
 
@@ -14223,7 +13823,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Booty Bay Bodyguard"),
+					Cards.FromName("Booty Bay Bodyguard", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -14234,7 +13834,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Booty Bay Bodyguard"));
 			//Minion testCard = game.ProcessCard<Minion>("Booty Bay Bodyguard");
 		}
 
@@ -14259,7 +13858,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 				Player1HeroClass = CardClass.MAGE,
 				Player1Deck = new List<Card>()
 				{
-					Cards.FromName("Razorfen Hunter"),
+					Cards.FromName("Razorfen Hunter", FormatType.FT_CLASSIC)
 				},
 				Player2HeroClass = CardClass.MAGE,
 				Shuffle = false,
@@ -14270,7 +13869,6 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//IPlayable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Razorfen Hunter"));
 			//Minion testCard = game.ProcessCard<Minion>("Razorfen Hunter");
 		}
 
