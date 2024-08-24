@@ -8,7 +8,7 @@ using SabberStoneCore.Model.Entities;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SabberStoneCoreTest.CardSets.Undefined
+namespace SabberStoneCoreTest.CardSets.Classic
 {
 	public class HeroPowersVanillaTest
 	{
