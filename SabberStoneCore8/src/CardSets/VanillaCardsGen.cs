@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enchants;
@@ -588,9 +588,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_NUM_MINION_SLOTS, 1},
 			}, new Power
 			{
-				// TODO: [VAN_EX1_571] Force of Nature && Test: Force of Nature_VAN_EX1_571
-				// PowerTask = null,
-				// Trigger = null,
+				PowerTask = new SummonTask("VAN_EX1_tk9b", 3)
 			}));
 			// ------------------------------------------ SPELL - DRUID
 			// [VAN_CS2_012] Swipe - COST:4 
@@ -683,9 +681,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_169", new(
 			new Power
 			{
-				// TODO: [VAN_EX1_169] Innervate && Test: Innervate_VAN_EX1_169
-				// PowerTask = null,
-				// Trigger = null,
+				PowerTask = new TempManaTask(2)
 			}));
 			// ------------------------------------------ SPELL - DRUID
 			// [VAN_NEW1_007] Starfall - COST:5 
@@ -936,9 +932,9 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_tk9b", new(
 			new Power
 			{
-				// TODO: [VAN_EX1_tk9b] Treant && Test: Treant_VAN_EX1_tk9b
-				// PowerTask = null,
-				// Trigger = null,
+				Trigger = TriggerBuilder
+					.Type(TriggerType.TURN_END)
+					.SetTask(new DestroyTask(EntityType.SOURCE))
 			}));
 			// ----------------------------------------- MINION - DRUID
 			// [VAN_EX1_tk9] Treant (*) - COST:1 [ATK:2/HP:2] 
@@ -1480,12 +1476,10 @@ namespace SabberStoneCore.CardSets.Classic
 			playReq: new(){
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 				{PlayReq.REQ_TARGET_WITH_RACE, 20},
-				{PlayReq.REQ_FRIENDLY_TARGET, 0},
+				{PlayReq.REQ_MINION_TARGET, 0},
 			}, new Power
 			{
-				// TODO: [VAN_EX1_549] Bestial Wrath && Test: Bestial Wrath_VAN_EX1_549
-				// PowerTask = null,
-				// Trigger = null,
+				PowerTask = new AddEnchantmentTask("EX1_549o", EntityType.TARGET)
 			}));
 			// ----------------------------------------- SPELL - HUNTER
 			// [VAN_NEW1_031] Animal Companion - COST:3 
@@ -3660,9 +3654,10 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_WEAPON_EQUIPPED, 0},
 			}, new Power
 			{
-				// TODO: [VAN_CS2_233] Blade Flurry && Test: Blade Flurry_VAN_CS2_233
-				// PowerTask = null,
-				// Trigger = null,
+				PowerTask = ComplexTask.Create(
+					new GetGameTagTask(GameTag.ATK, EntityType.WEAPON),
+					new DamageNumberTask(EntityType.ENEMIES, true),
+					new DestroyTask(EntityType.WEAPON)),
 			}));
 			// ------------------------------------------ SPELL - ROGUE
 			// [VAN_CS2_074] Deadly Poison - COST:1 
@@ -3829,8 +3824,11 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_145o", new(
 			new Power
 			{
-				// TODO: [VAN_EX1_145o] Preparation && Test: Preparation_VAN_EX1_145o
-				// Enchant = Enchants.Enchants.GetAutoEnchantFromText("{card.Id}")
+				Aura = new Aura(AuraType.HAND, Effects.ReduceCost(3))
+				{
+					Condition = SelfCondition.IsSpell,
+					RemoveTrigger = (TriggerType.CAST_SPELL, null)
+				}
 			}));
 			// ----------------------------------------- WEAPON - ROGUE
 			// [VAN_CS2_082] Wicked Knife (*) - COST:1 [ATK:1/HP:0] 
@@ -8682,8 +8680,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_145e", new(
 			new Power
 			{
-				// TODO: [VAN_EX1_145e] Preparation && Test: Preparation_VAN_EX1_145e
-				// Enchant = Enchants.Enchants.GetAutoEnchantFromText("{card.Id}")
+				PowerTask = new AddEnchantmentTask("VAN_EX1_145o", EntityType.CONTROLLER)
 			}));
 			// --------------------------------------- MINION - NEUTRAL
 			// [VAN_CS2_boar] Boar (*) - COST:1 [ATK:1/HP:1] 

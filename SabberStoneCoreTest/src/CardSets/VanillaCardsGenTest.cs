@@ -1,4 +1,4 @@
-using Xunit;
+﻿using Xunit;
 using SabberStoneCore.Actions;
 using SabberStoneCore.Auras;
 using SabberStoneCore.Enums;
@@ -1009,7 +1009,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 		// RefTag:
 		// - CHARGE = 1
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void ForceOfNature_VAN_EX1_571()
 		{
 			// TODO ForceOfNature_VAN_EX1_571 test
@@ -1030,7 +1030,16 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//Spell testCard = game.ProcessCard<Spell>("Force of Nature");
+
+			Spell testCard = game.ProcessCard<Spell>("Force of Nature");
+			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
+
+			foreach (var m in game.CurrentPlayer.BoardZone)
+				m.Attack(game.CurrentOpponent.Hero);
+			Assert.Equal(6, game.CurrentOpponent.Hero.Damage);
+
+			game.EndTurn();
+			Assert.Empty(game.CurrentOpponent.BoardZone);
 		}
 
 		// ------------------------------------------ SPELL - DRUID
