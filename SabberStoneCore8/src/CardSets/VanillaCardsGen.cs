@@ -490,12 +490,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_NEW1_008", new(
 			playReq: new(){
 				{PlayReq.REQ_TARGET_IF_AVAILABLE, 0},
-			}, new Power
-			{
-				// TODO: [VAN_NEW1_008] Ancient of Lore && Test: Ancient of Lore_VAN_NEW1_008
-				// PowerTask = null,
-				// Trigger = null,
-			}));
+			}, null));
 			// ----------------------------------------- MINION - DRUID
 			// [VAN_EX1_166] Keeper of the Grove - COST:4 [ATK:2/HP:4] 
 			// - Fac: neutral, Set: vanilla, Rarity: rare
@@ -1007,9 +1002,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_NEW1_008a", new(
 			new Power
 			{
-				// TODO: [VAN_NEW1_008a] Ancient Teachings && Test: Ancient Teachings_VAN_NEW1_008a
-				// PowerTask = null,
-				// Trigger = null,
+				PowerTask = new DrawTask(2)
 			}));
 			// ------------------------------------------ SPELL - DRUID
 			// [VAN_EX1_164a] Rampant Growth (*) - COST:5 
@@ -1270,9 +1263,7 @@ namespace SabberStoneCore.CardSets.Classic
 				{PlayReq.REQ_TARGET_TO_PLAY, 0},
 			}, new Power
 			{
-				// TODO: [VAN_NEW1_008b] Ancient Secrets && Test: Ancient Secrets_VAN_NEW1_008b
-				// PowerTask = null,
-				// Trigger = null,
+				PowerTask = new HealTask(5, EntityType.TARGET),
 			}));
 		}
 
