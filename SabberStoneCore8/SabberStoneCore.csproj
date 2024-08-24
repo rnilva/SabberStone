@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <PyPath>$(ProjectDir)../pysabberstone-pythonnet/pysabberstone/lib</PyPath>
-	  <AssemblyVersion>8.0.0.1</AssemblyVersion>
+	  <AssemblyVersion>8.0.0.2</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

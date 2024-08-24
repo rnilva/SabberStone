@@ -3,6 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <PyPath>$(ProjectDir)../../pysabberstone-pythonnet/pysabberstone/lib</PyPath>
+    <AssemblyVersion>8.0.0.2</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SabberStoneCore8\SabberStoneCore.csproj" />
