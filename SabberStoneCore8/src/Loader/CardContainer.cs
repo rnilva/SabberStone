@@ -45,50 +45,30 @@ namespace SabberStoneCore.src.Loader
 			return cards.ToFrozenDictionary();
 		}
 
-		internal void Load(IEnumerable<Card> cards, IEnumerable<string> excludeIds)
+		internal void Load(IEnumerable<Card> cards, IEnumerable<string> excludeIds, IEnumerable<CardSet> excludeSets)
 		{
 			var excludes = excludeIds.ToFrozenSet();
 
 			// Set cards (without behaviours)
-			Cards = (from c in cards where !excludes.Contains(c.Id) select new { Key = c.Id, Value = c }).ToFrozenDictionary(x => x.Key, x => x.Value);
+			Cards = (from c in cards where !excludes.Contains(c.Id) && !excludeSets.Contains(c.Set) select new { Key = c.Id, Value = c }).ToFrozenDictionary(x => x.Key, x => x.Value);
 
 			FrozenDictionary<string, CardDef> cardDefs = GetCardDefs();
 
 			// Add Powers
 			foreach (Card c in Cards.Values)
 			{
-				if (Powers.Instance.Get.TryGetValue(c.Id, out Power power))
-				{
-					//// fill missing playrequirements, last card def with info is CardDefs-36393.xml
-					//if (cardDef.PlayReqs != null)
-					//{
-					//	c.SetPlayRequirements(cardDef.PlayReqs);
-					//}
-
-					//// fill missing entourage, last card def with info is CardDefs-36393.xml
-					//if (cardDef.Entourage != null)
-					//{
-					//	c.Entourage = cardDef.Entourage;
-					//}
-
-					c.Power = power;
-					c.Implemented = power == null ||
-					                power.PowerTask != null ||
-					                power.DeathrattleTask != null ||
-					                power.ComboTask != null ||
-					                power.TopdeckTask != null ||
-					                power.OverkillTask != null ||
-					                power.Aura != null ||
-					                power.Trigger != null ||
-					                power.Enchant != null;
-				}
-
 				if (cardDefs.TryGetValue(c.Id, out CardDef? cardDef))
 				{
 					if (cardDef.PlayReqs != null)
 						c.SetPlayRequirements(cardDef.PlayReqs);
 					if (cardDef.Entourage != null)
 						c.Entourage = cardDef.Entourage;
+
+					SetPower(c, cardDef.Power);
+				}
+				else if (Powers.Instance.Get.TryGetValue(c.Id, out Power? power))
+				{
+					SetPower(c, power);
 				}
 			}
 
@@ -116,5 +96,19 @@ namespace SabberStoneCore.src.Loader
 		}
 
 		public int Count => Cards.Count;
+
+		private static void SetPower(Card card, Power? p)
+		{
+			card.Power = p;
+			card.Implemented = p == null ||
+			                   p.PowerTask != null ||
+			                   p.DeathrattleTask != null ||
+			                   p.ComboTask != null ||
+			                   p.TopdeckTask != null ||
+			                   p.OverkillTask != null ||
+			                   p.Aura != null ||
+			                   p.Trigger != null ||
+			                   p.Enchant != null;
+		}
 	}
 }

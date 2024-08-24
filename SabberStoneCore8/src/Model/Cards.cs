@@ -117,9 +117,12 @@ namespace SabberStoneCore.Model
 			string[] excludeIds = [
 				"HERO_01c"  // HERO Deathwing
 			];
+			CardSet[] excluCardSets = [
+				CardSet.WILD_EVENT
+			];
 
 			Data = new CardContainer();
-			Data.Load(cards, excludeIds);
+			Data.Load(cards, excludeIds, excluCardSets);
 
 			//Log.Debug("Standard:");
 			//Enum.GetValues(typeof(CardClass)).Cast<CardClass>().ToList().ForEach(heroClass =>

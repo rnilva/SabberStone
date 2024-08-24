@@ -25,21 +25,21 @@ namespace SabberStoneCore.Enchants
 	{
 		public string InfoCardId { get; set; } = null;
 
-		public IAura Aura { get; set; }
+		public IAura? Aura { get; set; }
 
-		public Enchant Enchant { get; set; }
+		public Enchant? Enchant { get; set; }
 
-		public Trigger Trigger { get; set; }
+		public Trigger? Trigger { get; set; }
 
-		public SimpleTask PowerTask { get; set; }
+		public SimpleTask? PowerTask { get; set; }
 
-		public SimpleTask DeathrattleTask { get; set; }
+		public SimpleTask? DeathrattleTask { get; set; }
 
-		public SimpleTask ComboTask { get; set; }
+		public SimpleTask? ComboTask { get; set; }
 
-		public SimpleTask TopdeckTask { get; set; }
+		public SimpleTask? TopdeckTask { get; set; }
 
-		public SimpleTask OverkillTask { get; set; }
+		public SimpleTask? OverkillTask { get; set; }
 
 		internal static Power OneTurnStealthEnchantmentPower =>
 			new Power

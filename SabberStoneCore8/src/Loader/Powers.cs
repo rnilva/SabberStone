@@ -107,6 +107,6 @@ namespace SabberStoneCore.src.Loader
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public IReadOnlyDictionary<string, Power> Get => _powerDic;
+		public IReadOnlyDictionary<string, Power?> Get => _powerDic;
 	}
 }

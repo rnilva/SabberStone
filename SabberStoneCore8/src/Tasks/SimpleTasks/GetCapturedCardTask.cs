@@ -63,7 +63,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (c == null)
 				throw new Exception($"{e} does not have any captured Card.");
 
-			SimpleTask task = c.Power.DeathrattleTask;
+			SimpleTask? task = c.Power?.DeathrattleTask;
 
 			if (task == null)
 			{ 

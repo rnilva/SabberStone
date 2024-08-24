@@ -625,7 +625,7 @@ namespace SabberStoneCore.Model
 		/// <seealso cref="Power"/>
 		/// </summary>
 		//public List<Power> Powers { get; set; } = new List<Power>();
-		public Power Power { get; set; }
+		public Power? Power { get; set; }
 
 		/// <summary>
 		/// True if this card increases it's owners spell damage.
