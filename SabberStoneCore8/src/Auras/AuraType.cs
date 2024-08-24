@@ -45,6 +45,8 @@ namespace SabberStoneCore.Auras
 
 		SUMMONING_PORTAL,
 
-		MULTIAURA
+		MULTIAURA,
+
+		ALL_MINIONS_EXCEPT_SELF
 	}
 }

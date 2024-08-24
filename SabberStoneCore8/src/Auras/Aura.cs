@@ -92,12 +92,12 @@ namespace SabberStoneCore.Auras
 		/// </summary>
 		public SelfCondition Condition;
 
-		private (TriggerType type, SelfCondition condition) _removeTrigger;
+		private (TriggerType type, SelfCondition? condition) _removeTrigger;
 		/// <summary>
 		/// This aura will be removed when the given type of trigger is handled.
 		/// Condition checks the trigger sender.
 		/// </summary>
-		public (TriggerType Type, SelfCondition Condition) RemoveTrigger
+		public (TriggerType Type, SelfCondition? Condition) RemoveTrigger
 		{
 			get => _removeTrigger;
 			set
@@ -294,6 +294,10 @@ namespace SabberStoneCore.Auras
 					Owner.Controller.HandZone.Auras.Remove(this);
 					Owner.Controller.BoardZone.Auras.Remove(this);
 					break;
+				case AuraType.ALL_MINIONS_EXCEPT_SELF:
+					Owner.Controller.BoardZone.Auras.Remove(this);
+					Owner.Controller.Opponent.BoardZone.Auras.Remove(this);
+					break;
 			}
 
 			_removeHandler?.Remove(Game);
@@ -410,6 +414,14 @@ namespace SabberStoneCore.Auras
 					}, owner, new Action<Playable>(Apply));
 					return;
 				}
+				case AuraType.ALL_MINIONS_EXCEPT_SELF:
+					Owner.Controller.BoardZone.ForEach((minion, source, apply) =>
+					{
+						if (minion != source)
+							apply(minion);
+					}, Owner, Apply);
+					Owner.Controller.Opponent.BoardZone.ForEach((m, apply) => apply(m), Apply);
+					break;
 				case AuraType.ADJACENT:
 				{
 					var board = (BoardZone) Owner.Zone;
@@ -716,6 +728,10 @@ namespace SabberStoneCore.Auras
 				case AuraType.HAND_AND_BOARD:
 					owner.Controller.HandZone.Auras.Add(aura);
 					owner.Controller.BoardZone.Auras.Add(aura);
+					break;
+				case AuraType.ALL_MINIONS_EXCEPT_SELF:
+					owner.Controller.BoardZone.Auras.Add(aura);
+					owner.Controller.Opponent.BoardZone.Auras.Add(aura);
 					break;
 			}
 		}

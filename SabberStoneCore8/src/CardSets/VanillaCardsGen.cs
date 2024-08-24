@@ -7935,9 +7935,10 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_508", new(
 			new Power
 			{
-				// TODO: [VAN_EX1_508] Grimscale Oracle && Test: Grimscale Oracle_VAN_EX1_508
-				// PowerTask = null,
-				// Trigger = null,
+				Aura = new Aura(AuraType.ALL_MINIONS_EXCEPT_SELF, Effects.Attack_N(1))
+				{
+					Condition = SelfCondition.IsRace(Race.MURLOC)
+				}
 			}));
 			// --------------------------------------- MINION - NEUTRAL
 			// [VAN_CS2_124] Wolfrider - COST:3 [ATK:3/HP:1] 

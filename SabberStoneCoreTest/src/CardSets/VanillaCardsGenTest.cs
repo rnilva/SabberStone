@@ -13052,10 +13052,9 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 		// - AURA = 1
 		// - 858 = 510
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void GrimscaleOracle_VAN_EX1_508()
 		{
-			// TODO GrimscaleOracle_VAN_EX1_508 test
 			var game = new Game(new GameConfig
 			{
 				StartPlayer = 1,
@@ -13073,7 +13072,24 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//Minion testCard = game.ProcessCard<Minion>("Grimscale Oracle");
+
+			MinionInPlay m1 = game.ProcessCard<MinionInPlay>("Murloc Raider");
+			MinionInPlay m2 = game.ProcessCard<MinionInPlay>("Murloc Raider");
+			game.EndTurn();
+
+			MinionInPlay m3 = game.ProcessCard<MinionInPlay>("Murloc Raider");
+			MinionInPlay testCard = game.ProcessCard<MinionInPlay>("Grimscale Oracle");
+
+			Assert.Equal(m1.Card.ATK + 1, m1.AttackDamage);
+			Assert.Equal(m2.Card.ATK + 1, m2.AttackDamage);
+			Assert.Equal(m3.Card.ATK + 1, m3.AttackDamage);
+
+			testCard.Silence();
+			game.AuraUpdate();
+
+			Assert.Equal(m1.Card.ATK, m1.AttackDamage);
+			Assert.Equal(m2.Card.ATK, m2.AttackDamage);
+			Assert.Equal(m3.Card.ATK, m3.AttackDamage);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL
