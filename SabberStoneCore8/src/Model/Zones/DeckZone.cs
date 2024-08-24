@@ -96,7 +96,7 @@ namespace SabberStoneCore.Model.Zones
 
 		public void Fill(IReadOnlyCollection<string> excludeIds = null)
 		{
-			FrozenSet<Card> cards = Cards.FormatTypeCards(Game.FormatType);
+			ref readonly FrozenSet<Card> cards = ref Cards.FormatTypeClassCards(Game.FormatType)[Controller.HeroClass];
 			int cardsToAdd = StartingCards - _count;
 
 			Game.Log(LogLevel.INFO, BlockType.PLAY, "Deck", !Game.Logging ? "" :
