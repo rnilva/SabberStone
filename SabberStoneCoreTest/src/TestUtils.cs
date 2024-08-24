@@ -12,8 +12,10 @@
 // GNU Affero General Public License for more details.
 #endregion
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using SabberStoneCore.Actions;
+using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks.PlayerTasks;
@@ -25,6 +27,31 @@ namespace SabberStoneCoreTest
 	/// </summary>
 	internal static class TestUtils
 	{
+		//internal static FrozenDictionary<string, FrozenSet<Card>> CardsByName;
+		private static readonly FormatType[] _allFormats = [FormatType.FT_STANDARD, FormatType.FT_WILD, FormatType.FT_CLASSIC];
+
+		public static Card FromName(string cardName, FormatType formatType = FormatType.FT_WILD)
+		{
+			Card card = Cards.FromName(cardName, formatType);
+			if (card != null) return card;
+
+			foreach (FormatType ft in _allFormats)
+			{
+				if (ft == formatType) continue;
+				card = Cards.FromName(cardName, ft);
+				if (card != null)
+					break;
+			}
+
+			card ??= Cards.FromName(cardName);
+
+			if (card == null)
+				throw new Exception($"There is no card named \"{cardName}\". Please Check Again!");
+
+			return card;
+		}
+
+
 		/// <summary>
 		/// Plays a card that matches the provided name. Returns the created <see cref="Playable"/> object from the card.
 		/// If you play a minion, the minion's position will be the rightmost position on the board.
@@ -37,15 +64,8 @@ namespace SabberStoneCoreTest
 			if (target != null && character == null)
 				throw new ArgumentException($"Can't target non-charater entity {target}");
 
-			Playable entity;
-			try
-			{
-				entity = Generic.DrawCard(game.CurrentPlayer, Cards.FromName(cardName));
-			}
-			catch (NullReferenceException)
-			{
-				throw new Exception($"There is no card named \"{cardName}\". Please Check Again!");
-			}
+			Card card = FromName(cardName, game.FormatType);
+			Playable entity = Generic.DrawCard(game.CurrentPlayer, card);
 
 			if (asZeroCost)
 				entity.Cost = 0;
@@ -82,15 +102,9 @@ namespace SabberStoneCoreTest
 		/// <returns>The created entity object from the card.</returns>
 		public static T ProcessCard<T>(this Game game, string cardName, Playable target = null, bool asZeroCost = false, int chooseOne = 0, int zonePosition = -1) where T: Playable
 		{
-			Playable entity;
-			try
-			{
-				entity = Generic.DrawCard(game.CurrentPlayer, Cards.FromName(cardName));
-			}
-			catch (NullReferenceException)
-			{
-				throw new Exception($"There is no card named \"{cardName}\". Please Check Again!");
-			}
+			Card card = FromName(cardName, game.FormatType);
+			Playable entity = Generic.DrawCard(game.CurrentPlayer, card);
+
 			if (!(entity is T t))
 				throw new ArgumentException($"The given card is not {typeof(T)}");
 			if (target != null && !(target is Character))

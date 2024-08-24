@@ -945,7 +945,8 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Emperor Thaurissan"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer,
+				Cards.FromName("Emperor Thaurissan", FormatType.FT_WILD));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			int totCost = game.CurrentPlayer.HandZone.Sum(p => p.Cost);
 			int neg =

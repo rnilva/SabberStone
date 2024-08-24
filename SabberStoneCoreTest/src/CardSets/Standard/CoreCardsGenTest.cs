@@ -923,7 +923,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 
 			Assert.Equal(1, game.CurrentPlayer.RemainingMana);
 
-			Playable spell = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Innervate"));
+			Playable spell = Generic.DrawCard(game.CurrentPlayer, TestUtils.FromName("Innervate"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, spell));
 
 			Assert.Equal(2, game.CurrentPlayer.RemainingMana);

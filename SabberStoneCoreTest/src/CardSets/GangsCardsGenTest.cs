@@ -1962,7 +1962,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			Playable testCard = Generic.DrawCard(game.CurrentPlayer,Cards.FromName("Shaku, the Collector"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer,TestUtils.FromName("Shaku, the Collector", FormatType.FT_WILD));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, testCard));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));

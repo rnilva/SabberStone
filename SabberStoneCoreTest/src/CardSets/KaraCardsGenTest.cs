@@ -279,13 +279,13 @@ namespace SabberStoneCoreTest.CardSets
 				Player1HeroClass = CardClass.MAGE,
 				Player2HeroClass = CardClass.MAGE,
 				FillDecks = true,
-				FillDecksPredictably = true
+				FillDecksPredictably = true,
 			});
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			Playable testCard1 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Babbling Book"));
-			Playable testCard2 = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Babbling Book"));
+			Playable testCard1 = Generic.DrawCard(game.CurrentPlayer, TestUtils.FromName("Babbling Book"));
+			Playable testCard2 = Generic.DrawCard(game.CurrentPlayer, TestUtils.FromName("Babbling Book"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, testCard1));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, testCard2));
 			Assert.Equal(CardClass.MAGE, game.CurrentPlayer.HandZone[4].Card.Class);

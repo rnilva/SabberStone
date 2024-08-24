@@ -3956,12 +3956,14 @@ namespace SabberStoneCoreTest.CardSets.Standard
 				Player2HeroClass = CardClass.WARRIOR,
 				Shuffle = false,
 				FillDecks = true,
-				FillDecksPredictably = true
+				FillDecksPredictably = true,
+				FormatType = FormatType.FT_WILD
 			});
 			game.StartGame();
 
-			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Omega Assembly"));
-
+			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Omega Assembly"));
+			game.ProcessCard("Omega Assembly", asZeroCost: true);
+			
 			Assert.NotNull(game.CurrentPlayer.Choice);
 			Assert.True(game.CurrentPlayer.SetasideZone.All(p => p.Card.IsRace(Race.MECHANICAL)));
 			game.ChooseNthChoice(1);

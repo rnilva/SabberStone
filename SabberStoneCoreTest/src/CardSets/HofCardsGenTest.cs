@@ -322,7 +322,7 @@ namespace SabberStoneCoreTest.CardSets
 
 			game.Process(EndTurnTask.Any(game.CurrentPlayer));
 
-			var minion2 = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sylvanas Windrunner"));
+			var minion2 = (Character) Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Sylvanas Windrunner", FormatType.FT_WILD));
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, minion2));
 
 			int myBoardCount = game.CurrentPlayer.BoardZone.Count;

@@ -3105,7 +3105,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Varian Wrynn"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Varian Wrynn", FormatType.FT_WILD));
 			int count = game.CurrentPlayer.HandZone.Count + game.CurrentPlayer.BoardZone.Count;
 			game.Process(PlayCardTask.Minion(game.CurrentPlayer, testCard));
 			Assert.Equal(count + 3, game.CurrentPlayer.HandZone.Count + game.CurrentPlayer.BoardZone.Count);

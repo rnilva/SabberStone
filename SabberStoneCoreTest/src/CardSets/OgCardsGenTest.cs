@@ -467,7 +467,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Call of the Wild"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, TestUtils.FromName("Call of the Wild"));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, testCard));
 			Assert.Equal(3, game.CurrentPlayer.BoardZone.Count);
 			Assert.Equal("Huffer", game.CurrentPlayer.BoardZone[0].Card.Name);
@@ -2203,7 +2203,7 @@ namespace SabberStoneCoreTest.CardSets
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Forbidden Ritual"));
+			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Forbidden Ritual", FormatType.FT_WILD));
 			game.Process(PlayCardTask.Spell(game.CurrentPlayer, testCard));
 			Assert.True(game.CurrentPlayer.BoardZone.IsFull);
 		}
@@ -3448,8 +3448,10 @@ namespace SabberStoneCoreTest.CardSets
 			Playable testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Disciple of C'Thun"));
 			game.Process(PlayCardTask.MinionTarget(game.CurrentPlayer, testCard, game.CurrentOpponent.Hero));
 			Assert.Equal(28, game.CurrentOpponent.Hero.Health);
-			Assert.Equal(8, ((Minion)game.CurrentPlayer.SetasideZone[0]).Health);
-			Assert.Equal(8, ((Minion)game.CurrentPlayer.SetasideZone[0]).AttackDamage);
+
+			Minion proxyCthun = (Minion)game.IdEntityDic[game.CurrentPlayer.ProxyCthun];
+			Assert.Equal(8, proxyCthun.Health);
+			Assert.Equal(8, proxyCthun.AttackDamage);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL
