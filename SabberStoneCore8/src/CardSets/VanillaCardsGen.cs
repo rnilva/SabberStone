@@ -5658,9 +5658,10 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_103", new(
 			new Power
 			{
-				// TODO: [VAN_EX1_103] Coldlight Seer && Test: Coldlight Seer_VAN_EX1_103
-				// PowerTask = null,
-				// Trigger = null,
+				PowerTask = ComplexTask.Create(
+					new IncludeTask(EntityType.ALLMINIONS_NOSOURCE),
+					new FilterStackTask(SelfCondition.IsRace(Race.MURLOC)),
+					new ApplyEffectTask(EntityType.STACK, Effects.Health_N(2)))
 			}));
 			// --------------------------------------- MINION - NEUTRAL
 			// [VAN_EX1_012] Bloodmage Thalnos - COST:2 [ATK:1/HP:1] 

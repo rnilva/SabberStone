@@ -8637,10 +8637,9 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 		// - BATTLECRY = 1
 		// - 858 = 453
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void ColdlightSeer_VAN_EX1_103()
 		{
-			// TODO ColdlightSeer_VAN_EX1_103 test
 			var game = new Game(new GameConfig
 			{
 				StartPlayer = 1,
@@ -8658,7 +8657,18 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//Minion testCard = game.ProcessCard<Minion>("Coldlight Seer");
+
+			MinionInPlay m1 = game.ProcessCard<MinionInPlay>("Murloc Raider");
+			MinionInPlay m2 = game.ProcessCard<MinionInPlay>("Murloc Raider");
+			game.EndTurn();
+
+			MinionInPlay m3 = game.ProcessCard<MinionInPlay>("Murloc Raider");
+			MinionInPlay testCard = game.ProcessCard<MinionInPlay>("Coldlight Seer");
+
+			foreach (var m in new[] {m1, m2, m3})
+			{
+				Assert.Equal(m.Card.Health + 2, m.Health);
+			}
 		}
 
 		// --------------------------------------- MINION - NEUTRAL
