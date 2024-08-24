@@ -396,6 +396,11 @@ namespace SabberStoneCore.Model
 			return Data.Cards.FirstOrDefault(x => x.Value.Name == cardName && x.Value.Collectible).Value;
 		}
 
+		public static Card? FromName(string cardName, FormatType formatType)
+		{
+			return FormatTypeCards(formatType).FirstOrDefault(c => c.Name == cardName);
+		}
+
 		/// <summary>
 		/// Returns the first card that matches the provided asset id.
 		/// </summary>
