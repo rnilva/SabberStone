@@ -15,6 +15,7 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Loader;
 using SabberStoneCore.src.Loader;
 using System.Collections.Frozen;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace SabberStoneCore.Model
@@ -376,6 +377,11 @@ namespace SabberStoneCore.Model
 		public static Card FromId(string cardId)
 		{
 			return Data.Cards[cardId];
+		}
+
+		public static bool TryGetFromId(string cardId, [NotNullWhen(true)] out Card? card)
+		{
+			return Data.Cards.TryGetValue(cardId, out card);
 		}
 
 		/// <summary>
