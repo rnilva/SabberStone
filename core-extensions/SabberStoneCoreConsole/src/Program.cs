@@ -45,7 +45,7 @@ namespace SabberStoneCoreConsole
 
 			ClassicTest();
 
-			// PerformanceTest.MageExpertTest(20000, 10);
+			//PerformanceTest.MageExpertTest(20000, 10);
 			//StabilityTest.CloneStabilityTest();
 			return;
 
@@ -118,10 +118,41 @@ namespace SabberStoneCoreConsole
 			// });
 
 			var cards = Cards.AllClassic;
-			foreach (var card in cards)
-			{
-				Console.WriteLine(card.Name);
-			}
+			//using StreamWriter writer = new StreamWriter("Classic differences.txt");
+			//foreach (var card in cards)
+			//{
+			//	//Console.WriteLine(card.Name);
+
+			//	var oldId = card.Id.Replace("VAN_", "");
+			//	var oldCard = Cards.FromId(oldId);
+			
+			//	if (oldCard.Text != card.Text)
+			//	{
+			//		writer.WriteLine($"[{card.Id}] {card.Name}");
+			//		writer.WriteLine(card.Text);
+			//		writer.WriteLine("------------------------------------------------");
+			//		writer.WriteLine($"[{oldCard.Id}] {oldCard.Name}");
+			//		writer.WriteLine(oldCard.Text);
+			//		writer.WriteLine();
+			//		writer.WriteLine();
+			//	}
+			//}
+
+			foreach (var card in cards.Where(c => !c.Implemented))
+				Console.WriteLine(card);
+
+			//Game game = new(new GameConfig
+			//{
+			//	FormatType = FormatType.FT_CLASSIC,
+			//	FillDecks = true,
+			//	Player1HeroClass = CardClass.MAGE,
+			//	Player2HeroClass = CardClass.ROGUE
+			//});
+			//game.StartGame();
+
+			//var c = game.CurrentPlayer;
+			//var m = (MinionInPlay) Entity.FromCard(in c, Cards.FromId("VAN_EX1_089"), c.BoardZone);
+			//Console.WriteLine(m.HasCharge);
 		}
 
 		private static void AugmentedElekk()
@@ -1001,7 +1032,7 @@ namespace SabberStoneCoreConsole
 		public static void KabalCourierDiscover()
 		{
 
-			Dictionary<CardClass, IReadOnlyList<Card>> cardSet = Cards.Standard;
+			var cardSet = Cards.Standard;
 
 			var mageCards =
 				cardSet[CardClass.MAGE].Where(p => p.Class == CardClass.MAGE || p.MultiClassGroup != 0).ToList();

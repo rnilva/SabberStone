@@ -11,17 +11,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
 #endregion
-using System;
+
 using System.Collections;
 using System.Collections.Frozen;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-//using Newtonsoft.Json;
+using System.Runtime.CompilerServices;
 using SabberStoneCore.Enchants;
 using SabberStoneCore.Model;
-using SabberStoneCore.src.Loader;
 using SabberStoneCore.CardSets.Classic;
+using SabberStoneCore.Enums;
+
 //using SabberStoneCore.Properties;
 
 namespace SabberStoneCore.src.Loader
@@ -75,14 +73,14 @@ namespace SabberStoneCore.src.Loader
 
 					c.Power = power;
 					c.Implemented = power == null ||
-									power.PowerTask != null ||
-									power.DeathrattleTask != null ||
-									power.ComboTask != null ||
-									power.TopdeckTask != null ||
-									power.OverkillTask != null ||
-									power.Aura != null ||
-									power.Trigger != null ||
-									power.Enchant != null;
+					                power.PowerTask != null ||
+					                power.DeathrattleTask != null ||
+					                power.ComboTask != null ||
+					                power.TopdeckTask != null ||
+					                power.OverkillTask != null ||
+					                power.Aura != null ||
+					                power.Trigger != null ||
+					                power.Enchant != null;
 				}
 
 				if (cardDefs.TryGetValue(c.Id, out CardDef? cardDef))
@@ -92,6 +90,18 @@ namespace SabberStoneCore.src.Loader
 					if (cardDef.Entourage != null)
 						c.Entourage = cardDef.Entourage;
 				}
+			}
+
+			foreach (Card c in Cards.Values.Where(c => c.Set == CardSet.VANILLA))
+			{
+				if (c.Implemented) continue;
+
+				ref readonly Card standardCard = ref Cards.GetValueRefOrNullRef(c.Id.Replace("VAN_", ""));
+				if (Unsafe.IsNullRef(in standardCard))
+					continue;
+
+				c.Power = standardCard.Power;
+				c.Implemented = standardCard.Implemented;
 			}
 		}
 
