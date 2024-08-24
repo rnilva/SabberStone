@@ -10132,7 +10132,7 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 		// - AURA = 1
 		// - 858 = 1063
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void MurlocWarleader_VAN_EX1_507()
 		{
 			// TODO MurlocWarleader_VAN_EX1_507 test
@@ -10153,7 +10153,18 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//Minion testCard = game.ProcessCard<Minion>("Murloc Warleader");
+			Minion testCard = game.ProcessCard<Minion>("Murloc Warleader");
+			Assert.Equal(testCard.Card.ATK, testCard.AttackDamage);
+			Assert.Equal(testCard.Card.Health, testCard.Health);
+
+			MinionInPlay m1 = game.ProcessCard<MinionInPlay>("Murloc Raider");
+			Assert.Equal(m1.Card.ATK + 2, m1.AttackDamage);
+			Assert.Equal(m1.Card.Health + 1, m1.Health);
+
+			game.EndTurn();
+			MinionInPlay m2 = game.ProcessCard<MinionInPlay>("Murloc Raider");
+			Assert.Equal(m2.Card.ATK + 2, m2.AttackDamage);
+			Assert.Equal(m2.Card.Health + 1, m2.Health);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

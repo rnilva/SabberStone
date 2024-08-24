@@ -6425,9 +6425,10 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_507", new(
 			new Power
 			{
-				// TODO: [VAN_EX1_507] Murloc Warleader && Test: Murloc Warleader_VAN_EX1_507
-				// PowerTask = null,
-				// Trigger = null,
+				Aura = new Aura(AuraType.ALL_MINIONS_EXCEPT_SELF, "VAN_EX1_507e")
+				{
+					Condition = SelfCondition.IsRace(Race.MURLOC)
+				}
 			}));
 			// --------------------------------------- MINION - NEUTRAL
 			// [VAN_CS2_188] Abusive Sergeant - COST:1 [ATK:2/HP:1] 
@@ -8658,8 +8659,7 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_507e", new(
 			new Power
 			{
-				// TODO: [VAN_EX1_507e] Mrgglaargl! && Test: Mrgglaargl!_VAN_EX1_507e
-				// Enchant = Enchants.Enchants.GetAutoEnchantFromText("{card.Id}")
+				Enchant = Enchants.Enchants.GetAutoEnchantFromText("VAN_EX1_507e")
 			}));
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
 			// [VAN_EX1_145e] Preparation (*) - COST:0 
