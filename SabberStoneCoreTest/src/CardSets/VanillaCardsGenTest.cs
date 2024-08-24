@@ -10713,10 +10713,9 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 		// GameTag:
 		// - 858 = 475
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void MurlocTidecaller_VAN_EX1_509()
 		{
-			// TODO MurlocTidecaller_VAN_EX1_509 test
 			var game = new Game(new GameConfig
 			{
 				StartPlayer = 1,
@@ -10734,7 +10733,18 @@ namespace SabberStoneCoreTest.CardSets.Undefined
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//Minion testCard = game.ProcessCard<Minion>("Murloc Tidecaller");
+			MinionInPlay testCard = game.ProcessCard<MinionInPlay>("Murloc Tidecaller");
+			Assert.Equal(testCard.Card.ATK, testCard.AttackDamage);
+
+			game.ProcessCard("Murloc Raider");
+			Assert.Equal(testCard.Card.ATK + 1, testCard.AttackDamage);
+
+			game.ProcessCard("Murloc Raider");
+			Assert.Equal(testCard.Card.ATK + 2, testCard.AttackDamage);
+
+			game.EndTurn();
+			game.ProcessCard("Murloc Raider");
+			Assert.Equal(testCard.Card.ATK + 3, testCard.AttackDamage);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

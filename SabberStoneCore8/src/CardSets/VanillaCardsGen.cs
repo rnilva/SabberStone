@@ -6720,9 +6720,11 @@ namespace SabberStoneCore.CardSets.Classic
 			cards.Add("VAN_EX1_509", new(
 			new Power
 			{
-				// TODO: [VAN_EX1_509] Murloc Tidecaller && Test: Murloc Tidecaller_VAN_EX1_509
-				// PowerTask = null,
-				// Trigger = null,
+				Trigger = TriggerBuilder
+					.Type(TriggerType.SUMMON)
+					.SetTask(new ApplyEffectTask(EntityType.SOURCE, Effects.Attack_N(1)))
+					.SetSource(TriggerSource.ALL_MINIONS)
+					.SetCondition(SelfCondition.IsRace(Race.MURLOC))
 			}));
 			// --------------------------------------- MINION - NEUTRAL
 			// [VAN_CS1_042] Goldshire Footman - COST:1 [ATK:1/HP:2] 
