@@ -394,9 +394,9 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		/// <param name="cardName"></param>
 		/// <returns></returns>
-		public static Card FromName(string cardName)
+		public static Card? FromName(string cardName)
 		{
-			return Data.Cards.FirstOrDefault(x => x.Value.Name == cardName && x.Value.Collectible).Value;
+			return All.FirstOrDefault(x => x.Name == cardName && x.Collectible && x.Set != CardSet.VANILLA);
 		}
 
 		public static Card? FromName(string cardName, FormatType formatType)
