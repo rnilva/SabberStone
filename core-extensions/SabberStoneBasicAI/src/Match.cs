@@ -32,14 +32,20 @@ namespace SabberStoneBasicAI
 		);
 
 		public static int[] RunGames(IAgent agent1, IAgent agent2, Deck deck1, Deck deck2,
-			int count, Config config)
+			int count, in Config config)
+		{
+			return RunGames(agent1, agent2, deck1.ToCards(), deck2.ToCards(), count, in config);
+		}
+
+		public static int[] RunGames(IAgent agent1, IAgent agent2, in (CardClass, List<Card>) deck1,
+			in (CardClass, List<Card>) deck2, int count, in Config config)
 		{
 			Random seedGenerator = new(config.Seed ?? Guid.NewGuid().GetHashCode());
 
 			// Set up the game configuration.
 			GameConfig gameConfig = new();
-			(gameConfig.Player1HeroClass, gameConfig.Player1Deck) = deck1.ToCards();
-			(gameConfig.Player2HeroClass, gameConfig.Player2Deck) = deck2.ToCards();
+			(gameConfig.Player1HeroClass, gameConfig.Player1Deck) = deck1;
+			(gameConfig.Player2HeroClass, gameConfig.Player2Deck) = deck2;
 			gameConfig.SkipMulligan = config.SkipMulligan;
 			if (!String.IsNullOrEmpty(config.LogDir))
 			{
