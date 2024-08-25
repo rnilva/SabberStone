@@ -199,7 +199,7 @@ namespace SabberStoneCoreTest.Basic
 
 			game.Player1.DeckZone.Fill();
 
-			Assert.Equal(game.Player1.DeckZone.Count, DeckZone.StartingCards); // Filling didn't matched max card size for deck
+			Assert.Equal(DeckZone.StartingCards, game.Player1.DeckZone.Count); // Filling didn't matched max card size for deck
 		}
 
 		[Fact]

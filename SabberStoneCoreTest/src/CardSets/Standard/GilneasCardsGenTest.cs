@@ -1562,7 +1562,7 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Prince Liam"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, "Prince Liam"));
 
-			Assert.Empty(game.CurrentPlayer.DeckZone.Where(p => p.Card.Name == "Stonetusk Boar"));
+			Assert.Empty(game.CurrentPlayer.DeckZone.Where(p => p.Card.Name == "Stonetusk Boar").ToArray());
 			Assert.Equal(5, game.CurrentPlayer.DeckZone.Count(p => p.Card.Rarity == Rarity.LEGENDARY));
 		}
 
