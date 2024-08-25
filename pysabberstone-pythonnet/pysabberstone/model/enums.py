@@ -58,3 +58,10 @@ class LogLevel(IntEnum):
     INFO = 3
     VERBOSE = 4
     DEBUG = 5
+
+
+class FormatType(IntEnum):
+    FT_UNKNOWN = 0
+    FT_WILD = 1
+    FT_STANDARD = 2
+    FT_CLASSIC = 3

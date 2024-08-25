@@ -2,7 +2,7 @@
 from typing import Literal, Generator
 
 import pysabberstone.utils as utils
-from pysabberstone.model.enums import LogLevel
+from pysabberstone.model.enums import LogLevel, FormatType
 from pysabberstone.model.player import Player
 from pysabberstone.model.player_task import PlayerTask
 from pysabberstone.py_types import Deck, CardClass
@@ -10,7 +10,7 @@ from pysabberstone.py_types import Deck, CardClass
 import pysabberstone.core
 from System.Collections.Generic import List as _List
 from SabberStoneCore.Config import GameConfig as _GameConfig
-from SabberStoneCore.Enums import State as _State
+from SabberStoneCore.Enums import State as _State, FormatType as _FormatType
 from SabberStoneCore.Model import Game as _Game
 from SabberStoneCore.Tasks.PlayerTasks import ChooseTask as _ChooseTask
 from SabberStoneCore.Tasks.PlayerTasks.Lite import (
@@ -26,9 +26,12 @@ class GameConfig:
     """Skip the Mulligan phase."""
     logging: bool = False
     """Generate logs."""
+    format_type: FormatType = FormatType.FT_CLASSIC
+    """The format of decks, which defines the pool of available cards."""
 
     def _to_core_config(self):
         c = _GameConfig()
+        c.FormatType = _FormatType(int(FormatType.FT_CLASSIC))
         c.StartPlayer = self.start_player
         c.SkipMulligan = self.skip_mulligan
         c.Logging = self.logging
@@ -38,8 +41,8 @@ class GameConfig:
 class Game:
     def __init__(self, p1_deck: Deck, p2_deck: Deck, config: GameConfig) -> None:
         _c = config._to_core_config()
-        _c.Player1HeroClass, _c.Player1Deck = utils.convert_deck(p1_deck)
-        _c.Player2HeroClass, _c.Player2Deck = utils.convert_deck(p2_deck)
+        _c.Player1HeroClass, _c.Player1Deck = utils.convert_deck(p1_deck, config.format_type)
+        _c.Player2HeroClass, _c.Player2Deck = utils.convert_deck(p2_deck, config.format_type)
         self._game = _Game(_c)
         self._game.StartGame()
         self._option_buffer = _OptionBuffer()
