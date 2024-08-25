@@ -9684,7 +9684,7 @@ namespace SabberStoneCoreTest.CardSets.Classic
 		// GameTag:
 		// - 858 = 993
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void MountainGiant_VAN_EX1_105()
 		{
 			// TODO MountainGiant_VAN_EX1_105 test
@@ -9705,7 +9705,9 @@ namespace SabberStoneCoreTest.CardSets.Classic
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//Minion testCard = game.ProcessCard<Minion>("Mountain Giant");
+
+			Minion testCard = game.ProcessCard<Minion>("Mountain Giant");
+			Assert.Null(testCard.OngoingEffect);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

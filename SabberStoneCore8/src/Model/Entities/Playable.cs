@@ -114,7 +114,7 @@ namespace SabberStoneCore.Model.Entities
 		/// https://hearthstone.gamepedia.com/Ongoing_effect
 		/// Here, OngoingEffect includes <see cref="OngoingEnchant"/> too.
 		/// </summary>
-		public IAura OngoingEffect
+		public IAura? OngoingEffect
 		{
 			get => _ongoingEffect;
 			set => _ongoingEffect = value;
@@ -484,8 +484,8 @@ namespace SabberStoneCore.Model.Entities
 		internal int? _v1;
 		internal int? _v2;
 
-		protected IAura _ongoingEffect;
-		protected TriggerStub _activatedTrigger;
+		protected IAura? _ongoingEffect;
+		protected TriggerStub? _activatedTrigger;
 
 		protected bool _exhausted;
 		protected int _zonePosition;

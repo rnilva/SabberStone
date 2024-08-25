@@ -184,7 +184,10 @@ namespace SabberStoneCore.Model.Entities
 			_costManager = null;
 			_modifiedCost = null;
 			if (OngoingEffect is AdaptiveCostEffect ace)
+			{
 				ace.Remove();
+				OngoingEffect = null;
+			}
 
 			if (_history)
 				Game.PowerHistory.Add(PowerHistoryBuilder.TagChange(Id, GameTag.COST, Card.Cost));
