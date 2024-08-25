@@ -14,6 +14,7 @@
 
 using System.Collections.Generic;
 using SabberStoneCore.Actions;
+using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 
@@ -54,7 +55,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 	public class EnqueuePendingTask : SimpleTask
 	{
-		private readonly SimpleTask _task;
+		private readonly SimpleTask? _task;
 		private readonly EntityType _targetType;
 
 		public EnqueuePendingTask(SimpleTask task, EntityType targetType)
@@ -75,7 +76,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			if (_task == null)
 			{
-				SimpleTask task;
+				SimpleTask? task;
 				if (target.Card.ChooseOne)
 				{
 					int chooseOne = game.EventNumber();
@@ -89,8 +90,14 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					    && !id.Equals("ICC_051")	// ICC_051t3
 					    && !id.Equals("ICC_047"))	// using choose one 0 option
 					{
-						SimpleTask task1 = ((Playable) target).ChooseOnePlayables[0].Card.Power.PowerTask;
-						SimpleTask task2 = ((Playable) target).ChooseOnePlayables[1].Card.Power.PowerTask;
+						SimpleTask? task1 = ((Playable)target).ChooseOnePlayables[0].Card.Power?.PowerTask;
+						SimpleTask? task2 = ((Playable)target).ChooseOnePlayables[1].Card.Power?.PowerTask;
+
+						if (task1 == null || task2 == null)
+						{
+							game.Log(LogLevel.WARNING, BlockType.POWER, "EnqueuePendingTask", $"{target} does not have a PowerTask.");
+							return TaskState.STOP;
+						}
 
 						foreach (Playable p in targets)
 						{
@@ -102,12 +109,18 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					}
 
 					if (!controller.ChooseBoth && chooseOne > 0)
-						task = ((Playable)target).ChooseOnePlayables[chooseOne - 1].Card.Power.PowerTask;
+						task = ((Playable)target).ChooseOnePlayables[chooseOne - 1].Card.Power?.PowerTask;
 					else
 						return TaskState.STOP;
 				}
 				else
-					task = target.Card.Power.PowerTask;
+					task = target.Card.Power?.PowerTask;
+
+				if (task == null)
+				{
+					game.Log(LogLevel.WARNING, BlockType.POWER, "EnqueuePendingTask", $"{target} does not have a PowerTask.");
+					return TaskState.STOP;
+				}
 
 				if (target.Card.HasOverload)
 					task = ComplexTask.Create(task, OverloadTask.Task);
