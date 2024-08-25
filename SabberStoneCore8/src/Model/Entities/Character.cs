@@ -165,31 +165,30 @@ namespace SabberStoneCore.Model.Entities
 		/// <summary>
 		/// Returns a sequence of characters which are attackable.
 		/// </summary>
-		public IEnumerable<Character> GetValidAttackTargets()
+		public List<Character> GetValidAttackTargets()
 		{
 			bool tauntFlag = false;
 			var allTargets = new List<Character>(4);
 			var allTargetsTaunt = new List<Character>(2);
-			foreach (Minion minion in Controller.Opponent.BoardZone.GetAll())
+			foreach (MinionInPlay minion in Controller.Opponent.BoardZone.GetAll())
 			{
-				if (!minion.HasStealth)
+				if (minion is not { HasStealth: false, IsImmune: false }) continue;
+
+				if (minion.HasTaunt)
 				{
-					if (minion.HasTaunt)
-					{
-						allTargetsTaunt.Add(minion);
-						tauntFlag = true;
-						continue;
-					}
-					if (!tauntFlag)
-						allTargets.Add(minion);
+					allTargetsTaunt.Add(minion);
+					tauntFlag = true;
+					continue;
 				}
+				if (!tauntFlag)
+					allTargets.Add(minion);
 			}
 			if (tauntFlag)
 				return allTargetsTaunt;
 
 			Hero opHero = Controller.Opponent.Hero;
 
-			if (!(this is MinionInPlay m && m.AttackableByRush) && !CantAttackHeroes && !opHero.IsImmune && !opHero.HasStealth)
+			if (!(this is MinionInPlay m && m.AttackableByRush) && !CantAttackHeroes && opHero is { IsImmune: false, HasStealth: false })
 				allTargets.Add(opHero);
 
 			return allTargets;
