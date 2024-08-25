@@ -46,8 +46,12 @@ namespace SabberStoneCore.Actions
 			    if (spell.IsSecret || spell.IsQuest)
 			    {
 				    spell.Power?.Trigger?.Activate(game, spell);
-				    c.SecretZone.Add(spell);
-				    spell.IsExhausted = true;
+				    if (!((spell.IsSecret && c.SecretZone.Any(c => c.Card.Id == spell.Card.Id))
+				          || (spell.IsQuest && c.SecretZone.Quest != null)))
+				    {
+					    c.SecretZone.Add(spell);
+					    spell.IsExhausted = true;
+					}
 			    }
 			    else
 			    {

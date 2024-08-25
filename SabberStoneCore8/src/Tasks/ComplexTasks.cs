@@ -250,6 +250,7 @@ namespace SabberStoneCore.Tasks
 							return null;
 
 						Controller c = stack[0].Controller;
+						stack = stack.ToList();
 						do
 						{
 							Playable pick = stack.Choose(c.Game.Random);
@@ -261,7 +262,7 @@ namespace SabberStoneCore.Tasks
 
 							c.DeckZone.Remove(pick);
 							var secret = (Spell) pick;
-							secret.Power.Trigger?.Activate(c.Game, secret);
+							secret.Power?.Trigger?.Activate(c.Game, secret);
 							c.SecretZone.Add(secret);
 							if (c == c.Game.CurrentPlayer)
 								secret.IsExhausted = true;

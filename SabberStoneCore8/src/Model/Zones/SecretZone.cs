@@ -29,7 +29,7 @@ namespace SabberStoneCore.Model.Zones
 		/// Gets or sets the quest in this SecretZone.
 		/// null means absence.
 		/// </summary>
-		public Spell Quest { get; set; }
+		public Spell? Quest { get; set; }
 
 		public SecretZone(Controller controller) : base(Zone.SECRET, SecretZoneMaxSize)
 		{

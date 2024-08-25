@@ -184,7 +184,7 @@ namespace SabberStoneCore.Tasks
 			{
 				int opBoardCount = t.Controller.Opponent.BoardZone.CountExceptUntouchables;
 
-				if (t is Character ch && ch.IsAttacking)
+				if (t is Character ch && g.EventSource() == ch)
 				{
 					int index = g.Random.Next(opBoardCount + 1);
 					g.CurrentEventMetaData().EventTarget =

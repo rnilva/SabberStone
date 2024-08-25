@@ -90,6 +90,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 								cardTarget = (Character)targets[0];
 						}
 
+						if ((spell.IsSecret && c.SecretZone.Any(s => s.Card.Id == spell.Card.Id)) ||
+						    (spell.IsQuest && c.SecretZone.Quest?.Card.Id == spell.Card.Id))
+							return TaskState.COMPLETE;
+
 						if (spell.Zone == null || Generic.RemoveFromZone(c, p))
 						{
 							Generic.CastSpell.Invoke(c, game, spell, cardTarget, 0);

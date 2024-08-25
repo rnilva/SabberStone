@@ -179,7 +179,11 @@ namespace SabberStoneCore.Model
 		/// When TRUE, detailed information each process step will be saved in <see cref="Logs"/>
 		/// in a form of <see cref="LogEntry"/>.
 		/// </summary>
-		public bool Logging { get; }
+		public bool Logging
+		{
+			get => _logging;
+			set => _logging = value;
+		}
 
 		/// <summary>Gets or sets the power history container. 
 		/// This object facilitates building POWER blocks to send to the hearthstone client.
