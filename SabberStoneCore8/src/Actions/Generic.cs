@@ -97,6 +97,7 @@ namespace SabberStoneCore.Actions
 				{
 					case BoardZone board:
 						board.Auras.ForEach(a => a.DeApply(minion));
+						board.AdjacentAuras.ForEach(a => a.DeApply((MinionInPlay)minion));
 						break;
 					case HandZone hand:
 						hand.Auras.ForEach(a => a.DeApply(minion));
@@ -381,6 +382,7 @@ namespace SabberStoneCore.Actions
 					(board != null)
 				{
 					foreach (Aura a in board.Auras) a.DeApply(source);
+					board.AdjacentAuras.ForEach(a => a.DeApply((MinionInPlay)source));
 
 					if (source.Card.Untouchable)
 						board.DecrementUntouchablesCount();

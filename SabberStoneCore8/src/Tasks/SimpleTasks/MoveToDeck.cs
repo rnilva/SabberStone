@@ -43,6 +43,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 						continue;
 					case BoardZone board:
 						board.Auras.ForEach(a => a.DeApply(p));
+						board.AdjacentAuras.ForEach(a => a.DeApply((MinionInPlay)p));
 						break;
 					case HandZone hand:
 						hand.Auras.ForEach(a => a.DeApply(p));
