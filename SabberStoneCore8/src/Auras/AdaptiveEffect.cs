@@ -254,7 +254,8 @@ namespace SabberStoneCore.Auras
 
 		public void Remove()
 		{
-			_owner.OngoingEffect = null;
+			if (_owner.OngoingEffect == this)
+				_owner.OngoingEffect = null;
 			_on = false;
 		}
 
@@ -322,7 +323,8 @@ namespace SabberStoneCore.Auras
 
 		public void Remove()
 		{
-			_owner.OngoingEffect = null;
+			if (_owner.OngoingEffect == this)
+				_owner.OngoingEffect = null;
 			_on = false;
 		}
 

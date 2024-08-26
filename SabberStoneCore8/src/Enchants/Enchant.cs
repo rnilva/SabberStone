@@ -220,7 +220,8 @@ namespace SabberStoneCore.Enchants
 
 		public void Remove()
 		{
-			Target.OngoingEffect = null;
+			if (Target.OngoingEffect == this)
+				Target.OngoingEffect = null;
 			Target.Game.Auras.Remove(this);
 		}
 

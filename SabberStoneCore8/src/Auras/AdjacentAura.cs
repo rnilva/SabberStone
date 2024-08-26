@@ -69,7 +69,8 @@ namespace SabberStoneCore.Auras
 					DeApply(_left);
 				if (_right != null)
 					DeApply(_right);
-				_owner.OngoingEffect = null;
+				if (_owner.OngoingEffect == this)	
+					_owner.OngoingEffect = null;
 				//_owner.Game.Auras.Remove(this);
 				_board.AdjacentAuras.Remove(this);
 				return false;

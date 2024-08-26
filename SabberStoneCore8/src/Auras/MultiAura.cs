@@ -37,7 +37,8 @@ namespace SabberStoneCore.Auras
 		public void Remove()
 		{
 			On = false;
-			Owner.OngoingEffect = null;
+			if (Owner.OngoingEffect == this)
+				Owner.OngoingEffect = null;
 			for (int i = 0; i < _auras.Count; i++)
 				_auras[i].Remove();
 		}

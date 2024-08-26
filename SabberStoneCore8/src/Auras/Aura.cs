@@ -271,7 +271,8 @@ namespace SabberStoneCore.Auras
 			On = false;
 			//ToBeUpdated = true;
 			_queue.Enqueue(new AuraUpdateInstruction(Instruction.RemoveAll), 0);
-			Owner.OngoingEffect = null;
+			if (Owner.OngoingEffect == this)
+				Owner.OngoingEffect = null;
 
 			switch (Type)
 			{
