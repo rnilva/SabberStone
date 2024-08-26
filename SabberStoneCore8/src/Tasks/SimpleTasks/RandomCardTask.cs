@@ -13,6 +13,7 @@
 #endregion
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using SabberStoneCore.Enums;
@@ -23,8 +24,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class RandomCardTask : SimpleTask
 	{
-		private static readonly ConcurrentDictionary<(int, CardClass), Card[]> CachedCardLists =
-			new ConcurrentDictionary<(int, CardClass), Card[]>();
+		private static readonly ConcurrentDictionary<(int, CardClass), FrozenSet<Card>> CachedCardLists = new();
 
 		private readonly CardSet _cardSet;
 		private readonly CardType _cardType;
@@ -110,7 +110,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 
 			IReadOnlyList<Card> cardsList =
-				GetCardList(source, _cardType, cardClass, _cardSet, _race, _rarity, _gameTagFilter);
+				GetCardList(source, game.FormatType, _cardType, cardClass, _cardSet, _race, _rarity, _gameTagFilter);
 
 
 			Playable randomCard =
@@ -122,15 +122,13 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			return TaskState.COMPLETE;
 		}
 
-		public static IReadOnlyList<Card> GetCardList(Entity source, CardType cardType = CardType.INVALID,
+		public static IReadOnlyList<Card> GetCardList(Entity source, FormatType formatType = FormatType.FT_WILD, CardType cardType = CardType.INVALID,
 			CardClass cardClass = CardClass.INVALID, CardSet cardSet = CardSet.INVALID, Race race = Race.INVALID,
 			Rarity rarity = Rarity.INVALID, GameTag[] gameTagFilter = null)
 		{
-			IEnumerable<Card> cards = source.Game.FormatType == FormatType.FT_STANDARD
-				? Cards.AllStandard
-				: Cards.AllWild;
+			FrozenSet<Card> cards = Cards.FormatTypeCards(formatType);
 
-			if (!CachedCardLists.TryGetValue((source.Card.AssetId, cardClass), out Card[] cardsList))
+			if (!CachedCardLists.TryGetValue((source.Card.AssetId, cardClass), out FrozenSet<Card>? cardsList))
 			{
 				cardsList = cards.Where(p =>
 					(cardType == CardType.INVALID || p.Type == cardType) &&
@@ -140,12 +138,12 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					(rarity == Rarity.INVALID || p.Rarity == rarity) &&
 					(gameTagFilter == null ||
 					 Array.TrueForAll(gameTagFilter, gameTag => p.Tags.ContainsKey(gameTag))) &&
-					p[GameTag.QUEST] == 0).ToArray();
+					p[GameTag.QUEST] == 0).ToFrozenSet();
 
 				CachedCardLists.TryAdd((source.Card.AssetId, cardClass), cardsList);
 			}
 
-			return cardsList;
+			return cardsList.Items;
 		}
 	}
 }

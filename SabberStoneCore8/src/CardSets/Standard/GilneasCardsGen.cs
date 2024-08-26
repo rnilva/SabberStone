@@ -785,7 +785,7 @@ namespace SabberStoneCore.CardSets.Standard
 			cards.Add("GIL_694", new Power {
 				PowerTask = new CustomTask((g, c, s, t, stack) =>
 				{
-					IReadOnlyList<Card> legendaries = RandomCardTask.GetCardList(s, CardType.MINION, rarity: Rarity.LEGENDARY);
+					IReadOnlyList<Card> legendaries = RandomCardTask.GetCardList(s, g.FormatType, CardType.MINION, rarity: Rarity.LEGENDARY);
 
 					Util.DeepCloneableRandom rnd = g.Random;
 					DeckZone deck = c.DeckZone;

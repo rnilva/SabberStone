@@ -82,7 +82,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			if (_useRandomCard)
 			{
 				IReadOnlyList<Card> randCards =
-					RandomCardTask.GetCardList(source, _cardType, _cardClass, race: _race, rarity: _rarity);
+					RandomCardTask.GetCardList(source, game.FormatType, _cardType, _cardClass, race: _race, rarity: _rarity);
 				foreach (Playable p in IncludeTask.GetEntities(_type, in controller, source, target, stack?.Playables))
 				{
 					Card pick = randCards.Choose(game.Random);
