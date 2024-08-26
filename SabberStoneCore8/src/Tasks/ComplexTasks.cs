@@ -42,7 +42,7 @@ namespace SabberStoneCore.Tasks
 
 		internal static SimpleTask GetRandomEntourageCardToHand(bool opponent = false)
 			=> Create(
-				new RandomEntourageTask(),
+				new RandomEntourageTask(opponent: opponent),
 				new AddStackTo(opponent ? EntityType.OP_HAND : EntityType.HAND));
 
 		internal static SimpleTask LifeSteal(EntityType entityType)
