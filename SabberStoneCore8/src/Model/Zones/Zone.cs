@@ -430,6 +430,10 @@ namespace SabberStoneCore.Model.Zones
 
 			entity.Zone = null;
 
+			if (Game.Logging)
+				Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone",
+					$"Entity '{entity} ({entity.Card.Type})' has been removed from zone '{Type}'.");
+
 			return entity;
 		}
 
@@ -554,6 +558,10 @@ namespace SabberStoneCore.Model.Zones
 			entity.Zone = null;
 
 			entity.ActivatedTrigger?.Remove(Game);
+
+			if (Game.Logging)
+				Game.Log(LogLevel.DEBUG, BlockType.PLAY, "Zone",
+					$"Entity '{entity} ({entity.Card.Type})' has been removed from zone '{Type}'.");
 
 			return entity;
 		}
