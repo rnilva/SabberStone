@@ -45,10 +45,10 @@ namespace SabberStoneCore.Actions
 				game.TaskQueue.StartEvent();
 			    if (spell.IsSecret || spell.IsQuest)
 			    {
-				    spell.Power?.Trigger?.Activate(game, spell);
 				    if (!((spell.IsSecret && c.SecretZone.Any(c => c.Card.Id == spell.Card.Id))
 				          || (spell.IsQuest && c.SecretZone.Quest != null)))
 				    {
+						spell.Power?.Trigger?.Activate(game, spell);
 					    c.SecretZone.Add(spell);
 					    spell.IsExhausted = true;
 					}
