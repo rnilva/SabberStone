@@ -15,6 +15,7 @@ using SabberStoneCore.Actions;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Model.Zones;
 
 namespace SabberStoneCore.Tasks.SimpleTasks
 {
@@ -36,8 +37,18 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			foreach (Playable p in IncludeTask.GetEntities(in _type, in controller, source, target, stack?.Playables))
 			{
-				if (p.Zone?.Type == Zone.DECK)
-					continue;
+				switch (p.Zone)
+				{
+					case DeckZone:
+						continue;
+					case BoardZone board:
+						board.Auras.ForEach(a => a.DeApply(p));
+						break;
+					case HandZone hand:
+						hand.Auras.ForEach(a => a.DeApply(p));
+						break;
+				}
+
 				Playable removedEntity = p.Zone?.Remove(p) ?? p;
 				removedEntity.Reset();
 				if (removedEntity.Controller != c)

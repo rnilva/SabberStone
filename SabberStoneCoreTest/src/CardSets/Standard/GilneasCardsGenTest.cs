@@ -4301,10 +4301,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		// GameTag:
 		// - SPELLPOWER = 1
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void Spellshifter_GIL_529()
 		{
-			// TODO Spellshifter_GIL_529 test
 			var game = new Game(new GameConfig
 			{
 				StartPlayer = 1,
@@ -4323,6 +4322,19 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.Player2.BaseMana = 10;
 			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Spellshifter"));
 			//game.Process(PlayCardTask.Any(game.CurrentPlayer, "Spellshifter"));
+
+			game.ProcessCard("Raid Leader");
+			MinionInPlay m = game.ProcessCard<MinionInPlay>("Spellshifter");
+			Assert.Equal(m.Card.ATK + 1, m.AttackDamage);
+
+			game.ProcessCard("Youthful Brewmaster", m);
+			Playable handMinion = game.CurrentPlayer.HandZone[^1];
+			Assert.Equal("Spellshifter", handMinion.Card.Name);
+			Assert.Equal(handMinion.Card.ATK, ((Minion)handMinion).AttackDamage);
+			game.EndTurn();
+
+			Assert.Equal(4, game.CurrentOpponent.HandZone[^1].AsCharacter().AttackDamage);
+			Assert.Equal(1, game.CurrentOpponent.HandZone[^1].AsCharacter().Health);
 		}
 
 		// --------------------------------------- MINION - NEUTRAL

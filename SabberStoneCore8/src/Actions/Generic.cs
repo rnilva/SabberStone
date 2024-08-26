@@ -93,6 +93,16 @@ namespace SabberStoneCore.Actions
 		public static Func<Controller, Minion, bool> ReturnToHandBlock
 			=> delegate (Controller c, Minion minion)
 			{
+				switch (minion.Zone)
+				{
+					case BoardZone board:
+						board.Auras.ForEach(a => a.DeApply(minion));
+						break;
+					case HandZone hand:
+						hand.Auras.ForEach(a => a.DeApply(minion));
+						break;
+				}
+
 				if (!RemoveFromZone.Invoke(c, minion))
 					return false;
 
@@ -530,7 +540,6 @@ namespace SabberStoneCore.Actions
 				//		BoardZone.ActivateAura((Minion) p);
 				//		break;
 				//}
-
 
 				// Reapply auras
 				if (hand != null)
