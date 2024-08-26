@@ -1402,7 +1402,7 @@ namespace SabberStoneCore.Model.Entities
 					int[] newArray = ArrayPool<int>.Shared.Rent(16);
 					arrays.Add(newArray);
 					var newSpan = new Span<int>(newArray, 0, n);
-					filtered.CopyTo(newSpan);
+					filtered[..n].CopyTo(newSpan);
 					return newSpan;
 				}
 			}
