@@ -28,7 +28,8 @@ namespace SabberStoneBasicAI
 		public readonly record struct Config(
 			bool SkipMulligan,
 			int? Seed,
-			string LogDir
+			string LogDir,
+			FormatType FormatType
 		);
 
 		public static int[] RunGames(IAgent agent1, IAgent agent2, Deck deck1, Deck deck2,
@@ -47,6 +48,8 @@ namespace SabberStoneBasicAI
 			(gameConfig.Player1HeroClass, gameConfig.Player1Deck) = deck1;
 			(gameConfig.Player2HeroClass, gameConfig.Player2Deck) = deck2;
 			gameConfig.SkipMulligan = config.SkipMulligan;
+			gameConfig.FormatType = config.FormatType;
+
 			if (!String.IsNullOrEmpty(config.LogDir))
 			{
 				gameConfig.Logging = true;
