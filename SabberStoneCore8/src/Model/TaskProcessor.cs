@@ -269,7 +269,7 @@ namespace SabberStoneCore.Model
 				if (eventMeta.EventTarget != null)
 					txt += $" => {eventMeta.EventTarget}";
 				txt += $" ({eventMeta.EventNumber})";
-				eventMeta.EventSource.Game.Log(LogLevel.INFO, BlockType.ACTION, "EventStack", txt);
+				eventMeta.EventSource.Game.Log(LogLevel.VERBOSE, BlockType.ACTION, "EventStack", txt);
 			}
 		}
 
@@ -284,7 +284,7 @@ namespace SabberStoneCore.Model
 				if (eventMeta.EventTarget != null)
 					txt += $" => {eventMeta.EventTarget}";
 				txt += $" ({eventMeta.EventNumber})";
-				eventMeta.EventSource.Game.Log(LogLevel.INFO, BlockType.ACTION, "EventStack", txt);
+				eventMeta.EventSource.Game.Log(LogLevel.VERBOSE, BlockType.ACTION, "EventStack", txt);
 			}
 		}
 
