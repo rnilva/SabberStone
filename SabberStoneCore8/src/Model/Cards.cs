@@ -263,7 +263,13 @@ namespace SabberStoneCore.Model
 		/// </summary>
 		/// <param name="formatType"></param>
 		/// <returns></returns>
-		public static FrozenDictionary<CardClass, FrozenSet<Card>> FormatTypeClassCards(FormatType formatType) => formatType == FormatType.FT_STANDARD ? Standard : Wild;
+		public static FrozenDictionary<CardClass, FrozenSet<Card>> FormatTypeClassCards(FormatType formatType) => formatType switch
+		{
+			FormatType.FT_STANDARD => Standard,
+			FormatType.FT_WILD => Wild,
+			FormatType.FT_CLASSIC => Classic,
+			_ => throw new NotImplementedException($"FormatType {formatType} is not implemented.")
+		};
 
 		/// <summary>
 		/// Retrieves the specifified set of cards.
