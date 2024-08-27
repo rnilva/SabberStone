@@ -3614,10 +3614,9 @@ namespace SabberStoneCoreTest.CardSets.Standard
 		// GameTag:
 		// - DURABILITY = 4
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void OverlordsWhip_TRL_360()
 		{
-			// TODO OverlordsWhip_TRL_360 test
 			var game = new Game(new GameConfig
 			{
 				StartPlayer = 1,
@@ -3634,8 +3633,14 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
-			//var testCard = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Overlord's Whip"));
-			//var testCard = (Weapon) game.ProcessCard<Weapon>("Overlord's Whip");
+
+			game.ProcessCard<Weapon>("Overlord's Whip");
+			MinionInPlay mech = game.ProcessCard<MinionInPlay>("Upgradeable Framebot");
+			Assert.Equal(mech.Card.Health - 1, mech.Health);
+
+			// AfterPlayMinion Trigger should not be activated if the minion has leaved the board.
+			game.ProcessCard<Minion>("Replicating Menace", zonePosition: 0);
+			Assert.Equal(1, game.CurrentPlayer.BoardZone.Count);
 		}
 
 	}

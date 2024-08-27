@@ -288,8 +288,8 @@ namespace SabberStoneCore.Actions
 			// - After Summon Phase --> After Summon Trigger
 			//   (death processing, aura updates)
 			//minion.JustPlayed = false;
-			triggerManager.OnAfterPlayMinionTrigger(minion);
-
+			if (minion.Zone?.Type == Zone.PLAY)
+				triggerManager.OnAfterPlayMinionTrigger(minion);
 
 			if (minion.IsRace(Race.ELEMENTAL))
 				c.NumElementalsPlayedThisTurn++;
