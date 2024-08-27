@@ -72,7 +72,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 								{
 									//throw new Exception($"{source} cannot play {p}; there is no valid target.");
 									if (spell.Zone != null)
-										Generic.RemoveFromZone(c, p);
+									{
+										Generic.RemoveFromZone(c, spell);
+										c.GraveyardZone.Add(spell);
+									}
 
 									return TaskState.STOP;
 								}
