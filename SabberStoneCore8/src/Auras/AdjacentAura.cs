@@ -159,7 +159,7 @@ namespace SabberStoneCore.Auras
 
 			if (ignoreEnchantments) return;
 
-			if (EnchantmentCard != null && _history)
+			if (_history && EnchantmentCard != null && m.AppliedEnchantments != null)
 			{
 				int cardId = EnchantmentCard.AssetId;
 				List<Enchantment> enchantments = m.AppliedEnchantments;
