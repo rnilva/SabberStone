@@ -31,7 +31,7 @@ class GameConfig:
 
     def _to_core_config(self):
         c = _GameConfig()
-        c.FormatType = _FormatType(int(FormatType.FT_CLASSIC))
+        c.FormatType = _FormatType(int(self.format_type))
         c.StartPlayer = self.start_player
         c.SkipMulligan = self.skip_mulligan
         c.Logging = self.logging
@@ -41,8 +41,12 @@ class GameConfig:
 class Game:
     def __init__(self, p1_deck: Deck, p2_deck: Deck, config: GameConfig) -> None:
         _c = config._to_core_config()
-        _c.Player1HeroClass, _c.Player1Deck = utils.convert_deck(p1_deck, config.format_type)
-        _c.Player2HeroClass, _c.Player2Deck = utils.convert_deck(p2_deck, config.format_type)
+        _c.Player1HeroClass, _c.Player1Deck = utils.convert_deck(
+            p1_deck, config.format_type
+        )
+        _c.Player2HeroClass, _c.Player2Deck = utils.convert_deck(
+            p2_deck, config.format_type
+        )
         self._game = _Game(_c)
         self._game.StartGame()
         self._option_buffer = _OptionBuffer()
@@ -78,12 +82,14 @@ class Game:
         return self._game.State == _State.COMPLETE
 
     def get_log_entries(
-        self, loglevel: LogLevel = LogLevel.INFO
+        self, loglevel: LogLevel = LogLevel.INFO, flush: bool = False
     ) -> Generator[str, None, None]:
         _log_entries = self._game.Logs
         for _item in _log_entries:
             if int(_item.Level) <= loglevel.value:
                 yield _item.ToString()
+        if flush:
+            self._game.Logs.Clear()
 
 
 if __name__ == "__main__":

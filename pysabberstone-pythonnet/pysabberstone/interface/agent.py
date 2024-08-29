@@ -65,6 +65,7 @@ class MatchConfig:
     skip_mulligan: bool = True
     seed: int | None = None
     log_dir: str | Path | None = None
+    verbose: bool = False
 
 
 def run_games(
@@ -86,6 +87,9 @@ def run_games(
     else:
         log_dir = None
 
+    if config.verbose:
+        game_config.logging = True
+
     agents = (agent1, agent2)
     for agent in agents:
         agent.on_match_started()
@@ -106,6 +110,10 @@ def run_games(
             player = game.current_player
             action = agents[player.id - 1].get_action(game, player)
             game.process(action)
+            if config.verbose:
+                logs = game.get_log_entries(flush=True)
+                for l in logs:
+                    print(l)
 
         for agent in agents:
             agent.on_game_finished()
