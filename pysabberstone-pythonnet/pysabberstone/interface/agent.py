@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
+from pprint import pprint
 
 from pysabberstone.model.enums import PlayState, CardClass
 from pysabberstone.model.game import Game, GameConfig
@@ -96,27 +97,43 @@ def run_games(
 
     win_counter = Counter()
     for i in range(num_games):
-        for agent in agents:
-            agent.on_game_started()
+        try:
+            for agent in agents:
+                agent.on_game_started()
 
-        game = Game(deck1, deck2, game_config)
+            game = Game(deck1, deck2, game_config)
 
-        if not game_config.skip_mulligan:
-            for pid, agent in zip((1, 2), agents):
-                game.send_mulligan(pid, agent.mulligan(game, game.players[pid - 1]))
-            game._game.MainBegin(True)
+            if not game_config.skip_mulligan:
+                for pid, agent in zip((1, 2), agents):
+                    game.send_mulligan(pid, agent.mulligan(game, game.players[pid - 1]))
+                game._game.MainBegin(True)
 
-        while not game.done():
-            player = game.current_player
-            action = agents[player.id - 1].get_action(game, player)
-            game.process(action)
-            if config.verbose:
-                logs = game.get_log_entries(flush=True)
-                for l in logs:
-                    print(l)
+            while not game.done():
+                player = game.current_player
+                action = agents[player.id - 1].get_action(game, player)
+                game.process(action)
+                if config.verbose:
+                    logs = game.get_log_entries(flush=True)
+                    for l in logs:
+                        print(l)
 
-        for agent in agents:
-            agent.on_game_finished()
+            for agent in agents:
+                agent.on_game_finished()
+        except Exception as e:
+            import time
+            with open(f"error_{time.strftime('%d%m-%H%M%S')}.txt", 'w') as f:
+                print("Exception raised during the run.", file=f)
+                print("Deck1:", file=f)
+                pprint(deck1, f)
+                print("-" * 20, file=f)
+                print("Deck2:", file=f)
+                pprint(deck2, f)
+                print("-" * 20, file=f)
+                print("Exception", file=f)
+                print(e, file=f)
+                print("-" * 20, file=f)
+            win_counter[-1] += 1
+            continue
 
         winner = (
             1
