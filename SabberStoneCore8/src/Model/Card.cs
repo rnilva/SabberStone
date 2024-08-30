@@ -282,6 +282,7 @@ namespace SabberStoneCore.Model
 						characterType = -1;
 						break;
 					case PlayReq.REQ_TARGET_WITH_RACE:
+						characterType = 1;
 						TargetingPredicate += TargetingPredicates.ReqTargetWithRace(requirement.Value);
 						break;
 					case PlayReq.REQ_FROZEN_TARGET:
@@ -306,9 +307,11 @@ namespace SabberStoneCore.Model
 						TargetingPredicate += TargetingPredicates.ReqStealthedTarget;
 						break;
 					case PlayReq.REQ_TARGET_WITH_DEATHRATTLE:
+						characterType = 1;
 						TargetingPredicate += TargetingPredicates.ReqTargetWithDeathrattle;
 						break;
 					case PlayReq.REQ_LEGENDARY_TARGET:
+						characterType = 1;
 						TargetingPredicate += TargetingPredicates.ReqLegendaryTarget;
 						break;
 					case PlayReq.REQ_TARGET_FOR_COMBO:
@@ -1023,6 +1026,7 @@ namespace SabberStoneCore.Model
 					type &= ~TargetingType.Minion;
 					break;
 				case PlayReq.REQ_TARGET_WITH_RACE:
+					type &= ~TargetingType.Hero;
 					TargetingPredicate += TargetingPredicates.ReqTargetWithRace(requirement.Value);
 					break;
 				case PlayReq.REQ_FROZEN_TARGET:
@@ -1047,9 +1051,11 @@ namespace SabberStoneCore.Model
 					TargetingPredicate += TargetingPredicates.ReqStealthedTarget;
 					break;
 				case PlayReq.REQ_TARGET_WITH_DEATHRATTLE:
+					type &= ~TargetingType.Hero;
 					TargetingPredicate += TargetingPredicates.ReqTargetWithDeathrattle;
 					break;
 				case PlayReq.REQ_LEGENDARY_TARGET:
+					type &= ~TargetingType.Hero;
 					TargetingPredicate += TargetingPredicates.ReqLegendaryTarget;
 					break;
 				case PlayReq.REQ_TARGET_FOR_COMBO:
