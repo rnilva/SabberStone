@@ -6670,12 +6670,7 @@ namespace SabberStoneCore.CardSets.Classic
 			// - 858 = 858
 			// --------------------------------------------------------
 			cards.Add("VAN_EX1_112", new(
-			entourage: ["Mekka1","Mekka2","Mekka3","Mekka4",], new Power
-			{
-				// TODO: [VAN_EX1_112] Gelbin Mekkatorque && Test: Gelbin Mekkatorque_VAN_EX1_112
-				// PowerTask = null,
-				// Trigger = null,
-			}));
+			entourage: ["Mekka1","Mekka2","Mekka3","Mekka4",], new Power { }));
 			// --------------------------------------- MINION - NEUTRAL
 			// [VAN_EX1_405] Shieldbearer - COST:1 [ATK:0/HP:4] 
 			// - Fac: neutral, Set: vanilla, Rarity: common

@@ -274,9 +274,10 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("EX1_112", new Power
 			{
-				// TODO [EX1_112] Gelbin Mekkatorque && Test: Gelbin Mekkatorque_EX1_112
-				//PowerTask = null,
-				//Trigger = null,
+				// TODO Test: Gelbin Mekkatorque_EX1_112
+				PowerTask = ComplexTask.Create(
+					new RandomEntourageTask(),
+					new SummonTask())
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -335,9 +336,10 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("NEW1_016", new Power
 			{
-				// TODO [NEW1_016] Captain's Parrot && Test: Captain's Parrot_NEW1_016
-				//PowerTask = null,
-				//Trigger = null,
+				PowerTask = ComplexTask.Create(
+					new IncludeTask(EntityType.DECK),
+					new FilterStackTask(SelfCondition.IsRace(Race.PIRATE)),
+					new DrawCardTask())
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -354,9 +356,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("PRO_001", new Power
 			{
-				// TODO [PRO_001] Elite Tauren Chieftain && Test: Elite Tauren Chieftain_PRO_001
-				//PowerTask = null,
-				//Trigger = null,
+				PowerTask = ComplexTask.Create(
+					ComplexTask.GetRandomEntourageCardToHand(),
+					ComplexTask.GetRandomEntourageCardToHand(opponent: true))
 			});
 
 		}
@@ -371,9 +373,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("Mekka3e", new Power
 			{
-				// TODO [Mekka3e] Emboldened! && Test: Emboldened!_Mekka3e
-				//PowerTask = null,
-				//Trigger = null,
+				Enchant = Effects.AttackHealth_N(1)
 			});
 
 			// ---------------------------------- ENCHANTMENT - NEUTRAL
@@ -400,9 +400,11 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("Mekka1", new Power
 			{
-				// TODO [Mekka1] Homing Chicken && Test: Homing Chicken_Mekka1
-				//PowerTask = null,
-				//Trigger = null,
+				// TODO Test: Homing Chicken_Mekka1
+				Trigger = TriggerBuilder.Type(TriggerType.TURN_START)
+					.SetTask(ComplexTask.Create(
+						new DestroyTask(EntityType.SOURCE),
+						new DrawTask(3)))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -413,9 +415,13 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("Mekka2", new Power
 			{
-				// TODO [Mekka2] Repair Bot && Test: Repair Bot_Mekka2
-				//PowerTask = null,
-				//Trigger = null,
+				// TODO Test: Repair Bot_Mekka2
+				Trigger = TriggerBuilder.Type(TriggerType.TURN_END)
+					.SetTask(ComplexTask.Create(
+						new IncludeTask(EntityType.ALL),
+						new FilterStackTask(SelfCondition.IsDamaged),
+						new HealTask(6, EntityType.STACK)))
+
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -426,10 +432,12 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("Mekka3", new Power
 			{
-				// TODO [Mekka3] Emboldener 3000 && Test: Emboldener 3000_Mekka3
+				// TODO Test: Emboldener 3000_Mekka3
 				InfoCardId = "Mekka3e",
-				//PowerTask = null,
-				//Trigger = null,
+				Trigger = TriggerBuilder.Type(TriggerType.TURN_END)
+					.SetTask(ComplexTask.Create(
+						new RandomTask(1, EntityType.MINIONS),
+						new AddEnchantmentTask("Mekka3e", EntityType.STACK)))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -440,10 +448,12 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("Mekka4", new Power
 			{
-				// TODO [Mekka4] Poultryizer && Test: Poultryizer_Mekka4
+				// TODO Test: Poultryizer_Mekka4
 				InfoCardId = "Mekka4e",
-				//PowerTask = null,
-				//Trigger = null,
+				Trigger = TriggerBuilder.Type(TriggerType.TURN_START)
+					.SetTask(ComplexTask.Create(
+						new RandomTask(1, EntityType.ALLMINIONS),
+						new TransformTask("Mekka4t", EntityType.STACK)))
 			});
 
 			// --------------------------------------- MINION - NEUTRAL
@@ -452,23 +462,13 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			// Text: <i>Hey Chicken!</i>
 			// --------------------------------------------------------
-			cards.Add("Mekka4t", new Power
-			{
-				// TODO [Mekka4t] Chicken && Test: Chicken_Mekka4t
-				//PowerTask = null,
-				//Trigger = null,
-			});
+			cards.Add("Mekka4t", null);
 
 			// --------------------------------------- MINION - NEUTRAL
 			// [PRO_001at] Murloc (*) - COST:0 [ATK:1/HP:1] 
 			// - Race: murloc, Set: hof, 
 			// --------------------------------------------------------
-			cards.Add("PRO_001at", new Power
-			{
-				// TODO [PRO_001at] Murloc && Test: Murloc_PRO_001at
-				//PowerTask = null,
-				//Trigger = null,
-			});
+			cards.Add("PRO_001at", null);
 
 			// ---------------------------------------- SPELL - NEUTRAL
 			// [PRO_001a] I Am Murloc (*) - COST:4 
@@ -481,9 +481,7 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("PRO_001a", new Power
 			{
-				// TODO [PRO_001a] I Am Murloc && Test: I Am Murloc_PRO_001a
-				//PowerTask = null,
-				//Trigger = null,
+				PowerTask = new SummonTask("PRO_001at", 4)
 			});
 
 			// ---------------------------------------- SPELL - NEUTRAL
@@ -497,9 +495,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("PRO_001b", new Power
 			{
-				// TODO [PRO_001b] Rogues Do It... && Test: Rogues Do It..._PRO_001b
-				//PowerTask = null,
-				//Trigger = null,
+				PowerTask = ComplexTask.Create(
+					new DamageTask(4, EntityType.TARGET),
+					new DrawTask(1))
 			});
 
 			// ---------------------------------------- SPELL - NEUTRAL
@@ -515,9 +513,9 @@ namespace SabberStoneCore.CardSets
 			// --------------------------------------------------------
 			cards.Add("PRO_001c", new Power
 			{
-				// TODO [PRO_001c] Power of the Horde && Test: Power of the Horde_PRO_001c
-				//PowerTask = null,
-				//Trigger = null,
+				PowerTask = ComplexTask.Create(
+					new RandomEntourageTask(),
+					new SummonTask())
 			});
 
 		}
