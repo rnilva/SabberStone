@@ -182,7 +182,11 @@ namespace SabberStoneCore.Model
 		public bool Logging
 		{
 			get => _logging;
-			set => _logging = value;
+			set
+			{
+				Logs ??= [];
+				_logging = value;
+			}
 		}
 
 		/// <summary>Gets or sets the power history container. 
@@ -254,7 +258,7 @@ namespace SabberStoneCore.Model
 		/// Gets or sets the collection of log entries.
 		/// </summary>
 		/// <value><see cref="LogEntry"/></value>
-		public Queue<LogEntry> Logs { get; }
+		public Queue<LogEntry> Logs { get; private set; }
 
 		/// <summary>Initializes a new instance of the <see cref="Game"/> class.</summary>
 		/// <param name="gameConfig">The game configuration.</param>
