@@ -16,6 +16,7 @@ using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
@@ -84,11 +85,10 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 
 			if (cardsList == null && !CachedCards.TryGetValue(source.Card.AssetId, out cardsList))
 			{
-				IEnumerable<Card> cards;
-				if (game.FormatType == FormatType.FT_STANDARD)
-					cards = ClassAndMultiOnlyFlag ? controller.Standard : Cards.AllStandard;
-				else
-					cards = ClassAndMultiOnlyFlag ? controller.Wild : Cards.AllWild;
+				FrozenSet<Card> cards = ClassAndMultiOnlyFlag
+					? Cards.FormatTypeClassCards(game.FormatType)[controller.HeroClass]
+					: Cards.FormatTypeCards(game.FormatType);
+
 
 				if (Tag == GameTag.CARDRACE && RelaSign == RelaSign.EQ)
 				{
