@@ -4767,6 +4767,20 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.Equal(1, game.CurrentPlayer.HandZone[2].Cost);
 			Assert.Equal(2, game.CurrentPlayer.HandZone[3].Cost);
 
+			MinionInPlay portal2 = game.ProcessCard<MinionInPlay>("Summoning Portal");
+
+			Assert.Equal(1, game.CurrentPlayer.HandZone[0].Cost);
+			Assert.Equal(1, game.CurrentPlayer.HandZone[1].Cost);
+			Assert.Equal(1, game.CurrentPlayer.HandZone[2].Cost);
+			Assert.Equal(1, game.CurrentPlayer.HandZone[3].Cost);
+
+			portal2.Kill();
+
+			Assert.Equal(1, game.CurrentPlayer.HandZone[0].Cost);
+			Assert.Equal(1, game.CurrentPlayer.HandZone[1].Cost);
+			Assert.Equal(1, game.CurrentPlayer.HandZone[2].Cost);
+			Assert.Equal(2, game.CurrentPlayer.HandZone[3].Cost);
+
 			Playable silence = Generic.DrawCard(game.CurrentPlayer, Cards.FromName("Silence"));
 			game.Process(PlayCardTask.Any(game.CurrentPlayer, silence, (Character) testCard));
 
