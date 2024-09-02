@@ -474,6 +474,7 @@ namespace SabberStoneCore.Model.Entities
 
 		public override void Destroy()
 		{
+			if (Zone?.Type != Enums.Zone.PLAY) return;
 			if (_toBeDestroyed) return;
 			_toBeDestroyed = true;
 			Game.DeadMinions.Add(this);

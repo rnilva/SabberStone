@@ -719,5 +719,27 @@ namespace SabberStoneCoreTest.Basic
 
 			clone.CurrentPlayer.BoardZone[0].Kill();
 		}
+
+		[Fact]
+		public static void TriggerOrderOfPlay()
+		{
+			Game game = new(new());
+			game.StartGame();
+
+			Controller c = game.CurrentPlayer;
+			Generic.DrawCard(c, Cards.FromName("Wisp"));
+			var nightmare = Generic.DrawCard(c, Cards.FromId("DREAM_05"));
+															 
+			var m = game.ProcessCard("Alarm-o-Bot", asZeroCost: true);
+			game.ProcessCard(nightmare, m);
+
+			game.EndTurn();
+			game.EndTurn();
+
+			Assert.Single(c.BoardZone);
+			Assert.Single(c.HandZone);
+			Assert.Equal("Wisp", c.BoardZone[0].Card.Name);
+			Assert.Equal("Alarm-o-Bot", c.HandZone[0].Card.Name);
+		}
 	}
 }
