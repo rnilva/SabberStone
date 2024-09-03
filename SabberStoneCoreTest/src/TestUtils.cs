@@ -19,6 +19,7 @@ using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks.PlayerTasks;
+using SabberStoneCore.Tasks.PlayerTasks.Lite;
 
 namespace SabberStoneCoreTest
 {
@@ -176,7 +177,8 @@ namespace SabberStoneCoreTest
 				throw new ArgumentOutOfRangeException();
 
 			int pick = game.CurrentPlayer.Choice.Choices[n - 1];
-			ChooseTask option = ChooseTask.Pick(game.CurrentPlayer, pick);
+			//ChooseTask option = ChooseTask.Pick(game.CurrentPlayer, pick);
+			var option = PlayerTaskLite.Choose(n - 1);
 			if (!game.Process(option))
 				throw new Exception($"{option} is not a valid task.");
 

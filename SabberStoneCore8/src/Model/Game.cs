@@ -599,7 +599,7 @@ namespace SabberStoneCore.Model
 				case PlayerTaskType.CHOOSE:
 					if (c.Choice is not { ChoiceType: ChoiceType.GENERAL })
 						return false;
-					result = Generic.ChoicePick(c, this, playerTaskLite.Choice);
+					result = Generic.ChoicePick(c, this, c.Choice.Choices[playerTaskLite.Choice]);
 					if (result)
 					{
 						ProcessTasks();
