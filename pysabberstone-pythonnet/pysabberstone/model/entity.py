@@ -1,4 +1,4 @@
-import pysabberstone.core
+﻿import pysabberstone.core
 from pysabberstone.model.enums import CardClass, CardType
 
 from SabberStoneCore.Enums import CardType as _CardType
@@ -35,6 +35,9 @@ class Entity:
     def is_minion(self):
         return self._playable.Card.Type == _CardType.MINION
 
+    def is_weapon(self):
+        return self._playable.Card.Type == _CardType.WEAPON
+
     @property
     def attack(self) -> int | None:
         return (
@@ -45,10 +48,10 @@ class Entity:
 
     @property
     def health(self) -> int | None:
-        if self.card_type == CardType.WEAPON:
-            return self._playable.Durability
-        elif self.card_type in (CardType.MINION, CardType.HERO):
+        if self.is_character():
             return self._playable.Health
+        elif self.is_weapon():
+            return self._playable.Durability
         else:
             return None
 
@@ -107,6 +110,10 @@ class Entity:
     @property
     def deathrattle(self) -> bool | None:
         return self._playable.HasDeathrattle if self.is_minion() else None
+
+    @property
+    def silenced(self) -> bool | None:
+        return self._playable.IsSilenced if self.is_minion() else None
 
     @property
     def num_attacks_this_turn(self) -> int | None:

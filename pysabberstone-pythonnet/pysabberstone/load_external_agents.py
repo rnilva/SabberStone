@@ -1,4 +1,4 @@
-import importlib
+﻿import importlib
 from pathlib import Path
 
 from pysabberstone.interface.agent import DotNetAgentWrapper, Agent
@@ -47,3 +47,7 @@ def load():
 
     return loaded_agents
 
+
+if __name__ == "__main__":
+	agents = load()
+	print(agents)

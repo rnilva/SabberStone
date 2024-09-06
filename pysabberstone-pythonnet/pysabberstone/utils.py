@@ -9,7 +9,7 @@ from System import ArgumentException as _ArgumentException
 from System.Collections.Generic import List as _List
 
 
-def convert_deck(deck: Deck, format: FormatType) -> tuple[_CardClass, _List[_Card]]:
+def convert_deck(deck: Deck, format: FormatType = FormatType.FT_CLASSIC) -> tuple[_CardClass, _List[_Card]]:
     card_class: _CardClass
     cards: _List[_Card]
     if isinstance(deck, tuple):

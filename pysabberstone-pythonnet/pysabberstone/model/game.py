@@ -81,6 +81,10 @@ class Game:
     def done(self):
         return self._game.State == _State.COMPLETE
 
+    @property
+    def turn(self):
+        return self._game.Turn
+
     def get_log_entries(
         self, loglevel: LogLevel = LogLevel.INFO, flush: bool = False
     ) -> Generator[str, None, None]:
