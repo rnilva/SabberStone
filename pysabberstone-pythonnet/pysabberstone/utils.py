@@ -24,11 +24,20 @@ def convert_deck(deck: Deck, format: FormatType = FormatType.FT_CLASSIC) -> tupl
         except _ArgumentException:
             raise ValueError("Invalid deckstring.")
 
-        card_class = _deck.GetHero().Class
         cards = _List[_Card](30)
         for card_count_pair in _deck.GetCards():
             for _ in range(card_count_pair.Value):
                 cards.Add(card_count_pair.Key)
+        _hero_card = _deck.GetHero()
+        if _hero_card == None:
+            for _card in cards:
+                if _card.Class != _CardClass.NEUTRAL:
+                    card_class = _card.Class
+                    break
+            else:
+                raise ValueError("Can't determine the card class of the given deck.")
+        else:
+            card_class = _hero_card.Class
 
     return card_class, cards
 
