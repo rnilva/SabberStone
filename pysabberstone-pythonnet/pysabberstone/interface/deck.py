@@ -12,10 +12,12 @@ class Deck:
     def __init__(
         self,
         cards: list[str],
-        hero_class: CardClass,
+        hero_class: CardClass | str,
         format_type: FormatType = FormatType.FT_CLASSIC,
     ) -> None:
         self.cards = cards
+        if isinstance(hero_class, str):
+            hero_class = CardClass[hero_class.upper()]
         self.hero_class = hero_class
         self.format_type = format_type
         self._deck = None
