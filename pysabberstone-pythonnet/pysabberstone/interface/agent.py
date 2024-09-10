@@ -1,9 +1,11 @@
-import random
+﻿import random
+import traceback
 from abc import ABC, abstractmethod
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from pprint import pprint
+from typing import Callable
 
 from pysabberstone.model.enums import PlayState, CardClass
 from pysabberstone.model.game import Game, GameConfig
@@ -12,7 +14,9 @@ from pysabberstone.model.player_task import PlayerTask
 from pysabberstone.interface.deck import Deck
 
 import pysabberstone.core
+from SabberStoneCore.Enums import FormatType as _FormatType
 from SabberStoneBasicAI import IAgent as _IAgent, Match as _Match
+from System import Func
 
 
 class Agent(ABC):
@@ -151,9 +155,35 @@ def run_games(
     return win_counter
 
 
+def run_parallel_games(
+    agent_factory1: Callable[[], DotNetAgentWrapper],
+    agent_factory2: Callable[[], DotNetAgentWrapper],
+    deck1: Deck,
+    deck2: Deck,
+    num_games: int,
+    config: MatchConfig,
+):
+    fac1 = Func[_IAgent](lambda: agent_factory1()._agent)
+    fac2 = Func[_IAgent](lambda: agent_factory2()._agent)
+
+    # print(fac1())
+    # quit()
+
+    _result = _Match.RunParallelGames[_IAgent, _IAgent](
+        fac1,
+        fac2,
+        deck1._to_core_type(),
+        deck2._to_core_type(),
+        num_games,
+        _Match.Config(config.skip_mulligan, None, "", _FormatType.FT_CLASSIC),
+    )
+
+    result = Counter({i + 1: _result[i] for i in range(2)})
+    return result
+
+
 if __name__ == "__main__":
-    mage_expert_deck = (
-        CardClass.MAGE,
+    mage_expert_deck = Deck(
         [
             "Arcane Missiles",
             "Arcane Missiles",
@@ -186,6 +216,7 @@ if __name__ == "__main__":
             "Frost Elemental",
             "Frost Elemental",
         ],
+        CardClass.MAGE,
     )
 
     agent1 = RandomAgent(17)
@@ -194,10 +225,27 @@ if __name__ == "__main__":
     result = run_games(
         agent1,
         agent2,
-        Deck(mage_expert_deck[1], mage_expert_deck[0]),
-        Deck(mage_expert_deck[1], mage_expert_deck[0]),
+        mage_expert_deck,
+        mage_expert_deck,
         10,
         MatchConfig(skip_mulligan=True, seed=7, log_dir="./test_logs/"),
     )
 
+    print(result)
+
+    from pysabberstone.load_external_agents import load
+
+    agents = load()
+    agent = list(agents.values())[0]
+
+    fac = lambda: agent(18)
+
+    result = run_parallel_games(
+        fac,
+        fac,
+        mage_expert_deck,
+        mage_expert_deck,
+        100,
+        MatchConfig(skip_mulligan=True),
+    )
     print(result)

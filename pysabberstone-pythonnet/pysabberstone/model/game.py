@@ -92,6 +92,14 @@ class Game:
         if flush:
             self._game.Logs.Clear()
 
+    @classmethod
+    def from_core_type(cls, _game: _Game):
+        game = object.__new__(cls)
+        game._game = _game
+        game._option_buffer = _OptionBuffer()
+        game.players = [Player(_game.Player1), Player(_game.Player2)]
+        return game
+
 
 if __name__ == "__main__":
     import random
