@@ -129,7 +129,7 @@ def run_games(
                 pprint(deck2, f)
                 print("-" * 20, file=f)
                 print("Exception", file=f)
-                print(e, file=f)
+                print(traceback.format_exc(), file=f)
                 print("-" * 20, file=f)
             win_counter[-1] += 1
             continue
