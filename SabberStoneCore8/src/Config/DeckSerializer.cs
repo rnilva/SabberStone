@@ -80,6 +80,16 @@ namespace SabberStoneCore.Config
 		public Dictionary<Card, int> GetCards() => CardDbfIds
 			.Select(x => new { Card = Cards.FromAssetId(x.Key), Count = x.Value })
 			.Where(x => x.Card != null).ToDictionary(x => x.Card, x => x.Count);
+
+		public (CardClass, List<Card>) ToClassAndCards()
+		{
+			CardClass heroClass = GetHero().Class;
+			List<Card> cards = GetCards()
+				.SelectMany(pair => Enumerable.Repeat(Cards.FromId(pair.Key.Id), pair.Value))
+				.ToList();
+
+			return (heroClass, cards);
+		}
 	}
 
 	public class DeckSerializer

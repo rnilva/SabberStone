@@ -16,15 +16,6 @@ namespace SabberStoneBasicAI
 {
 	public static class Match
 	{
-		private static (CardClass, List<Card>) ToCards(this Deck deck)
-		{
-			CardClass heroClass = deck.GetHero().Class;
-			List<Card> cards = deck.GetCards()
-				.SelectMany(pair => Enumerable.Repeat(Cards.FromId(pair.Key.Id), pair.Value))
-				.ToList();
-			return (heroClass, cards);
-		}
-
 		public readonly record struct Config(
 			bool SkipMulligan,
 			int? Seed,
@@ -35,7 +26,7 @@ namespace SabberStoneBasicAI
 		public static int[] RunGames(IAgent agent1, IAgent agent2, Deck deck1, Deck deck2,
 			int count, in Config config)
 		{
-			return RunGames(agent1, agent2, deck1.ToCards(), deck2.ToCards(), count, in config);
+			return RunGames(agent1, agent2, deck1.ToClassAndCards(), deck2.ToClassAndCards(), count, in config);
 		}
 
 		public static int[] RunGames(IAgent agent1, IAgent agent2, in (CardClass, List<Card>) deck1,
@@ -115,7 +106,7 @@ namespace SabberStoneBasicAI
 
 		public static int[] RunParallelGames<TA1, TA2>(
 			Func<TA1> agentFactory1, Func<TA2> agentFactory2,
-			(CardClass, List<Card>) deck1, (CardClass, List<Card>) deck2,
+			Deck deck1, Deck deck2,
 			int count, Config config)
 			where TA1 : IAgent
 			where TA2 : IAgent
@@ -124,13 +115,13 @@ namespace SabberStoneBasicAI
 
 			Parallel.For(0, count, (i) =>
 			{
-				var r = RunGames(agentFactory1(), agentFactory2(), deck1, deck2, 1, config);
+				int[] r = RunGames(agentFactory1(), agentFactory2(), deck1, deck2, 1, config);
 				results[i] = r;
 			});
 
 			int[] total = [0, 0];
 
-			foreach (var r in results)
+			foreach (int[] r in results)
 			{
 				total[0] += r[0];
 				total[1] += r[1];
