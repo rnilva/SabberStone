@@ -5,7 +5,7 @@ from SabberStoneCore.Config import Deck as _Deck, DeckSerializer as _DeckSeriali
 from SabberStoneCore.Enums import CardClass as _CardClass, FormatType as _FormatType
 from SabberStoneCore.Model import Card as _Card, Cards as _Cards
 from System import ArgumentException as _ArgumentException
-from System.Collections.Generic import Dictionary as _Dictionary
+from System.Collections.Generic import Dictionary as _Dictionary, List as _List
 
 
 class Deck:
@@ -68,11 +68,14 @@ class Deck:
         self._deck = _deck
         return _deck
 
+    def _to_core_class_and_cards(self) -> tuple[_CardClass, _List[_Card]]:
+        _deck = self._to_core_type()
+        _tuple = _deck.ToClassAndCards()
+        return _tuple.Item1, _tuple.Item2
+
 
 if __name__ == "__main__":
     ds = "AAEDAa0GBq+WBLmXBLehBJOiBJiiBNaiBAzLlQTNlQTQlQSAlwS3lwT6oASAoQSpogSXowSrowStowTEowQA"
 
     d = Deck.from_deckstring(ds)
-
-    _d = d._to_core_type()
-    ...
+    print(d.cards)

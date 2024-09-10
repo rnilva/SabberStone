@@ -5,7 +5,8 @@ import pysabberstone.utils as utils
 from pysabberstone.model.enums import LogLevel, FormatType
 from pysabberstone.model.player import Player
 from pysabberstone.model.player_task import PlayerTask
-from pysabberstone.py_types import Deck, CardClass
+from pysabberstone.py_types import CardClass
+from pysabberstone.interface.deck import Deck
 
 import pysabberstone.core
 from System.Collections.Generic import List as _List
@@ -41,12 +42,8 @@ class GameConfig:
 class Game:
     def __init__(self, p1_deck: Deck, p2_deck: Deck, config: GameConfig) -> None:
         _c = config._to_core_config()
-        _c.Player1HeroClass, _c.Player1Deck = utils.convert_deck(
-            p1_deck, config.format_type
-        )
-        _c.Player2HeroClass, _c.Player2Deck = utils.convert_deck(
-            p2_deck, config.format_type
-        )
+        _c.Player1HeroClass, _c.Player1Deck = p1_deck._to_core_class_and_cards()
+        _c.Player2HeroClass, _c.Player2Deck = p2_deck._to_core_class_and_cards()
         self._game = _Game(_c)
         self._game.StartGame()
         self._option_buffer = _OptionBuffer()

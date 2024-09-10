@@ -9,9 +9,7 @@ from pysabberstone.model.enums import PlayState, CardClass
 from pysabberstone.model.game import Game, GameConfig
 from pysabberstone.model.player import Player
 from pysabberstone.model.player_task import PlayerTask
-from pysabberstone.py_types import Deck
-
-# from SabberStoneCore.Model import Game as _Game, Controller as _Controller
+from pysabberstone.interface.deck import Deck
 
 import pysabberstone.core
 from SabberStoneBasicAI import IAgent as _IAgent, Match as _Match
@@ -121,7 +119,8 @@ def run_games(
                 agent.on_game_finished()
         except Exception as e:
             import time
-            with open(f"error_{time.strftime('%d%m-%H%M%S')}.txt", 'w') as f:
+
+            with open(f"error_{time.strftime('%d%m-%H%M%S')}.txt", "w") as f:
                 print("Exception raised during the run.", file=f)
                 print("Deck1:", file=f)
                 pprint(deck1, f)
@@ -195,8 +194,8 @@ if __name__ == "__main__":
     result = run_games(
         agent1,
         agent2,
-        mage_expert_deck,
-        mage_expert_deck,
+        Deck(mage_expert_deck[1], mage_expert_deck[0]),
+        Deck(mage_expert_deck[1], mage_expert_deck[0]),
         10,
         MatchConfig(skip_mulligan=True, seed=7, log_dir="./test_logs/"),
     )
