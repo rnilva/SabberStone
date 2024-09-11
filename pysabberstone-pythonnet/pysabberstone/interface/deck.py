@@ -48,6 +48,10 @@ class Deck:
         deck._deck = _deck
         return deck
 
+    def deckstring(self):
+        _deck = self._to_core_type()
+        return _DeckSerializer.Serialize(_deck, False)
+
     def _to_core_type(self) -> _Deck:
         if self._deck is not None:
             return self._deck
@@ -81,3 +85,5 @@ if __name__ == "__main__":
 
     d = Deck.from_deckstring(ds)
     print(d.cards)
+
+    print(d.deckstring())
