@@ -127,10 +127,10 @@ def run_games(
             with open(f"error_{time.strftime('%d%m-%H%M%S')}.txt", "w") as f:
                 print("Exception raised during the run.", file=f)
                 print("Deck1:", file=f)
-                pprint(deck1, f)
+                pprint(deck1.cards, f)
                 print("-" * 20, file=f)
                 print("Deck2:", file=f)
-                pprint(deck2, f)
+                pprint(deck2.cards, f)
                 print("-" * 20, file=f)
                 print("Exception", file=f)
                 print(traceback.format_exc(), file=f)
@@ -165,9 +165,6 @@ def run_parallel_games(
 ):
     fac1 = Func[_IAgent](lambda: agent_factory1()._agent)
     fac2 = Func[_IAgent](lambda: agent_factory2()._agent)
-
-    # print(fac1())
-    # quit()
 
     _result = _Match.RunParallelGames[_IAgent, _IAgent](
         fac1,
