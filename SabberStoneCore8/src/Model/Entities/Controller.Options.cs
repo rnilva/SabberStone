@@ -1424,89 +1424,19 @@ namespace SabberStoneCore.Model.Entities
 				public int Current
 				{
 					[MethodImpl(MethodImplOptions.AggressiveInlining)]
-					get
+					get => _outerIndex switch
 					{
-						// switch (_outerIndex)
-						// {
-						// 	case 0:
-						// 		if (!_targets.FriendlyHero)
-						// 		{
-						// 			++_outerIndex;
-						// 			goto case 1;
-						// 		}
-						// 		return 0;
-						// 	case 1:
-						// 		++_outerIndex;
-						// 		if (!_targets.EnemyHero)
-						// 		{
-						// 			goto case 2;
-						// 		}
-						// 		return 8;
-						// 	case 2:
-						// 		if (_targets.EnemyMinions.IsEmpty)
-						// 		{
-						// 			_outerIndex = 3;
-						// 			goto default;
-						// 		}
-						// 		return _targets.EnemyMinions[_innerIndex++] + 9;
-						// 	default:
-						// 		return _targets.FriendlyMinions[_innerIndex++] + 1;
-						// }
-						switch (_outerIndex)
-						{
-							case 0:
-								return 0;
-							case 1:
-								return 8;
-							case 2:
-								return _targets.EnemyMinions[_innerIndex++] + 9;
-							case 3:
-								return _targets.FriendlyMinions[_innerIndex++] + 1;
-							default:
-								throw new ArgumentOutOfRangeException("Enumerator Error");
-						}
-					}
+						0 => 0,
+						1 => 8,
+						2 => _targets.EnemyMinions[_innerIndex++] + 9,
+						3 => _targets.FriendlyMinions[_innerIndex++] + 1,
+						_ => throw new ArgumentOutOfRangeException("Enumerator Error"),
+					};
 				}
 
 				[MethodImpl(MethodImplOptions.AggressiveInlining)]
 				public bool MoveNext()
 				{
-					// if (_outerIndex < 1)
-					// {
-					// 	++_outerIndex;
-					// 	return true;
-					// }
-
-					// if (_outerIndex == 1)
-					// {
-					// 	if (_targets.EnemyMinions.IsEmpty)
-					// 	{
-					// 		if (_targets.FriendlyMinions.IsEmpty)
-					// 			return false;
-					// 		_outerIndex = 3;
-					// 		return true;
-					// 	}
-
-					// 	_outerIndex = 2;
-					// 	return true;
-					// }
-
-					// if (_outerIndex == 2)
-					// {
-					// 	if (_innerIndex == _targets.EnemyMinions.Length)
-					// 	{
-					// 		if (_targets.FriendlyMinions.IsEmpty)
-					// 			return false;
-					// 		_innerIndex = 0;
-					// 		_outerIndex = 3;
-					// 		return true;
-					// 	}
-
-					// 	return true;
-					// }
-
-					// return _innerIndex != _targets.FriendlyMinions.Length;
-
 					switch (_outerIndex)
 					{
 						case -1:
