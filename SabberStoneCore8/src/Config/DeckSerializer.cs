@@ -83,10 +83,16 @@ namespace SabberStoneCore.Config
 
 		public (CardClass, List<Card>) ToClassAndCards()
 		{
-			CardClass heroClass = GetHero().Class;
 			List<Card> cards = GetCards()
 				.SelectMany(pair => Enumerable.Repeat(Cards.FromId(pair.Key.Id), pair.Value))
 				.ToList();
+
+			CardClass heroClass;
+			Card? heroCard = GetHero();
+			if (heroCard == null)
+				heroClass = cards.First(c => c.Class != CardClass.NEUTRAL).Class;
+			else
+				heroClass = heroCard.Class;
 
 			return (heroClass, cards);
 		}
