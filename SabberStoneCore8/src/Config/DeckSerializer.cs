@@ -96,6 +96,22 @@ namespace SabberStoneCore.Config
 
 			return (heroClass, cards);
 		}
+
+		public static Deck FromClassAndCards(CardClass heroClass, List<Card> cards, FormatType formatType)
+		{
+			Deck deck = new();
+
+			deck.Format = formatType;
+			deck.HeroDbfId = Cards.HeroCard(heroClass).AssetId;
+			foreach (Card card in cards)
+			{
+				int id = card.AssetId;
+				if (!deck.CardDbfIds.TryAdd(id, 1))
+					deck.CardDbfIds[id] += 1;
+			}
+
+			return deck;
+		}
 	}
 
 	public class DeckSerializer

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,10 +18,11 @@ namespace SabberStoneBasicAI
 	public static class Match
 	{
 		public readonly record struct Config(
-			bool SkipMulligan,
-			int? Seed,
-			string LogDir,
-			FormatType FormatType
+			bool SkipMulligan = true,
+			int? Seed = null,
+			FormatType FormatType = FormatType.FT_CLASSIC,
+			string LogDir = null,
+			string errorDir = null
 		);
 
 		public static int[] RunGames(IAgent agent1, IAgent agent2, Deck deck1, Deck deck2,
@@ -48,6 +50,12 @@ namespace SabberStoneBasicAI
 					Directory.CreateDirectory(config.LogDir);
 			}
 
+			if (!String.IsNullOrEmpty(config.errorDir))
+			{
+				if (!Directory.Exists(config.errorDir))
+					Directory.CreateDirectory(config.errorDir);
+			}
+
 			// Initialise agents.
 			IAgent[] agents = [agent1, agent2];
 			foreach (IAgent agent in agents)
@@ -61,27 +69,63 @@ namespace SabberStoneBasicAI
 				foreach (IAgent agent in agents)
 					agent.OnGameStarted();
 
-				Game game = new(gameConfig);
-				game.StartGame();
-
-				if (!config.SkipMulligan)
+				Game game;
+				try
 				{
-					for (int pid = 1; pid <= 2; pid++)
-						game.Process(agents[pid - 1].Mulligan(game, game.ControllerByPlayerId(pid)));
+					game = new(gameConfig);
+					game.StartGame();
 
-					game.MainBegin(proceed: true);
+					if (!config.SkipMulligan)
+					{
+						for (int pid = 1; pid <= 2; pid++)
+							game.Process(agents[pid - 1].Mulligan(game, game.ControllerByPlayerId(pid)));
+
+						game.MainBegin(proceed: true);
+					}
+
+					// TODO: Timer
+
+					// TODO: Turn
+
+					while (game.State != State.COMPLETE)
+					{
+						Controller controller = game.CurrentPlayer;
+						IAgent agent = agents[controller.PlayerId - 1];
+						PlayerTaskLite action = agent.GetAction(game, controller);
+						game.Process(in action);
+
+						throw new Exception("dd");
+					}
 				}
-
-				// TODO: Timer
-
-				// TODO: Turn
-
-				while (game.State != State.COMPLETE)
+				catch (Exception e)
 				{
-					Controller controller = game.CurrentPlayer;
-					IAgent agent = agents[controller.PlayerId - 1];
-					PlayerTaskLite action = agent.GetAction(game, controller);
-					game.Process(in action);
+					string errorDir = config.errorDir;
+					if (String.IsNullOrEmpty(errorDir))
+					{
+						const string defaultErrorDir = "./_sabberstone_match_errors";
+						errorDir = defaultErrorDir;
+					}
+
+					if (!Path.Exists(errorDir))
+						Directory.CreateDirectory(errorDir);
+
+
+					string now = DateTime.Now.ToString("yyMMdd-HHmmss");
+					string fileName = $"error_{now}_{config.Seed}.txt";
+					using StreamWriter writer = File.CreateText(Path.Combine(errorDir, fileName));
+
+					string deckstring1 = DeckSerializer.Serialize(
+						Deck.FromClassAndCards(deck1.Item1, deck2.Item2, config.FormatType), false);
+					string deckstring2 = DeckSerializer.Serialize(
+						Deck.FromClassAndCards(deck2.Item1, deck2.Item2, config.FormatType), false);
+
+					writer.WriteLine("Exception has raised during the run.");
+					writer.WriteLine("Deck1: " + deckstring2);
+					writer.WriteLine("Deck2: " + deckstring2);
+					writer.WriteLine(new string('-', 50));
+					writer.WriteLine(e.ToString());
+
+					continue;
 				}
 
 				foreach (IAgent agent in agents)
@@ -113,9 +157,13 @@ namespace SabberStoneBasicAI
 		{
 			int[][] results = new int[count][];
 
+			Random seedGenerator = new(config.Seed.GetValueOrDefault(Guid.NewGuid().GetHashCode()));
+			int[] seeds = Enumerable.Range(0, count).Select(_ => seedGenerator.Next()).ToArray();
+
 			Parallel.For(0, count, (i) =>
 			{
-				int[] r = RunGames(agentFactory1(), agentFactory2(), deck1, deck2, 1, config);
+				int[] r = RunGames(agentFactory1(), agentFactory2(), deck1, deck2,
+					1, config with { Seed = seeds[i] });
 				results[i] = r;
 			});
 
@@ -138,12 +186,19 @@ namespace SabberStoneBasicAI
 			var pairs = decks1.SelectMany(d => decks2.Select(d2 => (d, d2))).ToArray();
 			int[][] results = new int[pairs.Length][];
 
-			ParallelOptions pOptions = new();
-			pOptions.MaxDegreeOfParallelism = maxParallelism;
+			Random seedGenerator = new(config.Seed.GetValueOrDefault(Guid.NewGuid().GetHashCode()));
+			int[] seeds = Enumerable.Range(0, pairs.Length).Select(_ => seedGenerator.Next()).ToArray();
+
+
+			ParallelOptions pOptions = new()
+			{
+				MaxDegreeOfParallelism = maxParallelism
+			};
 			Parallel.For(0, pairs.Length, pOptions, (i) =>
 			{
 				(Deck deck1, Deck deck2) = pairs[i];
-				int[] r = RunGames(agentFactory1(), agentFactory2(), deck1, deck2, countPerPair, config);
+				int[] r = RunGames(agentFactory1(), agentFactory2(), deck1, deck2,
+					countPerPair, config with {Seed = seeds[i] });
 				results[i] = r;
 			});
 
