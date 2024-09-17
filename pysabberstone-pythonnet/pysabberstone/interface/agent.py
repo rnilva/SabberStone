@@ -5,7 +5,7 @@ from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from pprint import pprint
-from typing import Callable
+from typing import Callable, Iterable
 
 from pysabberstone.model.enums import PlayState, CardClass
 from pysabberstone.model.game import Game, GameConfig
@@ -14,9 +14,11 @@ from pysabberstone.model.player_task import PlayerTask
 from pysabberstone.interface.deck import Deck
 
 import pysabberstone.core
+from SabberStoneCore.Config import Deck as _Deck
 from SabberStoneCore.Enums import FormatType as _FormatType
 from SabberStoneBasicAI import IAgent as _IAgent, Match as _Match
 from System import Func
+from System.Collections.Generic import List
 
 
 class Agent(ABC):
@@ -179,6 +181,37 @@ def run_parallel_games(
     return result
 
 
+def run_multideck_parallel_games(
+    agent_factory1: Callable[[], DotNetAgentWrapper],
+    agent_factory2: Callable[[], DotNetAgentWrapper],
+    decks1: Iterable[Deck],
+    decks2: Iterable[Deck],
+    num_games: int,
+    config: MatchConfig,
+):
+    fac1 = Func[_IAgent](lambda: agent_factory1()._agent)
+    fac2 = Func[_IAgent](lambda: agent_factory2()._agent)
+
+    _decks1 = List[_Deck]()
+    _decks2 = List[_Deck]()
+    for d in decks1:
+        _decks1.Add(d._to_core_type())
+    for d in decks2:
+        _decks2.Add(d._to_core_type())
+
+    _result = _Match.RunParallelGames(
+        fac1,
+        fac2,
+        _decks1,
+        _decks2,
+        num_games,
+        _Match.Config(config.skip_mulligan, None, "", _FormatType.FT_CLASSIC),
+    )
+
+    result = Counter({i + 1: _result[i] for i in range(2)})
+    return result
+
+
 if __name__ == "__main__":
     mage_expert_deck = Deck(
         [
@@ -242,6 +275,16 @@ if __name__ == "__main__":
         fac,
         mage_expert_deck,
         mage_expert_deck,
+        100,
+        MatchConfig(skip_mulligan=True),
+    )
+    print(result)
+
+    result = run_multideck_parallel_games(
+        fac,
+        fac,
+        [mage_expert_deck],
+        [mage_expert_deck],
         100,
         MatchConfig(skip_mulligan=True),
     )

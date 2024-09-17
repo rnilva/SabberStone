@@ -143,7 +143,7 @@ namespace SabberStoneBasicAI
 			Parallel.For(0, pairs.Length, pOptions, (i) =>
 			{
 				(Deck deck1, Deck deck2) = pairs[i];
-				int[] r = RunGames(agentFactory1(), agentFactory2(), deck1, deck2, 1, config);
+				int[] r = RunGames(agentFactory1(), agentFactory2(), deck1, deck2, countPerPair, config);
 				results[i] = r;
 			});
 
