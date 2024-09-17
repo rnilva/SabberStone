@@ -129,5 +129,33 @@ namespace SabberStoneBasicAI
 
 			return total;
 		}
+
+		public static int[] RunParallelGames(
+			Func<IAgent> agentFactory1, Func<IAgent> agentFactory2,
+			IEnumerable<Deck> decks1, IEnumerable<Deck> decks2,
+			int countPerPair, Config config, int maxParallelism = -1)
+		{
+			var pairs = decks1.SelectMany(d => decks2.Select(d2 => (d, d2))).ToArray();
+			int[][] results = new int[pairs.Length][];
+
+			ParallelOptions pOptions = new();
+			pOptions.MaxDegreeOfParallelism = maxParallelism;
+			Parallel.For(0, pairs.Length, pOptions, (i) =>
+			{
+				(Deck deck1, Deck deck2) = pairs[i];
+				int[] r = RunGames(agentFactory1(), agentFactory2(), deck1, deck2, 1, config);
+				results[i] = r;
+			});
+
+			int[] total = [0, 0];
+
+			foreach (int[] r in results)
+			{
+				total[0] += r[0];
+				total[1] += r[1];
+			}
+
+			return total;
+		}
 	}
 }
