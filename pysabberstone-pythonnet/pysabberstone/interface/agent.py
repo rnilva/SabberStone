@@ -69,7 +69,8 @@ class RandomAgent(Agent):
 class MatchConfig:
     skip_mulligan: bool = True
     seed: int | None = None
-    log_dir: str | Path | None = None
+    log_dir: str | None = None
+    error_dir: str | None = None
     verbose: bool = False
 
 
@@ -174,7 +175,13 @@ def run_parallel_games(
         deck1._to_core_type(),
         deck2._to_core_type(),
         num_games,
-        _Match.Config(config.skip_mulligan, None, "", _FormatType.FT_CLASSIC),
+        _Match.Config(
+            config.skip_mulligan,
+            config.seed,
+            _FormatType.FT_CLASSIC,
+            config.log_dir,
+            config.error_dir,
+        ),
     )
 
     result = Counter({i + 1: _result[i] for i in range(2)})
@@ -205,7 +212,13 @@ def run_multideck_parallel_games(
         _decks1,
         _decks2,
         num_games,
-        _Match.Config(config.skip_mulligan, None, "", _FormatType.FT_CLASSIC),
+        _Match.Config(
+            config.skip_mulligan,
+            config.seed,
+            _FormatType.FT_CLASSIC,
+            config.log_dir,
+            config.error_dir,
+        ),
     )
 
     result = Counter({i + 1: _result[i] for i in range(2)})
