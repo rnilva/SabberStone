@@ -93,8 +93,6 @@ namespace SabberStoneBasicAI
 						IAgent agent = agents[controller.PlayerId - 1];
 						PlayerTaskLite action = agent.GetAction(game, controller);
 						game.Process(in action);
-
-						throw new Exception("dd");
 					}
 				}
 				catch (Exception e)
