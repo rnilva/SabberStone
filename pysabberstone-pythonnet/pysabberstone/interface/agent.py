@@ -195,6 +195,7 @@ def run_multideck_parallel_games(
     decks2: Iterable[Deck],
     num_games: int,
     config: MatchConfig,
+    max_parallelism: int = -1,
 ):
     fac1 = Func[_IAgent](lambda: agent_factory1()._agent)
     fac2 = Func[_IAgent](lambda: agent_factory2()._agent)

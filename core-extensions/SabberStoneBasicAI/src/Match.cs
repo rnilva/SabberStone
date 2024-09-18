@@ -113,7 +113,7 @@ namespace SabberStoneBasicAI
 					using StreamWriter writer = File.CreateText(Path.Combine(errorDir, fileName));
 
 					string deckstring1 = DeckSerializer.Serialize(
-						Deck.FromClassAndCards(deck1.Item1, deck2.Item2, config.FormatType), false);
+						Deck.FromClassAndCards(deck1.Item1, deck1.Item2, config.FormatType), false);
 					string deckstring2 = DeckSerializer.Serialize(
 						Deck.FromClassAndCards(deck2.Item1, deck2.Item2, config.FormatType), false);
 
