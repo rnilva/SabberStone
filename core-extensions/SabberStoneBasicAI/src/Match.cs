@@ -60,10 +60,12 @@ namespace SabberStoneBasicAI
 			string outDir = null;
 			if (!String.IsNullOrEmpty(config.OutDir))
 			{
-				outDir = Path.Join(config.OutDir, $"{DateTime.Now.ToString("yyMMdd-HHmmss-fff")}");
+				outDir = Path.Join(config.OutDir, $"{DateTime.Now.ToString("yyMMdd-HHmmss-ffffff")}");
 
 				if (!Directory.Exists(outDir))
-					Directory.CreateDirectory(outDir);				
+					Directory.CreateDirectory(outDir);	
+				else
+					Directory.CreateDirectory(outDir + "(2)");			
 			}
 
 			
