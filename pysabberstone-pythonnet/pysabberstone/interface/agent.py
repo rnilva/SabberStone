@@ -75,6 +75,7 @@ class MatchConfig:
     seed: int | None = None
     log_dir: str | None = None
     error_dir: str | None = None
+    out_dir: str | None = None
     verbose: bool = False
 
 
@@ -227,6 +228,7 @@ def run_multideck_parallel_games(
     num_games: int,
     config: MatchConfig,
     max_degree_of_parallelism: int = -1,
+    out_dir: str | None = None
 ):
     fac1 = Func[_IAgent](lambda: agent_factory1()._agent)
     fac2 = Func[_IAgent](lambda: agent_factory2()._agent)
@@ -250,6 +252,7 @@ def run_multideck_parallel_games(
             _FormatType.FT_CLASSIC,
             config.log_dir,
             config.error_dir,
+            out_dir,
         ),
         max_degree_of_parallelism,
     )

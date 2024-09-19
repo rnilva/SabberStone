@@ -22,7 +22,8 @@ namespace SabberStoneBasicAI
 			int? Seed = null,
 			FormatType FormatType = FormatType.FT_CLASSIC,
 			string LogDir = null,
-			string errorDir = null
+			string ErrorDir = null,
+			string OutDir = null
 		);
 
 		public static int[] RunGames(IAgent agent1, IAgent agent2, Deck deck1, Deck deck2,
@@ -50,11 +51,23 @@ namespace SabberStoneBasicAI
 					Directory.CreateDirectory(config.LogDir);
 			}
 
-			if (!String.IsNullOrEmpty(config.errorDir))
+			if (!String.IsNullOrEmpty(config.ErrorDir))
 			{
-				if (!Directory.Exists(config.errorDir))
-					Directory.CreateDirectory(config.errorDir);
+				if (!Directory.Exists(config.ErrorDir))
+					Directory.CreateDirectory(config.ErrorDir);
 			}
+
+			string outDir = null;
+			if (!String.IsNullOrEmpty(config.OutDir))
+			{
+				outDir = Path.Join(config.OutDir, $"{DateTime.Now.ToString("yyMMdd-HHmmss-fff")}");
+
+				if (!Directory.Exists(outDir))
+					Directory.CreateDirectory(outDir);				
+			}
+
+			
+			// using StreamWriter outWriter = File.CreateText(outFile);
 
 			// Initialise agents.
 			IAgent[] agents = [agent1, agent2];
@@ -97,7 +110,7 @@ namespace SabberStoneBasicAI
 				}
 				catch (Exception e)
 				{
-					string errorDir = config.errorDir;
+					string errorDir = config.ErrorDir;
 					if (String.IsNullOrEmpty(errorDir))
 					{
 						const string defaultErrorDir = "./_sabberstone_match_errors";
@@ -141,6 +154,28 @@ namespace SabberStoneBasicAI
 					foreach (LogEntry item in game.Logs.Where(l => l.Level <= LogLevel.INFO))
 						writer.WriteLine(item.ToString());
 				}
+
+				if (outDir is not null)
+				{
+					string outFile = Path.Combine(outDir, $"{i + 1}.txt");
+					using StreamWriter writer = File.CreateText(outFile);
+					writer.WriteLine($"Deck1:");
+					writer.WriteLine(DeckSerializer.Serialize(Deck.FromClassAndCards(deck1.Item1, deck1.Item2, config.FormatType), true));
+					writer.WriteLine($"Deck2:");
+					writer.WriteLine(DeckSerializer.Serialize(Deck.FromClassAndCards(deck2.Item1, deck2.Item2, config.FormatType), true));
+					writer.WriteLine($"Winner: {winner}");
+				}
+			}
+
+			if (outDir is not null)
+			{
+				string outFile = Path.Combine(outDir, $"summary.txt");
+				using StreamWriter writer = File.CreateText(outFile);
+				writer.WriteLine($"Deck1:");
+				writer.WriteLine(DeckSerializer.Serialize(Deck.FromClassAndCards(deck1.Item1, deck1.Item2, config.FormatType), true));
+				writer.WriteLine($"Deck2:");
+				writer.WriteLine(DeckSerializer.Serialize(Deck.FromClassAndCards(deck2.Item1, deck2.Item2, config.FormatType), true));
+				writer.WriteLine($"Wins: {numWins[0]}:{numWins[1]}");
 			}
 
 			return numWins;
@@ -196,7 +231,10 @@ namespace SabberStoneBasicAI
 			{
 				(Deck deck1, Deck deck2) = pairs[i];
 				int[] r = RunGames(agentFactory1(), agentFactory2(), deck1, deck2,
-					countPerPair, config with {Seed = seeds[i] });
+					countPerPair, config with {
+						Seed = seeds[i],
+						LogDir = $""
+					});
 				results[i] = r;
 			});
 
