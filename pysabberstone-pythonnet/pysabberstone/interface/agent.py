@@ -1,12 +1,16 @@
 ﻿import random
 import traceback
+import logging
 from abc import ABC, abstractmethod
 from collections import Counter
+from contextlib import nullcontext
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from pathlib import Path
 from pprint import pprint
 from typing import Callable, Iterable
 
+from tqdm import tqdm
 from pysabberstone.model.enums import PlayState, CardClass
 from pysabberstone.model.game import Game, GameConfig
 from pysabberstone.model.player import Player
@@ -81,6 +85,8 @@ def run_games(
     deck2: Deck,
     num_games: int,
     config: MatchConfig,
+    progressbar: bool = True,
+    log_level: int = logging.INFO,
 ):
     # TODO: seed
 
@@ -96,64 +102,89 @@ def run_games(
     if config.verbose:
         game_config.logging = True
 
+    total_duration = timedelta()
+
     agents = (agent1, agent2)
     for agent in agents:
         agent.on_match_started()
 
     win_counter = Counter()
-    for i in range(num_games):
-        try:
-            for agent in agents:
-                agent.on_game_started()
+    maybe_tqdm = tqdm(total=num_games) if progressbar else nullcontext()
+    with maybe_tqdm as pbar:
+        for i in range(num_games):
+            try:
+                for agent in agents:
+                    agent.on_game_started()
 
-            game = Game(deck1, deck2, game_config)
+                start_time = datetime.now()
 
-            if not game_config.skip_mulligan:
-                for pid, agent in zip((1, 2), agents):
-                    game.send_mulligan(pid, agent.mulligan(game, game.players[pid - 1]))
-                game._game.MainBegin(True)
+                game = Game(deck1, deck2, game_config)
 
-            while not game.done():
-                player = game.current_player
-                action = agents[player.id - 1].get_action(game, player)
-                game.process(action)
-                if config.verbose:
-                    logs = game.get_log_entries(flush=True)
-                    for l in logs:
-                        print(l)
+                if not game_config.skip_mulligan:
+                    for pid, agent in zip((1, 2), agents):
+                        game.send_mulligan(
+                            pid, agent.mulligan(game, game.players[pid - 1])
+                        )
+                    game._game.MainBegin(True)
 
-            for agent in agents:
-                agent.on_game_finished()
-        except Exception as e:
-            import time
+                while not game.done():
+                    player = game.current_player
+                    action = agents[player.id - 1].get_action(game, player)
+                    game.process(action)
+                    if config.verbose:
+                        logs = game.get_log_entries(flush=True)
+                        for l in logs:
+                            if progressbar:
+                                pbar.write(l)
+                            else:
+                                print(l)
 
-            with open(f"error_{time.strftime('%d%m-%H%M%S')}.txt", "w") as f:
-                print("Exception raised during the run.", file=f)
-                print("Deck1:", file=f)
-                pprint(deck1.cards, f)
-                print("-" * 20, file=f)
-                print("Deck2:", file=f)
-                pprint(deck2.cards, f)
-                print("-" * 20, file=f)
-                print("Exception", file=f)
-                print(traceback.format_exc(), file=f)
-                print("-" * 20, file=f)
-            win_counter[-1] += 1
-            continue
+                end_time = datetime.now()
+                duration = end_time - start_time
+                total_duration += duration
 
-        winner = (
-            1
-            if game.players[0].play_state == PlayState.WON
-            else 2 if game.players[1].play_state == PlayState.WON else -1
-        )
-        win_counter[winner] += 1
+                for agent in agents:
+                    agent.on_game_finished()
 
-        if log_dir is not None:
-            file_path = log_dir / f"{i + 1}.txt"
-            with file_path.open("w") as f:
-                for log in game.get_log_entries():
-                    f.write(log)
-                    f.write("\n")
+            except Exception as e:
+                import time
+
+                with open(f"error_{time.strftime('%d%m-%H%M%S')}.txt", "w") as f:
+                    print("Exception raised during the run.", file=f)
+                    print("Deck1:", file=f)
+                    pprint(deck1.cards, f)
+                    print("-" * 20, file=f)
+                    print("Deck2:", file=f)
+                    pprint(deck2.cards, f)
+                    print("-" * 20, file=f)
+                    print("Exception", file=f)
+                    print(traceback.format_exc(), file=f)
+                    print("-" * 20, file=f)
+                win_counter[-1] += 1
+                continue
+
+            winner = (
+                1
+                if game.players[0].play_state == PlayState.WON
+                else 2 if game.players[1].play_state == PlayState.WON else -1
+            )
+            win_counter[winner] += 1
+
+            if progressbar:
+                total = win_counter[1] + win_counter[2]
+                win_rate = 100 * (win_counter[1] / total) if total > 0 else 0
+                pbar.set_postfix_str(
+                    f"Agent1 Wins: {win_counter[1]}, Agent2 Wins: {win_counter[2]}"
+                    f", Ties: {win_counter[-1]}, Win Rate: {win_rate:.2f}%"
+                )
+                pbar.update(1)
+
+            if log_dir is not None:
+                file_path = log_dir / f"{i + 1}.txt"
+                with file_path.open("w") as f:
+                    for log in game.get_log_entries():
+                        f.write(log)
+                        f.write("\n")
 
     return win_counter
 
@@ -220,7 +251,7 @@ def run_multideck_parallel_games(
             config.log_dir,
             config.error_dir,
         ),
-        max_degree_of_parallelism
+        max_degree_of_parallelism,
     )
 
     result = Counter({i + 1: _result[i] for i in range(2)})
