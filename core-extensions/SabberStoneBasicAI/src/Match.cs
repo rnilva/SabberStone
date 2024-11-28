@@ -43,6 +43,7 @@ namespace SabberStoneBasicAI
 			(gameConfig.Player2HeroClass, gameConfig.Player2Deck) = deck2;
 			gameConfig.SkipMulligan = config.SkipMulligan;
 			gameConfig.FormatType = config.FormatType;
+			gameConfig.History = false;
 
 			if (!String.IsNullOrEmpty(config.LogDir))
 			{
