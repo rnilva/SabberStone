@@ -7104,7 +7104,7 @@ namespace SabberStoneCoreTest.CardSets.Classic
 		// - 858 = 1221
 		// - 1576 = 1
 		// --------------------------------------------------------
-		[Fact(Skip = "ignore")]
+		[Fact]
 		public void VoidTerror_VAN_EX1_304()
 		{
 			// TODO VoidTerror_VAN_EX1_304 test
@@ -7125,6 +7125,15 @@ namespace SabberStoneCoreTest.CardSets.Classic
 			game.StartGame();
 			game.Player1.BaseMana = 10;
 			game.Player2.BaseMana = 10;
+
+
+			// Left: 2/1
+			MinionInPlay left = game.ProcessCard<MinionInPlay>("Murloc Raider", asZeroCost: true);
+			MinionInPlay t1 = game.ProcessCard<MinionInPlay>("Void Terror", asZeroCost: true);
+			Assert.Equal(t1.Card.ATK + left.Card.ATK, t1.AttackDamage);
+			Assert.Equal(t1.Card.Health + left.Card.Health, t1.Health);
+
+
 			//Minion testCard = game.ProcessCard<Minion>("Void Terror");
 		}
 

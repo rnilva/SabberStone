@@ -1377,5 +1377,24 @@ namespace SabberStoneCoreTest.Basic
 			game.EndTurn();
 			Assert.Equal(1, target.AttackDamage);
         }
+
+		[Fact]
+		public void AuraResetTest()
+		{
+			GameConfig config = new()
+			{
+				FormatType = FormatType.FT_CLASSIC
+			};
+	        Game game = new(config);
+	        game.StartGame();
+
+			var target = game.ProcessCard<MinionInPlay>("Wisp");
+			game.ProcessCard("Flametongue Totem", asZeroCost: true);
+			Assert.Equal(target.Card.ATK + 2, target.AttackDamage);
+
+			game.ProcessCard("Vanish", asZeroCost: true);
+			Assert.Empty(game.CurrentPlayer.BoardZone);
+			Assert.Equal(target.Card.ATK, target.AttackDamage);
+		}
 	}
 }
