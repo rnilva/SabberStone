@@ -11,8 +11,8 @@ namespace SabberStoneCore.Auras
 {
 	public class AdjacentAura : IAura
 	{
-		private MinionInPlay _left;
-		private MinionInPlay _right;
+		private MinionInPlay? _left;
+		private MinionInPlay? _right;
 		private bool _toBeRemoved;
 
 		private readonly AbstractEffect[] _effects;
@@ -20,7 +20,7 @@ namespace SabberStoneCore.Auras
 		private readonly BoardZone _board;
 		private readonly bool _history;
 
-		public readonly Card EnchantmentCard;
+		public readonly Card? EnchantmentCard;
 
 		public Playable Owner => _owner;
 		public bool BoardChanged { get; set; }
@@ -176,6 +176,15 @@ namespace SabberStoneCore.Auras
 						_owner.Game.PowerHistory.Add(
 							PowerHistoryBuilder.TagChange(_owner.Id, _effects[i].Tag, _owner[_effects[i].Tag]));
 			}
+		}
+
+		internal bool Deregister(MinionInPlay m)
+		{
+			if (_left == m) _left = null;
+			else if (_right == m) _right = null;
+			else return false;
+
+			return true;
 		}
 
 		public override string ToString()

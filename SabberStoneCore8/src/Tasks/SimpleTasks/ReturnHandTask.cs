@@ -31,7 +31,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 		{
 			foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
 			{
-				if (!(p is Minion minion))
+				if (p is not Minion minion)
 					break;
 				Generic.ReturnToHandBlock.Invoke(minion.Controller, minion);
 			}

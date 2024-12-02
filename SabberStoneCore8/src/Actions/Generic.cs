@@ -96,8 +96,8 @@ namespace SabberStoneCore.Actions
 				switch (minion.Zone)
 				{
 					case BoardZone board:
-						board.Auras.ForEach(a => a.DeApply(minion));
-						board.AdjacentAuras.ForEach(a => a.DeApply((MinionInPlay)minion));
+						board.Auras.ForEach(a => a.Deregister(minion));
+						board.AdjacentAuras.ForEach(a => a.Deregister((MinionInPlay)minion));
 						break;
 					case HandZone hand:
 						hand.Auras.ForEach(a => a.DeApply(minion));
