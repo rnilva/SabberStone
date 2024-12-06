@@ -40,6 +40,11 @@ namespace SabberStoneBasicAI
 		void OnMatchStarted();
 
 		/// <summary>
+		/// This method will be called when a match is started.
+		/// </summary>
+		void OnMatchFinished();
+
+		/// <summary>
 		/// This method will be called when each game (round) is started.
 		/// </summary>
 		void OnGameStarted();
