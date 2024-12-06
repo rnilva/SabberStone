@@ -21,24 +21,32 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 {
 	public class GetGameTagTask : SimpleTask
 	{
-		public GetGameTagTask(GameTag tag, EntityType entityType, int entityIndex = 0, int numberIndex = 0)
+		public GetGameTagTask(
+			GameTag tag,
+			EntityType entityType,
+			int entityIndex = 0,
+			int numberIndex = 0,
+			bool skipIfNotExist = false)
 		{
 			Tag = tag;
 			Type = entityType;
 			EntityIndex = entityIndex;
 			NumberIndex = numberIndex;
+			SkipIfNotExist = skipIfNotExist;
 		}
 
 		public GameTag Tag { get; set; }
 		public EntityType Type { get; set; }
 		public int EntityIndex { get; set; }
 		public int NumberIndex { get; set; }
+		public bool SkipIfNotExist { get; set; }
 
 		public override TaskState Process(in Game game, in Controller controller, in Entity source, in Entity target,
 			in TaskStack stack = null)
 		{
 			IList<Playable> entities = IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables);
-			if (entities == null || entities.Count == 0 || entities.Count <= EntityIndex) return TaskState.STOP;
+			if (entities == null || entities.Count == 0 || entities.Count <= EntityIndex)
+				return SkipIfNotExist ? TaskState.COMPLETE : TaskState.STOP;
 
 			int value;
 			if (Tag == GameTag.ENTITY_ID)

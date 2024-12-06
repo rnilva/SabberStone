@@ -4665,6 +4665,16 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			Assert.True(minionB.IsDead);
 			Assert.Equal(7, minion.AttackDamage);
 			Assert.Equal(6, minion.Health);
+
+			MinionInPlay minion2 = game.ProcessCard<MinionInPlay>("Void Terror", asZeroCost: true, zonePosition: 0);
+			Assert.True(minion.IsDead);
+			Assert.Equal(10, minion2.AttackDamage);
+			Assert.Equal(9, minion2.Health);
+
+			MinionInPlay minion3 = game.ProcessCard<MinionInPlay>("Void Terror", asZeroCost: true, zonePosition: 1);
+			Assert.True(minion2.IsDead);
+			Assert.Equal(13, minion3.AttackDamage);
+			Assert.Equal(12, minion3.Health);
 		}
 
 		// --------------------------------------- MINION - WARLOCK

@@ -2877,11 +2877,11 @@ namespace SabberStoneCore.CardSets.Standard
 			{
 				PowerTask = ComplexTask.Create(
 					new IncludeAdjacentTask(EntityType.SOURCE),
-					new GetGameTagTask(GameTag.ATK, EntityType.STACK, 0, 1),
-					new GetGameTagTask(GameTag.ATK, EntityType.STACK, 1, 2),
+					new GetGameTagTask(GameTag.ATK, EntityType.STACK, 0, 1, skipIfNotExist: true),
+					new GetGameTagTask(GameTag.ATK, EntityType.STACK, 1, 2, skipIfNotExist: true),
 					new MathNumberIndexTask(1, 2, MathOperation.ADD),
-					new GetGameTagTask(GameTag.HEALTH, EntityType.STACK, 0, 3),
-					new GetGameTagTask(GameTag.HEALTH, EntityType.STACK, 1, 4),
+					new GetGameTagTask(GameTag.HEALTH, EntityType.STACK, 0, 3, skipIfNotExist: true),
+					new GetGameTagTask(GameTag.HEALTH, EntityType.STACK, 1, 4, skipIfNotExist: true),
 					new MathNumberIndexTask(3, 4, MathOperation.ADD, 1),
 					new DestroyTask(EntityType.STACK),
 					new AddEnchantmentTask("EX1_304e", EntityType.SOURCE, true))
