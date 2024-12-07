@@ -32,9 +32,8 @@ namespace SabberStoneBasicAI.Agents
 		}
 
 		public void OnMatchStarted() { }
-
+		public void OnMatchFinished() { }
 		public void OnGameStarted() { }
-
 		public void OnGameFinished() { }
 	}
 }

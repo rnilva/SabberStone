@@ -60,9 +60,11 @@ namespace SabberStoneBasicAI
 				LogDir = "test_logs",
 			};
 
-			int[] result = Match.RunGames(agent1, agent2, deck, deck, 100, matchConfig);
+			Match.GameResult[] result = Match.RunMatch(agent1, agent2, deck, deck, 100, matchConfig);
 
-			Console.WriteLine($"P1 vs. P2 : {String.Join(" : ", result)}");
+			var winCounts = Enumerable.Range(1, 2).Select(i => result.Count(r => r.Winner == i));
+
+			Console.WriteLine($"P1 vs. P2 : {String.Join(" : ", winCounts)}");
 		}
 
 		public static void RandomGames()
