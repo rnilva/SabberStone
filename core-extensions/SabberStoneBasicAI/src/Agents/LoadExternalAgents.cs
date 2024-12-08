@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 
@@ -19,9 +19,6 @@ namespace SabberStoneBasicAI.Agents
                                !type.IsAbstract &&
                                type.GetInterfaces().Contains(aiInterface))
                 .ToArray();
-
-            foreach (Type agent in agents)
-                Console.WriteLine(agent.FullName);
 
             return agents;
         }

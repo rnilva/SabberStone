@@ -170,7 +170,7 @@ namespace SabberStoneBasicAI
 			IAgent agent2,
 			Deck deck1,
 			Deck deck2,
-			in Config config,
+			Config config,
 			bool testRun = false) => RunSingleGame(agent1, agent2, deck1.ToClassAndCards(), deck2.ToClassAndCards(), in config, testRun);
 
 
@@ -180,12 +180,15 @@ namespace SabberStoneBasicAI
 			ClassDeckPair pairDeck1 = deck1.ToClassAndCards();
 			ClassDeckPair pairDeck2 = deck2.ToClassAndCards();
 
+			Random seedGen = new(config.Seed ?? Guid.NewGuid().GetHashCode());
+			int[] seeds = Enumerable.Range(0, count).Select(_ => seedGen.Next()).ToArray();
+
 			agent1.OnMatchStarted();
 			agent2.OnMatchStarted();
 
 			var results = new GameResult[count];
 			for (int i = 0; i < count; ++i)
-				results[i] = RunSingleGame(agent1, agent2, pairDeck1, pairDeck2, in config);
+				results[i] = RunSingleGame(agent1, agent2, pairDeck1, pairDeck2, config with {Seed = seeds[i] });
 
 			agent1.OnMatchFinished();
 			agent2.OnMatchFinished();
@@ -194,7 +197,7 @@ namespace SabberStoneBasicAI
 		}
 
 
-		public static (Dictionary<(string, string), MatchResult>, MatchResult) RunParallelGames(
+		public static (Dictionary<(string, string), MatchResult>, MatchResult, ConcurrentBag<GameResult>) RunParallelGames(
 			Func<IAgent> agentFactory1, Func<IAgent> agentFactory2,
 			IEnumerable<Deck> decks1, IEnumerable<Deck> decks2,
 			int countPerPair, Config config, int maxParallelism = -1, bool testRun = false)
@@ -246,7 +249,7 @@ namespace SabberStoneBasicAI
 				AverageDuration: TimeSpan.FromTicks((long)results.Average(r => r.Duration.Ticks))
 			);
 
-			return (deckStats, totalStats);
+			return (deckStats, totalStats, results);
 		}
 
 
