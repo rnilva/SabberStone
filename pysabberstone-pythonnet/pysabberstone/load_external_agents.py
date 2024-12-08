@@ -5,7 +5,7 @@ from pysabberstone.interface.agent import DotNetAgentWrapper, Agent
 
 import pysabberstone.core
 from pysabberstone.core import clr
-from SabberStoneBasicAI.Agents import FindAgents
+from SabberStoneBasicAI.Agents import FindAgents # type: ignore
 
 
 class ExternalAgentMeta(type(DotNetAgentWrapper)):
@@ -27,7 +27,7 @@ def load():
     for file in dir.iterdir():
         if file.suffix == ".dll":
             try:
-                clr.AddReference(str(file.resolve()))
+                clr.AddReference(str(file.resolve())) # type: ignore
             except Exception as e:
                 print(e)
             finally:
@@ -35,7 +35,7 @@ def load():
 
     qualified_names: list[str] = list(FindAgents.Find())
 
-    loaded_agents: dict[str, type[DotNetAgentWrapper]] = {}
+    loaded_agents: dict[str, ExternalAgentMeta] = {}
     for q_name in qualified_names:
         type_spec = q_name.split(",")[0]
         *modules, class_name = type_spec.split(".")
