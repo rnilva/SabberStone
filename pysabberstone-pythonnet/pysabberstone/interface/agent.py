@@ -1,28 +1,14 @@
 ﻿import random
-import traceback
-import logging
 from abc import ABC, abstractmethod
-from collections import Counter
-from contextlib import nullcontext
-from dataclasses import dataclass
-from datetime import datetime, timedelta
-from pathlib import Path
-from pprint import pprint
-from typing import Callable, Iterable
 
-from tqdm import tqdm
-from pysabberstone.model.enums import PlayState, CardClass
 from pysabberstone.model.game import Game, GameConfig
 from pysabberstone.model.player import Player
 from pysabberstone.model.player_task import PlayerTask
-from pysabberstone.interface.deck import Deck
 
 import pysabberstone.core
-from SabberStoneCore.Config import Deck as _Deck
-from SabberStoneCore.Enums import FormatType as _FormatType
-from SabberStoneBasicAI import IAgent as _IAgent, Match as _Match
-from System import Func
-from System.Collections.Generic import List
+from SabberStoneCore.Tasks.PlayerTasks import ChooseTask as _ChooseTask # type: ignore
+from SabberStoneBasicAI import IAgent as _IAgent  # type: ignore
+from System.Collections.Generic import List as _List # type: ignore
 
 
 class Agent(ABC):
@@ -32,7 +18,14 @@ class Agent(ABC):
     @abstractmethod
     def mulligan(self, game: Game, player: Player) -> list[int]: ...
 
+    @property
+    def name(self):
+        return self.__class__.__name__
+
     def on_match_started(self):
+        return
+    
+    def on_match_finished(self):
         return
 
     def on_game_started(self):
@@ -56,6 +49,50 @@ class DotNetAgentWrapper(Agent):
         return list(_choose_task.Choices)
 
 
+class _PythonAgentWrapper(_IAgent):
+    __namespace__ = "pysabberstone.agent"
+
+    def __init__(self, agent: Agent) -> None:
+        super().__init__()
+        self._agent = agent
+
+    def get_Name(self):
+        return self._agent.name
+
+    def GetAction(self, _game, _controller):
+        game = Game.from_core_type(_game)
+        action = self._agent.get_action(game, game.players[_controller.PlayerId - 1])
+        return action._to_core_type()
+
+    def Mulligan(self, _game, _controller):
+        game = Game.from_core_type(_game)
+        choices = self._agent.mulligan(game, game.players[_controller.PlayerId - 1])
+
+        _choices = _List()
+        for i in choices:
+            _choices.Add(i)
+        return _ChooseTask(_controller, _choices)
+    
+    def OnMatchStarted(self):
+        self._agent.on_match_started()
+
+    def OnMatchFinished(self):
+        self._agent.on_match_finished()
+
+    def OnGameStarted(self):
+        self._agent.on_game_started()
+
+    def OnGameFinished(self):
+        self._agent.on_game_finished()
+
+
+def _to_core_agent(agent: Agent) -> _IAgent:
+    if isinstance(agent, DotNetAgentWrapper):
+        return agent._agent
+    
+    return _PythonAgentWrapper(agent)
+
+
 class RandomAgent(Agent):
     def __init__(self, seed: int) -> None:
         super().__init__()
@@ -67,274 +104,3 @@ class RandomAgent(Agent):
 
     def mulligan(self, game: Game, player: Player) -> list[int]:
         return []
-
-
-@dataclass
-class MatchConfig:
-    skip_mulligan: bool = True
-    seed: int | None = None
-    log_dir: str | None = None
-    error_dir: str | None = None
-    out_dir: str | None = None
-    verbose: bool = False
-
-
-def run_games(
-    agent1: Agent,
-    agent2: Agent,
-    deck1: Deck,
-    deck2: Deck,
-    num_games: int,
-    config: MatchConfig,
-    progressbar: bool = True,
-    log_level: int = logging.INFO,
-):
-    # TODO: seed
-
-    game_config = GameConfig(skip_mulligan=config.skip_mulligan)
-
-    if config.log_dir is not None:
-        game_config.logging = True
-        log_dir = Path(config.log_dir)
-        log_dir.mkdir(parents=True, exist_ok=True)
-    else:
-        log_dir = None
-
-    if config.verbose:
-        game_config.logging = True
-
-    total_duration = timedelta()
-
-    agents = (agent1, agent2)
-    for agent in agents:
-        agent.on_match_started()
-
-    win_counter = Counter()
-    maybe_tqdm = tqdm(total=num_games) if progressbar else nullcontext()
-    with maybe_tqdm as pbar:
-        for i in range(num_games):
-            try:
-                for agent in agents:
-                    agent.on_game_started()
-
-                start_time = datetime.now()
-
-                game = Game(deck1, deck2, game_config)
-
-                if not game_config.skip_mulligan:
-                    for pid, agent in zip((1, 2), agents):
-                        game.send_mulligan(
-                            pid, agent.mulligan(game, game.players[pid - 1])
-                        )
-                    game._game.MainBegin(True)
-
-                while not game.done():
-                    player = game.current_player
-                    action = agents[player.id - 1].get_action(game, player)
-                    game.process(action)
-                    if config.verbose:
-                        logs = game.get_log_entries(flush=True)
-                        for l in logs:
-                            if progressbar:
-                                pbar.write(l)
-                            else:
-                                print(l)
-
-                end_time = datetime.now()
-                duration = end_time - start_time
-                total_duration += duration
-
-                for agent in agents:
-                    agent.on_game_finished()
-
-            except Exception as e:
-                import time
-
-                with open(f"error_{time.strftime('%d%m-%H%M%S')}.txt", "w") as f:
-                    print("Exception raised during the run.", file=f)
-                    print("Deck1:", file=f)
-                    pprint(deck1.cards, f)
-                    print("-" * 20, file=f)
-                    print("Deck2:", file=f)
-                    pprint(deck2.cards, f)
-                    print("-" * 20, file=f)
-                    print("Exception", file=f)
-                    print(traceback.format_exc(), file=f)
-                    print("-" * 20, file=f)
-                win_counter[-1] += 1
-                continue
-
-            winner = (
-                1
-                if game.players[0].play_state == PlayState.WON
-                else 2 if game.players[1].play_state == PlayState.WON else -1
-            )
-            win_counter[winner] += 1
-
-            if progressbar:
-                total = win_counter[1] + win_counter[2]
-                win_rate = 100 * (win_counter[1] / total) if total > 0 else 0
-                pbar.set_postfix_str(
-                    f"Agent1 Wins: {win_counter[1]}, Agent2 Wins: {win_counter[2]}"
-                    f", Ties: {win_counter[-1]}, Win Rate: {win_rate:.2f}%"
-                )
-                pbar.update(1)
-
-            if log_dir is not None:
-                file_path = log_dir / f"{i + 1}.txt"
-                with file_path.open("w") as f:
-                    for log in game.get_log_entries():
-                        f.write(log)
-                        f.write("\n")
-
-    return win_counter
-
-
-def run_parallel_games(
-    agent_factory1: Callable[[], DotNetAgentWrapper],
-    agent_factory2: Callable[[], DotNetAgentWrapper],
-    deck1: Deck,
-    deck2: Deck,
-    num_games: int,
-    config: MatchConfig,
-):
-    fac1 = Func[_IAgent](lambda: agent_factory1()._agent)
-    fac2 = Func[_IAgent](lambda: agent_factory2()._agent)
-
-    _result = _Match.RunParallelGames[_IAgent, _IAgent](
-        fac1,
-        fac2,
-        deck1._to_core_type(),
-        deck2._to_core_type(),
-        num_games,
-        _Match.Config(
-            config.skip_mulligan,
-            config.seed,
-            _FormatType.FT_CLASSIC,
-            config.log_dir,
-            config.error_dir,
-        ),
-    )
-
-    result = Counter({i + 1: _result[i] for i in range(2)})
-    return result
-
-
-def run_multideck_parallel_games(
-    agent_factory1: Callable[[], DotNetAgentWrapper],
-    agent_factory2: Callable[[], DotNetAgentWrapper],
-    decks1: Iterable[Deck],
-    decks2: Iterable[Deck],
-    num_games: int,
-    config: MatchConfig,
-    max_degree_of_parallelism: int = -1,
-    out_dir: str | None = None
-):
-    fac1 = Func[_IAgent](lambda: agent_factory1()._agent)
-    fac2 = Func[_IAgent](lambda: agent_factory2()._agent)
-
-    _decks1 = List[_Deck]()
-    _decks2 = List[_Deck]()
-    for d in decks1:
-        _decks1.Add(d._to_core_type())
-    for d in decks2:
-        _decks2.Add(d._to_core_type())
-
-    _result = _Match.RunParallelGames(
-        fac1,
-        fac2,
-        _decks1,
-        _decks2,
-        num_games,
-        _Match.Config(
-            config.skip_mulligan,
-            config.seed,
-            _FormatType.FT_CLASSIC,
-            config.log_dir,
-            config.error_dir,
-            out_dir,
-        ),
-        max_degree_of_parallelism,
-    )
-
-    result = Counter({i + 1: _result[i] for i in range(2)})
-    return result
-
-
-if __name__ == "__main__":
-    mage_expert_deck = Deck(
-        [
-            "Arcane Missiles",
-            "Arcane Missiles",
-            "Arcane Explosion",
-            "Arcane Explosion",
-            "Mana Wyrm",
-            "Mana Wyrm",
-            "Sorcerer's Apprentice",
-            "Sorcerer's Apprentice",
-            "Counterspell",
-            "Counterspell",
-            "Kirin Tor Mage",
-            "Kirin Tor Mage",
-            "Mirror Entity",
-            "Mirror Entity",
-            "Vaporize",
-            "Vaporize",
-            "Fireball",
-            "Fireball",
-            "Polymorph",
-            "Polymorph",
-            "Water Elemental",
-            "Water Elemental",
-            "Kobold Geomancer",
-            "Kobold Geomancer",
-            "Mana Addict",
-            "Mana Addict",
-            "Azure Drake",
-            "Azure Drake",
-            "Frost Elemental",
-            "Frost Elemental",
-        ],
-        CardClass.MAGE,
-    )
-
-    agent1 = RandomAgent(17)
-    agent2 = RandomAgent(41)
-
-    result = run_games(
-        agent1,
-        agent2,
-        mage_expert_deck,
-        mage_expert_deck,
-        10,
-        MatchConfig(skip_mulligan=True, seed=7, log_dir="./test_logs/"),
-    )
-
-    print(result)
-
-    from pysabberstone.load_external_agents import load
-
-    agents = load()
-    agent = list(agents.values())[0]
-
-    fac = lambda: agent(18)
-
-    result = run_parallel_games(
-        fac,
-        fac,
-        mage_expert_deck,
-        mage_expert_deck,
-        100,
-        MatchConfig(skip_mulligan=True),
-    )
-    print(result)
-
-    result = run_multideck_parallel_games(
-        fac,
-        fac,
-        [mage_expert_deck],
-        [mage_expert_deck],
-        100,
-        MatchConfig(skip_mulligan=True),
-    )
-    print(result)
