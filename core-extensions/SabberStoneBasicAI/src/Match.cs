@@ -200,7 +200,8 @@ namespace SabberStoneBasicAI
 		public static (Dictionary<(string, string), MatchResult>, MatchResult, ConcurrentBag<GameResult>) RunParallelGames(
 			Func<IAgent> agentFactory1, Func<IAgent> agentFactory2,
 			IEnumerable<Deck> decks1, IEnumerable<Deck> decks2,
-			int countPerPair, Config config, int maxParallelism = -1, bool testRun = false)
+			int countPerPair, Config config, int maxParallelism = -1, bool testRun = false,
+			ProgressMonitor progressMonitor = null)
 		{
 			(Deck d1, Deck d2)[] pairs = decks1
 				.SelectMany(d1 => decks2
@@ -226,6 +227,7 @@ namespace SabberStoneBasicAI
 							//LogDir = $""
 						}, testRun);
 				results.Add(r);
+				progressMonitor?.Increment();
 			});
 
 			var deckStats = results

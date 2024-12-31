@@ -19,7 +19,8 @@ import pysabberstone.core
 from SabberStoneCore.Config import Deck as _Deck  # type: ignore
 from SabberStoneCore.Enums import FormatType as _FormatType  # type: ignore
 from SabberStoneBasicAI import IAgent as _IAgent, Match as _Match  # type: ignore
-from System import Func as _Func, Array as _Array  # type: ignore
+from SabberStoneBasicAI import ProgressMonitor as _ProgressMonitor  # type: ignore
+from System import Action as _Action, Func as _Func, Array as _Array, Int64 as _Int64  # type: ignore
 from System.Collections.Generic import List as _List  # type: ignore
 
 
@@ -31,6 +32,7 @@ class MatchConfig:
     error_dir: str | None = None
     out_dir: str | None = None
     verbose: bool = False
+    progress_bar: bool = False
 
 
 @dataclass
@@ -200,6 +202,24 @@ def run_multideck_parallel_games(
     max_degree_of_parallelism: int = -1,
     out_dir: str | None = None,
 ):
+    if config.progress_bar:
+        num_pairs = sum(1 for _ in decks1) * sum(1 for _ in decks2) * num_games
+        pbar = tqdm(total=num_pairs)
+
+        last_update = [0]  # Using list to store mutable state
+
+        def progress_callback(current_progress):
+            delta = current_progress - last_update[0]
+            if delta > 0:
+                pbar.update(delta)
+                last_update[0] = current_progress
+
+        callback_delegate = _Action[_Int64](progress_callback)
+        progress_monitor = _ProgressMonitor(num_pairs, callback_delegate)
+    else:
+        pbar = None
+        progress_monitor = None
+
     _fac1 = _Func[_IAgent](lambda: _to_core_agent(agent_factory1()))
     _fac2 = _Func[_IAgent](lambda: _to_core_agent(agent_factory2()))
     _decks1 = _Array[_Deck](d._to_core_type() for d in decks1)
@@ -218,11 +238,16 @@ def run_multideck_parallel_games(
             config.log_dir,
             config.error_dir,
             out_dir,
-            True,
+            False,
         ),
         max_degree_of_parallelism,
         False,
+        progress_monitor,
     )
+
+    if pbar is not None:
+        pbar.refresh()
+        pbar.close()
 
     _result_by_pairs = _result.Item1
     _total_result = _result.Item2
@@ -290,6 +315,6 @@ if __name__ == "__main__":
         [mage_expert_deck],
         [mage_expert_deck],
         16,
-        MatchConfig(skip_mulligan=True, seed=123564),
+        MatchConfig(skip_mulligan=True, seed=123564, progress_bar=True),
     )
     print(result[1])
