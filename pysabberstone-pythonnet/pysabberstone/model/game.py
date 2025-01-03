@@ -4,17 +4,17 @@ from typing import Literal, Generator
 import pysabberstone.utils as utils
 from pysabberstone.model.enums import LogLevel, FormatType
 from pysabberstone.model.player import Player
-from pysabberstone.model.player_task import PlayerTask
+from pysabberstone.model.player_task import PlayerTask, PlayerTaskHistoryEntry
 from pysabberstone.py_types import CardClass
 from pysabberstone.interface.deck import Deck
 
 import pysabberstone.core
-from System.Collections.Generic import List as _List
-from SabberStoneCore.Config import GameConfig as _GameConfig
-from SabberStoneCore.Enums import State as _State, FormatType as _FormatType
-from SabberStoneCore.Model import Game as _Game
-from SabberStoneCore.Tasks.PlayerTasks import ChooseTask as _ChooseTask
-from SabberStoneCore.Tasks.PlayerTasks.Lite import (
+from System.Collections.Generic import List as _List  # type: ignore
+from SabberStoneCore.Config import GameConfig as _GameConfig  # type: ignore
+from SabberStoneCore.Enums import State as _State, FormatType as _FormatType  # type: ignore
+from SabberStoneCore.Model import Game as _Game  # type: ignore
+from SabberStoneCore.Tasks.PlayerTasks import ChooseTask as _ChooseTask  # type: ignore
+from SabberStoneCore.Tasks.PlayerTasks.Lite import (  # type: ignore
     PlayerTaskLiteContainer as _OptionBuffer,
 )
 
@@ -48,6 +48,7 @@ class Game:
         self._game.StartGame()
         self._option_buffer = _OptionBuffer()
         self.players = [Player(self._game.Player1), Player(self._game.Player2)]
+        self.action_history: dict[int, list[PlayerTaskHistoryEntry]] = {1: [], 2: []}
 
     @property
     def current_player(self) -> Player:
@@ -66,6 +67,11 @@ class Game:
 
     def process(self, player_task: PlayerTask):
         _player_task = player_task._to_core_type()
+        history_entry = PlayerTaskHistoryEntry.from_core_task(
+            self.turn, _player_task, self.current_player._controller
+        )
+        self.action_history[self.current_player.id].append(history_entry)
+
         self._game.Process(_player_task)
 
     def send_mulligan(self, player_id: int, choices: list[int]):
