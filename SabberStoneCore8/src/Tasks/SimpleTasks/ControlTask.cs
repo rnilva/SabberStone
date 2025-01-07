@@ -35,7 +35,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables).ForEach(p =>
 			foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
 			{
-				if (p.Zone.Type != Zone.PLAY)
+				if (p.Zone?.Type != Zone.PLAY)
 					continue; //return;
 
 				if (!Opposite && controller.BoardZone.IsFull || Opposite && controller.Opponent.BoardZone.IsFull)
