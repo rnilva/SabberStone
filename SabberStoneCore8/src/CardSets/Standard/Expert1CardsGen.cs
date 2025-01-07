@@ -1378,25 +1378,16 @@ namespace SabberStoneCore.CardSets.Standard
 			// --------------------------------------------------------
 			cards.Add("tt_010", new Power
 			{
-				Trigger = new Trigger(TriggerType.TARGET, SelfCondition.IsSpellTargetingMinion)
+				Trigger = new Trigger(TriggerType.TARGET,
+					SelfCondition.IsSpellTargetingMinion & SelfCondition.IsNotBoardFull)
 				{
-					SingleTask = ComplexTask.Create(
-						new ConditionTask(EntityType.SOURCE, SelfCondition.IsNotBoardFull/*, SelfCondition.IsTagValue(GameTag.CANT_PLAY, 0)*/),
-						new FlagTask(true, ComplexTask.Secret(
-							new SummonTask("tt_010a", SummonSide.DEFAULT, true),
-							//new IncludeTask(EntityType.SOURCE, null, true),
-							//new IncludeTask(EntityType.TARGET, null, true),
-							//new FuncPlayablesTask(p =>
-							//{
-							//	p[2].CardTarget = p[0].Id;
-							//	return p;
-							//})
+					SingleTask = ComplexTask.Secret(
+							new SummonTask("tt_010a", SummonSide.DEFAULT, addToStack: true),
 							new CustomTask((g, c, s, t, stack) =>
 							{
 								// stack[0] : Summoned one
 								g.CurrentEventMetaData().EventTarget = stack.Playables[0];
-							})
-							)))
+							}))
 				}
 			});
 

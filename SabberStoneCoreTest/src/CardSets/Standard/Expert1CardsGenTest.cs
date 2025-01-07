@@ -1780,6 +1780,14 @@ namespace SabberStoneCoreTest.CardSets.Standard
 			game.ProcessCard("Hammer of Wrath", game.CurrentOpponent.Hero);
 			Assert.Equal(3, game.CurrentOpponent.Hero.Damage);
 			Assert.Single(game.CurrentOpponent.SecretZone);
+
+			// Spellbender should not react when the board is full.
+			game.EndTurn();
+			while (!game.CurrentPlayer.BoardZone.IsFull)
+				game.ProcessCard("Wisp");
+			game.EndTurn();
+			game.ProcessCard("Hammer of Wrath", game.CurrentOpponent.BoardZone[^1]);
+			Assert.Single(game.CurrentOpponent.SecretZone);
 		}
 
 		[Fact]
