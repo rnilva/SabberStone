@@ -83,7 +83,9 @@ namespace SabberStoneCore.Auras
 			// Check left-side
 			if (_left != null)
 			{
-				if (_left.Zone?.Type != Zone.PLAY || _left.ZonePosition != pos - 1)
+				if (_left.Zone?.Type != Zone.PLAY || 
+					_left.ZonePosition != pos - 1 || 
+					_left.Controller.Id != _owner.Controller.Id)
 				{
 					DeApply(_left);
 					_left = null;
@@ -102,7 +104,9 @@ namespace SabberStoneCore.Auras
 			// Check right-side
 			if (_right != null)
 			{
-				if (_right.Zone?.Type != Zone.PLAY || _right.ZonePosition != pos + 1)
+				if (_right.Zone?.Type != Zone.PLAY ||
+					_right.ZonePosition != pos + 1 ||
+					_right.Controller.Id != _owner.Controller.Id)
 				{
 					DeApply(_right);
 					_right = null;

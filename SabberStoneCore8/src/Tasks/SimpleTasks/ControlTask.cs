@@ -14,6 +14,7 @@
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Model.Zones;
 
 namespace SabberStoneCore.Tasks.SimpleTasks
 {
@@ -35,7 +36,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 			//IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables).ForEach(p =>
 			foreach (Playable p in IncludeTask.GetEntities(Type, in controller, source, target, stack?.Playables))
 			{
-				if (p.Zone?.Type != Zone.PLAY)
+				if (p.Zone is not BoardZone zone)
 					continue; //return;
 
 				if (!Opposite && controller.BoardZone.IsFull || Opposite && controller.Opponent.BoardZone.IsFull)
@@ -44,8 +45,7 @@ namespace SabberStoneCore.Tasks.SimpleTasks
 					continue; //return;
 				}
 
-				MinionInPlay removedEntity = (MinionInPlay) p.Zone.Remove(p);
-				game.AuraUpdate();
+				MinionInPlay removedEntity = zone.Remove((MinionInPlay) p);
 				removedEntity.Controller = Opposite ? controller.Opponent : controller;
 				if (game.History)
 					removedEntity[GameTag.CONTROLLER] = removedEntity.Controller.PlayerId;
