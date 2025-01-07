@@ -389,10 +389,14 @@ namespace SabberStoneCore.Conditions
 			return _function(owner);
 		}
 
-		public static SelfCondition operator +(SelfCondition a, SelfCondition b)
-		{
-			return new SelfCondition(a._function + b._function);
-		}
+		public static SelfCondition operator &(SelfCondition a, SelfCondition b) 
+			=> new(p => a.Eval(p) && b.Eval(p));
+
+		public static SelfCondition operator |(SelfCondition a, SelfCondition b)
+			=> new(p => a.Eval(p) || b.Eval(p));
+
+		public static SelfCondition operator !(SelfCondition a) 
+			=> new(p => !a.Eval(p));
 
 		private static int GetTagValue(Playable me, GameTag tag)
 		{
